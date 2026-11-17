@@ -50,7 +50,7 @@ function aviso(t, error) {
 /*VISTA_ALUMNO*/
 function barra(nombre) {
   return `<header class="barra">
-    <div class="marca">${LOGO}</div>
+    <a class="marca" href="https://andykligman.github.io/ajuste-elastico/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
       ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}

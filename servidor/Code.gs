@@ -265,3 +265,8 @@ function asegurarLimpieza() {
 }
 // Para correr una vez a mano después de pegar este archivo: crea la carpeta y pide los permisos de Drive
 function configurarVideos() { carpetaVideos(); asegurarLimpieza(); Logger.log('Listo: carpeta "' + CARPETA_VIDEOS + '" en tu Drive.'); }
+// Si al mandar un video aparece un error de permisos (UrlFetchApp): ejecutá esta función una vez y aceptá todos los permisos
+function autorizarVideos() {
+  UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } });
+  Logger.log('Listo: permisos para subir videos.');
+}

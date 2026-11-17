@@ -621,7 +621,7 @@ async function subirVideo() {
   } catch (e) {
     if (!gr) return;
     gr.subiendo = false;
-    msgGrabador(/Acción desconocida/.test(e.message || '') ? 'Todavía no se pueden mandar videos desde acá. Por ahora mandáselo a Andy por WhatsApp.' : (e.message || 'No se pudo mandar el video.'));
+    msgGrabador(/permiso|autoriz|UrlFetch/i.test(e.message || '') ? 'No se pudo mandar el video por un problema del aula. Mandáselo a Andy por WhatsApp y avisale, así lo arregla.' : /Acción desconocida/.test(e.message || '') ? 'Todavía no se pueden mandar videos desde acá. Por ahora mandáselo a Andy por WhatsApp.' : (e.message || 'No se pudo mandar el video.'));
     piesGrabador(`<button class="secundario" data-gr="cerrar">Cancelar</button><button class="primario" data-gr="enviar">Volver a intentar</button>`);
   }
 }
