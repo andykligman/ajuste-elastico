@@ -169,7 +169,6 @@ a.mat svg{color:var(--azul-txt)}
 
 .lineas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 .lineas path{fill:none;stroke-linecap:round}
-.lineas .l-brillo{stroke:#E8834F;opacity:.10}
 .lineas .l-cuerpo{stroke:url(#lg-cuerpo)}
 .lineas .l-filo{stroke:url(#lg-filo)}
 .layout{position:relative;z-index:1}

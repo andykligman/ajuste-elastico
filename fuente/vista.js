@@ -265,9 +265,7 @@ function lineasHTML() {
       <linearGradient id="lg-filo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
         <stop offset="0" stop-color="#F6B48D" stop-opacity=".9"/><stop offset="1" stop-color="#F6B48D" stop-opacity=".1"/>
       </linearGradient>
-      <filter id="lg-brillo" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
     </defs>
-    ${LINEAS.map((l, i) => `<path class="l-brillo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}" filter="url(#lg-brillo)"/>`).join('')}
     ${LINEAS.map((l, i) => `<path class="l-cuerpo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}"/>`).join('')}
     ${LINEAS.map((l, i) => `<path class="l-filo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="1.2" transform="translate(${-l.w * .32} ${-l.w * .32})"/>`).join('')}
   </svg>`;
