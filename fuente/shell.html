@@ -73,6 +73,11 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
 .lista-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .lista-cab h1{font-size:26px}
+.lista-botones{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.barra-der>*{white-space:nowrap}
+.chip-prueba::first-letter,.barra-der [data-accion=volver-admin]::first-letter{text-transform:uppercase}
+.chip-prueba{font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--naranja-claro);color:var(--naranja);border:1px solid var(--naranja)}
+@media (max-width:600px){.barra-der{gap:10px;font-size:14px}.barra-der .solo-pc{display:none}}
 .lista table{width:100%;border-collapse:collapse;background:var(--sup);border-radius:var(--radio-m);overflow:hidden;font-size:16px}
 .lista th{text-align:left;font-weight:600;font-size:14px;color:var(--gris);padding:10px 12px;border-bottom:1px solid var(--linea)}
 .lista td{padding:12px;border-bottom:1px solid var(--linea);vertical-align:top}

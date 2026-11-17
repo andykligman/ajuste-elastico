@@ -8,7 +8,7 @@ const params = new URLSearchParams(location.search);
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let ST = null;            // alumno abierto
-let modo = 'alumno';      // 'alumno' | 'admin-vista'
+let modo = 'alumno';      // 'alumno' | 'admin-vista' | 'admin-prueba'
 let abierto = null;       // paso expandido
 let paso2 = {};
 const desplegadas = new Set(); // etapas completas que el alumno abrió           // paso -> 'como' | 'probs' (flujo después de tildar)
@@ -30,6 +30,7 @@ function guardarToken(t) { TOKEN = t || ''; try { t ? localStorage.setItem('mapa
 /* ---------------- Guardado ---------------- */
 let timerGuardar = null;
 function guardarAlumno() {
+  if (modo === 'admin-prueba') { aviso('Vista de prueba: no se guarda nada'); return; }
   aviso('Guardando…');
   clearTimeout(timerGuardar);
   timerGuardar = setTimeout(async () => {
@@ -51,9 +52,10 @@ function barra(nombre) {
   return `<header class="barra">
     <div class="marca">${LOGO}</div>
     <div class="barra-der">
-      ${modo === 'admin-vista' ? `<button class="link" data-accion="volver-admin">Volver al panel</button>` : ''}
-      ${nombre ? `<span class="quien">${esc(nombre)}</span>` : ''}
-      ${modo !== 'admin-vista' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
+      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span>` : ''}
+      ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
+      ${nombre && modo !== 'admin-prueba' ? `<span class="quien">${esc(nombre)}</span>` : ''}
+      ${!modo.startsWith('admin-') && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
     </div>
   </header>`;
 }
@@ -170,7 +172,7 @@ function renderAdmin() {
   app().innerHTML = `${barra('Andy')}
   <main class="admin">
     <section class="lista">
-      <div class="lista-cab"><h1>Alumnos</h1><button class="secundario" data-adm="nuevo">Agregar alumno</button></div>
+      <div class="lista-cab"><h1>Alumnos</h1><span class="lista-botones"><button class="secundario" data-adm="prueba" title="Recorré el mapa como un alumno nuevo. No se guarda nada.">Ver como alumno</button><button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
       <table>
         <thead><tr><th>Alumno</th><th>Próxima</th><th>Estado</th><th>Nivel</th><th>Último movimiento</th></tr></thead>
         <tbody>${filas.map(({ a, e }) => {
@@ -287,6 +289,7 @@ function enlazarAdmin() {
     if (tr) { elegido = tr.dataset.elegir; renderAdmin(); if (window.innerWidth < 900) $('.detalle').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
+    if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
