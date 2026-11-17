@@ -254,6 +254,34 @@ a.mat svg{color:var(--azul-txt)}
 .tip-paso svg{width:22px;height:22px;flex:none;color:#E9C46A;margin-top:2px}
 .tip-paso p{margin:0;font-size:15.5px}
 
+/* Miniatura del video en cada paso del camino */
+.nodo-fila .mini{flex:none;margin-left:auto;width:80px;aspect-ratio:16/9;border-radius:7px;overflow:hidden;border:1px solid var(--linea);background:var(--sup2);padding:0}
+.nodo-fila .mini img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
+.est-listo .nodo-fila .mini img,.est-casi .nodo-fila .mini img{opacity:.5}
+/* Barra fija: avance para la próxima clase */
+.barra-clase{position:sticky;bottom:max(12px,env(safe-area-inset-bottom));z-index:5;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 14px 12px 18px;background:rgba(27,28,32,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.bc-izq{display:grid;gap:2px;min-width:0}
+.bc-izq strong{font-family:var(--display);font-weight:600;font-size:15px}
+.bc-izq>span:not(.bc-puntos){font-size:14px;color:var(--gris)}
+.bc-puntos{display:flex;gap:5px;margin-top:4px}
+.bc-puntos i{width:9px;height:9px;border-radius:50%;background:var(--linea)}
+.bc-puntos i.ok{background:var(--tinta)}
+.bc-puntos i.ahora{background:var(--naranja);box-shadow:0 0 0 3px rgba(232,131,79,.25)}
+.bc-sig{display:grid;text-align:right;gap:1px;max-width:58%;padding:8px 12px;border-radius:10px;background:var(--sup2);border:1px solid var(--linea)}
+.bc-sig small{font-size:12.5px;color:var(--naranja);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.bc-sig span{font-size:14.5px;font-weight:600;line-height:1.25;color:var(--tinta);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.bc-listo{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:#5BD49A;text-align:right}
+.bc-listo svg{width:18px;height:18px;flex:none}
+.bc-listo.bc-ultimo{color:var(--gris);font-weight:400}
+body:has(.barra-clase) #aviso{bottom:104px}
+@media (max-width:560px){
+  .nodo-fila .mini{width:64px}
+  .barra-clase{padding:10px 10px 10px 14px;gap:10px}
+  .bc-sig{max-width:55%;padding:7px 10px}
+  .bc-sig span{font-size:13.5px}
+}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -1042,7 +1070,7 @@ function apoyoHTML(p) {
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
-  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p><p>${esc(q.fix)}</p>
+  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p><p>${enLinea(q.fix)}</p>
     ${q.url ? linkHTML('Ver esa parte del video', esc(q.url)) : ''}
     ${q.doc ? `<a href="${esc(q.doc.url)}" target="_blank" rel="noopener">${esc(q.doc.t)}</a>` : ''}</div>`).join('')}</div>`;
 }
@@ -1115,14 +1143,15 @@ function envioHTML(st, p) {
 
 const OLAS = [0, 34, 68, 34];
 function caminoHTML(st, e) {
-  let i = 0;
+  let i = 0, total = 0;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
     ${PROGRAMA.etapas.map(et => {
       const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
+      i = 0;
       const cerrada = et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id));
       return `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>${cerrada ? 'Se abre cuando llegues a la clase 4' : esc(et.sub)}</p></div>
       ${cerrada ? '' : pasos.map(p => {
-        const n = ++i;
+        const n = ++i; total++;
         const pr = st.prog[p.id] || {};
         const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
         const abiertoEste = p.id === abierto;
@@ -1130,10 +1159,11 @@ function caminoHTML(st, e) {
         const sub = p.tipo === 'standard' && st.standard ? st.standard
           : pr.hecho && sel && pr.como !== 'listo' ? sel.label
           : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
-        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[n % OLAS.length]}px">
+        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
           <div class="nodo-fila">
             <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
             <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+            ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
           </div>
           ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
         </section>`;
@@ -1156,7 +1186,28 @@ function vistaHTML(st, e, animar) {
     ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${caminoHTML(st, e)}
-    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>`;
+    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>
+    ${barraClaseHTML(st, e)}`;
+}
+
+/* Barra fija abajo: cuánto falta para la próxima clase y qué sigue (no el módulo entero) */
+function barraClaseHTML(st, e) {
+  if (e.tipo === 'm2' || e.k > PROGRAMA.clases) return '';
+  const prev = new Set(requeridos(e.k - 1, e.col));
+  const foco = e.R.filter(id => !prev.has(id) || !hecho(st, id));
+  if (!foco.length) return '';
+  const listos = foco.filter(id => hecho(st, id)).length;
+  const sig = e.faltan.find(id => id !== abierto);
+  const enActual = e.faltan.includes(abierto);
+  const der = !e.faltan.length
+    ? `<span class="bc-listo">${ICONO.check}Ya tenés todo para la clase ${e.k}</span>`
+    : sig ? `<button class="bc-sig" data-abrir="${sig}"><small>${enActual ? 'Después' : 'Sigue'}</small><span>${esc(PASO[sig].titulo)}</span></button>`
+    : `<span class="bc-listo bc-ultimo">Te queda este paso</span>`;
+  return `<nav class="barra-clase" aria-label="Avance para la próxima clase">
+    <div class="bc-izq"><strong>Para la clase ${e.k}</strong><span>${listos} de ${foco.length} listos</span>
+      <span class="bc-puntos" aria-hidden="true">${foco.map(id => `<i class="${hecho(st, id) ? 'ok' : id === abierto ? 'ahora' : ''}"></i>`).join('')}</span></div>
+    ${der}
+  </nav>`;
 }
 
 /* ---------- El camino dibujado ---------- */
@@ -1271,7 +1322,7 @@ function renderAlumno(animar) {
   if (!abierto || !PASO[abierto]) abierto = (lista[0] && lista[0].id) || ORDEN[0];
   if (!$('#vista') || animar) {
     player = null; playerVid = null;
-    app().innerHTML = `${barra(st.nombre)}${lineasHTML()}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
+    app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
   requestAnimationFrame(dibujarCamino);

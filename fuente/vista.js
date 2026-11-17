@@ -104,7 +104,7 @@ function apoyoHTML(p) {
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
-  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p><p>${esc(q.fix)}</p>
+  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p><p>${enLinea(q.fix)}</p>
     ${q.url ? linkHTML('Ver esa parte del video', esc(q.url)) : ''}
     ${q.doc ? `<a href="${esc(q.doc.url)}" target="_blank" rel="noopener">${esc(q.doc.t)}</a>` : ''}</div>`).join('')}</div>`;
 }
@@ -177,14 +177,15 @@ function envioHTML(st, p) {
 
 const OLAS = [0, 34, 68, 34];
 function caminoHTML(st, e) {
-  let i = 0;
+  let i = 0, total = 0;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
     ${PROGRAMA.etapas.map(et => {
       const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
+      i = 0;
       const cerrada = et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id));
       return `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>${cerrada ? 'Se abre cuando llegues a la clase 4' : esc(et.sub)}</p></div>
       ${cerrada ? '' : pasos.map(p => {
-        const n = ++i;
+        const n = ++i; total++;
         const pr = st.prog[p.id] || {};
         const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
         const abiertoEste = p.id === abierto;
@@ -192,10 +193,11 @@ function caminoHTML(st, e) {
         const sub = p.tipo === 'standard' && st.standard ? st.standard
           : pr.hecho && sel && pr.como !== 'listo' ? sel.label
           : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
-        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[n % OLAS.length]}px">
+        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
           <div class="nodo-fila">
             <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
             <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+            ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
           </div>
           ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
         </section>`;
@@ -218,7 +220,28 @@ function vistaHTML(st, e, animar) {
     ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${caminoHTML(st, e)}
-    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>`;
+    <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>
+    ${barraClaseHTML(st, e)}`;
+}
+
+/* Barra fija abajo: cuánto falta para la próxima clase y qué sigue (no el módulo entero) */
+function barraClaseHTML(st, e) {
+  if (e.tipo === 'm2' || e.k > PROGRAMA.clases) return '';
+  const prev = new Set(requeridos(e.k - 1, e.col));
+  const foco = e.R.filter(id => !prev.has(id) || !hecho(st, id));
+  if (!foco.length) return '';
+  const listos = foco.filter(id => hecho(st, id)).length;
+  const sig = e.faltan.find(id => id !== abierto);
+  const enActual = e.faltan.includes(abierto);
+  const der = !e.faltan.length
+    ? `<span class="bc-listo">${ICONO.check}Ya tenés todo para la clase ${e.k}</span>`
+    : sig ? `<button class="bc-sig" data-abrir="${sig}"><small>${enActual ? 'Después' : 'Sigue'}</small><span>${esc(PASO[sig].titulo)}</span></button>`
+    : `<span class="bc-listo bc-ultimo">Te queda este paso</span>`;
+  return `<nav class="barra-clase" aria-label="Avance para la próxima clase">
+    <div class="bc-izq"><strong>Para la clase ${e.k}</strong><span>${listos} de ${foco.length} listos</span>
+      <span class="bc-puntos" aria-hidden="true">${foco.map(id => `<i class="${hecho(st, id) ? 'ok' : id === abierto ? 'ahora' : ''}"></i>`).join('')}</span></div>
+    ${der}
+  </nav>`;
 }
 
 /* ---------- El camino dibujado ---------- */
@@ -333,7 +356,7 @@ function renderAlumno(animar) {
   if (!abierto || !PASO[abierto]) abierto = (lista[0] && lista[0].id) || ORDEN[0];
   if (!$('#vista') || animar) {
     player = null; playerVid = null;
-    app().innerHTML = `${barra(st.nombre)}${lineasHTML()}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
+    app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
   requestAnimationFrame(dibujarCamino);

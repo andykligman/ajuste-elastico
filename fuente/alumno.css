@@ -200,3 +200,31 @@ a.mat svg{color:var(--azul-txt)}
 .tip-paso{display:flex;gap:12px;align-items:flex-start;margin:14px 0 0;padding:14px 16px;border-radius:12px;background:#2A2416;border:1px solid #C9A24A}
 .tip-paso svg{width:22px;height:22px;flex:none;color:#E9C46A;margin-top:2px}
 .tip-paso p{margin:0;font-size:15.5px}
+
+/* Miniatura del video en cada paso del camino */
+.nodo-fila .mini{flex:none;margin-left:auto;width:80px;aspect-ratio:16/9;border-radius:7px;overflow:hidden;border:1px solid var(--linea);background:var(--sup2);padding:0}
+.nodo-fila .mini img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
+.est-listo .nodo-fila .mini img,.est-casi .nodo-fila .mini img{opacity:.5}
+/* Barra fija: avance para la próxima clase */
+.barra-clase{position:sticky;bottom:max(12px,env(safe-area-inset-bottom));z-index:5;margin-top:28px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 14px 12px 18px;background:rgba(27,28,32,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--linea);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.bc-izq{display:grid;gap:2px;min-width:0}
+.bc-izq strong{font-family:var(--display);font-weight:600;font-size:15px}
+.bc-izq>span:not(.bc-puntos){font-size:14px;color:var(--gris)}
+.bc-puntos{display:flex;gap:5px;margin-top:4px}
+.bc-puntos i{width:9px;height:9px;border-radius:50%;background:var(--linea)}
+.bc-puntos i.ok{background:var(--tinta)}
+.bc-puntos i.ahora{background:var(--naranja);box-shadow:0 0 0 3px rgba(232,131,79,.25)}
+.bc-sig{display:grid;text-align:right;gap:1px;max-width:58%;padding:8px 12px;border-radius:10px;background:var(--sup2);border:1px solid var(--linea)}
+.bc-sig small{font-size:12.5px;color:var(--naranja);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.bc-sig span{font-size:14.5px;font-weight:600;line-height:1.25;color:var(--tinta);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.bc-listo{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:#5BD49A;text-align:right}
+.bc-listo svg{width:18px;height:18px;flex:none}
+.bc-listo.bc-ultimo{color:var(--gris);font-weight:400}
+body:has(.barra-clase) #aviso{bottom:104px}
+@media (max-width:560px){
+  .nodo-fila .mini{width:64px}
+  .barra-clase{padding:10px 10px 10px 14px;gap:10px}
+  .bc-sig{max-width:55%;padding:7px 10px}
+  .bc-sig span{font-size:13.5px}
+}
