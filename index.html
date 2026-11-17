@@ -303,37 +303,45 @@ body:has(.barra-clase) #aviso{bottom:104px}
 .boton-grabar{display:inline-flex;align-items:center;gap:10px}
 .boton-grabar i{width:12px;height:12px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.25)}
 .subir-galeria{cursor:pointer}
-/* Grabador a pantalla completa */
+/* Grabador a pantalla completa, como la cámara de WhatsApp: la imagen ocupa todo y los controles van encima */
 body.con-grabador{overflow:hidden}
-.grabador{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;color:var(--tinta)}
-.gr-cab{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;background:#0B0B0D}
-.gr-cab small{display:block;color:var(--gris);font-size:13px}
-.gr-cab strong{font-family:var(--display);font-weight:600;font-size:15.5px;line-height:1.25}
-.gr-x{width:40px;height:40px;border-radius:50%;border:0;background:#24262B;color:var(--tinta);font-size:26px;line-height:1;flex:none}
-.gr-drive{margin-left:auto;flex:none}
-.gr-pantalla{position:relative;flex:1;min-height:0;display:grid;place-items:center;overflow:hidden}
-.gr-pantalla video,.gr-pantalla iframe{width:100%;height:100%;object-fit:contain;border:0;background:#000}
+.grabador{position:fixed;inset:0;height:100vh;height:100dvh;z-index:50;background:#000;color:#fff;overflow:hidden;touch-action:none}
+.grabador .gr-vivo,.grabador .gr-ver{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.grabador .gr-ver{object-fit:contain}
 .gr-vivo.espejo{transform:scaleX(-1)}
-.gr-msg{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);margin:0;text-align:center;font-size:16px;line-height:1.45;background:rgba(17,18,20,.9);padding:16px;border-radius:12px}
-.gr-reloj{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:#E5484D;color:#fff;font:600 15px var(--display);padding:4px 12px;border-radius:999px}
-.gr-pie{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px calc(18px + env(safe-area-inset-bottom));background:#0B0B0D;min-height:108px}
-.gr-pie>.primario,.gr-pie>.secundario{flex:1;justify-content:center;display:inline-flex;align-items:center;gap:8px}
-.gr-pie .primario svg{width:18px;height:18px}
+.gr-cab{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top)) 14px 28px;background:linear-gradient(rgba(0,0,0,.55),transparent);z-index:2}
+.gr-tit{min-width:0;flex:1;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.gr-tit small{display:block;font-size:13px;opacity:.85}
+.gr-tit strong{display:block;font-family:var(--display);font-weight:600;font-size:15px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grabando .gr-tit{visibility:hidden}
+.gr-x{width:42px;height:42px;border-radius:50%;border:0;background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;flex:none;padding:0}
+.gr-x svg{width:22px;height:22px}
+.gr-reloj{position:absolute;left:50%;transform:translateX(-50%);top:calc(16px + env(safe-area-inset-top));background:#E5484D;color:#fff;font:600 15px var(--display);padding:4px 12px;border-radius:999px}
+.gr-msg{position:absolute;left:20px;right:20px;top:50%;transform:translateY(-50%);margin:0;text-align:center;font-size:16px;line-height:1.45;background:rgba(17,18,20,.88);padding:16px;border-radius:14px;z-index:2}
+.gr-pie{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:40px 28px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.55));z-index:2}
+.revisando .gr-pie{background:linear-gradient(transparent,rgba(0,0,0,.75));padding-top:20px}
+.revisando .gr-ver{top:calc(70px + env(safe-area-inset-top));bottom:auto;height:calc(100% - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
 .gr-lado{width:48px;height:48px;flex:none}
-.gr-girar{border-radius:50%;border:0;background:#24262B;color:var(--tinta);display:grid;place-items:center}
-.gr-girar svg{width:24px;height:24px}
-.gr-rec{width:76px;height:76px;border-radius:50%;border:4px solid #fff;background:none;display:grid;place-items:center;padding:0;flex:none}
-.gr-rec i{width:58px;height:58px;border-radius:50%;background:#E5484D;transition:all .2s}
+.gr-redondo{border-radius:50%;border:0;background:rgba(0,0,0,.4);color:#fff;display:grid;place-items:center;padding:0}
+.gr-redondo svg{width:24px;height:24px}
+.gr-rec{width:78px;height:78px;border-radius:50%;border:4px solid #fff;background:none;display:grid;place-items:center;padding:0;flex:none}
+.gr-rec i{width:62px;height:62px;border-radius:50%;background:#E5484D;transition:all .2s}
 .gr-rec.grabando i{width:28px;height:28px;border-radius:6px}
-.gr-subida{flex:1;display:grid;gap:10px;text-align:center}
-.gr-subida p{margin:0;font-size:15.5px}
-.gr-subida small{color:var(--gris)}
-.gr-barra{height:8px;border-radius:999px;background:#24262B;overflow:hidden}
-.gr-barra i{display:block;height:100%;background:var(--naranja);transition:width .2s}
-.gr-subida.listo{display:flex;align-items:center;justify-content:center;gap:10px;color:#5BD49A}
-.gr-subida.listo svg{width:24px;height:24px}
-.gr-nota{margin:0;padding:10px 16px calc(12px + env(safe-area-inset-bottom));background:#0B0B0D;color:var(--gris);font-size:14px;text-align:center}
-@media (min-width:900px){.grabador{inset:4vh 10vw;border-radius:18px;overflow:hidden;box-shadow:0 0 0 100vmax rgba(0,0,0,.7)}}
+.gr-texto{border:0;background:rgba(255,255,255,.14);color:#fff;font:600 16px var(--sans);padding:12px 18px;border-radius:999px}
+.gr-mandar{width:62px;height:62px;border-radius:50%;border:0;background:var(--naranja);color:#111;display:grid;place-items:center;padding:0;margin-left:auto;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.gr-mandar svg{width:28px;height:28px;margin-left:3px}
+@media (min-width:900px){.grabador{inset:4vh 22vw;height:auto;border-radius:18px;box-shadow:0 0 0 100vmax rgba(0,0,0,.7)}}
+/* Cartelito de subida en segundo plano */
+.subida-pill{white-space:nowrap;position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top));z-index:40;display:flex;align-items:center;gap:10px;max-width:calc(100% - 24px);padding:10px 16px;border-radius:999px;background:rgba(27,28,32,.96);border:1px solid var(--linea);box-shadow:0 8px 24px rgba(0,0,0,.45);font-size:15px;font-weight:600;color:var(--tinta)}
+.subida-pill.ok{color:#5BD49A}
+.subida-pill.ok svg{width:18px;height:18px}
+.subida-pill.error{white-space:normal;border-radius:14px;color:var(--oxido-txt);font-weight:400}
+.subida-pill .link{flex:none}
+.sp-anillo{--p:30;width:18px;height:18px;border-radius:50%;flex:none;background:conic-gradient(var(--naranja) calc(var(--p)*1%),#3A3D45 0);-webkit-mask:radial-gradient(circle,transparent 5px,#000 6px);mask:radial-gradient(circle,transparent 5px,#000 6px)}
+.vid-pend .sp-anillo{animation:girar 1.2s linear infinite;background:conic-gradient(var(--naranja) 30%,#3A3D45 0)}
+@keyframes girar{to{transform:rotate(1turn)}}
+.vid-pend{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;font-size:15px;color:var(--gris)}
+.vid-pend .sp-anillo{margin-top:3px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -353,7 +361,44 @@ body.con-grabador{overflow:hidden}
 #aviso.error{background:var(--oxido);color:var(--blanco)}
 
 /* Panel de Andy */
-.admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+.admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px}
+.admin h2{font-size:20px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.admin .cuenta{font:600 13px var(--sans);background:var(--naranja);color:#111;border-radius:999px;padding:2px 9px}
+.por-ver{margin:8px 0 34px}
+.tarjetas-video{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.tarjeta-video{display:flex;gap:12px;align-items:center;text-align:left;background:var(--sup);border:1px solid var(--linea);border-radius:var(--radio-m);padding:10px;color:var(--tinta);cursor:pointer}
+.tarjeta-video:hover{border-color:var(--naranja)}
+.tv-mini{position:relative;width:64px;height:84px;flex:none;border-radius:8px;overflow:hidden;background:#000;display:grid;place-items:center}
+.tv-mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tv-play{position:relative;width:30px;height:30px}
+.tv-txt{display:grid;gap:2px;min-width:0}
+.tv-txt strong{font-size:16px}
+.tv-txt span{font-size:14.5px;line-height:1.3}
+.tv-txt small{color:var(--gris);font-size:13px}
+.adm-top{display:flex;justify-content:space-between;align-items:center;margin:4px 0 14px}
+.volver-adm{font-weight:600}
+.revision{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;margin:18px 0 8px;align-items:start}
+.rev-video{display:grid;gap:12px}
+.rev-video>.chico{margin:-4px 0 0}
+.rev-player{height:min(64vh,640px);background:#000;border-radius:var(--radio-m);overflow:hidden;display:grid;place-items:center}
+.rev-player iframe{width:100%;height:100%;border:0}
+.rev-info{display:grid;gap:6px}
+.rev-cab{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.rev-info p{margin:0}
+.rev-paso{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:17px}
+.rev-info .fila-botones{margin-top:6px;align-items:center}
+.visto{display:inline-flex;align-items:center;gap:6px;color:#5BD49A;font-weight:600}
+.visto svg{width:18px;height:18px}
+.rev-otros h4{font-size:14px;color:var(--gris);margin:0 0 8px;font-weight:600}
+.rev-otros>div{display:flex;flex-wrap:wrap;gap:8px}
+.chip-video{border:1px solid var(--linea);background:var(--sup);color:var(--tinta);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip-video small{color:var(--gris)}
+.chip-video.nuevo{border-color:var(--naranja)}
+.chip-video.sel{background:var(--tinta);color:var(--fondo)}
+.chip-video.sel small{color:var(--fondo)}
+.rev-msg .mensaje{margin:0;position:sticky;top:12px}
+.rev-vacio{background:var(--sup);border-radius:var(--radio-m);padding:22px}
+.det-resto{background:var(--sup);border-radius:var(--radio-m);padding:22px;margin-top:28px}
 .lista-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .lista-cab h1{font-size:26px}
 .lista-botones{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
@@ -413,8 +458,9 @@ body.con-grabador{overflow:hidden}
 .links-adm p{width:100%;margin:0}
 
 @media (max-width:900px){
-  .admin{grid-template-columns:1fr}
-  .detalle{position:static;max-height:none}
+  .revision{grid-template-columns:1fr}
+  .rev-player{height:min(78vh,640px)}
+  .rev-msg .mensaje{position:static}
   .lista th:nth-child(4),.lista td:nth-child(4),.lista th:nth-child(5),.lista td:nth-child(5){display:none}
 }
 @media (max-width:560px){
@@ -437,7 +483,7 @@ body.con-grabador{overflow:hidden}
 <div id="app" aria-live="off"></div>
 <div id="aviso" role="status"></div>
 <script>
-const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ajuste Elástico" viewBox="0 0 494 112"><text font-family="Poppins, sans-serif" x="10" y="52" font-size="52" font-weight="500" letter-spacing="1.5" fill="#7DB4FF">AJUSTE</text><text font-family="Poppins, sans-serif" x="221.5" y="52" font-size="52" font-weight="500" letter-spacing="1.5" fill="#E8834F">ELÁSTICO</text><path d="M 10.0,83.4 L 15.1,83.0 L 20.1,82.7 L 25.2,82.3 L 30.3,82.0 L 35.3,81.7 L 40.4,81.5 L 45.5,81.4 L 50.5,81.4 L 55.6,81.4 L 60.6,81.6 L 65.7,81.8 L 70.8,82.0 L 75.8,82.3 L 80.9,82.7 L 86.0,83.1 L 91.0,83.4 L 96.1,83.8 L 101.2,84.1 L 106.2,84.4 L 111.3,84.6 L 116.4,84.7 L 121.4,84.7 L 126.5,84.7 L 131.6,84.5 L 136.6,84.3 L 141.7,84.0 L 146.8,83.7 L 151.8,83.2 L 156.9,82.7 L 161.9,82.2 L 167.0,81.6 L 172.1,81.0 L 177.1,80.5 L 182.2,79.9 L 187.3,79.3 L 192.3,78.8 L 197.4,78.4 L 202.5,78.0 L 207.5,77.6 L 212.6,77.3 L 217.7,77.1 L 222.7,76.9 L 227.8,76.8 L 232.8,76.8 L 237.9,76.8 L 243.0,76.9 L 248.1,77.1 L 253.1,77.3 L 258.2,77.5 L 263.2,77.7 L 268.3,78.0 L 273.4,78.3 L 278.4,78.6 L 283.5,78.9 L 288.6,79.2 L 293.6,79.5 L 298.7,79.7 L 303.8,80.0 L 308.8,80.2 L 313.9,80.3 L 318.9,80.5 L 324.0,80.5 L 329.1,80.6 L 334.1,80.6 L 339.2,80.6 L 344.3,80.5 L 349.3,80.4 L 354.4,80.2 L 359.5,80.0 L 364.5,79.8 L 369.6,79.5 L 374.7,79.2 L 379.7,78.9 L 384.8,78.5 L 389.9,78.2 L 394.9,77.8 L 400.0,77.3 L 405.1,76.9 L 410.1,76.5 L 415.2,76.0 L 420.2,75.5 L 425.3,75.0 L 430.4,74.5 L 435.4,74.0 L 440.5,73.6 L 445.6,73.1 L 450.6,72.6 L 455.7,72.1 L 460.8,71.6 L 465.8,71.1 L 470.9,70.7 L 476.0,70.2 L 476.0,70.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><path d="M 10.0,84.0 L 15.1,83.6 L 20.1,83.3 L 25.2,82.9 L 30.3,82.6 L 35.3,82.4 L 40.4,82.2 L 45.5,82.2 L 50.5,82.2 L 55.6,82.3 L 60.6,82.4 L 65.7,82.7 L 70.8,83.0 L 75.8,83.4 L 80.9,83.8 L 86.0,84.2 L 91.0,84.7 L 96.1,85.1 L 101.2,85.5 L 106.2,85.8 L 111.3,86.1 L 116.4,86.3 L 121.4,86.4 L 126.5,86.5 L 131.6,86.4 L 136.6,86.3 L 141.7,86.1 L 146.8,85.8 L 151.8,85.5 L 156.9,85.1 L 161.9,84.6 L 167.0,84.2 L 172.1,83.7 L 177.1,83.2 L 182.2,82.8 L 187.3,82.3 L 192.3,82.0 L 197.4,81.6 L 202.5,81.3 L 207.5,81.1 L 212.6,80.9 L 217.7,80.8 L 222.7,80.8 L 227.8,80.8 L 232.8,80.9 L 237.9,81.1 L 243.0,81.3 L 248.1,81.6 L 253.1,82.0 L 258.2,82.3 L 263.2,82.7 L 268.3,83.2 L 273.4,83.6 L 278.4,84.0 L 283.5,84.5 L 288.6,85.0 L 293.6,85.4 L 298.7,85.8 L 303.8,86.2 L 308.8,86.6 L 313.9,86.9 L 318.9,87.2 L 324.0,87.5 L 329.1,87.7 L 334.1,87.9 L 339.2,88.0 L 344.3,88.1 L 349.3,88.2 L 354.4,88.2 L 359.5,88.2 L 364.5,88.2 L 369.6,88.1 L 374.7,88.0 L 379.7,87.9 L 384.8,87.7 L 389.9,87.5 L 394.9,87.3 L 400.0,87.1 L 405.1,86.9 L 410.1,86.6 L 415.2,86.4 L 420.2,86.1 L 425.3,85.8 L 430.4,85.5 L 435.4,85.3 L 440.5,85.0 L 445.6,84.7 L 450.6,84.5 L 455.7,84.2 L 460.8,83.9 L 465.8,83.7 L 470.9,83.4 L 476.0,83.2 L 476.0,83.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><path d="M 10.0,84.6 L 15.1,84.2 L 20.1,83.9 L 25.2,83.6 L 30.3,83.3 L 35.3,83.1 L 40.4,83.0 L 45.5,82.9 L 50.5,83.0 L 55.6,83.1 L 60.6,83.3 L 65.7,83.6 L 70.8,84.0 L 75.8,84.4 L 80.9,84.9 L 86.0,85.4 L 91.0,85.9 L 96.1,86.4 L 101.2,86.8 L 106.2,87.3 L 111.3,87.6 L 116.4,87.9 L 121.4,88.1 L 126.5,88.2 L 131.6,88.3 L 136.6,88.2 L 141.7,88.1 L 146.8,88.0 L 151.8,87.7 L 156.9,87.4 L 161.9,87.1 L 167.0,86.7 L 172.1,86.4 L 177.1,86.0 L 182.2,85.7 L 187.3,85.3 L 192.3,85.1 L 197.4,84.8 L 202.5,84.7 L 207.5,84.6 L 212.6,84.5 L 217.7,84.6 L 222.7,84.7 L 227.8,84.8 L 232.8,85.1 L 237.9,85.4 L 243.0,85.8 L 248.1,86.2 L 253.1,86.7 L 258.2,87.2 L 263.2,87.7 L 268.3,88.3 L 273.4,88.9 L 278.4,89.5 L 283.5,90.1 L 288.6,90.7 L 293.6,91.3 L 298.7,91.9 L 303.8,92.5 L 308.8,93.0 L 313.9,93.5 L 318.9,94.0 L 324.0,94.4 L 329.1,94.8 L 334.1,95.2 L 339.2,95.5 L 344.3,95.8 L 349.3,96.0 L 354.4,96.3 L 359.5,96.4 L 364.5,96.6 L 369.6,96.7 L 374.7,96.8 L 379.7,96.8 L 384.8,96.9 L 389.9,96.9 L 394.9,96.9 L 400.0,96.9 L 405.1,96.8 L 410.1,96.8 L 415.2,96.7 L 420.2,96.7 L 425.3,96.6 L 430.4,96.6 L 435.4,96.5 L 440.5,96.4 L 445.6,96.4 L 450.6,96.3 L 455.7,96.3 L 460.8,96.2 L 465.8,96.2 L 470.9,96.2 L 476.0,96.2 L 476.0,96.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ajuste Elástico" viewBox="0 0 494 112"><text font-family="Poppins, sans-serif" x="10" y="52" font-size="52" font-weight="500" letter-spacing="1.5" fill="#FFFFFF">AJUSTE</text><text font-family="Poppins, sans-serif" x="221.5" y="52" font-size="52" font-weight="500" letter-spacing="1.5" fill="#E8834F">ELÁSTICO</text><path d="M 10.0,83.4 L 15.1,83.0 L 20.1,82.7 L 25.2,82.3 L 30.3,82.0 L 35.3,81.7 L 40.4,81.5 L 45.5,81.4 L 50.5,81.4 L 55.6,81.4 L 60.6,81.6 L 65.7,81.8 L 70.8,82.0 L 75.8,82.3 L 80.9,82.7 L 86.0,83.1 L 91.0,83.4 L 96.1,83.8 L 101.2,84.1 L 106.2,84.4 L 111.3,84.6 L 116.4,84.7 L 121.4,84.7 L 126.5,84.7 L 131.6,84.5 L 136.6,84.3 L 141.7,84.0 L 146.8,83.7 L 151.8,83.2 L 156.9,82.7 L 161.9,82.2 L 167.0,81.6 L 172.1,81.0 L 177.1,80.5 L 182.2,79.9 L 187.3,79.3 L 192.3,78.8 L 197.4,78.4 L 202.5,78.0 L 207.5,77.6 L 212.6,77.3 L 217.7,77.1 L 222.7,76.9 L 227.8,76.8 L 232.8,76.8 L 237.9,76.8 L 243.0,76.9 L 248.1,77.1 L 253.1,77.3 L 258.2,77.5 L 263.2,77.7 L 268.3,78.0 L 273.4,78.3 L 278.4,78.6 L 283.5,78.9 L 288.6,79.2 L 293.6,79.5 L 298.7,79.7 L 303.8,80.0 L 308.8,80.2 L 313.9,80.3 L 318.9,80.5 L 324.0,80.5 L 329.1,80.6 L 334.1,80.6 L 339.2,80.6 L 344.3,80.5 L 349.3,80.4 L 354.4,80.2 L 359.5,80.0 L 364.5,79.8 L 369.6,79.5 L 374.7,79.2 L 379.7,78.9 L 384.8,78.5 L 389.9,78.2 L 394.9,77.8 L 400.0,77.3 L 405.1,76.9 L 410.1,76.5 L 415.2,76.0 L 420.2,75.5 L 425.3,75.0 L 430.4,74.5 L 435.4,74.0 L 440.5,73.6 L 445.6,73.1 L 450.6,72.6 L 455.7,72.1 L 460.8,71.6 L 465.8,71.1 L 470.9,70.7 L 476.0,70.2 L 476.0,70.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><path d="M 10.0,84.0 L 15.1,83.6 L 20.1,83.3 L 25.2,82.9 L 30.3,82.6 L 35.3,82.4 L 40.4,82.2 L 45.5,82.2 L 50.5,82.2 L 55.6,82.3 L 60.6,82.4 L 65.7,82.7 L 70.8,83.0 L 75.8,83.4 L 80.9,83.8 L 86.0,84.2 L 91.0,84.7 L 96.1,85.1 L 101.2,85.5 L 106.2,85.8 L 111.3,86.1 L 116.4,86.3 L 121.4,86.4 L 126.5,86.5 L 131.6,86.4 L 136.6,86.3 L 141.7,86.1 L 146.8,85.8 L 151.8,85.5 L 156.9,85.1 L 161.9,84.6 L 167.0,84.2 L 172.1,83.7 L 177.1,83.2 L 182.2,82.8 L 187.3,82.3 L 192.3,82.0 L 197.4,81.6 L 202.5,81.3 L 207.5,81.1 L 212.6,80.9 L 217.7,80.8 L 222.7,80.8 L 227.8,80.8 L 232.8,80.9 L 237.9,81.1 L 243.0,81.3 L 248.1,81.6 L 253.1,82.0 L 258.2,82.3 L 263.2,82.7 L 268.3,83.2 L 273.4,83.6 L 278.4,84.0 L 283.5,84.5 L 288.6,85.0 L 293.6,85.4 L 298.7,85.8 L 303.8,86.2 L 308.8,86.6 L 313.9,86.9 L 318.9,87.2 L 324.0,87.5 L 329.1,87.7 L 334.1,87.9 L 339.2,88.0 L 344.3,88.1 L 349.3,88.2 L 354.4,88.2 L 359.5,88.2 L 364.5,88.2 L 369.6,88.1 L 374.7,88.0 L 379.7,87.9 L 384.8,87.7 L 389.9,87.5 L 394.9,87.3 L 400.0,87.1 L 405.1,86.9 L 410.1,86.6 L 415.2,86.4 L 420.2,86.1 L 425.3,85.8 L 430.4,85.5 L 435.4,85.3 L 440.5,85.0 L 445.6,84.7 L 450.6,84.5 L 455.7,84.2 L 460.8,83.9 L 465.8,83.7 L 470.9,83.4 L 476.0,83.2 L 476.0,83.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/><path d="M 10.0,84.6 L 15.1,84.2 L 20.1,83.9 L 25.2,83.6 L 30.3,83.3 L 35.3,83.1 L 40.4,83.0 L 45.5,82.9 L 50.5,83.0 L 55.6,83.1 L 60.6,83.3 L 65.7,83.6 L 70.8,84.0 L 75.8,84.4 L 80.9,84.9 L 86.0,85.4 L 91.0,85.9 L 96.1,86.4 L 101.2,86.8 L 106.2,87.3 L 111.3,87.6 L 116.4,87.9 L 121.4,88.1 L 126.5,88.2 L 131.6,88.3 L 136.6,88.2 L 141.7,88.1 L 146.8,88.0 L 151.8,87.7 L 156.9,87.4 L 161.9,87.1 L 167.0,86.7 L 172.1,86.4 L 177.1,86.0 L 182.2,85.7 L 187.3,85.3 L 192.3,85.1 L 197.4,84.8 L 202.5,84.7 L 207.5,84.6 L 212.6,84.5 L 217.7,84.6 L 222.7,84.7 L 227.8,84.8 L 232.8,85.1 L 237.9,85.4 L 243.0,85.8 L 248.1,86.2 L 253.1,86.7 L 258.2,87.2 L 263.2,87.7 L 268.3,88.3 L 273.4,88.9 L 278.4,89.5 L 283.5,90.1 L 288.6,90.7 L 293.6,91.3 L 298.7,91.9 L 303.8,92.5 L 308.8,93.0 L 313.9,93.5 L 318.9,94.0 L 324.0,94.4 L 329.1,94.8 L 334.1,95.2 L 339.2,95.5 L 344.3,95.8 L 349.3,96.0 L 354.4,96.3 L 359.5,96.4 L 364.5,96.6 L 369.6,96.7 L 374.7,96.8 L 379.7,96.8 L 384.8,96.9 L 389.9,96.9 L 394.9,96.9 L 400.0,96.9 L 405.1,96.8 L 410.1,96.8 L 415.2,96.7 L 420.2,96.7 L 425.3,96.6 L 430.4,96.6 L 435.4,96.5 L 440.5,96.4 L 445.6,96.4 L 450.6,96.3 L 455.7,96.3 L 460.8,96.2 L 465.8,96.2 L 470.9,96.2 L 476.0,96.2 L 476.0,96.2" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/></svg>`;
 /* =====================================================================
    PROGRAMA — contenido del mapa (editable)
    Cada paso: id, etapa, titulo, detalle, entrega ('video'|'audio'|null),
@@ -855,20 +901,22 @@ function posicion(st) {
 }
 
 /* Mensaje de WhatsApp en el estilo de Andy */
-function mensajeWhatsApp(st, link) {
-  const { e, lista } = recomendaciones(st, 4);
+/* Mensaje corto para WhatsApp: (si viene de un video) lugar para la devolución + solo el paso que sigue */
+function mensajeWhatsApp(st, link, pasoVideo) {
+  const { e, lista } = recomendaciones(st, 3);
   const nombre = (st.nombre || '').split(' ')[0];
-  const cab = e.k >= MAX_K ? `${nombre}! Te dejo pasos a seguir 🙌` : `${nombre}! Te dejo pasos a seguir para la clase ${e.k} 🙌`;
-  const items = [];
-  (st.extras || []).filter(x => !x.hecho).forEach(x => items.push(`${x.titulo}${x.detalle ? '\n' + x.detalle : ''}`));
-  lista.forEach(r => {
+  const limpio = t => String(t || '').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1: $2');
+  let txt = pasoVideo && PASO[pasoVideo] ? `${nombre}! Ya vi tu video de «${PASO[pasoVideo].titulo}».\n\n\n\n` : `${nombre}! `;
+  const extra = (st.extras || []).find(x => !x.hecho);
+  const r = lista.find(x => x.id !== pasoVideo || x.motivo === 'seguir');
+  if (extra) txt += `Lo que sigue: ${extra.titulo}${extra.detalle ? '\n' + extra.detalle : ''}`;
+  else if (r) {
     const p = PASO[r.id];
-    const icono = p.entrega === 'audio' ? '🎧' : '📹';
-    items.push(`${p.titulo}${r.motivo === 'seguir' ? ' (seguimos con esto)' : ''}\n${p.detalle}${p.entrega ? `\nMandar ${p.entrega} ${icono}` : ''}`);
-  });
-  let txt = cab + '\n\n' + items.slice(0, 4).map((t, i) => `${i + 1}) ${t}`).join('\n\n');
+    txt += `${r.motivo === 'seguir' ? 'Seguimos con' : 'Lo que sigue'}: ${p.titulo}\n${limpio(p.detalle)}`;
+    if (p.entrega) txt += `\n\nCuando lo tengas, mandame ${p.envia || 'el ' + p.entrega} ${p.entrega === 'audio' ? '🎧' : '📹'}`;
+  } else txt += e.k >= MAX_K ? 'Ya tenés todo lo del módulo 1 🙌' : `Ya tenés todo lo que hace falta para la clase ${e.k} 🙌`;
   if (st.nota) txt += '\n\n' + st.nota;
-  if (link) txt += `\n\nEn tu mapa vas tildando lo que hacés: ${link}`;
+  if (link) txt += `\n\nEn el aula tenés el paso con el video: ${link}`;
   return txt;
 }
 
@@ -1041,6 +1089,8 @@ function aviso(t, error) {
 const ICONO = {
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  cruz: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  mandar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l15-7-4.5 15-3-6.2z" fill="currentColor"/></svg>',
   girar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a8 8 0 0 1 14.5-3.5L20 7M20 15a8 8 0 0 1-14.5 3.5L4 17M20 3v4h-4M4 21v-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   enviar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-7-6 15-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -1206,16 +1256,18 @@ function envioHTML(st, p) {
   const vids = pr.videos || [];
   const conVideo = /video/.test(p.entrega || '');
   const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
+  const pend = modo === 'alumno' ? pendientes(p.id) : [];
+  const listaPend = pend.length ? `<p class="vid-pend"><span class="sp-anillo"></span>${pend.length === 1 ? 'Se está mandando tu video.' : 'Se están mandando tus videos.'} Podés seguir usando el aula; si la cerrás, se termina de mandar cuando la vuelvas a abrir.</p>` : '';
   const lista = vids.length ? `<ul class="vids">${vids.map((v, i) => `<li>${ICONO.check}<span>Video del ${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}</span>
       ${modo === 'admin-vista' ? `<button class="link" data-ver-video="${p.id}:${i}">${v.visto ? 'Ver' : 'Ver (nuevo)'}</button>` : ''}</li>`).join('')}</ul>` : '';
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandando tu video a Andy…' : ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandáselo por WhatsApp.' : 'Mandáselo por WhatsApp.'} Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
-    ${lista}
+    ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
-    <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo && !vids.length ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>
+    ${vids.length || pend.length ? '' : `<div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>`}
   </div>`;
 }
 function fechaCorta(f) { const [y, m, d] = String(f || '').split('-'); return d ? `${+d}/${+m}` : ''; }
@@ -1524,8 +1576,10 @@ function instalarAppHTML() {
     <button class="ia-no" data-accion="no-instalar" aria-label="Cerrar">×</button></div>`;
 }
 
-/* ================= Grabar y mandar videos ================= */
-// Se graba liviano (≈2 Mbps, unos 15-20 MB por minuto) y sin reducción de ruido, para que la guitarra suene natural.
+/* ================= Grabar y mandar videos (como en WhatsApp) ================= */
+// Se graba liviano (≈2 Mbps, unos 15 MB por minuto) y sin reducción de ruido, para que la guitarra suene natural.
+// Al tocar «Mandar», el grabador se cierra y el video se sube solo mientras el alumno sigue usando el aula.
+// El video queda guardado en el celu hasta que termina de subir: si se cierra el aula o se corta la señal, sigue la próxima vez.
 const GRAB = { maxSeg: 300, vbps: 2000000, abps: 128000 };
 let gr = null;   // estado del grabador abierto
 
@@ -1540,13 +1594,13 @@ function abrirGrabador(pasoId, archivo) {
   const p = PASO[pasoId];
   const el = document.createElement('div');
   el.className = 'grabador'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Grabar video');
-  el.innerHTML = `<div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">×</button>
-      <div><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div></div>
-    <div class="gr-pantalla"><video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline controls hidden></video>
-      <p class="gr-msg" hidden></p><span class="gr-reloj" hidden>0:00</span></div>
+  el.innerHTML = `<video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline hidden></video>
+    <div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">${ICONO.cruz}</button>
+      <div class="gr-tit"><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div><span class="gr-reloj" hidden>0:00</span></div>
+    <p class="gr-msg" hidden></p>
     <div class="gr-pie"></div>`;
   document.body.appendChild(el); document.body.classList.add('con-grabador');
-  gr = { el, pasoId, cam: 'user', stream: null, rec: null, partes: [], blob: null, seg: 0, t0: 0, timer: null, subiendo: false };
+  gr = { el, pasoId, cam: 'user', stream: null, rec: null, partes: [], blob: null, seg: 0, t0: 0, timer: null };
   el.onclick = ev => { const b = ev.target.closest('[data-gr]'); if (b) accionGrabador(b.dataset.gr); };
   if (archivo) { gr.blob = archivo; mostrarRevision(true); }
   else prenderCamara();
@@ -1556,11 +1610,11 @@ function piesGrabador(html) { gr.el.querySelector('.gr-pie').innerHTML = html; }
 function msgGrabador(t) { const m = gr.el.querySelector('.gr-msg'); m.hidden = !t; m.textContent = t || ''; }
 
 async function prenderCamara() {
-  apagarCamara();
-  msgGrabador('');
+  apagarCamara(); msgGrabador('');
+  gr.el.classList.remove('revisando');
   if (!navigator.mediaDevices?.getUserMedia || !tipoGrabacion()) {
     msgGrabador('Este navegador no deja grabar desde la página. Usá «Subir uno que ya tengo» o mandalo por WhatsApp.');
-    piesGrabador(`<button class="secundario" data-gr="cerrar">Cerrar</button>`); return;
+    piesGrabador(''); return;
   }
   try {
     gr.stream = await navigator.mediaDevices.getUserMedia({
@@ -1569,13 +1623,14 @@ async function prenderCamara() {
     });
   } catch (e) {
     msgGrabador('No pude usar la cámara. Fijate de darle permiso a la página para usar la cámara y el micrófono, y volvé a intentar.');
-    piesGrabador(`<button class="primario" data-gr="reintentar">Volver a intentar</button>`); return;
+    piesGrabador(`<button class="gr-texto" data-gr="reintentar">Volver a intentar</button>`); return;
   }
+  if (!gr) { apagarCamara(); return; }
   const v = gr.el.querySelector('.gr-vivo');
   v.srcObject = gr.stream; v.hidden = false; v.classList.toggle('espejo', gr.cam === 'user');
-  gr.el.querySelector('.gr-ver').hidden = true;
+  const ver = gr.el.querySelector('.gr-ver'); ver.pause(); ver.hidden = true;
   piesGrabador(`<span class="gr-lado"></span><button class="gr-rec" data-gr="grabar" aria-label="Empezar a grabar"><i></i></button>
-    <button class="gr-lado gr-girar" data-gr="girar" aria-label="Cambiar de cámara">${ICONO.girar}</button>`);
+    <button class="gr-lado gr-redondo" data-gr="girar" aria-label="Cambiar de cámara">${ICONO.girar}</button>`);
 }
 function apagarCamara() { if (gr?.stream) gr.stream.getTracks().forEach(t => t.stop()); if (gr) gr.stream = null; }
 
@@ -1586,11 +1641,13 @@ function empezarGrabacion() {
   gr.partes = [];
   gr.rec.ondataavailable = ev => { if (ev.data && ev.data.size) gr.partes.push(ev.data); };
   gr.rec.onstop = () => {
+    if (!gr) return;
     gr.blob = new Blob(gr.partes, { type: (gr.rec.mimeType || tipo || 'video/mp4').split(';')[0] });
     gr.seg = (Date.now() - gr.t0) / 1000;
     apagarCamara(); mostrarRevision();
   };
   gr.rec.start(1000); gr.t0 = Date.now();
+  gr.el.classList.add('grabando');
   const reloj = gr.el.querySelector('.gr-reloj'); reloj.hidden = false; reloj.textContent = '0:00';
   gr.timer = setInterval(() => {
     const s = (Date.now() - gr.t0) / 1000; reloj.textContent = duracion(s);
@@ -1598,70 +1655,128 @@ function empezarGrabacion() {
   }, 250);
   piesGrabador(`<span class="gr-lado"></span><button class="gr-rec grabando" data-gr="parar" aria-label="Terminar"><i></i></button><span class="gr-lado"></span>`);
 }
-function pararGrabacion() { clearInterval(gr.timer); gr.el.querySelector('.gr-reloj').hidden = true; if (gr.rec?.state === 'recording') gr.rec.stop(); }
+function pararGrabacion() {
+  clearInterval(gr.timer); gr.el.classList.remove('grabando'); gr.el.querySelector('.gr-reloj').hidden = true;
+  if (gr.rec?.state === 'recording') gr.rec.stop();
+}
 
 function mostrarRevision(deGaleria) {
+  gr.el.classList.add('revisando');
   const v = gr.el.querySelector('.gr-ver');
   gr.el.querySelector('.gr-vivo').hidden = true;
   if (gr.url) URL.revokeObjectURL(gr.url);
-  gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false;
+  gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false; v.controls = true;
   v.onloadedmetadata = () => { if (isFinite(v.duration)) gr.seg = v.duration; };
   const mb = gr.blob.size / 1048576;
-  msgGrabador(mb > 380 ? 'Este video es muy pesado para subirlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
-  piesGrabador(`${deGaleria ? `<button class="secundario" data-gr="cerrar">Cancelar</button>` : `<button class="secundario" data-gr="otra">Grabar de nuevo</button>`}
-    ${mb > 380 ? '' : `<button class="primario" data-gr="enviar">${ICONO.enviar}Mandar a Andy</button>`}`);
+  msgGrabador(mb > 380 ? 'Este video es muy pesado para mandarlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
+  piesGrabador(`<button class="gr-texto" data-gr="${deGaleria ? 'cerrar' : 'otra'}">${deGaleria ? 'Cancelar' : 'Grabar de nuevo'}</button>
+    ${mb > 380 ? '' : `<button class="gr-mandar" data-gr="enviar" aria-label="Mandar a Andy">${ICONO.mandar}</button>`}`);
 }
 
-async function accionGrabador(a) {
+function accionGrabador(a) {
   if (!gr) return;
-  if (a === 'cerrar') { if (gr.subiendo && !confirmarCierre()) return; cerrarGrabador(); }
+  if (a === 'cerrar') cerrarGrabador();
   else if (a === 'reintentar') prenderCamara();
   else if (a === 'girar') { gr.cam = gr.cam === 'user' ? 'environment' : 'user'; prenderCamara(); }
   else if (a === 'grabar') empezarGrabacion();
   else if (a === 'parar') pararGrabacion();
   else if (a === 'otra') { gr.blob = null; prenderCamara(); }
-  else if (a === 'enviar') subirVideo();
+  else if (a === 'enviar') mandarVideo();
 }
-function confirmarCierre() { return gr.el.querySelector('.gr-pie').dataset.salir === '1' || (gr.el.querySelector('.gr-pie').dataset.salir = '1', msgGrabador('El video se está subiendo. Si cerrás ahora, se corta. Tocá la × de nuevo para cerrar igual.'), false); }
 function cerrarGrabador() {
   if (!gr) return;
   clearInterval(gr.timer); if (gr.rec?.state === 'recording') { gr.rec.onstop = null; gr.rec.stop(); }
-  apagarCamara(); if (gr.url) URL.revokeObjectURL(gr.url);
+  apagarCamara(); const v = gr.el.querySelector('.gr-ver'); if (v) v.pause();
+  if (gr.url) URL.revokeObjectURL(gr.url);
   gr.el.remove(); document.body.classList.remove('con-grabador'); gr = null;
 }
 
-async function subirVideo() {
-  const blob = gr.blob, pasoId = gr.pasoId;
-  gr.subiendo = true; msgGrabador('');
-  const barra = p => piesGrabador(`<div class="gr-subida"><div class="gr-barra"><i style="width:${Math.round(p * 100)}%"></i></div>
-    <p>Mandando el video… ${Math.round(p * 100)}%<br><small>No cierres esta pantalla hasta que termine.</small></p></div>`);
-  barra(0);
+/* ---------- Mandar: el grabador se cierra y el video se sube solo ---------- */
+function mandarVideo() {
+  const item = { id: 'v' + Date.now().toString(36), codigo: ST.codigo, pasoId: gr.pasoId, blob: gr.blob, mime: gr.blob.type || 'video/mp4', seg: Math.round(gr.seg || 0), t: hoyISO() };
+  cerrarGrabador();
+  if (modo !== 'alumno') { aviso('Vista de prueba: el video no se manda'); return; }
+  const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
+  pr.envio = true;
+  guardarAlumno();
+  COLA.push(item); colaGuardar(item);
+  renderAlumno();
+  procesarCola();
+}
+
+// Videos esperando para subir (en memoria y guardados en el celu)
+const COLA = [];
+let subiendo = null;          // { item, p } mientras sube
+function pendientes(pasoId) { return COLA.filter(x => x.pasoId === pasoId && x.codigo === ST?.codigo); }
+
+async function procesarCola() {
+  if (subiendo || !COLA.length || modo !== 'alumno' || !ST) return;
+  const item = COLA.find(x => x.codigo === ST.codigo); if (!item) return;
+  subiendo = { item, p: 0, error: '' }; pintarSubida();
   try {
     let id;
-    if (!API_URL || modo !== 'alumno') { if (modo !== 'alumno') aviso('Vista de prueba: el video no se manda'); for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 120)); barra(k / 10); } id = 'demo-' + Date.now(); }
+    if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 250)); subiendo.p = k / 10; pintarSubida(); } id = 'demo-' + Date.now(); }
     else {
-      const mime = blob.type || 'video/mp4';
-      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: pasoId, mime, tam: blob.size });
-      id = await subirPorPartes(url, blob, mime, barra);
+      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size });
+      id = await subirPorPartes(url, item.blob, p => { subiendo.p = p; pintarSubida(); });
     }
-    if (!gr) return;
-    const pr = ST.prog[pasoId] || (ST.prog[pasoId] = {});
-    pr.videos = [...(pr.videos || []), { id, t: hoyISO(), seg: Math.round(gr.seg || 0) }];
+    const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
+    pr.videos = [...(pr.videos || []), { id, t: item.t, seg: item.seg }];
     pr.envio = true;
     guardarAlumno();
-    piesGrabador(`<div class="gr-subida listo">${ICONO.check}<p><strong>¡Listo! Andy ya tiene tu video.</strong></p></div>`);
-    gr.subiendo = false;
-    setTimeout(() => { cerrarGrabador(); renderAlumno(); }, 1600);
+    COLA.splice(COLA.indexOf(item), 1); colaBorrar(item.id);
+    subiendo = null; pintarSubida(true);
+    if (abierto === item.pasoId) renderAlumno();
+    setTimeout(procesarCola, 400);
   } catch (e) {
-    if (!gr) return;
-    gr.subiendo = false;
-    msgGrabador(/permiso|autoriz|UrlFetch/i.test(e.message || '') ? 'No se pudo mandar el video por un problema del aula. Mandáselo a Andy por WhatsApp y avisale, así lo arregla.' : /Acción desconocida/.test(e.message || '') ? 'Todavía no se pueden mandar videos desde acá. Por ahora mandáselo a Andy por WhatsApp.' : (e.message || 'No se pudo mandar el video.'));
-    piesGrabador(`<button class="secundario" data-gr="cerrar">Cancelar</button><button class="primario" data-gr="enviar">Volver a intentar</button>`);
+    const m = e.message || '';
+    subiendo.error = /permiso|autoriz|UrlFetch/i.test(m) ? 'No se pudo mandar el video por un problema del aula. Avisale a Andy.'
+      : /Acción desconocida/.test(m) ? 'Todavía no se pueden mandar videos desde acá.'
+      : 'Se cortó la conexión. Lo vuelvo a intentar solo.';
+    pintarSubida();
+    const reintentar = /cortó|conexión|conectar/i.test(subiendo.error);
+    subiendo = reintentar ? null : subiendo;
+    if (reintentar) setTimeout(procesarCola, 8000);
   }
+}
+// Cartelito abajo con el avance, como el «enviando» de WhatsApp (se puede seguir usando el aula)
+function pintarSubida(listo) {
+  let el = document.getElementById('subida');
+  if (!el) { el = document.createElement('div'); el.id = 'subida'; el.className = 'subida-pill'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  clearTimeout(el._t);
+  if (listo) { el.className = 'subida-pill ok'; el.innerHTML = `${ICONO.check}<span>Video enviado a Andy</span>`; el._t = setTimeout(() => el.remove(), 2600); return; }
+  if (!subiendo) { el.remove(); return; }
+  const pct = Math.round(subiendo.p * 100), mas = COLA.length > 1 ? ` (${COLA.length})` : '';
+  el.className = 'subida-pill' + (subiendo.error ? ' error' : '');
+  el.innerHTML = subiendo.error ? `<span>${esc(subiendo.error)}</span><button class="link" data-reintentar-subida>Reintentar</button>`
+    : `<span class="sp-anillo" style="--p:${pct}"></span><span>Mandando video${mas}… ${pct}%</span>`;
+  const b = el.querySelector('[data-reintentar-subida]'); if (b) b.onclick = () => { subiendo = null; procesarCola(); };
+}
+window.addEventListener('online', () => procesarCola());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') procesarCola(); });
+
+// Guardado en el celu (IndexedDB) para retomar si se cierra el aula a mitad de la subida
+function colaDB() {
+  return new Promise((ok, mal) => {
+    if (!window.indexedDB) return mal(new Error('sin IndexedDB'));
+    const r = indexedDB.open('aulaAE', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('subidas', { keyPath: 'id' });
+    r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error);
+  });
+}
+async function colaGuardar(item) { try { const db = await colaDB(); db.transaction('subidas', 'readwrite').objectStore('subidas').put(item); } catch (e) {} }
+async function colaBorrar(id) { try { const db = await colaDB(); db.transaction('subidas', 'readwrite').objectStore('subidas').delete(id); } catch (e) {} }
+async function reanudarSubidas() {
+  try {
+    const db = await colaDB();
+    const todos = await new Promise((ok, mal) => { const q = db.transaction('subidas').objectStore('subidas').getAll(); q.onsuccess = () => ok(q.result || []); q.onerror = () => mal(q.error); });
+    todos.forEach(x => { if (!COLA.some(y => y.id === x.id)) COLA.push(x); });
+  } catch (e) {}
+  procesarCola();
 }
 
 // Subida en partes de 8 MB directo a Drive (si se corta la señal, se reintenta la parte que faltaba)
-function subirPorPartes(url, blob, mime, progreso) {
+function subirPorPartes(url, blob, progreso) {
   const PARTE = 8 * 1024 * 1024;
   const mandar = (desde, intento) => new Promise((ok, mal) => {
     const hasta = Math.min(desde + PARTE, blob.size);
@@ -1673,9 +1788,9 @@ function subirPorPartes(url, blob, mime, progreso) {
       if (x.status === 200 || x.status === 201) { try { ok(JSON.parse(x.responseText).id); } catch (e) { ok(''); } }
       else if (x.status === 308) mandar(hasta, 0).then(ok, mal);
       else if (intento < 3) setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 1500 * (intento + 1));
-      else mal(new Error('Se cortó la subida. Revisá la conexión y tocá «Volver a intentar».'));
+      else mal(new Error('Se cortó la conexión mientras subía el video.'));
     };
-    x.onerror = () => intento < 3 ? setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 2000 * (intento + 1)) : mal(new Error('Se cortó la conexión mientras subía el video. Tocá «Volver a intentar».'));
+    x.onerror = () => intento < 3 ? setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 2000 * (intento + 1)) : mal(new Error('Se cortó la conexión mientras subía el video.'));
     x.send(blob.slice(desde, hasta));
   });
   return mandar(0, 0);
@@ -1785,6 +1900,7 @@ function abrirMapa(alumno) {
   ST = alumno; modo = 'alumno'; abierto = null;
   nav(location.pathname);
   renderAlumno(true);
+  reanudarSubidas();   // si quedó un video a medio mandar, sigue solo
 }
 async function entrarConSesion() {
   try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
@@ -1819,31 +1935,55 @@ async function abrirAdmin() {
 }
 
 const ORDEN_TIPO = { meterle: 0, bien: 1, adelantado: 2, pausa: 3, m2: 4 };
+let videoSel = null;   // 'paso:índice' del video que se está mirando en el panel
+
+function todosLosVideos(a) {
+  return Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid]);
+}
 function renderAdmin() {
-  const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
-  const sel = elegido && LISTA.find(a => a.codigo === elegido);
+  const sel = elegido && elegido !== '__nuevo' && LISTA.find(a => a.codigo === elegido);
   app().innerHTML = `${barra('Andy')}
-  <main class="admin">
+  <main class="admin ${sel || elegido === '__nuevo' ? 'admin-una' : ''}">
+    ${sel ? alumnoAdmHTML(sel) : elegido === '__nuevo' ? `<button class="link volver-adm" data-adm="volver">← Todos los alumnos</button>${nuevoHTML()}` : inicioAdmHTML()}
+  </main>`;
+  enlazarAdmin();
+}
+
+/* Inicio del panel: primero los videos para ver, después todos los alumnos */
+function inicioAdmHTML() {
+  const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
+  const nuevos = LISTA.flatMap(a => todosLosVideos(a).filter(x => !x.v.visto).map(x => ({ ...x, a })))
+    .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
+  return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
+      <button class="secundario" data-adm="actualizar">Actualizar</button>
+      <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
+      <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+    <section class="por-ver">
+      <h2>Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
+      ${nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
+          <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
+          <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
+        </button>`).join('')}</div>` : `<p class="suave">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`}
+    </section>
     <section class="lista">
-      <div class="lista-cab"><h1>Alumnos</h1><span class="lista-botones"><button class="secundario" data-adm="prueba" title="Recorré el mapa como un alumno nuevo. No se guarda nada.">Ver como alumno</button><button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+      <h2>Alumnos</h2>
       <table>
         <thead><tr><th>Alumno</th><th>Próxima</th><th>Estado</th><th>Nivel</th><th>Último movimiento</th></tr></thead>
         <tbody>${filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
-          return `<tr class="${sel && sel.codigo === a.codigo ? 'sel' : ''}" data-elegir="${esc(a.codigo)}" tabindex="0">
-            <td><strong>${esc(a.nombre)}</strong>${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}</td>
+          return `<tr data-elegir="${esc(a.codigo)}" tabindex="0">
+            <td><strong>${esc(a.nombre)}</strong>${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
             <td class="nw">${e.k <= 4 ? 'Clase ' + e.k : 'Módulo 2'}</td>
             <td><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></td>
             <td>${a.nivel}</td>
             <td class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</td>
-          </tr>`; }).join('')}</tbody>
+          </tr>`; }).join('') || '<tr><td colspan="5" class="suave">Todavía no hay alumnos.</td></tr>'}</tbody>
       </table>
-    </section>
-    <section class="detalle">${sel ? detalleHTML(sel) : elegido === '__nuevo' ? nuevoHTML() : '<p class="suave vacio">Elegí un alumno para ver su avance, ajustar el nivel o copiar el mensaje de lo que sigue.</p>'}</section>
-  </main>`;
-  enlazarAdmin();
+    </section>`;
 }
+const ICONO_PLAY = '<svg class="tv-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.55)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>';
+function miniDrive(id) { return String(id).startsWith('demo-') ? '' : `<img src="https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w400" alt="" loading="lazy" onerror="this.remove()">`; }
 
 function haceTanto(f) { const d = diasDesde(f); return d === 0 ? 'hoy' : d === 1 ? 'ayer' : `hace ${d} días`; }
 
@@ -1859,23 +1999,51 @@ function nuevoHTML() {
   </form>`;
 }
 
-function detalleHTML(a) {
+/* Página de un alumno: arriba el video para ver (izquierda) y el mensaje de lo que sigue (derecha) */
+function alumnoAdmHTML(a) {
   const e = estado(a);
-  const msg = mensajeWhatsApp(a, linkMapa());
-  const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
-  return `<div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
+  return `<div class="adm-top"><button class="link volver-adm" data-adm="volver">← Todos los alumnos</button><button class="secundario" data-adm="ver">Ver su aula</button></div>
+  <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
-
-  ${accesoHTML(a)}
-
-  <div class="mensaje">
-    <div class="mensaje-cab"><h3>Mensaje de lo que sigue</h3>
+  <section class="revision" id="revision">${revisionHTML(a)}</section>
+  <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
+}
+function videoActual(a) {
+  const l = todosLosVideos(a).sort((x, y) => (x.v.visto ? 1 : 0) - (y.v.visto ? 1 : 0) || String(y.v.t).localeCompare(String(x.v.t)));
+  return { l, cur: l.find(x => `${x.pid}:${x.i}` === videoSel) || l[0] };
+}
+function revisionHTML(a) {
+  const { l, cur } = videoActual(a);
+  if (!cur) return `<div class="rev-vacio"><p class="suave">Todavía no mandó videos desde el aula.</p></div><div class="rev-msg" id="revMsg">${mensajeAdmHTML(a, null)}</div>`;
+  const p = PASO[cur.pid], pr = a.prog[cur.pid] || {}, op = opcionElegida(a, p);
+  return `<div class="rev-video">
+      <div class="rev-cab"><p class="rev-paso"><strong>${esc(p.titulo)}</strong><span class="suave">${fechaCorta(cur.v.t)}${cur.v.seg ? ' · ' + duracion(cur.v.seg) : ''}</span></p>
+        ${cur.v.visto ? `<span class="visto">${ICONO.check}Ya lo viste</span>` : `<button class="primario" data-adm="visto">Listo, ya lo vi</button>`}</div>
+      <div class="rev-player">${String(cur.v.id).startsWith('demo-') ? '<p class="suave">Video de prueba (modo demo)</p>' : `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(cur.v.id)}/preview" allow="autoplay; fullscreen" allowfullscreen title="Video de ${esc(a.nombre)}"></iframe>`}</div>
+      <p class="suave chico">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>
+      <div class="rev-info">
+        ${p.envia ? `<p><span class="suave">Le pediste:</span> ${esc(p.envia)}</p>` : ''}
+        ${op && !p.sinProgreso ? `<p><span class="suave">Cómo le fue:</span> ${esc(op.label)}</p>` : ''}
+        <p><a class="link" href="https://drive.google.com/file/d/${encodeURIComponent(cur.v.id)}/view" target="_blank" rel="noopener">Abrir en Drive</a></p>
+      </div>
+      ${l.length > 1 ? `<div class="rev-otros"><h4>Sus videos</h4><div>${l.map(x => `<button class="chip-video ${x === cur ? 'sel' : ''} ${x.v.visto ? '' : 'nuevo'}" data-video-sel="${x.pid}:${x.i}">${esc(PASO[x.pid].titulo)} <small>${fechaCorta(x.v.t)}${x.v.visto ? '' : ' · nuevo'}</small></button>`).join('')}</div></div>` : ''}
+    </div>
+    <div class="rev-msg" id="revMsg">${mensajeAdmHTML(a, cur.pid)}</div>`;
+}
+function mensajeAdmHTML(a, pasoVideo) {
+  const msg = mensajeWhatsApp(a, linkMapa(), pasoVideo);
+  return `<div class="mensaje">
+    <div class="mensaje-cab"><h3>Mensaje para ${esc(a.nombre.split(' ')[0])}</h3>
       <span><button class="secundario" data-adm="copiar">Copiar</button>
-      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir en WhatsApp</a></span></div>
-    <textarea id="msg" rows="10">${esc(msg)}</textarea>
-    <p class="suave chico">Podés editarlo antes de copiar. Sale de lo que le falta según su nivel, de tu nota y de las tareas personalizadas.</p>
-  </div>
-
+      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}" data-wa>WhatsApp</a></span></div>
+    <textarea id="msg" rows="12">${esc(msg)}</textarea>
+    <p class="suave chico">${pasoVideo ? 'Escribí tu devolución en el espacio de arriba. Abajo va' : 'Va'} solo el paso que sigue según su nivel (o la próxima tarea personalizada).</p>
+  </div>`;
+}
+function restoHTML(a) {
+  const e = estado(a);
+  const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
+  return `${accesoHTML(a)}
   <div class="ajustes form-admin">
     <label>Nivel
       <span class="segmentado">${[1, 2, 3].map(n => `<button data-nivel="${n}" class="${a.nivel === n ? 'sel' : ''}" aria-pressed="${a.nivel === n}">${n}</button>`).join('')}</span></label>
@@ -1895,7 +2063,6 @@ function detalleHTML(a) {
     <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>
   </div>
 
-  ${videosAdmHTML(a)}
   ${probs.length ? `<div class="bloque"><h3>Problemas que marcó</h3><ul class="probs-adm">${probs.map(x => `<li><span class="suave">${esc(PASO[x.pid].titulo)}:</span> ${esc(x.q.q)}</li>`).join('')}</ul></div>` : ''}
 
   <div class="bloque">
@@ -1905,7 +2072,7 @@ function detalleHTML(a) {
   </div>
 
   <div class="bloque links-adm">
-    <button class="secundario" data-adm="ver">Ver su mapa</button>
+    <button class="secundario" data-adm="ver">Ver su aula</button>
     <button class="link suave" data-adm="borrar">Borrar alumno</button>
   </div>`;
 }
@@ -1926,9 +2093,11 @@ function accesoHTML(a) {
 }
 
 let timerAdm = null;
+function refrescarMensaje(a) { const m = $('#revMsg'); if (m) m.innerHTML = mensajeAdmHTML(a, videoActual(a).cur?.pid || null); }
 function guardarAdm(a, rerender = true) {
   aviso('Guardando…');
-  if (rerender) renderAdmin();
+  // Solo se redibuja la parte de abajo: el video y el mensaje que estás escribiendo no se tocan
+  if (rerender) { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(a); enlazarAdmin(); } else renderAdmin(); }
   clearTimeout(timerAdm);
   timerAdm = setTimeout(async () => {
     try { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); aviso('Guardado'); }
@@ -1941,11 +2110,24 @@ function enlazarAdmin() {
   const a = LISTA.find(x => x.codigo === elegido);
   root.onclick = async ev => {
     const tr = ev.target.closest('tr[data-elegir]');
-    if (tr) { elegido = tr.dataset.elegir; renderAdmin(); if (window.innerWidth < 900) $('.detalle').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); return; }
+    if (tr) { elegido = tr.dataset.elegir; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
+    const wa = ev.target.closest('a[data-wa]');
+    if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
     if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
-    if (d.verVideo && a) { const [pid, i] = d.verVideo.split(':'); verVideoAdmin(a, pid, +i, () => guardarAdm(a)); return; }
+    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
+    if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.adm === 'actualizar') { b.textContent = 'Actualizando…'; abrirAdmin(); return; }
+    if (d.adm === 'visto' && a) {
+      const { cur } = videoActual(a); if (!cur) return;
+      cur.v.visto = true;
+      const sig = todosLosVideos(a).find(x => !x.v.visto);
+      if (sig) videoSel = `${sig.pid}:${sig.i}`; else videoSel = `${cur.pid}:${cur.i}`;
+      $('#revision').innerHTML = revisionHTML(a);
+      guardarAdm(a, false); return;
+    }
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
@@ -1955,12 +2137,12 @@ function enlazarAdmin() {
     }
     else if (d.adm === 'ver') { ST = JSON.parse(JSON.stringify(a)); modo = 'admin-vista'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); }
     else if (d.adm === 'borrar') {
-      if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; renderAdmin(); }
+      if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; videoSel = null; renderAdmin(); }
       else { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo para borrar'; }
     }
     else if (d.nivel) { a.nivel = +d.nivel; guardarAdm(a); }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
-    else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); }
+    else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
       const id = d.admTilde; if (a.prog[id] && a.prog[id].hecho) delete a.prog[id]; else a.prog[id] = { hecho: true, como: 'listo', t: hoyISO() };
       guardarAdm(a);
@@ -1981,14 +2163,14 @@ function enlazarAdmin() {
     nuevo.codigo = codigoNuevo(nuevo.nombre);
     try {
       const r = await llamar('admin.crear', { clave: claveAdmin, alumno: nuevo });
-      LISTA.push(r.alumno); elegido = nuevo.codigo; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
+      LISTA.push(r.alumno); elegido = nuevo.codigo; videoSel = null; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
     } catch (e) { aviso(e.message, true); }
   };
   const fe = $('#formExtra');
   if (fe) fe.onsubmit = ev => {
     ev.preventDefault(); const f = new FormData(fe);
     a.extras = a.extras || []; a.extras.push({ id: 'x' + Date.now().toString(36), titulo: f.get('titulo').trim(), detalle: f.get('detalle').trim(), hecho: false });
-    guardarAdm(a);
+    guardarAdm(a); refrescarMensaje(a);
   };
 }
 
@@ -2011,13 +2193,6 @@ window.addEventListener('resize', () => {
   TOKEN ? entrarConSesion() : renderEntrada();
 })();
 
-function videosAdmHTML(a) {
-  const l = Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid])
-    .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
-  if (!l.length) return '';
-  return `<div class="bloque"><h3>Videos que mandó</h3><ul class="vids-adm">${l.map(({ pid, v, i }) => `<li class="${v.visto ? '' : 'nuevo'}">
-    <button class="link" data-ver-video="${pid}:${i}">${esc(PASO[pid].titulo)}</button><span class="suave">${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}${v.visto ? '' : ' · nuevo'}</span></li>`).join('')}</ul></div>`;
-}
 
 </script>
 </body>

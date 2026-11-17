@@ -7,6 +7,8 @@
 const ICONO = {
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  cruz: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
+  mandar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l15-7-4.5 15-3-6.2z" fill="currentColor"/></svg>',
   girar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a8 8 0 0 1 14.5-3.5L20 7M20 15a8 8 0 0 1-14.5 3.5L4 17M20 3v4h-4M4 21v-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   enviar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-7-6 15-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -172,16 +174,18 @@ function envioHTML(st, p) {
   const vids = pr.videos || [];
   const conVideo = /video/.test(p.entrega || '');
   const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
+  const pend = modo === 'alumno' ? pendientes(p.id) : [];
+  const listaPend = pend.length ? `<p class="vid-pend"><span class="sp-anillo"></span>${pend.length === 1 ? 'Se está mandando tu video.' : 'Se están mandando tus videos.'} Podés seguir usando el aula; si la cerrás, se termina de mandar cuando la vuelvas a abrir.</p>` : '';
   const lista = vids.length ? `<ul class="vids">${vids.map((v, i) => `<li>${ICONO.check}<span>Video del ${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}</span>
       ${modo === 'admin-vista' ? `<button class="link" data-ver-video="${p.id}:${i}">${v.visto ? 'Ver' : 'Ver (nuevo)'}</button>` : ''}</li>`).join('')}</ul>` : '';
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandando tu video a Andy…' : ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandáselo por WhatsApp.' : 'Mandáselo por WhatsApp.'} Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
-    ${lista}
+    ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
-    <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo && !vids.length ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>
+    ${vids.length || pend.length ? '' : `<div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>`}
   </div>`;
 }
 function fechaCorta(f) { const [y, m, d] = String(f || '').split('-'); return d ? `${+d}/${+m}` : ''; }
@@ -490,8 +494,10 @@ function instalarAppHTML() {
     <button class="ia-no" data-accion="no-instalar" aria-label="Cerrar">×</button></div>`;
 }
 
-/* ================= Grabar y mandar videos ================= */
-// Se graba liviano (≈2 Mbps, unos 15-20 MB por minuto) y sin reducción de ruido, para que la guitarra suene natural.
+/* ================= Grabar y mandar videos (como en WhatsApp) ================= */
+// Se graba liviano (≈2 Mbps, unos 15 MB por minuto) y sin reducción de ruido, para que la guitarra suene natural.
+// Al tocar «Mandar», el grabador se cierra y el video se sube solo mientras el alumno sigue usando el aula.
+// El video queda guardado en el celu hasta que termina de subir: si se cierra el aula o se corta la señal, sigue la próxima vez.
 const GRAB = { maxSeg: 300, vbps: 2000000, abps: 128000 };
 let gr = null;   // estado del grabador abierto
 
@@ -506,13 +512,13 @@ function abrirGrabador(pasoId, archivo) {
   const p = PASO[pasoId];
   const el = document.createElement('div');
   el.className = 'grabador'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Grabar video');
-  el.innerHTML = `<div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">×</button>
-      <div><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div></div>
-    <div class="gr-pantalla"><video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline controls hidden></video>
-      <p class="gr-msg" hidden></p><span class="gr-reloj" hidden>0:00</span></div>
+  el.innerHTML = `<video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline hidden></video>
+    <div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">${ICONO.cruz}</button>
+      <div class="gr-tit"><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div><span class="gr-reloj" hidden>0:00</span></div>
+    <p class="gr-msg" hidden></p>
     <div class="gr-pie"></div>`;
   document.body.appendChild(el); document.body.classList.add('con-grabador');
-  gr = { el, pasoId, cam: 'user', stream: null, rec: null, partes: [], blob: null, seg: 0, t0: 0, timer: null, subiendo: false };
+  gr = { el, pasoId, cam: 'user', stream: null, rec: null, partes: [], blob: null, seg: 0, t0: 0, timer: null };
   el.onclick = ev => { const b = ev.target.closest('[data-gr]'); if (b) accionGrabador(b.dataset.gr); };
   if (archivo) { gr.blob = archivo; mostrarRevision(true); }
   else prenderCamara();
@@ -522,11 +528,11 @@ function piesGrabador(html) { gr.el.querySelector('.gr-pie').innerHTML = html; }
 function msgGrabador(t) { const m = gr.el.querySelector('.gr-msg'); m.hidden = !t; m.textContent = t || ''; }
 
 async function prenderCamara() {
-  apagarCamara();
-  msgGrabador('');
+  apagarCamara(); msgGrabador('');
+  gr.el.classList.remove('revisando');
   if (!navigator.mediaDevices?.getUserMedia || !tipoGrabacion()) {
     msgGrabador('Este navegador no deja grabar desde la página. Usá «Subir uno que ya tengo» o mandalo por WhatsApp.');
-    piesGrabador(`<button class="secundario" data-gr="cerrar">Cerrar</button>`); return;
+    piesGrabador(''); return;
   }
   try {
     gr.stream = await navigator.mediaDevices.getUserMedia({
@@ -535,13 +541,14 @@ async function prenderCamara() {
     });
   } catch (e) {
     msgGrabador('No pude usar la cámara. Fijate de darle permiso a la página para usar la cámara y el micrófono, y volvé a intentar.');
-    piesGrabador(`<button class="primario" data-gr="reintentar">Volver a intentar</button>`); return;
+    piesGrabador(`<button class="gr-texto" data-gr="reintentar">Volver a intentar</button>`); return;
   }
+  if (!gr) { apagarCamara(); return; }
   const v = gr.el.querySelector('.gr-vivo');
   v.srcObject = gr.stream; v.hidden = false; v.classList.toggle('espejo', gr.cam === 'user');
-  gr.el.querySelector('.gr-ver').hidden = true;
+  const ver = gr.el.querySelector('.gr-ver'); ver.pause(); ver.hidden = true;
   piesGrabador(`<span class="gr-lado"></span><button class="gr-rec" data-gr="grabar" aria-label="Empezar a grabar"><i></i></button>
-    <button class="gr-lado gr-girar" data-gr="girar" aria-label="Cambiar de cámara">${ICONO.girar}</button>`);
+    <button class="gr-lado gr-redondo" data-gr="girar" aria-label="Cambiar de cámara">${ICONO.girar}</button>`);
 }
 function apagarCamara() { if (gr?.stream) gr.stream.getTracks().forEach(t => t.stop()); if (gr) gr.stream = null; }
 
@@ -552,11 +559,13 @@ function empezarGrabacion() {
   gr.partes = [];
   gr.rec.ondataavailable = ev => { if (ev.data && ev.data.size) gr.partes.push(ev.data); };
   gr.rec.onstop = () => {
+    if (!gr) return;
     gr.blob = new Blob(gr.partes, { type: (gr.rec.mimeType || tipo || 'video/mp4').split(';')[0] });
     gr.seg = (Date.now() - gr.t0) / 1000;
     apagarCamara(); mostrarRevision();
   };
   gr.rec.start(1000); gr.t0 = Date.now();
+  gr.el.classList.add('grabando');
   const reloj = gr.el.querySelector('.gr-reloj'); reloj.hidden = false; reloj.textContent = '0:00';
   gr.timer = setInterval(() => {
     const s = (Date.now() - gr.t0) / 1000; reloj.textContent = duracion(s);
@@ -564,70 +573,128 @@ function empezarGrabacion() {
   }, 250);
   piesGrabador(`<span class="gr-lado"></span><button class="gr-rec grabando" data-gr="parar" aria-label="Terminar"><i></i></button><span class="gr-lado"></span>`);
 }
-function pararGrabacion() { clearInterval(gr.timer); gr.el.querySelector('.gr-reloj').hidden = true; if (gr.rec?.state === 'recording') gr.rec.stop(); }
+function pararGrabacion() {
+  clearInterval(gr.timer); gr.el.classList.remove('grabando'); gr.el.querySelector('.gr-reloj').hidden = true;
+  if (gr.rec?.state === 'recording') gr.rec.stop();
+}
 
 function mostrarRevision(deGaleria) {
+  gr.el.classList.add('revisando');
   const v = gr.el.querySelector('.gr-ver');
   gr.el.querySelector('.gr-vivo').hidden = true;
   if (gr.url) URL.revokeObjectURL(gr.url);
-  gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false;
+  gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false; v.controls = true;
   v.onloadedmetadata = () => { if (isFinite(v.duration)) gr.seg = v.duration; };
   const mb = gr.blob.size / 1048576;
-  msgGrabador(mb > 380 ? 'Este video es muy pesado para subirlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
-  piesGrabador(`${deGaleria ? `<button class="secundario" data-gr="cerrar">Cancelar</button>` : `<button class="secundario" data-gr="otra">Grabar de nuevo</button>`}
-    ${mb > 380 ? '' : `<button class="primario" data-gr="enviar">${ICONO.enviar}Mandar a Andy</button>`}`);
+  msgGrabador(mb > 380 ? 'Este video es muy pesado para mandarlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
+  piesGrabador(`<button class="gr-texto" data-gr="${deGaleria ? 'cerrar' : 'otra'}">${deGaleria ? 'Cancelar' : 'Grabar de nuevo'}</button>
+    ${mb > 380 ? '' : `<button class="gr-mandar" data-gr="enviar" aria-label="Mandar a Andy">${ICONO.mandar}</button>`}`);
 }
 
-async function accionGrabador(a) {
+function accionGrabador(a) {
   if (!gr) return;
-  if (a === 'cerrar') { if (gr.subiendo && !confirmarCierre()) return; cerrarGrabador(); }
+  if (a === 'cerrar') cerrarGrabador();
   else if (a === 'reintentar') prenderCamara();
   else if (a === 'girar') { gr.cam = gr.cam === 'user' ? 'environment' : 'user'; prenderCamara(); }
   else if (a === 'grabar') empezarGrabacion();
   else if (a === 'parar') pararGrabacion();
   else if (a === 'otra') { gr.blob = null; prenderCamara(); }
-  else if (a === 'enviar') subirVideo();
+  else if (a === 'enviar') mandarVideo();
 }
-function confirmarCierre() { return gr.el.querySelector('.gr-pie').dataset.salir === '1' || (gr.el.querySelector('.gr-pie').dataset.salir = '1', msgGrabador('El video se está subiendo. Si cerrás ahora, se corta. Tocá la × de nuevo para cerrar igual.'), false); }
 function cerrarGrabador() {
   if (!gr) return;
   clearInterval(gr.timer); if (gr.rec?.state === 'recording') { gr.rec.onstop = null; gr.rec.stop(); }
-  apagarCamara(); if (gr.url) URL.revokeObjectURL(gr.url);
+  apagarCamara(); const v = gr.el.querySelector('.gr-ver'); if (v) v.pause();
+  if (gr.url) URL.revokeObjectURL(gr.url);
   gr.el.remove(); document.body.classList.remove('con-grabador'); gr = null;
 }
 
-async function subirVideo() {
-  const blob = gr.blob, pasoId = gr.pasoId;
-  gr.subiendo = true; msgGrabador('');
-  const barra = p => piesGrabador(`<div class="gr-subida"><div class="gr-barra"><i style="width:${Math.round(p * 100)}%"></i></div>
-    <p>Mandando el video… ${Math.round(p * 100)}%<br><small>No cierres esta pantalla hasta que termine.</small></p></div>`);
-  barra(0);
+/* ---------- Mandar: el grabador se cierra y el video se sube solo ---------- */
+function mandarVideo() {
+  const item = { id: 'v' + Date.now().toString(36), codigo: ST.codigo, pasoId: gr.pasoId, blob: gr.blob, mime: gr.blob.type || 'video/mp4', seg: Math.round(gr.seg || 0), t: hoyISO() };
+  cerrarGrabador();
+  if (modo !== 'alumno') { aviso('Vista de prueba: el video no se manda'); return; }
+  const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
+  pr.envio = true;
+  guardarAlumno();
+  COLA.push(item); colaGuardar(item);
+  renderAlumno();
+  procesarCola();
+}
+
+// Videos esperando para subir (en memoria y guardados en el celu)
+const COLA = [];
+let subiendo = null;          // { item, p } mientras sube
+function pendientes(pasoId) { return COLA.filter(x => x.pasoId === pasoId && x.codigo === ST?.codigo); }
+
+async function procesarCola() {
+  if (subiendo || !COLA.length || modo !== 'alumno' || !ST) return;
+  const item = COLA.find(x => x.codigo === ST.codigo); if (!item) return;
+  subiendo = { item, p: 0, error: '' }; pintarSubida();
   try {
     let id;
-    if (!API_URL || modo !== 'alumno') { if (modo !== 'alumno') aviso('Vista de prueba: el video no se manda'); for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 120)); barra(k / 10); } id = 'demo-' + Date.now(); }
+    if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 250)); subiendo.p = k / 10; pintarSubida(); } id = 'demo-' + Date.now(); }
     else {
-      const mime = blob.type || 'video/mp4';
-      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: pasoId, mime, tam: blob.size });
-      id = await subirPorPartes(url, blob, mime, barra);
+      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size });
+      id = await subirPorPartes(url, item.blob, p => { subiendo.p = p; pintarSubida(); });
     }
-    if (!gr) return;
-    const pr = ST.prog[pasoId] || (ST.prog[pasoId] = {});
-    pr.videos = [...(pr.videos || []), { id, t: hoyISO(), seg: Math.round(gr.seg || 0) }];
+    const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
+    pr.videos = [...(pr.videos || []), { id, t: item.t, seg: item.seg }];
     pr.envio = true;
     guardarAlumno();
-    piesGrabador(`<div class="gr-subida listo">${ICONO.check}<p><strong>¡Listo! Andy ya tiene tu video.</strong></p></div>`);
-    gr.subiendo = false;
-    setTimeout(() => { cerrarGrabador(); renderAlumno(); }, 1600);
+    COLA.splice(COLA.indexOf(item), 1); colaBorrar(item.id);
+    subiendo = null; pintarSubida(true);
+    if (abierto === item.pasoId) renderAlumno();
+    setTimeout(procesarCola, 400);
   } catch (e) {
-    if (!gr) return;
-    gr.subiendo = false;
-    msgGrabador(/permiso|autoriz|UrlFetch/i.test(e.message || '') ? 'No se pudo mandar el video por un problema del aula. Mandáselo a Andy por WhatsApp y avisale, así lo arregla.' : /Acción desconocida/.test(e.message || '') ? 'Todavía no se pueden mandar videos desde acá. Por ahora mandáselo a Andy por WhatsApp.' : (e.message || 'No se pudo mandar el video.'));
-    piesGrabador(`<button class="secundario" data-gr="cerrar">Cancelar</button><button class="primario" data-gr="enviar">Volver a intentar</button>`);
+    const m = e.message || '';
+    subiendo.error = /permiso|autoriz|UrlFetch/i.test(m) ? 'No se pudo mandar el video por un problema del aula. Avisale a Andy.'
+      : /Acción desconocida/.test(m) ? 'Todavía no se pueden mandar videos desde acá.'
+      : 'Se cortó la conexión. Lo vuelvo a intentar solo.';
+    pintarSubida();
+    const reintentar = /cortó|conexión|conectar/i.test(subiendo.error);
+    subiendo = reintentar ? null : subiendo;
+    if (reintentar) setTimeout(procesarCola, 8000);
   }
+}
+// Cartelito abajo con el avance, como el «enviando» de WhatsApp (se puede seguir usando el aula)
+function pintarSubida(listo) {
+  let el = document.getElementById('subida');
+  if (!el) { el = document.createElement('div'); el.id = 'subida'; el.className = 'subida-pill'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+  clearTimeout(el._t);
+  if (listo) { el.className = 'subida-pill ok'; el.innerHTML = `${ICONO.check}<span>Video enviado a Andy</span>`; el._t = setTimeout(() => el.remove(), 2600); return; }
+  if (!subiendo) { el.remove(); return; }
+  const pct = Math.round(subiendo.p * 100), mas = COLA.length > 1 ? ` (${COLA.length})` : '';
+  el.className = 'subida-pill' + (subiendo.error ? ' error' : '');
+  el.innerHTML = subiendo.error ? `<span>${esc(subiendo.error)}</span><button class="link" data-reintentar-subida>Reintentar</button>`
+    : `<span class="sp-anillo" style="--p:${pct}"></span><span>Mandando video${mas}… ${pct}%</span>`;
+  const b = el.querySelector('[data-reintentar-subida]'); if (b) b.onclick = () => { subiendo = null; procesarCola(); };
+}
+window.addEventListener('online', () => procesarCola());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') procesarCola(); });
+
+// Guardado en el celu (IndexedDB) para retomar si se cierra el aula a mitad de la subida
+function colaDB() {
+  return new Promise((ok, mal) => {
+    if (!window.indexedDB) return mal(new Error('sin IndexedDB'));
+    const r = indexedDB.open('aulaAE', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('subidas', { keyPath: 'id' });
+    r.onsuccess = () => ok(r.result); r.onerror = () => mal(r.error);
+  });
+}
+async function colaGuardar(item) { try { const db = await colaDB(); db.transaction('subidas', 'readwrite').objectStore('subidas').put(item); } catch (e) {} }
+async function colaBorrar(id) { try { const db = await colaDB(); db.transaction('subidas', 'readwrite').objectStore('subidas').delete(id); } catch (e) {} }
+async function reanudarSubidas() {
+  try {
+    const db = await colaDB();
+    const todos = await new Promise((ok, mal) => { const q = db.transaction('subidas').objectStore('subidas').getAll(); q.onsuccess = () => ok(q.result || []); q.onerror = () => mal(q.error); });
+    todos.forEach(x => { if (!COLA.some(y => y.id === x.id)) COLA.push(x); });
+  } catch (e) {}
+  procesarCola();
 }
 
 // Subida en partes de 8 MB directo a Drive (si se corta la señal, se reintenta la parte que faltaba)
-function subirPorPartes(url, blob, mime, progreso) {
+function subirPorPartes(url, blob, progreso) {
   const PARTE = 8 * 1024 * 1024;
   const mandar = (desde, intento) => new Promise((ok, mal) => {
     const hasta = Math.min(desde + PARTE, blob.size);
@@ -639,9 +706,9 @@ function subirPorPartes(url, blob, mime, progreso) {
       if (x.status === 200 || x.status === 201) { try { ok(JSON.parse(x.responseText).id); } catch (e) { ok(''); } }
       else if (x.status === 308) mandar(hasta, 0).then(ok, mal);
       else if (intento < 3) setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 1500 * (intento + 1));
-      else mal(new Error('Se cortó la subida. Revisá la conexión y tocá «Volver a intentar».'));
+      else mal(new Error('Se cortó la conexión mientras subía el video.'));
     };
-    x.onerror = () => intento < 3 ? setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 2000 * (intento + 1)) : mal(new Error('Se cortó la conexión mientras subía el video. Tocá «Volver a intentar».'));
+    x.onerror = () => intento < 3 ? setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 2000 * (intento + 1)) : mal(new Error('Se cortó la conexión mientras subía el video.'));
     x.send(blob.slice(desde, hasta));
   });
   return mandar(0, 0);

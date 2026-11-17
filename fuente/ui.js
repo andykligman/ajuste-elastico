@@ -136,6 +136,7 @@ function abrirMapa(alumno) {
   ST = alumno; modo = 'alumno'; abierto = null;
   nav(location.pathname);
   renderAlumno(true);
+  reanudarSubidas();   // si quedó un video a medio mandar, sigue solo
 }
 async function entrarConSesion() {
   try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
@@ -170,31 +171,55 @@ async function abrirAdmin() {
 }
 
 const ORDEN_TIPO = { meterle: 0, bien: 1, adelantado: 2, pausa: 3, m2: 4 };
+let videoSel = null;   // 'paso:índice' del video que se está mirando en el panel
+
+function todosLosVideos(a) {
+  return Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid]);
+}
 function renderAdmin() {
-  const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
-  const sel = elegido && LISTA.find(a => a.codigo === elegido);
+  const sel = elegido && elegido !== '__nuevo' && LISTA.find(a => a.codigo === elegido);
   app().innerHTML = `${barra('Andy')}
-  <main class="admin">
+  <main class="admin ${sel || elegido === '__nuevo' ? 'admin-una' : ''}">
+    ${sel ? alumnoAdmHTML(sel) : elegido === '__nuevo' ? `<button class="link volver-adm" data-adm="volver">← Todos los alumnos</button>${nuevoHTML()}` : inicioAdmHTML()}
+  </main>`;
+  enlazarAdmin();
+}
+
+/* Inicio del panel: primero los videos para ver, después todos los alumnos */
+function inicioAdmHTML() {
+  const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
+  const nuevos = LISTA.flatMap(a => todosLosVideos(a).filter(x => !x.v.visto).map(x => ({ ...x, a })))
+    .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
+  return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
+      <button class="secundario" data-adm="actualizar">Actualizar</button>
+      <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
+      <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+    <section class="por-ver">
+      <h2>Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
+      ${nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
+          <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
+          <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
+        </button>`).join('')}</div>` : `<p class="suave">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`}
+    </section>
     <section class="lista">
-      <div class="lista-cab"><h1>Alumnos</h1><span class="lista-botones"><button class="secundario" data-adm="prueba" title="Recorré el mapa como un alumno nuevo. No se guarda nada.">Ver como alumno</button><button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+      <h2>Alumnos</h2>
       <table>
         <thead><tr><th>Alumno</th><th>Próxima</th><th>Estado</th><th>Nivel</th><th>Último movimiento</th></tr></thead>
         <tbody>${filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
-          return `<tr class="${sel && sel.codigo === a.codigo ? 'sel' : ''}" data-elegir="${esc(a.codigo)}" tabindex="0">
-            <td><strong>${esc(a.nombre)}</strong>${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}</td>
+          return `<tr data-elegir="${esc(a.codigo)}" tabindex="0">
+            <td><strong>${esc(a.nombre)}</strong>${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
             <td class="nw">${e.k <= 4 ? 'Clase ' + e.k : 'Módulo 2'}</td>
             <td><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></td>
             <td>${a.nivel}</td>
             <td class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</td>
-          </tr>`; }).join('')}</tbody>
+          </tr>`; }).join('') || '<tr><td colspan="5" class="suave">Todavía no hay alumnos.</td></tr>'}</tbody>
       </table>
-    </section>
-    <section class="detalle">${sel ? detalleHTML(sel) : elegido === '__nuevo' ? nuevoHTML() : '<p class="suave vacio">Elegí un alumno para ver su avance, ajustar el nivel o copiar el mensaje de lo que sigue.</p>'}</section>
-  </main>`;
-  enlazarAdmin();
+    </section>`;
 }
+const ICONO_PLAY = '<svg class="tv-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.55)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>';
+function miniDrive(id) { return String(id).startsWith('demo-') ? '' : `<img src="https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w400" alt="" loading="lazy" onerror="this.remove()">`; }
 
 function haceTanto(f) { const d = diasDesde(f); return d === 0 ? 'hoy' : d === 1 ? 'ayer' : `hace ${d} días`; }
 
@@ -210,23 +235,51 @@ function nuevoHTML() {
   </form>`;
 }
 
-function detalleHTML(a) {
+/* Página de un alumno: arriba el video para ver (izquierda) y el mensaje de lo que sigue (derecha) */
+function alumnoAdmHTML(a) {
   const e = estado(a);
-  const msg = mensajeWhatsApp(a, linkMapa());
-  const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
-  return `<div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
+  return `<div class="adm-top"><button class="link volver-adm" data-adm="volver">← Todos los alumnos</button><button class="secundario" data-adm="ver">Ver su aula</button></div>
+  <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
-
-  ${accesoHTML(a)}
-
-  <div class="mensaje">
-    <div class="mensaje-cab"><h3>Mensaje de lo que sigue</h3>
+  <section class="revision" id="revision">${revisionHTML(a)}</section>
+  <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
+}
+function videoActual(a) {
+  const l = todosLosVideos(a).sort((x, y) => (x.v.visto ? 1 : 0) - (y.v.visto ? 1 : 0) || String(y.v.t).localeCompare(String(x.v.t)));
+  return { l, cur: l.find(x => `${x.pid}:${x.i}` === videoSel) || l[0] };
+}
+function revisionHTML(a) {
+  const { l, cur } = videoActual(a);
+  if (!cur) return `<div class="rev-vacio"><p class="suave">Todavía no mandó videos desde el aula.</p></div><div class="rev-msg" id="revMsg">${mensajeAdmHTML(a, null)}</div>`;
+  const p = PASO[cur.pid], pr = a.prog[cur.pid] || {}, op = opcionElegida(a, p);
+  return `<div class="rev-video">
+      <div class="rev-cab"><p class="rev-paso"><strong>${esc(p.titulo)}</strong><span class="suave">${fechaCorta(cur.v.t)}${cur.v.seg ? ' · ' + duracion(cur.v.seg) : ''}</span></p>
+        ${cur.v.visto ? `<span class="visto">${ICONO.check}Ya lo viste</span>` : `<button class="primario" data-adm="visto">Listo, ya lo vi</button>`}</div>
+      <div class="rev-player">${String(cur.v.id).startsWith('demo-') ? '<p class="suave">Video de prueba (modo demo)</p>' : `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(cur.v.id)}/preview" allow="autoplay; fullscreen" allowfullscreen title="Video de ${esc(a.nombre)}"></iframe>`}</div>
+      <p class="suave chico">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>
+      <div class="rev-info">
+        ${p.envia ? `<p><span class="suave">Le pediste:</span> ${esc(p.envia)}</p>` : ''}
+        ${op && !p.sinProgreso ? `<p><span class="suave">Cómo le fue:</span> ${esc(op.label)}</p>` : ''}
+        <p><a class="link" href="https://drive.google.com/file/d/${encodeURIComponent(cur.v.id)}/view" target="_blank" rel="noopener">Abrir en Drive</a></p>
+      </div>
+      ${l.length > 1 ? `<div class="rev-otros"><h4>Sus videos</h4><div>${l.map(x => `<button class="chip-video ${x === cur ? 'sel' : ''} ${x.v.visto ? '' : 'nuevo'}" data-video-sel="${x.pid}:${x.i}">${esc(PASO[x.pid].titulo)} <small>${fechaCorta(x.v.t)}${x.v.visto ? '' : ' · nuevo'}</small></button>`).join('')}</div></div>` : ''}
+    </div>
+    <div class="rev-msg" id="revMsg">${mensajeAdmHTML(a, cur.pid)}</div>`;
+}
+function mensajeAdmHTML(a, pasoVideo) {
+  const msg = mensajeWhatsApp(a, linkMapa(), pasoVideo);
+  return `<div class="mensaje">
+    <div class="mensaje-cab"><h3>Mensaje para ${esc(a.nombre.split(' ')[0])}</h3>
       <span><button class="secundario" data-adm="copiar">Copiar</button>
-      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir en WhatsApp</a></span></div>
-    <textarea id="msg" rows="10">${esc(msg)}</textarea>
-    <p class="suave chico">Podés editarlo antes de copiar. Sale de lo que le falta según su nivel, de tu nota y de las tareas personalizadas.</p>
-  </div>
-
+      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}" data-wa>WhatsApp</a></span></div>
+    <textarea id="msg" rows="12">${esc(msg)}</textarea>
+    <p class="suave chico">${pasoVideo ? 'Escribí tu devolución en el espacio de arriba. Abajo va' : 'Va'} solo el paso que sigue según su nivel (o la próxima tarea personalizada).</p>
+  </div>`;
+}
+function restoHTML(a) {
+  const e = estado(a);
+  const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
+  return `${accesoHTML(a)}
   <div class="ajustes form-admin">
     <label>Nivel
       <span class="segmentado">${[1, 2, 3].map(n => `<button data-nivel="${n}" class="${a.nivel === n ? 'sel' : ''}" aria-pressed="${a.nivel === n}">${n}</button>`).join('')}</span></label>
@@ -246,7 +299,6 @@ function detalleHTML(a) {
     <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>
   </div>
 
-  ${videosAdmHTML(a)}
   ${probs.length ? `<div class="bloque"><h3>Problemas que marcó</h3><ul class="probs-adm">${probs.map(x => `<li><span class="suave">${esc(PASO[x.pid].titulo)}:</span> ${esc(x.q.q)}</li>`).join('')}</ul></div>` : ''}
 
   <div class="bloque">
@@ -256,7 +308,7 @@ function detalleHTML(a) {
   </div>
 
   <div class="bloque links-adm">
-    <button class="secundario" data-adm="ver">Ver su mapa</button>
+    <button class="secundario" data-adm="ver">Ver su aula</button>
     <button class="link suave" data-adm="borrar">Borrar alumno</button>
   </div>`;
 }
@@ -277,9 +329,11 @@ function accesoHTML(a) {
 }
 
 let timerAdm = null;
+function refrescarMensaje(a) { const m = $('#revMsg'); if (m) m.innerHTML = mensajeAdmHTML(a, videoActual(a).cur?.pid || null); }
 function guardarAdm(a, rerender = true) {
   aviso('Guardando…');
-  if (rerender) renderAdmin();
+  // Solo se redibuja la parte de abajo: el video y el mensaje que estás escribiendo no se tocan
+  if (rerender) { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(a); enlazarAdmin(); } else renderAdmin(); }
   clearTimeout(timerAdm);
   timerAdm = setTimeout(async () => {
     try { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); aviso('Guardado'); }
@@ -292,11 +346,24 @@ function enlazarAdmin() {
   const a = LISTA.find(x => x.codigo === elegido);
   root.onclick = async ev => {
     const tr = ev.target.closest('tr[data-elegir]');
-    if (tr) { elegido = tr.dataset.elegir; renderAdmin(); if (window.innerWidth < 900) $('.detalle').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); return; }
+    if (tr) { elegido = tr.dataset.elegir; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
+    const wa = ev.target.closest('a[data-wa]');
+    if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
     if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
-    if (d.verVideo && a) { const [pid, i] = d.verVideo.split(':'); verVideoAdmin(a, pid, +i, () => guardarAdm(a)); return; }
+    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
+    if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.adm === 'actualizar') { b.textContent = 'Actualizando…'; abrirAdmin(); return; }
+    if (d.adm === 'visto' && a) {
+      const { cur } = videoActual(a); if (!cur) return;
+      cur.v.visto = true;
+      const sig = todosLosVideos(a).find(x => !x.v.visto);
+      if (sig) videoSel = `${sig.pid}:${sig.i}`; else videoSel = `${cur.pid}:${cur.i}`;
+      $('#revision').innerHTML = revisionHTML(a);
+      guardarAdm(a, false); return;
+    }
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
@@ -306,12 +373,12 @@ function enlazarAdmin() {
     }
     else if (d.adm === 'ver') { ST = JSON.parse(JSON.stringify(a)); modo = 'admin-vista'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); }
     else if (d.adm === 'borrar') {
-      if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; renderAdmin(); }
+      if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; videoSel = null; renderAdmin(); }
       else { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo para borrar'; }
     }
     else if (d.nivel) { a.nivel = +d.nivel; guardarAdm(a); }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
-    else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); }
+    else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
       const id = d.admTilde; if (a.prog[id] && a.prog[id].hecho) delete a.prog[id]; else a.prog[id] = { hecho: true, como: 'listo', t: hoyISO() };
       guardarAdm(a);
@@ -332,14 +399,14 @@ function enlazarAdmin() {
     nuevo.codigo = codigoNuevo(nuevo.nombre);
     try {
       const r = await llamar('admin.crear', { clave: claveAdmin, alumno: nuevo });
-      LISTA.push(r.alumno); elegido = nuevo.codigo; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
+      LISTA.push(r.alumno); elegido = nuevo.codigo; videoSel = null; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
     } catch (e) { aviso(e.message, true); }
   };
   const fe = $('#formExtra');
   if (fe) fe.onsubmit = ev => {
     ev.preventDefault(); const f = new FormData(fe);
     a.extras = a.extras || []; a.extras.push({ id: 'x' + Date.now().toString(36), titulo: f.get('titulo').trim(), detalle: f.get('detalle').trim(), hecho: false });
-    guardarAdm(a);
+    guardarAdm(a); refrescarMensaje(a);
   };
 }
 
@@ -362,10 +429,3 @@ window.addEventListener('resize', () => {
   TOKEN ? entrarConSesion() : renderEntrada();
 })();
 
-function videosAdmHTML(a) {
-  const l = Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid])
-    .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
-  if (!l.length) return '';
-  return `<div class="bloque"><h3>Videos que mandó</h3><ul class="vids-adm">${l.map(({ pid, v, i }) => `<li class="${v.visto ? '' : 'nuevo'}">
-    <button class="link" data-ver-video="${pid}:${i}">${esc(PASO[pid].titulo)}</button><span class="suave">${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}${v.visto ? '' : ' · nuevo'}</span></li>`).join('')}</ul></div>`;
-}

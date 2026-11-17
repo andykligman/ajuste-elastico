@@ -81,20 +81,22 @@ function posicion(st) {
 }
 
 /* Mensaje de WhatsApp en el estilo de Andy */
-function mensajeWhatsApp(st, link) {
-  const { e, lista } = recomendaciones(st, 4);
+/* Mensaje corto para WhatsApp: (si viene de un video) lugar para la devolución + solo el paso que sigue */
+function mensajeWhatsApp(st, link, pasoVideo) {
+  const { e, lista } = recomendaciones(st, 3);
   const nombre = (st.nombre || '').split(' ')[0];
-  const cab = e.k >= MAX_K ? `${nombre}! Te dejo pasos a seguir 🙌` : `${nombre}! Te dejo pasos a seguir para la clase ${e.k} 🙌`;
-  const items = [];
-  (st.extras || []).filter(x => !x.hecho).forEach(x => items.push(`${x.titulo}${x.detalle ? '\n' + x.detalle : ''}`));
-  lista.forEach(r => {
+  const limpio = t => String(t || '').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1: $2');
+  let txt = pasoVideo && PASO[pasoVideo] ? `${nombre}! Ya vi tu video de «${PASO[pasoVideo].titulo}».\n\n\n\n` : `${nombre}! `;
+  const extra = (st.extras || []).find(x => !x.hecho);
+  const r = lista.find(x => x.id !== pasoVideo || x.motivo === 'seguir');
+  if (extra) txt += `Lo que sigue: ${extra.titulo}${extra.detalle ? '\n' + extra.detalle : ''}`;
+  else if (r) {
     const p = PASO[r.id];
-    const icono = p.entrega === 'audio' ? '🎧' : '📹';
-    items.push(`${p.titulo}${r.motivo === 'seguir' ? ' (seguimos con esto)' : ''}\n${p.detalle}${p.entrega ? `\nMandar ${p.entrega} ${icono}` : ''}`);
-  });
-  let txt = cab + '\n\n' + items.slice(0, 4).map((t, i) => `${i + 1}) ${t}`).join('\n\n');
+    txt += `${r.motivo === 'seguir' ? 'Seguimos con' : 'Lo que sigue'}: ${p.titulo}\n${limpio(p.detalle)}`;
+    if (p.entrega) txt += `\n\nCuando lo tengas, mandame ${p.envia || 'el ' + p.entrega} ${p.entrega === 'audio' ? '🎧' : '📹'}`;
+  } else txt += e.k >= MAX_K ? 'Ya tenés todo lo del módulo 1 🙌' : `Ya tenés todo lo que hace falta para la clase ${e.k} 🙌`;
   if (st.nota) txt += '\n\n' + st.nota;
-  if (link) txt += `\n\nEn tu mapa vas tildando lo que hacés: ${link}`;
+  if (link) txt += `\n\nEn el aula tenés el paso con el video: ${link}`;
   return txt;
 }
 
