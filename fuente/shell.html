@@ -8,7 +8,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ajuste Elástico">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#141518">
+<meta name="theme-color" content="#111214">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="iconos/icono-192.png">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
@@ -143,6 +146,12 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
   .fila-extra{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.instalar-app{display:flex;align-items:center;gap:12px;margin:0 0 22px;padding:12px 14px;background:var(--sup);border:1px solid var(--linea);border-radius:14px}
+.instalar-app img{width:40px;height:40px;border-radius:10px;flex:none}
+.instalar-app p{margin:0;flex:1;font-size:15px;line-height:1.35;color:var(--gris)}
+.instalar-app p b{color:var(--tinta);display:block;font-size:15.5px}
+.instalar-app a,.instalar-app button.ia-si{flex:none;font:600 14.5px var(--sans);color:var(--fondo);background:var(--tinta);border:0;border-radius:10px;padding:8px 12px;text-decoration:none}
+.instalar-app .ia-no{flex:none;background:none;border:0;color:var(--gris);font-size:20px;line-height:1;padding:4px}
 </style>
 </head>
 <body>

@@ -233,6 +233,7 @@ function vistaHTML(st, e, animar) {
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
+    ${instalarAppHTML()}
     ${caminoHTML(st, e)}
     <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>
     ${barraClaseHTML(st, e)}`;
@@ -428,6 +429,8 @@ function enlazarAlumno() {
     } else if (d.accion === 'clase-no') renderAlumno();
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'instalar-app' && avisoInstalar) { avisoInstalar.prompt(); avisoInstalar.userChoice.finally(() => { avisoInstalar = null; renderAlumno(); }); }
+    else if (d.accion === 'no-instalar') { try { localStorage.setItem('mapaAE_sinInstalar', '1'); } catch (e) {} renderAlumno(); }
     else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }
     else if (d.accion === 'salir') salir();
     else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
@@ -457,3 +460,17 @@ function confeti(origen) {
   })();
 }
 function enfocar(sel) { requestAnimationFrame(() => { const el = $(sel); el && el.focus({ preventScroll: true }); }); }
+
+/* Invitar a instalar el aula como app en el celu (solo en celular, si no está instalada) */
+let avisoInstalar = null;
+window.addEventListener('beforeinstallprompt', ev => { ev.preventDefault(); avisoInstalar = ev; if (ST && modo === 'alumno') renderAlumno(); });
+function instalarAppHTML() {
+  const enApp = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+  const celu = /iPhone|iPad|iPod|Android/.test(navigator.userAgent);
+  let cerrado = false; try { cerrado = localStorage.getItem('mapaAE_sinInstalar') === '1'; } catch (e) {}
+  if (enApp || !celu || cerrado || modo !== 'alumno') return '';
+  return `<div class="instalar-app"><img src="iconos/icono-192.png" alt="">
+    <p><b>Tené el aula como app en tu celu</b>Queda un ícono y no tenés que volver a entrar.</p>
+    ${avisoInstalar ? `<button class="ia-si" data-accion="instalar-app">Instalar</button>` : `<a href="instalar.html">Ver cómo</a>`}
+    <button class="ia-no" data-accion="no-instalar" aria-label="Cerrar">×</button></div>`;
+}

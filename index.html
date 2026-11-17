@@ -8,7 +8,10 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ajuste Elástico">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#141518">
+<meta name="theme-color" content="#111214">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="iconos/icono-192.png">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
@@ -378,6 +381,12 @@ body:has(.barra-clase) #aviso{bottom:104px}
   .fila-extra{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.instalar-app{display:flex;align-items:center;gap:12px;margin:0 0 22px;padding:12px 14px;background:var(--sup);border:1px solid var(--linea);border-radius:14px}
+.instalar-app img{width:40px;height:40px;border-radius:10px;flex:none}
+.instalar-app p{margin:0;flex:1;font-size:15px;line-height:1.35;color:var(--gris)}
+.instalar-app p b{color:var(--tinta);display:block;font-size:15.5px}
+.instalar-app a,.instalar-app button.ia-si{flex:none;font:600 14.5px var(--sans);color:var(--fondo);background:var(--tinta);border:0;border-radius:10px;padding:8px 12px;text-decoration:none}
+.instalar-app .ia-no{flex:none;background:none;border:0;color:var(--gris);font-size:20px;line-height:1;padding:4px}
 </style>
 </head>
 <body>
@@ -1214,6 +1223,7 @@ function vistaHTML(st, e, animar) {
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
+    ${instalarAppHTML()}
     ${caminoHTML(st, e)}
     <p class="pie">Lo que marcás se guarda solo. Andy lo ve antes de cada clase.</p>
     ${barraClaseHTML(st, e)}`;
@@ -1409,6 +1419,8 @@ function enlazarAlumno() {
     } else if (d.accion === 'clase-no') renderAlumno();
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'instalar-app' && avisoInstalar) { avisoInstalar.prompt(); avisoInstalar.userChoice.finally(() => { avisoInstalar = null; renderAlumno(); }); }
+    else if (d.accion === 'no-instalar') { try { localStorage.setItem('mapaAE_sinInstalar', '1'); } catch (e) {} renderAlumno(); }
     else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }
     else if (d.accion === 'salir') salir();
     else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
@@ -1438,6 +1450,20 @@ function confeti(origen) {
   })();
 }
 function enfocar(sel) { requestAnimationFrame(() => { const el = $(sel); el && el.focus({ preventScroll: true }); }); }
+
+/* Invitar a instalar el aula como app en el celu (solo en celular, si no está instalada) */
+let avisoInstalar = null;
+window.addEventListener('beforeinstallprompt', ev => { ev.preventDefault(); avisoInstalar = ev; if (ST && modo === 'alumno') renderAlumno(); });
+function instalarAppHTML() {
+  const enApp = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone;
+  const celu = /iPhone|iPad|iPod|Android/.test(navigator.userAgent);
+  let cerrado = false; try { cerrado = localStorage.getItem('mapaAE_sinInstalar') === '1'; } catch (e) {}
+  if (enApp || !celu || cerrado || modo !== 'alumno') return '';
+  return `<div class="instalar-app"><img src="iconos/icono-192.png" alt="">
+    <p><b>Tené el aula como app en tu celu</b>Queda un ícono y no tenés que volver a entrar.</p>
+    ${avisoInstalar ? `<button class="ia-si" data-accion="instalar-app">Instalar</button>` : `<a href="instalar.html">Ver cómo</a>`}
+    <button class="ia-no" data-accion="no-instalar" aria-label="Cerrar">×</button></div>`;
+}
 
 function barra(nombre) {
   return `<header class="barra">

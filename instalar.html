@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instalar el aula en el celu · Ajuste Elástico</title>
+<meta name="theme-color" content="#111214">
+<link rel="icon" href="iconos/icono-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--fondo:#111214;--sup:#1B1C20;--sup2:#24262B;--linea:#2E3036;--tinta:#EDEEF0;--gris:#A3A8B1;--naranja:#E8834F;--naranja-claro:#33241B;
+  --sans:'Source Sans 3',system-ui,sans-serif;--display:'Poppins',system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--sans);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:760px;margin:0 auto;padding:28px 20px 60px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.top img{width:52px;height:52px;border-radius:12px}
+.top p{margin:0;color:var(--gris);font-size:15px}
+.top strong{display:block;font-family:var(--display);font-weight:500;color:var(--tinta);font-size:16px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(26px,6vw,34px);line-height:1.15;margin:0 0 10px}
+.intro{color:var(--gris);margin:0 0 22px;max-width:56ch}
+.tabs{display:flex;gap:8px;margin:0 0 24px;padding:4px;background:var(--sup);border:1px solid var(--linea);border-radius:999px;width:max-content}
+.tabs button{font:600 15px var(--sans);color:var(--gris);background:none;border:0;padding:9px 18px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--tinta);color:var(--fondo)}
+.panel[hidden]{display:none}
+.aviso{background:var(--naranja-claro);border:1px solid rgba(232,131,79,.45);border-radius:12px;padding:12px 16px;margin:0 0 22px;font-size:16px}
+.aviso strong{color:var(--naranja)}
+ol.pasos{list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.paso{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;background:var(--sup);border:1px solid var(--linea);border-radius:16px;padding:18px}
+.paso svg{width:150px;height:auto;display:block}
+.num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--naranja);color:#111;font:600 15px var(--display);margin-bottom:8px}
+.paso h2{font:600 18px/1.3 var(--display);margin:0 0 4px}
+.paso p{margin:0;color:var(--gris)}
+.paso p b{color:var(--tinta);font-weight:600}
+.listo{margin-top:22px;display:flex;gap:16px;align-items:center;background:var(--sup);border:1px solid var(--linea);border-radius:16px;padding:18px}
+.listo img{width:60px;height:60px;border-radius:14px;flex:none}
+.listo p{margin:0;color:var(--gris)}
+.listo p b{color:var(--tinta)}
+.btn{display:inline-block;margin-top:24px;background:var(--tinta);color:var(--fondo);font:600 16px var(--sans);padding:12px 20px;border-radius:12px;text-decoration:none;border:0;cursor:pointer}
+#instalarYa{display:none;margin:0 0 22px}
+.pie{margin-top:28px;color:var(--gris);font-size:15px}
+@media (max-width:520px){
+  main{padding:22px 16px 48px}
+  .paso{grid-template-columns:118px 1fr;gap:14px;padding:14px}
+  .paso svg{width:118px}
+  .paso h2{font-size:16.5px}
+  .paso p{font-size:15.5px}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><img src="iconos/icono-192.png" alt=""><p><strong>Ajuste Elástico</strong>El aula, como app en tu celu</p></div>
+  <h1>Tené el aula en tu celu, como una app</h1>
+  <p class="intro">Queda un ícono en la pantalla del celu, se abre directo y no tenés que volver a poner la contraseña. Se hace una sola vez y tarda un minuto.</p>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-ios" aria-selected="true" data-panel="ios">iPhone</button>
+    <button role="tab" id="t-and" aria-selected="false" data-panel="and">Android</button>
+  </div>
+
+  <!-- iPhone -->
+  <section class="panel" id="ios" role="tabpanel" aria-labelledby="t-ios">
+    <p class="aviso"><strong>Importante:</strong> hacelo desde <b>Safari</b>, con el aula abierta en <b>andykligman.github.io/ajuste-elastico</b>.</p>
+    <ol class="pasos">
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="24" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><rect x="52" y="10" width="46" height="12" rx="6" fill="#0B0B0D"/>
+          <rect x="14" y="34" width="122" height="10" rx="3" fill="#2E3036"/><rect x="14" y="52" width="90" height="8" rx="3" fill="#2E3036"/><rect x="14" y="74" width="122" height="70" rx="8" fill="#24262B"/><rect x="14" y="154" width="110" height="8" rx="3" fill="#2E3036"/><rect x="14" y="168" width="80" height="8" rx="3" fill="#2E3036"/>
+          <rect x="10" y="252" width="130" height="34" rx="17" fill="#2A2C31"/><circle cx="26" cy="269" r="10" fill="#33363C"/><path d="M28 264l-5 5 5 5" stroke="#A3A8B1" stroke-width="2" fill="none"/>
+          <rect x="40" y="259" width="70" height="20" rx="10" fill="#33363C"/><text x="75" y="273" font-size="8" fill="#A3A8B1" text-anchor="middle" font-family="sans-serif">github.io</text>
+          <circle cx="126" cy="269" r="13" fill="#E8834F" opacity=".25"/><circle cx="126" cy="269" r="10" fill="#33363C" stroke="#E8834F" stroke-width="2"/><g fill="#EDEEF0"><circle cx="121" cy="269" r="1.6"/><circle cx="126" cy="269" r="1.6"/><circle cx="131" cy="269" r="1.6"/></g></svg>
+        <div><span class="num">1</span><h2>Tocá los tres puntitos</h2><p>Abajo a la derecha, en la barra de Safari. Si en tu Safari ves directamente el botón de <b>compartir</b> (un cuadrado con una flecha para arriba), tocá ese y pasá al paso 3.</p></div>
+      </li>
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="24" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><rect x="52" y="10" width="46" height="12" rx="6" fill="#0B0B0D"/>
+          <rect x="14" y="34" width="122" height="10" rx="3" fill="#2E3036"/><rect x="14" y="74" width="122" height="70" rx="8" fill="#24262B"/>
+          <rect x="40" y="150" width="100" height="96" rx="12" fill="#2F3238"/>
+          <rect x="44" y="156" width="92" height="24" rx="8" fill="#E8834F" opacity=".22" stroke="#E8834F" stroke-width="1.5"/>
+          <path d="M55 172v-9m0 0l-3.5 3.5m3.5-3.5l3.5 3.5M51 168h-1.5v7h11v-7H59" stroke="#EDEEF0" stroke-width="1.4" fill="none"/><text x="68" y="172" font-size="9" fill="#EDEEF0" font-family="sans-serif" font-weight="600">Compartir</text>
+          <rect x="50" y="188" width="70" height="6" rx="3" fill="#44474E"/><rect x="50" y="204" width="56" height="6" rx="3" fill="#44474E"/><rect x="50" y="220" width="64" height="6" rx="3" fill="#44474E"/>
+          <rect x="10" y="252" width="130" height="34" rx="17" fill="#2A2C31"/></svg>
+        <div><span class="num">2</span><h2>Tocá «Compartir»</h2><p>Es la primera opción del menú que se abre.</p></div>
+      </li>
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="24" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><rect x="52" y="10" width="46" height="12" rx="6" fill="#0B0B0D"/>
+          <rect x="2" y="110" width="146" height="188" rx="20" fill="#2A2C31"/><rect x="60" y="118" width="30" height="4" rx="2" fill="#4A4D54"/>
+          <g fill="#3A3D45"><circle cx="30" cy="146" r="12"/><circle cx="62" cy="146" r="12"/><circle cx="94" cy="146" r="12"/><circle cx="126" cy="146" r="12"/></g>
+          <rect x="12" y="172" width="126" height="20" rx="6" fill="#33363C"/><rect x="20" y="180" width="60" height="5" rx="2.5" fill="#55585F"/>
+          <rect x="12" y="196" width="126" height="20" rx="6" fill="#33363C"/><rect x="20" y="204" width="48" height="5" rx="2.5" fill="#55585F"/>
+          <rect x="10" y="222" width="130" height="26" rx="7" fill="#E8834F" opacity=".22" stroke="#E8834F" stroke-width="1.5"/>
+          <text x="20" y="239" font-size="9.5" fill="#EDEEF0" font-family="sans-serif" font-weight="600">Agregar a Inicio</text><rect x="120" y="228" width="13" height="13" rx="3" fill="none" stroke="#EDEEF0" stroke-width="1.4"/><path d="M126.5 231.5v6M123.5 234.5h6" stroke="#EDEEF0" stroke-width="1.4"/>
+          <rect x="12" y="254" width="126" height="20" rx="6" fill="#33363C"/><rect x="20" y="262" width="54" height="5" rx="2.5" fill="#55585F"/></svg>
+        <div><span class="num">3</span><h2>Bajá y tocá «Agregar a Inicio»</h2><p>Está en la lista de abajo; a veces hay que deslizar un poco para verlo. Si no aparece, tocá <b>«Ver más»</b> o <b>«Editar acciones»</b> al final.</p></div>
+      </li>
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="24" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><rect x="52" y="10" width="46" height="12" rx="6" fill="#0B0B0D"/>
+          <text x="16" y="44" font-size="9" fill="#A3A8B1" font-family="sans-serif">Cancelar</text><text x="134" y="44" font-size="9" fill="#EDEEF0" font-family="sans-serif" font-weight="700" text-anchor="end">Agregar</text>
+          <circle cx="125" cy="41" r="16" fill="none" stroke="#E8834F" stroke-width="1.8"/>
+          <rect x="12" y="60" width="126" height="56" rx="10" fill="#2A2C31"/><image href="iconos/icono-192.png" x="20" y="68" width="40" height="40"/><text x="68" y="86" font-size="9.5" fill="#EDEEF0" font-family="sans-serif" font-weight="600">Ajuste Elástico</text><text x="68" y="100" font-size="7.5" fill="#A3A8B1" font-family="sans-serif">andykligman.github.io</text>
+          <rect x="12" y="124" width="126" height="26" rx="8" fill="#2A2C31"/><text x="20" y="141" font-size="8.5" fill="#EDEEF0" font-family="sans-serif">Abrir como app web</text><rect x="110" y="130" width="22" height="13" rx="6.5" fill="#34C759"/><circle cx="125.5" cy="136.5" r="5.5" fill="#fff"/></svg>
+        <div><span class="num">4</span><h2>Tocá «Agregar»</h2><p>Arriba a la derecha. Dejá prendido <b>«Abrir como app web»</b> si te aparece.</p></div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Android -->
+  <section class="panel" id="and" role="tabpanel" aria-labelledby="t-and" hidden>
+    <button class="btn" id="instalarYa">Instalar el aula ahora</button>
+    <p class="aviso"><strong>Importante:</strong> hacelo desde <b>Chrome</b>, con el aula abierta en <b>andykligman.github.io/ajuste-elastico</b>. Si te aparece abajo un cartel que dice <b>«Instalar»</b>, tocalo y listo.</p>
+    <ol class="pasos">
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="20" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><circle cx="75" cy="14" r="4" fill="#0B0B0D"/>
+          <rect x="10" y="26" width="104" height="22" rx="11" fill="#2A2C31"/><text x="22" y="40" font-size="8" fill="#A3A8B1" font-family="sans-serif">github.io/ajuste…</text>
+          <circle cx="131" cy="37" r="12" fill="#E8834F" opacity=".25"/><circle cx="131" cy="37" r="9" fill="#33363C" stroke="#E8834F" stroke-width="2"/><g fill="#EDEEF0"><circle cx="131" cy="32.5" r="1.5"/><circle cx="131" cy="37" r="1.5"/><circle cx="131" cy="41.5" r="1.5"/></g>
+          <rect x="14" y="62" width="122" height="10" rx="3" fill="#2E3036"/><rect x="14" y="80" width="90" height="8" rx="3" fill="#2E3036"/><rect x="14" y="100" width="122" height="70" rx="8" fill="#24262B"/><rect x="14" y="180" width="110" height="8" rx="3" fill="#2E3036"/></svg>
+        <div><span class="num">1</span><h2>Tocá los tres puntitos</h2><p>Arriba a la derecha, al lado de la dirección.</p></div>
+      </li>
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="20" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><circle cx="75" cy="14" r="4" fill="#0B0B0D"/>
+          <rect x="10" y="26" width="104" height="22" rx="11" fill="#2A2C31"/>
+          <rect x="44" y="30" width="100" height="170" rx="10" fill="#2F3238"/>
+          <rect x="52" y="42" width="84" height="6" rx="3" fill="#44474E"/><rect x="52" y="60" width="70" height="6" rx="3" fill="#44474E"/><rect x="52" y="78" width="76" height="6" rx="3" fill="#44474E"/><rect x="52" y="96" width="60" height="6" rx="3" fill="#44474E"/>
+          <rect x="47" y="110" width="94" height="40" rx="7" fill="#E8834F" opacity=".22" stroke="#E8834F" stroke-width="1.5"/>
+          <text x="54" y="126" font-size="8.5" fill="#EDEEF0" font-family="sans-serif" font-weight="600">Agregar a la</text><text x="54" y="138" font-size="8.5" fill="#EDEEF0" font-family="sans-serif" font-weight="600">pantalla principal</text>
+          <rect x="52" y="162" width="66" height="6" rx="3" fill="#44474E"/><rect x="52" y="180" width="72" height="6" rx="3" fill="#44474E"/></svg>
+        <div><span class="num">2</span><h2>Tocá «Agregar a la pantalla principal»</h2><p>En algunos celulares dice <b>«Instalar app»</b>. Es lo mismo.</p></div>
+      </li>
+      <li class="paso">
+        <svg viewBox="0 0 150 300" aria-hidden="true"><rect x="2" y="2" width="146" height="296" rx="20" fill="#1B1C20" stroke="#3A3D45" stroke-width="2"/><circle cx="75" cy="14" r="4" fill="#0B0B0D"/>
+          <rect x="2" y="2" width="146" height="296" rx="20" fill="#000" opacity=".45"/>
+          <rect x="14" y="100" width="122" height="104" rx="14" fill="#2F3238"/>
+          <text x="26" y="122" font-size="9.5" fill="#EDEEF0" font-family="sans-serif" font-weight="700">Instalar app</text>
+          <image href="iconos/icono-192.png" x="26" y="132" width="28" height="28"/><text x="62" y="146" font-size="8.5" fill="#EDEEF0" font-family="sans-serif" font-weight="600">Ajuste Elástico</text><text x="62" y="157" font-size="7" fill="#A3A8B1" font-family="sans-serif">andykligman.github.io</text>
+          <text x="50" y="190" font-size="8.5" fill="#A3A8B1" font-family="sans-serif">Cancelar</text>
+          <rect x="94" y="178" width="36" height="18" rx="9" fill="#E8834F" opacity=".25" stroke="#E8834F" stroke-width="1.5"/><text x="112" y="190.5" font-size="8.5" fill="#EDEEF0" font-family="sans-serif" font-weight="700" text-anchor="middle">Instalar</text></svg>
+        <div><span class="num">3</span><h2>Tocá «Instalar»</h2><p>Si te da a elegir entre <b>«Instalar»</b> y <b>«Crear acceso directo»</b>, elegí <b>Instalar</b>.</p></div>
+      </li>
+    </ol>
+  </section>
+
+  <div class="listo"><img src="iconos/icono-192.png" alt=""><p><b>Listo.</b> Ahora vas a tener este ícono en el celu. Abrilo desde ahí y entrá <b>una vez más</b> con tu email y contraseña: a partir de ahí queda guardado.</p></div>
+  <a class="btn" href="./">Ir al aula</a>
+  <p class="pie">¿Te trabaste en algún paso? Mandale una captura a Andy por WhatsApp.</p>
+</main>
+<script>
+const esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const esAndroid = /Android/.test(navigator.userAgent);
+function mostrar(id) {
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.panel === id));
+  document.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== id);
+}
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => mostrar(b.dataset.panel));
+if (esAndroid) mostrar('and');
+// Android: si Chrome permite instalar, un solo botón
+let aviso = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); aviso = e;
+  const b = document.getElementById('instalarYa'); b.style.display = 'inline-block';
+  b.onclick = async () => { aviso.prompt(); await aviso.userChoice; aviso = null; b.style.display = 'none'; };
+});
+</script>
+</body>
+</html>
