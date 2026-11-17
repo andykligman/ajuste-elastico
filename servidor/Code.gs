@@ -4,14 +4,13 @@
  * Instalación (una sola vez):
  * 1. Crear una planilla de Google nueva, por ejemplo "Mapa Ajuste Elástico".
  * 2. Extensiones > Apps Script. Borrar lo que haya, pegar este archivo entero y guardar.
- * 3. Cambiar CLAVE_PANEL (abajo) por la clave que vas a usar para entrar al panel.
- * 4. Elegir la función `configurar` arriba y tocar "Ejecutar" (la primera vez pide permisos).
- * 5. Implementar > Nueva implementación > Tipo: Aplicación web.
+ * 3. Elegir la función `configurar` arriba y tocar "Ejecutar" (la primera vez pide permisos).
+ * 4. Implementar > Nueva implementación > Tipo: Aplicación web.
  *    Ejecutar como: Yo. Quién tiene acceso: Cualquier usuario.
- * 6. Copiar la URL que termina en /exec y pegarla en la página (const API_URL = '...').
+ * 5. Copiar la URL que termina en /exec y pegarla en la página (const API_URL = '...').
+ * La primera clave que se use para entrar al panel (?admin) queda como clave del panel.
  */
 
-const CLAVE_PANEL = 'cambiar-esta-clave';
 const ZONA = 'America/Argentina/Buenos_Aires';
 const HOJA = 'Alumnos';
 const HOJA_SESIONES = 'Sesiones';
@@ -30,10 +29,6 @@ function configurar() {
   const ses = ss.getSheetByName(HOJA_SESIONES) || ss.insertSheet(HOJA_SESIONES);
   ses.getRange(1, 1, 1, 3).setValues([['token', 'codigo', 'creada']]).setFontWeight('bold');
   ses.getRange(1, 1, ses.getMaxRows(), 3).setNumberFormat('@');
-  const props = PropertiesService.getScriptProperties();
-  const sal = Utilities.getUuid();
-  props.setProperty('PANEL_SAL', sal);
-  props.setProperty('PANEL_HASH', hashClave(CLAVE_PANEL, sal));
 }
 
 function doPost(e) {
@@ -154,6 +149,13 @@ function nuevoToken() { return Utilities.getUuid().replace(/-/g, '') + Utilities
 function validarClaveNueva(c) { if (!c || String(c).length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.'); }
 function validarPanel(c) {
   const p = PropertiesService.getScriptProperties();
+  if (!p.getProperty('PANEL_HASH')) {                 // primera vez: esta clave queda como clave del panel
+    validarClaveNueva(c);
+    const lock = LockService.getScriptLock(); lock.waitLock(10000);
+    try {
+      if (!p.getProperty('PANEL_HASH')) { const sal = Utilities.getUuid(); p.setProperty('PANEL_SAL', sal); p.setProperty('PANEL_HASH', hashClave(String(c), sal)); }
+    } finally { lock.releaseLock(); }
+  }
   if (!c || hashClave(String(c), p.getProperty('PANEL_SAL')) !== p.getProperty('PANEL_HASH')) { Utilities.sleep(600); throw new Error('Clave incorrecta'); }
 }
 function sesiones() { return SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_SESIONES); }
