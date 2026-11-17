@@ -221,7 +221,10 @@ a.mat svg{color:var(--azul-txt)}
 .apoyo-parte{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--tenue,#A4A7AE);}
 
 .lineas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
-.lineas path{fill:none;stroke:#E8834F;stroke-linecap:round;opacity:.24;vector-effect:non-scaling-stroke}
+.lineas path{fill:none;stroke-linecap:round}
+.lineas .l-brillo{stroke:#E8834F;opacity:.10}
+.lineas .l-cuerpo{stroke:url(#lg-cuerpo)}
+.lineas .l-filo{stroke:url(#lg-filo)}
 .layout{position:relative;z-index:1}
 .etapa-label{background:none!important;text-shadow:0 0 12px var(--fondo),0 0 4px var(--fondo)}
 /* Documento nuevo */
@@ -247,6 +250,9 @@ a.mat svg{color:var(--azul-txt)}
 .envio-ok .fila-botones{margin-top:10px}
 .nota-paso{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--sup2);font-size:15px;color:var(--tinta)}
 .barra{position:relative;z-index:2}
+.tip-paso{display:flex;gap:12px;align-items:flex-start;margin:14px 0 0;padding:14px 16px;border-radius:12px;background:#2A2416;border:1px solid #C9A24A}
+.tip-paso svg{width:22px;height:22px;flex:none;color:#E9C46A;margin-top:2px}
+.tip-paso p{margin:0;font-size:15.5px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -556,7 +562,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e4', etapa: 'enlaces', entrega: 'video',
+      id: 'e4', etapa: 'enlaces',
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, alguno falla', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Al sumar compases se me desarma', nivel: 'cuesta', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
@@ -610,6 +616,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
+      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
       detalle: 'Mirá el video de superposiciones. No hace falta hacerlo todavía: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
@@ -621,6 +628,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Elegir superposiciones para tu standard',
+      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
       detalle: 'Para cada acorde, al menos una opción de superposición (ideal, dos). Mandásela a Andy para el ok antes de practicarlas: así se corrigen los errores y te queda un documento para usar después.',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
       problemas: [
@@ -1078,6 +1086,7 @@ function tarjetaHTML(st, e, p) {
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
+    ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">
@@ -1169,27 +1178,42 @@ function panelVideoHTML() {
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
    las tarjetas abiertas quedan por encima. Se curvan un poco con el scroll. */
 const LINEAS = [
-  { w: 74, y0: -260, o: 0 },
-  { w: 30, y0: -90, o: 1.7 },
-  { w: 14, y0: 40, o: 3.1 },
+  { w: 86, y0: -0.30, o: 0 },
+  { w: 34, y0: -0.10, o: 1.7 },
+  { w: 12, y0: 0.06, o: 3.1 },
 ];
-function trazoLinea(l, y) {
-  const s1 = Math.sin(y / 520 + l.o) * 90, s2 = Math.cos(y / 680 + l.o) * 110;
-  return `M 1120 ${l.y0} C ${760 + s1} ${l.y0 + 180}, ${640 - s2} ${l.y0 + 560}, 380 ${l.y0 + 720} S ${-40 + s1} ${l.y0 + 1060}, -160 ${l.y0 + 1320}`;
+function trazoLinea(l, y, W, H) {
+  const s1 = Math.sin(y / 520 + l.o) * 0.09 * W, s2 = Math.cos(y / 680 + l.o) * 0.11 * H;
+  const y0 = l.y0 * H;
+  return `M ${W * 1.12} ${y0} C ${W * .76 + s1} ${y0 + H * .18}, ${W * .64} ${y0 + H * .56 - s2}, ${W * .38} ${y0 + H * .72} S ${-W * .04 + s1} ${y0 + H * 1.06}, ${-W * .16} ${y0 + H * 1.32}`;
 }
 function lineasHTML() {
-  return `<svg class="lineas" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">${LINEAS.map((l, i) =>
-    `<path data-l="${i}" d="${trazoLinea(l, 0)}" stroke-width="${l.w}"/>`).join('')}</svg>`;
+  const W = innerWidth, H = innerHeight;
+  return `<svg class="lineas" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <defs>
+      <linearGradient id="lg-cuerpo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
+        <stop offset="0" stop-color="#E8834F" stop-opacity=".45"/><stop offset=".55" stop-color="#E8834F" stop-opacity=".3"/><stop offset="1" stop-color="#E8834F" stop-opacity=".06"/>
+      </linearGradient>
+      <linearGradient id="lg-filo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
+        <stop offset="0" stop-color="#F6B48D" stop-opacity=".9"/><stop offset="1" stop-color="#F6B48D" stop-opacity=".1"/>
+      </linearGradient>
+      <filter id="lg-brillo" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+    </defs>
+    ${LINEAS.map((l, i) => `<path class="l-brillo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}" filter="url(#lg-brillo)"/>`).join('')}
+    ${LINEAS.map((l, i) => `<path class="l-cuerpo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}"/>`).join('')}
+    ${LINEAS.map((l, i) => `<path class="l-filo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="1.2" transform="translate(${-l.w * .32} ${-l.w * .32})"/>`).join('')}
+  </svg>`;
 }
 let rafLineas = 0;
+function moverLineas() {
+  const W = innerWidth, H = innerHeight, y = window.scrollY;
+  document.querySelectorAll('.lineas path').forEach(p => p.setAttribute('d', trazoLinea(LINEAS[+p.dataset.l], y, W, H)));
+}
 window.addEventListener('scroll', () => {
   if (reduceMotion || rafLineas) return;
-  rafLineas = requestAnimationFrame(() => {
-    rafLineas = 0;
-    const y = window.scrollY;
-    document.querySelectorAll('.lineas path').forEach(p => p.setAttribute('d', trazoLinea(LINEAS[+p.dataset.l], y)));
-  });
+  rafLineas = requestAnimationFrame(() => { rafLineas = 0; moverLineas(); });
 }, { passive: true });
+window.addEventListener('resize', () => { const v = document.querySelector('.lineas'); if (v) v.outerHTML = lineasHTML(); moverLineas(); });
 
 /* Que se note cuando cambia el video o salta a otro minuto */
 let timerAviso = null;

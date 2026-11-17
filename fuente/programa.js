@@ -218,7 +218,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e4', etapa: 'enlaces', entrega: 'video',
+      id: 'e4', etapa: 'enlaces',
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, alguno falla', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Al sumar compases se me desarma', nivel: 'cuesta', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
@@ -272,6 +272,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
+      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
       detalle: 'Mirá el video de superposiciones. No hace falta hacerlo todavía: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
@@ -283,6 +284,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Elegir superposiciones para tu standard',
+      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
       detalle: 'Para cada acorde, al menos una opción de superposición (ideal, dos). Mandásela a Andy para el ok antes de practicarlas: así se corrigen los errores y te queda un documento para usar después.',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
       problemas: [

@@ -154,6 +154,7 @@ function tarjetaHTML(st, e, p) {
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
+    ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">
@@ -245,27 +246,42 @@ function panelVideoHTML() {
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
    las tarjetas abiertas quedan por encima. Se curvan un poco con el scroll. */
 const LINEAS = [
-  { w: 74, y0: -260, o: 0 },
-  { w: 30, y0: -90, o: 1.7 },
-  { w: 14, y0: 40, o: 3.1 },
+  { w: 86, y0: -0.30, o: 0 },
+  { w: 34, y0: -0.10, o: 1.7 },
+  { w: 12, y0: 0.06, o: 3.1 },
 ];
-function trazoLinea(l, y) {
-  const s1 = Math.sin(y / 520 + l.o) * 90, s2 = Math.cos(y / 680 + l.o) * 110;
-  return `M 1120 ${l.y0} C ${760 + s1} ${l.y0 + 180}, ${640 - s2} ${l.y0 + 560}, 380 ${l.y0 + 720} S ${-40 + s1} ${l.y0 + 1060}, -160 ${l.y0 + 1320}`;
+function trazoLinea(l, y, W, H) {
+  const s1 = Math.sin(y / 520 + l.o) * 0.09 * W, s2 = Math.cos(y / 680 + l.o) * 0.11 * H;
+  const y0 = l.y0 * H;
+  return `M ${W * 1.12} ${y0} C ${W * .76 + s1} ${y0 + H * .18}, ${W * .64} ${y0 + H * .56 - s2}, ${W * .38} ${y0 + H * .72} S ${-W * .04 + s1} ${y0 + H * 1.06}, ${-W * .16} ${y0 + H * 1.32}`;
 }
 function lineasHTML() {
-  return `<svg class="lineas" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">${LINEAS.map((l, i) =>
-    `<path data-l="${i}" d="${trazoLinea(l, 0)}" stroke-width="${l.w}"/>`).join('')}</svg>`;
+  const W = innerWidth, H = innerHeight;
+  return `<svg class="lineas" viewBox="0 0 ${W} ${H}" aria-hidden="true">
+    <defs>
+      <linearGradient id="lg-cuerpo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
+        <stop offset="0" stop-color="#E8834F" stop-opacity=".45"/><stop offset=".55" stop-color="#E8834F" stop-opacity=".3"/><stop offset="1" stop-color="#E8834F" stop-opacity=".06"/>
+      </linearGradient>
+      <linearGradient id="lg-filo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
+        <stop offset="0" stop-color="#F6B48D" stop-opacity=".9"/><stop offset="1" stop-color="#F6B48D" stop-opacity=".1"/>
+      </linearGradient>
+      <filter id="lg-brillo" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+    </defs>
+    ${LINEAS.map((l, i) => `<path class="l-brillo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}" filter="url(#lg-brillo)"/>`).join('')}
+    ${LINEAS.map((l, i) => `<path class="l-cuerpo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}"/>`).join('')}
+    ${LINEAS.map((l, i) => `<path class="l-filo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="1.2" transform="translate(${-l.w * .32} ${-l.w * .32})"/>`).join('')}
+  </svg>`;
 }
 let rafLineas = 0;
+function moverLineas() {
+  const W = innerWidth, H = innerHeight, y = window.scrollY;
+  document.querySelectorAll('.lineas path').forEach(p => p.setAttribute('d', trazoLinea(LINEAS[+p.dataset.l], y, W, H)));
+}
 window.addEventListener('scroll', () => {
   if (reduceMotion || rafLineas) return;
-  rafLineas = requestAnimationFrame(() => {
-    rafLineas = 0;
-    const y = window.scrollY;
-    document.querySelectorAll('.lineas path').forEach(p => p.setAttribute('d', trazoLinea(LINEAS[+p.dataset.l], y)));
-  });
+  rafLineas = requestAnimationFrame(() => { rafLineas = 0; moverLineas(); });
 }, { passive: true });
+window.addEventListener('resize', () => { const v = document.querySelector('.lineas'); if (v) v.outerHTML = lineasHTML(); moverLineas(); });
 
 /* Que se note cuando cambia el video o salta a otro minuto */
 let timerAviso = null;

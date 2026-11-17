@@ -168,7 +168,10 @@ a.mat svg{color:var(--azul-txt)}
 .apoyo-parte{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--tenue,#A4A7AE);}
 
 .lineas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
-.lineas path{fill:none;stroke:#E8834F;stroke-linecap:round;opacity:.24;vector-effect:non-scaling-stroke}
+.lineas path{fill:none;stroke-linecap:round}
+.lineas .l-brillo{stroke:#E8834F;opacity:.10}
+.lineas .l-cuerpo{stroke:url(#lg-cuerpo)}
+.lineas .l-filo{stroke:url(#lg-filo)}
 .layout{position:relative;z-index:1}
 .etapa-label{background:none!important;text-shadow:0 0 12px var(--fondo),0 0 4px var(--fondo)}
 /* Documento nuevo */
@@ -194,3 +197,6 @@ a.mat svg{color:var(--azul-txt)}
 .envio-ok .fila-botones{margin-top:10px}
 .nota-paso{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--sup2);font-size:15px;color:var(--tinta)}
 .barra{position:relative;z-index:2}
+.tip-paso{display:flex;gap:12px;align-items:flex-start;margin:14px 0 0;padding:14px 16px;border-radius:12px;background:#2A2416;border:1px solid #C9A24A}
+.tip-paso svg{width:22px;height:22px;flex:none;color:#E9C46A;margin-top:2px}
+.tip-paso p{margin:0;font-size:15.5px}
