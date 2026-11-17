@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mapa de Ajuste Elástico</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ajuste Elástico">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#141518">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
@@ -1525,7 +1530,11 @@ function abrirMapa(alumno) {
 }
 async function entrarConSesion() {
   try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
-  catch (e) { guardarToken(''); renderEntrada(/sesión/.test(e.message) ? '' : e.message); }
+  catch (e) {
+    // Solo se borra la sesión si el servidor dice que se cerró; si falló la conexión, se queda guardada
+    if (/sesión se cerró/.test(e.message)) { guardarToken(''); renderEntrada(); }
+    else renderEntrada('No pude conectarme con el aula. Recargá la página en un ratito: tu sesión sigue guardada.');
+  }
 }
 function salir() {
   const t = TOKEN; guardarToken(''); ST = null; nav(location.pathname); renderEntrada();

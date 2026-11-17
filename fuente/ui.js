@@ -139,7 +139,11 @@ function abrirMapa(alumno) {
 }
 async function entrarConSesion() {
   try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
-  catch (e) { guardarToken(''); renderEntrada(/sesión/.test(e.message) ? '' : e.message); }
+  catch (e) {
+    // Solo se borra la sesión si el servidor dice que se cerró; si falló la conexión, se queda guardada
+    if (/sesión se cerró/.test(e.message)) { guardarToken(''); renderEntrada(); }
+    else renderEntrada('No pude conectarme con el aula. Recargá la página en un ratito: tu sesión sigue guardada.');
+  }
 }
 function salir() {
   const t = TOKEN; guardarToken(''); ST = null; nav(location.pathname); renderEntrada();
