@@ -79,14 +79,23 @@ function ayudaPara(p, sel) {
 }
 
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
+const esDoc = r => r.url && !ytId(r.url);
+function docNuevo(p, r) {
+  const i = ORDEN.indexOf(p.id);
+  for (let j = 0; j < i; j++) if ((PASO[ORDEN[j]].recursos || []).some(x => x.url === r.url)) return false;
+  return true;
+}
 function materialHTML(p) {
   const rs = (p.recursos || []).filter(r => r.url);
   if (!rs.length) return '';
-  return `<div class="material">${rs.map(r => {
+  const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
+  const resto = rs.filter(r => !nuevos.includes(r));
+  return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
+  ${resto.length ? `<div class="material">${resto.map(r => {
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t)}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
-  }).join('')}</div>`;
+  }).join('')}</div>` : ''}`;
 }
 function apoyoHTML(p) {
   return `<div class="apoyo"><h4>${esc(p.apoyo.titulo)}</h4>${p.apoyo.texto ? `<p>${esc(p.apoyo.texto)}</p>` : ''}
@@ -142,15 +151,25 @@ function tarjetaHTML(st, e, p) {
   const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
-    ${p.video && videoAnterior(p.id) && videoAnterior(p.id) !== p.video.id ? `<div class="video-nuevo">${ICONO.video}<p><strong>Video nuevo.</strong> Este video es distinto del anterior: no dejes de verlo.</p></div>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
     ${preguntaHTML(st, p)}
-    ${respondido && sig ? `<div class="seguir">
+    ${respondido && p.entrega ? envioHTML(st, p) : ''}
+    ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
       </div>` : ''}
+  </div>`;
+}
+
+function envioHTML(st, p) {
+  const ok = !!st.prog[p.id]?.envio;
+  const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
+  return `<div class="envio ${ok ? 'envio-ok' : ''}">
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya le mandaste el ${esc(p.entrega)} a Andy` : `Antes de seguir, mandale el ${esc(p.entrega)} a Andy por WhatsApp`}</strong></p>
+    ${ok ? '' : `<p class="envio-c">Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
+    <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>Ya se lo mandé</span></label></div>
   </div>`;
 }
 
@@ -219,36 +238,31 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video">${hebrasHTML('arriba')}<div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p>${hebrasHTML('abajo')}</aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p></aside>`;
 }
-/* Hebras naranjas alrededor del video: curvas de distinto grosor que caen de derecha a izquierda
-   y se mueven un poco con el scroll */
-function hebrasHTML(lugar) {
-  const n = 14, curvas = [];
-  const semilla = lugar === 'arriba' ? 1.3 : 4.7;
-  for (let i = 0; i < n; i++) {
-    const r = k => (Math.sin(semilla * 12.9898 + i * 78.233 + k * 3.1) * 43758.5453) % 1;   // pseudoazar fijo
-    const a = Math.abs(r(1)), b2 = Math.abs(r(2)), c2 = Math.abs(r(3));
-    const y0 = (lugar === 'arriba' ? -10 : 10) + i * 5 + a * 18;
-    const caida = 90 + b2 * 110;
-    const w = [0.8, 1.2, 2, 3, 1, 1.5, 4, 0.7][i % 8] * (0.7 + c2 * 0.5);
-    const op = (0.15 + c2 * 0.45).toFixed(2);
-    const col = ['#E8834F', '#F2A273', '#C24A22', '#F7C3A3', '#D9682F'][i % 5];
-    const x1 = 470 - a * 120, x2 = 300 - b2 * 140;
-    curvas.push(`<path d="M 660 ${y0} C ${x1} ${y0 + caida * (.05 + c2 * .2)}, ${x2} ${y0 + caida * (.8 + a * .4)}, 150 ${y0 + caida * (.7 + b2 * .3)} S -30 ${y0 + caida * (1.2 + c2 * .5)}, -80 ${y0 + caida * (1.5 + a * .4)}" stroke="${col}" stroke-width="${w.toFixed(1)}" opacity="${op}" fill="none" stroke-linecap="round"/>`);
-  }
-  return `<svg class="hebras hebras-${lugar}" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g class="hebras-g">${curvas.join('')}</g></svg>`;
+/* Líneas naranjas de fondo: 3 trazos gruesos de un solo color que cruzan toda la pantalla
+   en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
+   las tarjetas abiertas quedan por encima. Se curvan un poco con el scroll. */
+const LINEAS = [
+  { w: 74, y0: -260, o: 0 },
+  { w: 30, y0: -90, o: 1.7 },
+  { w: 14, y0: 40, o: 3.1 },
+];
+function trazoLinea(l, y) {
+  const s1 = Math.sin(y / 520 + l.o) * 90, s2 = Math.cos(y / 680 + l.o) * 110;
+  return `M 1120 ${l.y0} C ${760 + s1} ${l.y0 + 180}, ${640 - s2} ${l.y0 + 560}, 380 ${l.y0 + 720} S ${-40 + s1} ${l.y0 + 1060}, -160 ${l.y0 + 1320}`;
 }
-let rafHebras = 0;
+function lineasHTML() {
+  return `<svg class="lineas" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">${LINEAS.map((l, i) =>
+    `<path data-l="${i}" d="${trazoLinea(l, 0)}" stroke-width="${l.w}"/>`).join('')}</svg>`;
+}
+let rafLineas = 0;
 window.addEventListener('scroll', () => {
-  if (reduceMotion || rafHebras) return;
-  rafHebras = requestAnimationFrame(() => {
-    rafHebras = 0;
+  if (reduceMotion || rafLineas) return;
+  rafLineas = requestAnimationFrame(() => {
+    rafLineas = 0;
     const y = window.scrollY;
-    document.querySelectorAll('.hebras-g').forEach((g, i) => {
-      const k = i ? -1 : 1;
-      g.style.transform = `translate(${(y * .04 * k) % 60}px, ${Math.sin(y / 260) * 10 * k}px) rotate(${Math.sin(y / 400) * 1.5}deg)`;
-    });
+    document.querySelectorAll('.lineas path').forEach(p => p.setAttribute('d', trazoLinea(LINEAS[+p.dataset.l], y)));
   });
 }, { passive: true });
 
@@ -275,7 +289,7 @@ function asegurarYT(cb) {
 function sinSubtitulos(pl) { try { pl.unloadModule('captions'); } catch (e) {} try { pl.unloadModule('cc'); } catch (e) {} }
 function ponerVideo(id, t = 0, play = false) {
   const tit = $('#pv-titulo'); if (tit) tit.textContent = VIDEOS[id] || '';
-  if (playerVid && playerVid !== id) marcarCambio(t ? `Video nuevo, desde ${mmss(t)}` : 'Video nuevo');
+  if (playerVid && playerVid !== id) marcarCambio(t ? `Desde ${mmss(t)}` : '');
   else if (playerVid && t) marcarCambio(`Desde ${mmss(t)}`);
   if (simple || !(window.YT && window.YT.Player)) {
     const marco = $('#yt'); if (!marco) return;
@@ -304,7 +318,7 @@ function renderAlumno(animar) {
   if (!abierto || !PASO[abierto]) abierto = (lista[0] && lista[0].id) || ORDEN[0];
   if (!$('#vista') || animar) {
     player = null; playerVid = null;
-    app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
+    app().innerHTML = `${barra(st.nombre)}${lineasHTML()}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
   requestAnimationFrame(dibujarCamino);
@@ -341,12 +355,16 @@ function enlazarAlumno() {
     else if (d.op) {
       const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       if (opcionElegida(ST, PASO[id]) === o) delete ST.prog[id];
-      else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO() };
+      else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}) };
       guardarAlumno(); renderAlumno();
     } else if (d.standard) {
       const primera = !ST.standard;
       ST.standard = d.standard; ST.prog.p5 = { hecho: true, como: 'listo', t: hoyISO() };
       guardarAlumno(); renderAlumno(); if (primera || ST.standard) confeti(b);
+    } else if (d.envio && b.tagName === 'INPUT') {
+      const pr = ST.prog[d.envio]; if (!pr) return;
+      if (b.checked) pr.envio = true; else delete pr.envio;
+      guardarAlumno(); setTimeout(() => { renderAlumno(); if (b.checked) requestAnimationFrame(() => { const s = document.querySelector('.seguir'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }); }, 200);
     } else if (d.extra !== undefined && b.tagName === 'INPUT') {
       const x = ST.extras.find(x => x.id === d.extra); x.hecho = b.checked; guardarAlumno(); setTimeout(() => renderAlumno(), 250);
     } else if (d.accion === 'clase') {

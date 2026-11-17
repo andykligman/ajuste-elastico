@@ -6,6 +6,7 @@
 const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
 const DOC_ENTRENAMIENTO = 'https://docs.google.com/document/d/19vNF5KkcPosVXsBOhwcwwpQZKdPk3Y0U5HtVnBXN_yc/edit';
+const WHATSAPP_ANDY = '';   // número con código de país, sin + ni espacios (ej. 5491112345678)
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
 const DOC_CUELLO_1_EXPL = 'https://docs.google.com/document/d/1F4A99qcJbhQ3kTDGbBUI1NDt7gq_H0RG/edit';
@@ -121,7 +122,11 @@ const PROGRAMA = {
       detalle: 'Elegí de la lista el tema con el que vas a trabajar. Si tenés otro en mente, escribilo y lo definimos con Andy.',
     },
     {
-      id: 'p5b', etapa: 'pre', sinProgreso: true,
+      id: 'p5b', etapa: 'pre',
+      progreso: [
+        { id: 'super', label: '¡Súper! Se entiende todo', nivel: 'listo' },
+        { id: 'duda', label: 'Hay cosas que no entiendo', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos juntos.' },
+      ],
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       titulo: 'Ver el video de Enlaces de Arpegios y leer el PDF',
       detalle: 'Mirá el video completo antes de empezar y leé el documento: ahí está el paso a paso del ejercicio que vas a hacer sobre tu standard.',
