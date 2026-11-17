@@ -1639,7 +1639,7 @@ async function subirVideo() {
   barra(0);
   try {
     let id;
-    if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 120)); barra(k / 10); } id = 'demo-' + Date.now(); }
+    if (!API_URL || modo !== 'alumno') { if (modo !== 'alumno') aviso('Vista de prueba: el video no se manda'); for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 120)); barra(k / 10); } id = 'demo-' + Date.now(); }
     else {
       const mime = blob.type || 'video/mp4';
       const { url } = await llamar('video.iniciar', { token: TOKEN, paso: pasoId, mime, tam: blob.size });
