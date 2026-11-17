@@ -3,7 +3,7 @@
    Con API_URL vacío funciona en modo demo (se guarda solo en este navegador).
    Con la URL del Apps Script, todo se guarda en la planilla de Google.
    ===================================================================== */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwMCs4DiHNEAiFSRtfn0pEPpzQzd0sszYkZO6yczOxv8VUAK0O0ENrSyG4-kHPnvfInRQ/exec';
 
 const hoyISO = (delta = 0) => { const d = new Date(); d.setDate(d.getDate() + delta); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
