@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa de Ajuste Elástico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Tema oscuro, en la línea del Área de Miembros, con los colores de Ajuste Elástico */
+  --fondo:#111214; --sup:#1B1C20; --sup2:#24262B; --linea:#2E3036;
+  --tinta:#EDEEF0; --gris:#9DA2AC; --blanco:#FFFFFF;
+  --azul:#5D7BB6; --azul-txt:#A9BEE8; --azul-osc:#3A4F7A; --azul-claro:#22304A; --azul-velo:#1A2232;
+  --oxido:#E2643A; --oxido-txt:#F29A78; --oxido-claro:#3A2219; --naranja:#E8834F; --naranja-claro:#33241B;
+  --papel:var(--fondo);
+  --radio-s:6px; --radio-m:12px;
+  --sans:'Source Sans 3', system-ui, sans-serif; --display:'Poppins', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--tinta);color-scheme:dark;font:400 17px/1.55 var(--sans)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+a{color:var(--azul-txt);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--naranja);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;letter-spacing:-.01em}
+.suave{color:var(--gris)} .chico{font-size:14px}
+.link{color:var(--azul-txt);text-decoration:underline;text-underline-offset:3px}
+.link.suave{color:var(--gris)}
+.primario{background:#FFFFFF;color:#111214;padding:11px 22px;border-radius:8px;font-weight:600}
+.primario:hover{background:#E4E5E8}
+.secundario,.boton{display:inline-block;border:1px solid #4A4D55;color:var(--tinta);padding:8px 16px;border-radius:8px;font-weight:600;text-decoration:none;background:var(--sup2);font-size:15px}
+.secundario:hover,.boton:hover{background:var(--azul-velo)}
+
+/* Barra */
+.barra{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px;background:var(--sup);border-bottom:1px solid var(--linea)}
+.marca svg{height:30px;width:auto;display:block}
+.barra-der{display:flex;gap:14px;align-items:center;font-size:15px}
+.quien{font-weight:600}
+
+/* Entrada */
+.entrada{max-width:460px;margin:8vh auto 60px;padding:0 20px}
+.entrada h1{font-size:30px;margin-bottom:10px}
+.entrada form{display:grid;gap:10px;margin:26px 0}
+.entrada label{font-weight:600}
+.entrada input{padding:12px 14px;border:1.5px solid var(--linea);border-radius:var(--radio-s);background:var(--sup);font-size:18px}
+.entrada .primario{justify-self:start}
+.error{color:var(--oxido-txt);margin:0}
+.demo{border-left:3px solid var(--naranja);padding:4px 0 4px 16px;margin-top:30px}
+.demo ul{margin:6px 0 12px;padding-left:20px}
+
+/*CSS_ALUMNO*/
+.como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
+.como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
+.acceso{margin:18px 0;padding:14px;border:1px solid var(--linea);border-radius:var(--radio-s);background:var(--sup2)}
+.acceso-cab{display:grid;gap:2px;margin-bottom:10px}
+.acceso-cab h3{font-size:16px}
+.acceso-cab .suave{font-size:15px}
+.bloque-email{display:grid;gap:4px;font-weight:600;font-size:15px;margin-bottom:10px}
+.bloque-email input{padding:8px 10px;border:1.5px solid var(--linea);border-radius:var(--radio-s);background:var(--sup);font-weight:400}
+.link-inv textarea{width:100%;border:1px solid var(--linea);border-radius:var(--radio-s);padding:10px;font-size:15px;background:var(--sup);resize:vertical}
+.link-inv p{margin:0 0 6px}
+.fila-botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+/* Aviso de guardado */
+#aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--blanco);padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
+#aviso.visible{opacity:1;transform:none}
+#aviso.error{background:var(--oxido)}
+
+/* Panel de Andy */
+.admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+.lista-cab{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.lista-cab h1{font-size:26px}
+.lista table{width:100%;border-collapse:collapse;background:var(--sup);border-radius:var(--radio-m);overflow:hidden;font-size:16px}
+.lista th{text-align:left;font-weight:600;font-size:14px;color:var(--gris);padding:10px 12px;border-bottom:1px solid var(--linea)}
+.lista td{padding:12px;border-bottom:1px solid var(--linea);vertical-align:top}
+.lista tr[data-elegir]{cursor:pointer}
+.lista tr[data-elegir]:hover td{background:var(--azul-velo)}
+.lista tr.sel td{background:var(--azul-claro)}
+.lista td.nw{white-space:nowrap}
+.etapa-completa .etapa-cab{padding:12px 0;border-bottom:1px solid var(--linea);margin:0}
+.etapa-completa h3::before{content:'';display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--azul);margin-right:10px;vertical-align:middle}
+.marca-prob{display:block;font-size:13px;color:var(--oxido-txt);font-weight:600}
+.estado-chip{font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;white-space:nowrap;background:var(--azul-claro);color:var(--azul-txt)}
+.estado-chip.t-meterle{background:var(--oxido-claro);color:var(--oxido-txt)}
+.estado-chip.t-adelantado,.estado-chip.t-m2{background:var(--naranja-claro);color:var(--naranja)}
+.estado-chip.t-pausa{background:var(--papel);color:var(--gris);border:1px solid var(--linea)}
+.detalle{background:var(--sup);border-radius:var(--radio-m);padding:22px;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+.vacio{margin:30px 0}
+.det-cab{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.det-cab h2{font-size:24px}
+.mensaje{margin:18px 0;padding:14px;border:1.5px solid var(--azul-claro);border-radius:var(--radio-s);background:var(--azul-velo)}
+.mensaje-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.mensaje-cab h3,.bloque h3{font-size:16px}
+.mensaje-cab span{display:flex;gap:8px}
+.mensaje textarea{width:100%;border:1px solid var(--linea);border-radius:var(--radio-s);padding:10px;font-size:15px;line-height:1.45;background:var(--sup);resize:vertical}
+.form-admin{display:grid;gap:12px}
+.form-admin label,.bloque{display:grid;gap:4px;font-weight:600;font-size:15px}
+.form-admin input,.form-admin select,.bloque textarea,.fila-extra input{padding:8px 10px;border:1.5px solid var(--linea);border-radius:var(--radio-s);background:var(--sup);font-weight:400;font-size:16px}
+.form-admin label.check{display:flex;gap:8px;align-items:center;font-weight:400}
+.ajustes{grid-template-columns:1fr 1fr;margin-bottom:16px}
+.ajustes label.check{grid-column:1/-1}
+.segmentado{display:inline-flex;border:1.5px solid var(--linea);border-radius:999px;overflow:hidden;justify-self:start}
+.segmentado button{padding:6px 14px;font-weight:600}
+.segmentado button.sel{background:var(--azul);color:var(--blanco)}
+.bloque{margin-top:20px}
+.extras-adm,.probs-adm,.avance-adm{list-style:none;margin:6px 0 0;padding:0;font-weight:400}
+.extras-adm li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--linea)}
+.extras-adm li>span{flex:1;min-width:0}
+.extras-adm li.hecha strong{text-decoration:line-through;color:var(--gris)}
+.fila-extra{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;margin-top:8px}
+.probs-adm li{padding:4px 0}
+.avance-adm li{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:15px}
+.avance-adm li span:nth-child(2){flex:1}
+.mini-nodo{width:18px;height:18px;border-radius:50%;border:2px solid var(--linea);background:var(--sup);flex:none}
+.avance-adm .est-listo .mini-nodo,.avance-adm .est-casi .mini-nodo{background:var(--azul);border-color:var(--azul-txt)}
+.avance-adm .est-cuesta .mini-nodo{background:var(--oxido-claro);border-color:var(--oxido-txt)}
+.links-adm{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.links-adm p{width:100%;margin:0}
+
+@media (max-width:900px){
+  .admin{grid-template-columns:1fr}
+  .detalle{position:static;max-height:none}
+  .lista th:nth-child(4),.lista td:nth-child(4),.lista th:nth-child(5),.lista td:nth-child(5){display:none}
+}
+@media (max-width:560px){
+  body{font-size:16.5px}
+  .barra{padding:12px 16px}
+  .marca svg{height:24px}
+  .ajustes{grid-template-columns:1fr}
+  .fila-extra{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app" aria-live="off"></div>
+<div id="aviso" role="status"></div>
+<script>
+const LOGO = `/*LOGO*/`;
+/*JS*/
+</script>
+</body>
+</html>
