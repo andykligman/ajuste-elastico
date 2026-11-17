@@ -141,10 +141,10 @@ const PROGRAMA = {
       id: 'p7', etapa: 'pre', sinProgreso: true,
       video: { id: 'TylWJrfPxu0', t: 460 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, sin tempo',
-      detalle: 'Sin tempo, mirá enlaces posibles con dirección melódica fija entre las posiciones que elegiste para los 4 compases del standard.\n**Sí**\n- Mantener una sola dirección, ascendente o descendente. Si empezás en la nota más grave disponible, vas subiendo a medida que avanza la armonía hasta la nota más aguda disponible (sin importar en qué acorde sea). Ahí rebotás y bajás hasta la más grave, y así.\n- Pasar de un arpegio al siguiente por la nota más cercana, caiga donde caiga. Los cambios de acorde te agarran adentro de las posiciones, no en los extremos.\n- Tocar solo blancas, respetando las posiciones elegidas.\n**No**\n- Tocar el arpegio entero de arriba para abajo.\n- Cambiar de dirección en el medio. En la etapa siguiente sí se puede, así que no te preocupes 🤗\n- Saltear notas.\nTené claro cuál es la nota más grave y cuál la más aguda de las posiciones: ahí es donde rebotás. Empezando cada vez desde una nota distinta, los enlaces cambian, y así conectás las mismas posiciones de muchas maneras.\nSe recomienda tener el [PDF](' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
+      detalle: 'Sin tempo, mirá enlaces posibles con dirección melódica fija entre las posiciones que elegiste para los 4 compases del standard.\nDirección melódica fija:\n- No vale cambiar de dirección en el medio. Solo se puede ascender hasta llegar a la nota más aguda posible de las posiciones; recién ahí se puede descender.\n- No vale saltear notas: solo se puede conectar por nota más cercana hacia el siguiente acorde.\n- Solo tocar blancas y respetar las posiciones elegidas.\nSe recomienda tener el [PDF](' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
       recursos: [
-        { t: 'Ver explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
-        { t: 'Ver ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
+        { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
+        { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
       ],
     },
 
@@ -168,7 +168,7 @@ const PROGRAMA = {
         texto: 'Antes de hacer el ejercicio a medias, conviene bajar un escalón con alguno de estos dos (o con los dos) y después volver al ejercicio completo.',
         items: [
           { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Para cuando llega el cambio de acorde y te quedás en blanco.', url: DOC_CUELLO_1, video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M' },
-          { t: 'Cuello de botella #2: notas por cuerda', cuando: 'Para cuando sabés la progresión y entendés los enlaces, pero tenés muchos errores.', url: DOC_CUELLO_2, video: 'https://www.youtube.com/watch?v=JHJhLmtCsno' },
+          { t: 'Cuello de botella #2: notas por cuerda', cuando: 'Para cuando sabés la progresión y entendés las posiciones, pero no lo manejás como quisieras.', url: DOC_CUELLO_2, video: 'https://www.youtube.com/watch?v=JHJhLmtCsno' },
         ],
       },
       problemas: [
@@ -184,7 +184,7 @@ const PROGRAMA = {
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
       titulo: 'Dirección melódica libre',
       detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora elegís cómo enlazar: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear. Buscá caminos sorpresivos, no lo automático. Conviene empezar en 2 cuerdas (o hasta en 1) y después juntar las 3.',
-      recursos: [{ t: 'Video: ejemplo sin dirección melódica', url: VIDEO_ENLACES + '&t=1516s' }],
+      recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
           fix: 'Es fácil esconderse en lo conocido. Bajá a dos cuerdas y agotá todas las combinaciones ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale.' },
@@ -196,7 +196,7 @@ const PROGRAMA = {
       progreso: [ { id: 'musica', label: 'Suena a música, dejo espacios', nivel: 'listo' }, { id: 'notas', label: 'Me sale, pero toco muchas notas', nivel: 'casi', muestra: ['muchas'] }, { id: 'pierdo', label: 'Me pierdo cuando suelto el ritmo', nivel: 'cuesta', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
       detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero sin ritmo fijo. Usá más el oído, dejá espacios, repetí notas, buscá formas ingeniosas de tocar esas notas sobre la armonía. Cantá lo que tocás, aunque no afines: el impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
-      recursos: [{ t: 'Video: ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }],
+      recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
           fix: 'Probá ponerte la pauta de 0 a 3 notas por acorde. Se puede tocar una sola nota o dejar silencio. Mejor de menos a más.' },
@@ -210,6 +210,7 @@ const PROGRAMA = {
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, alguno falla', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Al sumar compases se me desarma', nivel: 'cuesta', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
       detalle: 'Repetí el proceso desde cero (fijo, después dirección libre, después ritmo libre) con los compases que siguen, y juntá los grupos en bloques cada vez más grandes. Cuando sientas que estás al 80-85%, es buen momento para avanzar.',
+      recursos: [{ t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'compas', q: 'Hay un compás donde siempre me equivoco',
           fix: 'No practiques todo el bloque: aislá ese compás con el anterior en loop, y después volvé a juntar el grupo.' },

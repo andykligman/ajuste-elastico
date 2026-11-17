@@ -9,6 +9,8 @@ const ICONO = {
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   enviar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-7-6 15-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#0E1F16" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  idea: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   abajo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 const ytId = url => { const m = String(url || '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); return m ? m[1] : null; };
@@ -104,7 +106,7 @@ function standardHTML(st) {
   return `<div class="pregunta"><h4>¿Con qué tema vas a trabajar?</h4>
     <div class="standards" role="radiogroup" aria-label="Standards">${STANDARDS.map(x => `<button role="radio" aria-checked="${x.t === elegido}" class="chip-op ${x.t === elegido ? 'sel' : ''}" data-standard="${esc(x.t)}">${esc(x.t)}</button>`).join('')}</div>
     <form class="otro-standard" data-form-standard="1"><input name="otro" aria-label="Otro tema" placeholder="Otro tema" value="${item || !elegido ? '' : esc(elegido)}"><button class="secundario">Elegir este</button></form>
-    ${elegido ? `<div class="respuesta"><p>Elegiste <strong>${esc(elegido)}</strong>.</p>${item && item.pdf ? `<a href="${esc(item.pdf)}" target="_blank" rel="noopener">Descargar la parte para trabajar (PDF)</a>` : '<p class="suave chico">Andy te pasa la parte para trabajar.</p>'}</div>` : ''}
+    ${elegido ? `<div class="respuesta resp-ok festejo" role="status"><span class="resp-ico">${ICONO.ok}</span><div><p class="resp-tit">Elegiste ${esc(elegido)}</p><p>¡Ya estás muy cerca de agendar el inicio de tus encuentros sincrónicos en Ajuste Elástico!</p>${item && item.pdf ? `<a href="${esc(item.pdf)}" target="_blank" rel="noopener">Descargar la parte para trabajar (PDF)</a>` : '<p class="suave chico">Andy te pasa la parte del tema para trabajar.</p>'}</div></div>` : ''}
   </div>`;
 }
 
@@ -116,12 +118,21 @@ function preguntaHTML(st, p) {
     <div class="ops" role="radiogroup" aria-label="Cómo te fue">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && sel.resp ? `<div class="respuesta nivel-${sel.nivel}"><p>${esc(sel.resp)}</p>${sel.url ? linkHTML('Ver el ejemplo del video', esc(sel.url)) : ''}</div>` : ''}
+    ${sel && sel.resp ? respuestaHTML(sel) : ''}
     ${ayuda.apoyo ? apoyoHTML(p) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
 }
 
+/* Respuesta según cómo le fue: verde con tilde si va bien, recuadro de recomendación si no */
+function respuestaHTML(sel) {
+  const ok = sel.nivel === 'listo';
+  return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
+    <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
+    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p><p>${esc(sel.resp)}</p>${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+  </div>`;
+}
+function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
 function siguienteDe(id) { const i = ORDEN.indexOf(id); return PASO[ORDEN[i + 1]] || null; }
 
 function tarjetaHTML(st, e, p) {
@@ -131,6 +142,7 @@ function tarjetaHTML(st, e, p) {
   const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
+    ${p.video && videoAnterior(p.id) && videoAnterior(p.id) !== p.video.id ? `<div class="video-nuevo">${ICONO.video}<p><strong>Video nuevo.</strong> Este video es distinto del anterior: no dejes de verlo.</p></div>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
     ${preguntaHTML(st, p)}
@@ -207,8 +219,39 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p></aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video">${hebrasHTML('arriba')}<div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p>${hebrasHTML('abajo')}</aside>`;
 }
+/* Hebras naranjas alrededor del video: curvas de distinto grosor que caen de derecha a izquierda
+   y se mueven un poco con el scroll */
+function hebrasHTML(lugar) {
+  const n = 14, curvas = [];
+  const semilla = lugar === 'arriba' ? 1.3 : 4.7;
+  for (let i = 0; i < n; i++) {
+    const r = k => (Math.sin(semilla * 12.9898 + i * 78.233 + k * 3.1) * 43758.5453) % 1;   // pseudoazar fijo
+    const a = Math.abs(r(1)), b2 = Math.abs(r(2)), c2 = Math.abs(r(3));
+    const y0 = (lugar === 'arriba' ? -10 : 10) + i * 5 + a * 18;
+    const caida = 90 + b2 * 110;
+    const w = [0.8, 1.2, 2, 3, 1, 1.5, 4, 0.7][i % 8] * (0.7 + c2 * 0.5);
+    const op = (0.15 + c2 * 0.45).toFixed(2);
+    const col = ['#E8834F', '#F2A273', '#C24A22', '#F7C3A3', '#D9682F'][i % 5];
+    const x1 = 470 - a * 120, x2 = 300 - b2 * 140;
+    curvas.push(`<path d="M 660 ${y0} C ${x1} ${y0 + caida * (.05 + c2 * .2)}, ${x2} ${y0 + caida * (.8 + a * .4)}, 150 ${y0 + caida * (.7 + b2 * .3)} S -30 ${y0 + caida * (1.2 + c2 * .5)}, -80 ${y0 + caida * (1.5 + a * .4)}" stroke="${col}" stroke-width="${w.toFixed(1)}" opacity="${op}" fill="none" stroke-linecap="round"/>`);
+  }
+  return `<svg class="hebras hebras-${lugar}" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g class="hebras-g">${curvas.join('')}</g></svg>`;
+}
+let rafHebras = 0;
+window.addEventListener('scroll', () => {
+  if (reduceMotion || rafHebras) return;
+  rafHebras = requestAnimationFrame(() => {
+    rafHebras = 0;
+    const y = window.scrollY;
+    document.querySelectorAll('.hebras-g').forEach((g, i) => {
+      const k = i ? -1 : 1;
+      g.style.transform = `translate(${(y * .04 * k) % 60}px, ${Math.sin(y / 260) * 10 * k}px) rotate(${Math.sin(y / 400) * 1.5}deg)`;
+    });
+  });
+}, { passive: true });
+
 /* Que se note cuando cambia el video o salta a otro minuto */
 let timerAviso = null;
 function marcarCambio(texto) {
@@ -301,8 +344,9 @@ function enlazarAlumno() {
       else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO() };
       guardarAlumno(); renderAlumno();
     } else if (d.standard) {
+      const primera = !ST.standard;
       ST.standard = d.standard; ST.prog.p5 = { hecho: true, como: 'listo', t: hoyISO() };
-      guardarAlumno(); renderAlumno();
+      guardarAlumno(); renderAlumno(); if (primera || ST.standard) confeti(b);
     } else if (d.extra !== undefined && b.tagName === 'INPUT') {
       const x = ST.extras.find(x => x.id === d.extra); x.hecho = b.checked; guardarAlumno(); setTimeout(() => renderAlumno(), 250);
     } else if (d.accion === 'clase') {
@@ -321,5 +365,22 @@ function enlazarFormStandard() {
   const f = document.querySelector('[data-form-standard]'); if (!f) return;
   f.onsubmit = ev => { ev.preventDefault(); const v = new FormData(f).get('otro').trim(); if (!v) return;
     ST.standard = v; ST.prog.p5 = { hecho: true, como: 'listo', t: hoyISO() }; guardarAlumno(); renderAlumno(); };
+}
+/* Confeti al elegir el standard */
+function confeti(origen) {
+  if (reduceMotion) return;
+  const r = origen.getBoundingClientRect();
+  const c = document.createElement('canvas'); c.className = 'confeti'; c.width = innerWidth; c.height = innerHeight;
+  document.body.appendChild(c); const g = c.getContext('2d');
+  const colores = ['#E8834F', '#FFFFFF', '#5D7BB6', '#F2B591', '#C24A22'];
+  const ps = Array.from({ length: 110 }, () => ({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 3,
+    s: 4 + Math.random() * 5, a: Math.random() * 6, va: (Math.random() - .5) * .3, col: colores[Math.floor(Math.random() * colores.length)] }));
+  let f = 0;
+  (function paso() {
+    g.clearRect(0, 0, c.width, c.height);
+    ps.forEach(p => { p.vy += .32; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      g.save(); g.translate(p.x, p.y); g.rotate(p.a); g.fillStyle = p.col; g.globalAlpha = Math.max(0, 1 - f / 110); g.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); g.restore(); });
+    if (++f < 110) requestAnimationFrame(paso); else c.remove();
+  })();
 }
 function enfocar(sel) { requestAnimationFrame(() => { const el = $(sel); el && el.focus({ preventScroll: true }); }); }
