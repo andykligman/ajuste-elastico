@@ -5,7 +5,6 @@
    ===================================================================== */
 const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
-const DOC_ENTRENAMIENTO = 'https://docs.google.com/document/d/19vNF5KkcPosVXsBOhwcwwpQZKdPk3Y0U5HtVnBXN_yc/edit';
 const WHATSAPP_ANDY = '';   // número con código de país, sin + ni espacios (ej. 5491112345678)
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
@@ -78,11 +77,11 @@ const PROGRAMA = {
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los intervalos enteros (7ma mayor, 5ta disminuida, etc.) en voz alta, en las 4 posiciones para los 4 tipos de acorde. Por ahora, solo las posiciones en las primeras 3 cuerdas.',
-      recursos: [{ t: 'Entrenamiento gratuito de arpegios', url: DOC_ENTRENAMIENTO }, { t: 'Doc: Previa técnica, arpegios base', url: DOC_PREVIA }],
+      recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
         { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: '¡Seguí adelante!' },
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
-          resp: 'Separá la información: trabajá sobre las que todavía no salen y tomate el tiempo que necesites para aprenderlas bien. Si lo que te sale es solo en las primeras 3 cuerdas, está perfecto: vamos a trabajar en profundidad con esas cuerdas en la primera parte del programa y no hace falta más por ahora. Estás listo para seguir avanzando.' },
+          resp: 'Si lo que te sale es solo en las primeras tres cuerdas, está perfecto. Vamos a trabajar en profundidad con esas cuerdas en la primera parte del programa y no hace falta más por ahora. Mandame un video y vas a estar listo para seguir avanzando.\n\nSi estás teniendo inconvenientes con algunas posiciones en estas primeras tres cuerdas, separá la información. Trabajá solo sobre las que todavía no salen y tomate el tiempo que necesites para aprenderlas bien, revisando despacito, para arriba y para abajo. Aislar lo que nos cuesta y trabajar en eso es una de las cosas más importantes de la práctica.' },
         { id: 'dudo', label: 'Todavía dudo en casi todas', nivel: 'cuesta',
           resp: 'Escribile a Andy por WhatsApp y lo ven juntos.', muestra: ['dedos'] },
       ],

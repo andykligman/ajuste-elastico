@@ -104,6 +104,7 @@ a.mat svg{color:var(--azul-txt)}
 .respuesta{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;border:1.5px solid var(--azul);background:var(--azul-velo);animation:aparecerResp .35s cubic-bezier(.2,.8,.3,1) both}
 @keyframes aparecerResp{from{opacity:0;transform:translateY(4px) scale(.98)}}
 .respuesta p{margin:0 0 4px;color:var(--tinta)}
+.respuesta p:not(.resp-tit) + p{margin-top:10px}
 .resp-tit{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.01em;color:var(--azul-txt)!important;margin-bottom:2px!important}
 .resp-ico{flex:none;width:28px;height:28px;margin-top:1px;color:var(--azul-txt)}
 .resp-ico svg{width:28px;height:28px}

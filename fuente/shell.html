@@ -65,9 +65,9 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .link-inv p{margin:0 0 6px}
 .fila-botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 /* Aviso de guardado */
-#aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--blanco);padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
+#aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--fondo);font-weight:600;padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
 #aviso.visible{opacity:1;transform:none}
-#aviso.error{background:var(--oxido)}
+#aviso.error{background:var(--oxido);color:var(--blanco)}
 
 /* Panel de Andy */
 .admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}

@@ -157,6 +157,7 @@ a.mat svg{color:var(--azul-txt)}
 .respuesta{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;border:1.5px solid var(--azul);background:var(--azul-velo);animation:aparecerResp .35s cubic-bezier(.2,.8,.3,1) both}
 @keyframes aparecerResp{from{opacity:0;transform:translateY(4px) scale(.98)}}
 .respuesta p{margin:0 0 4px;color:var(--tinta)}
+.respuesta p:not(.resp-tit) + p{margin-top:10px}
 .resp-tit{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.01em;color:var(--azul-txt)!important;margin-bottom:2px!important}
 .resp-ico{flex:none;width:28px;height:28px;margin-top:1px;color:var(--azul-txt)}
 .resp-ico svg{width:28px;height:28px}
@@ -266,9 +267,9 @@ a.mat svg{color:var(--azul-txt)}
 .link-inv p{margin:0 0 6px}
 .fila-botones{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 /* Aviso de guardado */
-#aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--blanco);padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
+#aviso{position:fixed;right:16px;bottom:16px;background:var(--tinta);color:var(--fondo);font-weight:600;padding:8px 14px;border-radius:999px;font-size:14px;opacity:0;transform:translateY(8px);transition:.2s;pointer-events:none;z-index:9}
 #aviso.visible{opacity:1;transform:none}
-#aviso.error{background:var(--oxido)}
+#aviso.error{background:var(--oxido);color:var(--blanco)}
 
 /* Panel de Andy */
 .admin{max-width:1240px;margin:0 auto;padding:6px 20px 80px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
@@ -353,7 +354,6 @@ const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aju
    ===================================================================== */
 const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
-const DOC_ENTRENAMIENTO = 'https://docs.google.com/document/d/19vNF5KkcPosVXsBOhwcwwpQZKdPk3Y0U5HtVnBXN_yc/edit';
 const WHATSAPP_ANDY = '';   // número con código de país, sin + ni espacios (ej. 5491112345678)
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
@@ -426,11 +426,11 @@ const PROGRAMA = {
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los intervalos enteros (7ma mayor, 5ta disminuida, etc.) en voz alta, en las 4 posiciones para los 4 tipos de acorde. Por ahora, solo las posiciones en las primeras 3 cuerdas.',
-      recursos: [{ t: 'Entrenamiento gratuito de arpegios', url: DOC_ENTRENAMIENTO }, { t: 'Doc: Previa técnica, arpegios base', url: DOC_PREVIA }],
+      recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
         { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: '¡Seguí adelante!' },
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
-          resp: 'Separá la información: trabajá sobre las que todavía no salen y tomate el tiempo que necesites para aprenderlas bien. Si lo que te sale es solo en las primeras 3 cuerdas, está perfecto: vamos a trabajar en profundidad con esas cuerdas en la primera parte del programa y no hace falta más por ahora. Estás listo para seguir avanzando.' },
+          resp: 'Si lo que te sale es solo en las primeras tres cuerdas, está perfecto. Vamos a trabajar en profundidad con esas cuerdas en la primera parte del programa y no hace falta más por ahora. Mandame un video y vas a estar listo para seguir avanzando.\n\nSi estás teniendo inconvenientes con algunas posiciones en estas primeras tres cuerdas, separá la información. Trabajá solo sobre las que todavía no salen y tomate el tiempo que necesites para aprenderlas bien, revisando despacito, para arriba y para abajo. Aislar lo que nos cuesta y trabajar en eso es una de las cosas más importantes de la práctica.' },
         { id: 'dudo', label: 'Todavía dudo en casi todas', nivel: 'cuesta',
           resp: 'Escribile a Andy por WhatsApp y lo ven juntos.', muestra: ['dedos'] },
       ],
@@ -1076,7 +1076,7 @@ function respuestaHTML(sel) {
   const ok = sel.nivel === 'listo';
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p><p>${esc(sel.resp)}</p>${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${String(sel.resp).split('\n\n').map(t => `<p>${esc(t)}</p>`).join('')}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }

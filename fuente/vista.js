@@ -138,7 +138,7 @@ function respuestaHTML(sel) {
   const ok = sel.nivel === 'listo';
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p><p>${esc(sel.resp)}</p>${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${String(sel.resp).split('\n\n').map(t => `<p>${esc(t)}</p>`).join('')}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
