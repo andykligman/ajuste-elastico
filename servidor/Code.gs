@@ -19,6 +19,10 @@ const COLUMNAS = ['codigo', 'nombre', 'email', 'standard', 'nivel', 'inicio', 'c
 const JSON_COLS = ['extras', 'prog', 'probs'];
 const PRIVADAS = ['hash', 'sal', 'invitacion'];      // nunca salen de la planilla
 const DIAS_SESION = 180;
+const CARPETA_VIDEOS = 'Aula AE - Videos';            // en tu Drive, una subcarpeta por alumno
+const ORIGEN = 'https://andykligman.github.io';        // la página que sube los videos
+const DIAS_VIDEOS = 90;                                // después van a la papelera de Drive
+const MB_MAX = 400;
 
 function configurar() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -87,6 +91,27 @@ function manejar(d) {
         a.datos.act = hoy();
         escribir(a.fila, a.datos);
         return { ok: true };
+      }
+
+      /* ----- Videos: el navegador sube directo a tu Drive; acá solo se abre la subida ----- */
+      case 'video.iniciar': {
+        const a = alumnoDeSesion(d.token);
+        const paso = String(d.paso || '');
+        if (!/^[a-z0-9]{1,8}$/.test(paso)) throw new Error('Paso inválido');
+        const tam = Number(d.tam) || 0;
+        if (tam <= 0 || tam > MB_MAX * 1024 * 1024) throw new Error('El video es demasiado largo. Grabá uno más corto (hasta unos minutos).');
+        const mime = /^video\/[\w.+-]+$/.test(String(d.mime || '').split(';')[0]) ? String(d.mime).split(';')[0] : 'video/mp4';
+        const ext = /webm/.test(mime) ? 'webm' : /quicktime/.test(mime) ? 'mov' : 'mp4';
+        const nombre = `${a.datos.nombre} - ${paso} - ${Utilities.formatDate(new Date(), ZONA, 'yyyy-MM-dd HH.mm')}.${ext}`;
+        asegurarLimpieza();
+        const r = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
+          method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+          payload: JSON.stringify({ name: nombre, mimeType: mime, parents: [carpetaAlumno(a.datos).getId()] }),
+          headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(tam), Origin: ORIGEN }
+        });
+        const url = r.getHeaders().Location || r.getHeaders().location;
+        if (!url) throw new Error('No se pudo empezar a subir el video. Probá de nuevo en un rato.');
+        return { url };
       }
 
       /* ----- Panel de Andy ----- */
@@ -214,3 +239,29 @@ function aFila(o) {
   return COLUMNAS.map(k => JSON_COLS.includes(k) ? JSON.stringify(o[k] || (k === 'extras' ? [] : {})) : (o[k] === undefined || o[k] === null ? '' : String(o[k])));
 }
 function escribir(fila, o) { hoja().getRange(fila, 1, 1, COLUMNAS.length).setValues([aFila(o)]); }
+
+/* ----- Videos en Drive ----- */
+function carpetaVideos() {
+  const it = DriveApp.getFoldersByName(CARPETA_VIDEOS);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(CARPETA_VIDEOS);
+}
+function carpetaAlumno(al) {
+  const raiz = carpetaVideos(), nombre = `${al.nombre} (${al.codigo})`;
+  const it = raiz.getFoldersByName(nombre);
+  return it.hasNext() ? it.next() : raiz.createFolder(nombre);
+}
+// Todos los días: los videos de más de DIAS_VIDEOS días van a la papelera (se recuperan durante 30 días)
+function limpiarVideos() {
+  const limite = Date.now() - DIAS_VIDEOS * 86400000;
+  const subs = carpetaVideos().getFolders();
+  while (subs.hasNext()) {
+    const fs = subs.next().getFiles();
+    while (fs.hasNext()) { const f = fs.next(); if (f.getDateCreated().getTime() < limite) f.setTrashed(true); }
+  }
+}
+function asegurarLimpieza() {
+  if (!ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === 'limpiarVideos'))
+    ScriptApp.newTrigger('limpiarVideos').timeBased().everyDays(1).atHour(4).create();
+}
+// Para correr una vez a mano después de pegar este archivo: crea la carpeta y pide los permisos de Drive
+function configurarVideos() { carpetaVideos(); asegurarLimpieza(); Logger.log('Listo: carpeta "' + CARPETA_VIDEOS + '" en tu Drive.'); }

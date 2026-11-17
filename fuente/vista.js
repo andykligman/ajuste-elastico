@@ -7,6 +7,7 @@
 const ICONO = {
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  girar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a8 8 0 0 1 14.5-3.5L20 7M20 15a8 8 0 0 1-14.5 3.5L4 17M20 3v4h-4M4 21v-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   enviar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-7-6 15-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#0E1F16" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -166,14 +167,25 @@ function tarjetaHTML(st, e, p) {
 }
 
 function envioHTML(st, p) {
-  const ok = !!st.prog[p.id]?.envio;
+  const pr = st.prog[p.id] || {};
+  const ok = !!pr.envio;
+  const vids = pr.videos || [];
+  const conVideo = /video/.test(p.entrega || '');
   const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
+  const lista = vids.length ? `<ul class="vids">${vids.map((v, i) => `<li>${ICONO.check}<span>Video del ${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}</span>
+      ${modo === 'admin-vista' ? `<button class="link" data-ver-video="${p.id}:${i}">${v.visto ? 'Ver' : 'Ver (nuevo)'}</button>` : ''}</li>`).join('')}</ul>` : '';
+  const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
+      <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy por WhatsApp ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
-    ${ok ? '' : `<p class="envio-c">Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
-    <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>Ya se lo mandé</span></label></div>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    ${ok ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandáselo por WhatsApp.' : 'Mandáselo por WhatsApp.'} Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
+    ${lista}
+    <div class="fila-botones">${botonesVideo}</div>
+    <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo && !vids.length ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>
   </div>`;
 }
+function fechaCorta(f) { const [y, m, d] = String(f || '').split('-'); return d ? `${+d}/${+m}` : ''; }
+function duracion(seg) { seg = Math.round(seg); return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, '0')}`; }
 
 const OLAS = [0, 34, 68, 34];
 let verTodo = false;   // por defecto solo se ve el paso anterior, el actual y el siguiente
@@ -401,6 +413,7 @@ function abrirPaso(id) {
 
 function enlazarAlumno() {
   const root = app();
+  root.onchange = ev => { const f = ev.target.closest('input[data-subir]'); if (f && f.files[0]) abrirGrabador(f.dataset.subir, f.files[0]); };
   root.onclick = ev => {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
@@ -408,14 +421,17 @@ function enlazarAlumno() {
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.op) {
       const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
-      if (opcionElegida(ST, PASO[id]) === o) delete ST.prog[id];
-      else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}) };
+      const vids = ST.prog[id]?.videos;
+      if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
+      else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}), ...(vids ? { videos: vids } : {}) };
       guardarAlumno(); renderAlumno();
     } else if (d.standard) {
       const primera = !ST.standard;
       ST.standard = d.standard; ST.prog.p5 = { hecho: true, como: 'listo', t: hoyISO() };
       guardarAlumno(); renderAlumno(); if (primera || ST.standard) confeti(b);
-    } else if (d.envio && b.tagName === 'INPUT') {
+    } else if (d.grabar) abrirGrabador(d.grabar);
+    else if (d.verVideo) { const [pid, i] = d.verVideo.split(':'); verVideoAdmin(ST, pid, +i, () => { guardarAlumno(); renderAlumno(); }); }
+    else if (d.envio && b.tagName === 'INPUT') {
       const pr = ST.prog[d.envio]; if (!pr) return;
       if (b.checked) pr.envio = true; else delete pr.envio;
       guardarAlumno(); setTimeout(() => { renderAlumno(); if (b.checked) requestAnimationFrame(() => { const s = document.querySelector('.seguir'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }); }, 200);
@@ -474,3 +490,176 @@ function instalarAppHTML() {
     ${avisoInstalar ? `<button class="ia-si" data-accion="instalar-app">Instalar</button>` : `<a href="instalar.html">Ver cómo</a>`}
     <button class="ia-no" data-accion="no-instalar" aria-label="Cerrar">×</button></div>`;
 }
+
+/* ================= Grabar y mandar videos ================= */
+// Se graba liviano (≈2 Mbps, unos 15-20 MB por minuto) y sin reducción de ruido, para que la guitarra suene natural.
+const GRAB = { maxSeg: 300, vbps: 2000000, abps: 128000 };
+let gr = null;   // estado del grabador abierto
+
+function tipoGrabacion() {
+  if (typeof MediaRecorder === 'undefined') return '';
+  return ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm']
+    .find(t => { try { return MediaRecorder.isTypeSupported(t); } catch (e) { return false; } }) || '';
+}
+
+function abrirGrabador(pasoId, archivo) {
+  cerrarGrabador();
+  const p = PASO[pasoId];
+  const el = document.createElement('div');
+  el.className = 'grabador'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Grabar video');
+  el.innerHTML = `<div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">×</button>
+      <div><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div></div>
+    <div class="gr-pantalla"><video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline controls hidden></video>
+      <p class="gr-msg" hidden></p><span class="gr-reloj" hidden>0:00</span></div>
+    <div class="gr-pie"></div>`;
+  document.body.appendChild(el); document.body.classList.add('con-grabador');
+  gr = { el, pasoId, cam: 'user', stream: null, rec: null, partes: [], blob: null, seg: 0, t0: 0, timer: null, subiendo: false };
+  el.onclick = ev => { const b = ev.target.closest('[data-gr]'); if (b) accionGrabador(b.dataset.gr); };
+  if (archivo) { gr.blob = archivo; mostrarRevision(true); }
+  else prenderCamara();
+}
+
+function piesGrabador(html) { gr.el.querySelector('.gr-pie').innerHTML = html; }
+function msgGrabador(t) { const m = gr.el.querySelector('.gr-msg'); m.hidden = !t; m.textContent = t || ''; }
+
+async function prenderCamara() {
+  apagarCamara();
+  msgGrabador('');
+  if (!navigator.mediaDevices?.getUserMedia || !tipoGrabacion()) {
+    msgGrabador('Este navegador no deja grabar desde la página. Usá «Subir uno que ya tengo» o mandalo por WhatsApp.');
+    piesGrabador(`<button class="secundario" data-gr="cerrar">Cerrar</button>`); return;
+  }
+  try {
+    gr.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: gr.cam, width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: { ideal: 2 } },
+    });
+  } catch (e) {
+    msgGrabador('No pude usar la cámara. Fijate de darle permiso a la página para usar la cámara y el micrófono, y volvé a intentar.');
+    piesGrabador(`<button class="primario" data-gr="reintentar">Volver a intentar</button>`); return;
+  }
+  const v = gr.el.querySelector('.gr-vivo');
+  v.srcObject = gr.stream; v.hidden = false; v.classList.toggle('espejo', gr.cam === 'user');
+  gr.el.querySelector('.gr-ver').hidden = true;
+  piesGrabador(`<span class="gr-lado"></span><button class="gr-rec" data-gr="grabar" aria-label="Empezar a grabar"><i></i></button>
+    <button class="gr-lado gr-girar" data-gr="girar" aria-label="Cambiar de cámara">${ICONO.girar}</button>`);
+}
+function apagarCamara() { if (gr?.stream) gr.stream.getTracks().forEach(t => t.stop()); if (gr) gr.stream = null; }
+
+function empezarGrabacion() {
+  const tipo = tipoGrabacion();
+  try { gr.rec = new MediaRecorder(gr.stream, { mimeType: tipo, videoBitsPerSecond: GRAB.vbps, audioBitsPerSecond: GRAB.abps }); }
+  catch (e) { gr.rec = new MediaRecorder(gr.stream); }
+  gr.partes = [];
+  gr.rec.ondataavailable = ev => { if (ev.data && ev.data.size) gr.partes.push(ev.data); };
+  gr.rec.onstop = () => {
+    gr.blob = new Blob(gr.partes, { type: (gr.rec.mimeType || tipo || 'video/mp4').split(';')[0] });
+    gr.seg = (Date.now() - gr.t0) / 1000;
+    apagarCamara(); mostrarRevision();
+  };
+  gr.rec.start(1000); gr.t0 = Date.now();
+  const reloj = gr.el.querySelector('.gr-reloj'); reloj.hidden = false; reloj.textContent = '0:00';
+  gr.timer = setInterval(() => {
+    const s = (Date.now() - gr.t0) / 1000; reloj.textContent = duracion(s);
+    if (s >= GRAB.maxSeg) pararGrabacion();
+  }, 250);
+  piesGrabador(`<span class="gr-lado"></span><button class="gr-rec grabando" data-gr="parar" aria-label="Terminar"><i></i></button><span class="gr-lado"></span>`);
+}
+function pararGrabacion() { clearInterval(gr.timer); gr.el.querySelector('.gr-reloj').hidden = true; if (gr.rec?.state === 'recording') gr.rec.stop(); }
+
+function mostrarRevision(deGaleria) {
+  const v = gr.el.querySelector('.gr-ver');
+  gr.el.querySelector('.gr-vivo').hidden = true;
+  if (gr.url) URL.revokeObjectURL(gr.url);
+  gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false;
+  v.onloadedmetadata = () => { if (isFinite(v.duration)) gr.seg = v.duration; };
+  const mb = gr.blob.size / 1048576;
+  msgGrabador(mb > 380 ? 'Este video es muy pesado para subirlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
+  piesGrabador(`${deGaleria ? `<button class="secundario" data-gr="cerrar">Cancelar</button>` : `<button class="secundario" data-gr="otra">Grabar de nuevo</button>`}
+    ${mb > 380 ? '' : `<button class="primario" data-gr="enviar">${ICONO.enviar}Mandar a Andy</button>`}`);
+}
+
+async function accionGrabador(a) {
+  if (!gr) return;
+  if (a === 'cerrar') { if (gr.subiendo && !confirmarCierre()) return; cerrarGrabador(); }
+  else if (a === 'reintentar') prenderCamara();
+  else if (a === 'girar') { gr.cam = gr.cam === 'user' ? 'environment' : 'user'; prenderCamara(); }
+  else if (a === 'grabar') empezarGrabacion();
+  else if (a === 'parar') pararGrabacion();
+  else if (a === 'otra') { gr.blob = null; prenderCamara(); }
+  else if (a === 'enviar') subirVideo();
+}
+function confirmarCierre() { return gr.el.querySelector('.gr-pie').dataset.salir === '1' || (gr.el.querySelector('.gr-pie').dataset.salir = '1', msgGrabador('El video se está subiendo. Si cerrás ahora, se corta. Tocá la × de nuevo para cerrar igual.'), false); }
+function cerrarGrabador() {
+  if (!gr) return;
+  clearInterval(gr.timer); if (gr.rec?.state === 'recording') { gr.rec.onstop = null; gr.rec.stop(); }
+  apagarCamara(); if (gr.url) URL.revokeObjectURL(gr.url);
+  gr.el.remove(); document.body.classList.remove('con-grabador'); gr = null;
+}
+
+async function subirVideo() {
+  const blob = gr.blob, pasoId = gr.pasoId;
+  gr.subiendo = true; msgGrabador('');
+  const barra = p => piesGrabador(`<div class="gr-subida"><div class="gr-barra"><i style="width:${Math.round(p * 100)}%"></i></div>
+    <p>Mandando el video… ${Math.round(p * 100)}%<br><small>No cierres esta pantalla hasta que termine.</small></p></div>`);
+  barra(0);
+  try {
+    let id;
+    if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 120)); barra(k / 10); } id = 'demo-' + Date.now(); }
+    else {
+      const mime = blob.type || 'video/mp4';
+      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: pasoId, mime, tam: blob.size });
+      id = await subirPorPartes(url, blob, mime, barra);
+    }
+    if (!gr) return;
+    const pr = ST.prog[pasoId] || (ST.prog[pasoId] = {});
+    pr.videos = [...(pr.videos || []), { id, t: hoyISO(), seg: Math.round(gr.seg || 0) }];
+    pr.envio = true;
+    guardarAlumno();
+    piesGrabador(`<div class="gr-subida listo">${ICONO.check}<p><strong>¡Listo! Andy ya tiene tu video.</strong></p></div>`);
+    gr.subiendo = false;
+    setTimeout(() => { cerrarGrabador(); renderAlumno(); }, 1600);
+  } catch (e) {
+    if (!gr) return;
+    gr.subiendo = false;
+    msgGrabador(/Acción desconocida/.test(e.message || '') ? 'Todavía no se pueden mandar videos desde acá. Por ahora mandáselo a Andy por WhatsApp.' : (e.message || 'No se pudo mandar el video.'));
+    piesGrabador(`<button class="secundario" data-gr="cerrar">Cancelar</button><button class="primario" data-gr="enviar">Volver a intentar</button>`);
+  }
+}
+
+// Subida en partes de 8 MB directo a Drive (si se corta la señal, se reintenta la parte que faltaba)
+function subirPorPartes(url, blob, mime, progreso) {
+  const PARTE = 8 * 1024 * 1024;
+  const mandar = (desde, intento) => new Promise((ok, mal) => {
+    const hasta = Math.min(desde + PARTE, blob.size);
+    const x = new XMLHttpRequest();
+    x.open('PUT', url);
+    x.setRequestHeader('Content-Range', `bytes ${desde}-${hasta - 1}/${blob.size}`);
+    x.upload.onprogress = ev => progreso((desde + ev.loaded) / blob.size);
+    x.onload = () => {
+      if (x.status === 200 || x.status === 201) { try { ok(JSON.parse(x.responseText).id); } catch (e) { ok(''); } }
+      else if (x.status === 308) mandar(hasta, 0).then(ok, mal);
+      else if (intento < 3) setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 1500 * (intento + 1));
+      else mal(new Error('Se cortó la subida. Revisá la conexión y tocá «Volver a intentar».'));
+    };
+    x.onerror = () => intento < 3 ? setTimeout(() => mandar(desde, intento + 1).then(ok, mal), 2000 * (intento + 1)) : mal(new Error('Se cortó la conexión mientras subía el video. Tocá «Volver a intentar».'));
+    x.send(blob.slice(desde, hasta));
+  });
+  return mandar(0, 0);
+}
+
+/* Andy mira el video desde el panel (se reproduce desde su Drive) */
+function verVideoAdmin(al, pasoId, i, alMarcar) {
+  const v = al.prog?.[pasoId]?.videos?.[i]; if (!v) return;
+  const el = document.createElement('div');
+  el.className = 'grabador ver-video';
+  el.innerHTML = `<div class="gr-cab"><button class="gr-x" aria-label="Cerrar">×</button>
+    <div><small>${esc(al.nombre)} · ${fechaCorta(v.t)}</small><strong>${esc(PASO[pasoId].titulo)}</strong></div>
+    <a class="link gr-drive" href="https://drive.google.com/file/d/${encodeURIComponent(v.id)}/view" target="_blank" rel="noopener">Abrir en Drive</a></div>
+    <div class="gr-pantalla">${String(v.id).startsWith('demo-') ? '<p class="gr-msg">Video de prueba (modo demo)</p>' : `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(v.id)}/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>`}</div>
+    <p class="gr-nota">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>`;
+  document.body.appendChild(el); document.body.classList.add('con-grabador');
+  el.querySelector('.gr-x').onclick = () => { el.remove(); document.body.classList.remove('con-grabador'); };
+  if (!v.visto) { v.visto = true; alMarcar && alMarcar(); }
+}
+function videosNuevos(al) { return Object.values(al.prog || {}).reduce((n, x) => n + (x.videos || []).filter(v => !v.visto).length, 0); }

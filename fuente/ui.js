@@ -181,8 +181,9 @@ function renderAdmin() {
         <thead><tr><th>Alumno</th><th>Próxima</th><th>Estado</th><th>Nivel</th><th>Último movimiento</th></tr></thead>
         <tbody>${filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
+          const nvid = videosNuevos(a);
           return `<tr class="${sel && sel.codigo === a.codigo ? 'sel' : ''}" data-elegir="${esc(a.codigo)}" tabindex="0">
-            <td><strong>${esc(a.nombre)}</strong>${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
+            <td><strong>${esc(a.nombre)}</strong>${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}</td>
             <td class="nw">${e.k <= 4 ? 'Clase ' + e.k : 'Módulo 2'}</td>
             <td><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></td>
             <td>${a.nivel}</td>
@@ -245,6 +246,7 @@ function detalleHTML(a) {
     <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>
   </div>
 
+  ${videosAdmHTML(a)}
   ${probs.length ? `<div class="bloque"><h3>Problemas que marcó</h3><ul class="probs-adm">${probs.map(x => `<li><span class="suave">${esc(PASO[x.pid].titulo)}:</span> ${esc(x.q.q)}</li>`).join('')}</ul></div>` : ''}
 
   <div class="bloque">
@@ -294,6 +296,7 @@ function enlazarAdmin() {
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
     if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
+    if (d.verVideo && a) { const [pid, i] = d.verVideo.split(':'); verVideoAdmin(a, pid, +i, () => guardarAdm(a)); return; }
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
@@ -358,3 +361,11 @@ window.addEventListener('resize', () => {
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
   TOKEN ? entrarConSesion() : renderEntrada();
 })();
+
+function videosAdmHTML(a) {
+  const l = Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid])
+    .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
+  if (!l.length) return '';
+  return `<div class="bloque"><h3>Videos que mandó</h3><ul class="vids-adm">${l.map(({ pid, v, i }) => `<li class="${v.visto ? '' : 'nuevo'}">
+    <button class="link" data-ver-video="${pid}:${i}">${esc(PASO[pid].titulo)}</button><span class="suave">${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}${v.visto ? '' : ' · nuevo'}</span></li>`).join('')}</ul></div>`;
+}
