@@ -282,6 +282,11 @@ body:has(.barra-clase) #aviso{bottom:104px}
   .bc-sig span{font-size:13.5px}
 }
 
+/* Ver el resto del camino (por defecto solo paso anterior, actual y siguiente) */
+.mas-pasos{position:relative;z-index:1;display:block;margin:14px 0 14px 64px;padding:8px 14px;border-radius:999px;border:1px dashed #3A3D45;background:var(--fondo);color:var(--gris);font-size:14.5px;font-weight:600}
+.mas-pasos:hover{color:var(--tinta);border-color:var(--gris)}
+@media (max-width:560px){.mas-pasos{margin-left:58px}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -450,7 +455,7 @@ const PROGRAMA = {
   pasos: [
     /* ---------- Pre-sincrónico ---------- */
     {
-      id: 'p2', etapa: 'pre', entrega: 'video',
+      id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los intervalos enteros (7ma mayor, 5ta disminuida, etc.) en voz alta, en las 4 posiciones para los 4 tipos de acorde. Por ahora, solo las posiciones en las primeras 3 cuerdas.',
@@ -468,7 +473,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p3', etapa: 'pre', entrega: 'video',
+      id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
       detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos el nombre del intervalo: "siete, uno, tres" en vez de "séptima mayor, tónica, tercera mayor". Así no es tan engorroso y fluye mejor. Si aparecen errores, se corrigen al vuelo, o frenás el metrónomo, corregís en la pausa y retomás.',
@@ -481,7 +486,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p4', etapa: 'pre', entrega: 'video',
+      id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Aplicar el skipping',
       detalle: 'Repetí los dos pasos anteriores aplicando el skipping: primero sin tempo y después a tempo. Sirve para desordenar la información y asegurarte de que la asimilaste de verdad, no solo para arriba y para abajo.',
@@ -513,10 +518,15 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p6', etapa: 'pre', entrega: 'video o texto', sinProgreso: true,
+      id: 'p6', etapa: 'pre', entrega: 'video o texto', envia: 'un video corto o un texto con las posiciones que vas a usar para los primeros 4 acordes del standard.', sinProgreso: true,
       video: { id: 'PqJhew7HiLs' },
       titulo: 'Mostrar compases, acordes y posiciones',
-      detalle: 'Mirá este breve video sobre cómo acomodar las posiciones para realizar bien el ejercicio, y mandale a Andy un video corto o un texto indicando qué posiciones vas a usar para los primeros 4 acordes del standard.',
+      detalle: 'Este video corto muestra cómo acomodar las posiciones para que el ejercicio funcione: una por acorde y todas en la misma zona del diapasón.',
+      pregunta: '¿Se entendió el video?',
+      progreso: [
+        { id: 'listo', label: 'Sí, se entendió', nivel: 'listo' },
+        { id: 'duda', label: 'No del todo', nivel: 'cuesta', resp: 'Volvé a verlo con la guitarra en la mano. Si sigue sin cerrar, mandale igual tus posiciones a Andy y contale qué parte no entendiste.' },
+      ],
       recursos: [{ t: 'Video: cómo ordenar las posiciones para que funcione el ejercicio', url: 'https://www.youtube.com/watch?v=PqJhew7HiLs' }],
       problemas: [
         { id: 'zonas', q: 'Las posiciones me quedan en distintas zonas del diapasón',
@@ -536,7 +546,7 @@ const PROGRAMA = {
 
     /* ---------- Enlaces ---------- */
     {
-      id: 'e1', etapa: 'enlaces', entrega: 'video',
+      id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre tus 4 compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
       detalle: 'Las mismas reglas que sin tempo, ahora con metrónomo o iReal. Subí un poco el tempo con los días.\nUna vez que el ejercicio camina, es cuestión de encontrar los diferentes enlaces posibles dentro de esta limitación. La idea es no repetir mucho los enlaces e ir a buscar nuevos, empezando desde diferentes notas, o desde notas ya usadas pero en otra dirección.\nSe recomienda tener el [PDF](' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
@@ -569,7 +579,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e2', etapa: 'enlaces', entrega: 'video',
+      id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
       video: { id: 'TylWJrfPxu0', t: 1516 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
       titulo: 'Dirección melódica libre',
@@ -581,7 +591,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e3', etapa: 'enlaces', entrega: 'video',
+      id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video improvisando con ritmo libre sobre las mismas notas y compases.',
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'musica', label: 'Suena a música, dejo espacios', nivel: 'listo' }, { id: 'notas', label: 'Me sale, pero toco muchas notas', nivel: 'casi', muestra: ['muchas'] }, { id: 'pierdo', label: 'Me pierdo cuando suelto el ritmo', nivel: 'cuesta', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
@@ -619,7 +629,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
     },
     {
-      id: 'a2', etapa: 'antic', entrega: 'video',
+      id: 'a2', etapa: 'antic', entrega: 'video', envia: 'un video de las anticipaciones con ritmo fijo sobre tus compases.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [ { id: 'varias', label: 'Me sale a tempo en 2 o 3 cuerdas', nivel: 'listo' }, { id: 'una', label: 'Me sale con 1 cuerda o 1 nota por acorde', nivel: 'casi' }, { id: 'no', label: 'A tempo no me sale', nivel: 'cuesta', muestra: ['tempo'] } ],
       titulo: 'Anticipaciones con ritmo fijo',
@@ -631,7 +641,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'a3', etapa: 'antic', entrega: 'video',
+      id: 'a3', etapa: 'antic', entrega: 'video', envia: 'un video improvisando con ritmo libre y anticipando a veces el acorde que viene.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [ { id: 'natural', label: 'Anticipo a veces y suena natural', nivel: 'listo' }, { id: 'forzado', label: 'Anticipo, pero suena forzado', nivel: 'casi', muestra: ['forzado'] }, { id: 'olvido', label: 'Me olvido de anticipar o me pierdo', nivel: 'cuesta' } ],
       titulo: 'Ritmo libre, anticipando a veces',
@@ -670,7 +680,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 's3', etapa: 'super', entrega: 'video',
+      id: 's3', etapa: 'super', entrega: 'video', envia: 'un video de los enlaces con las superposiciones, en esos pocos compases.',
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       titulo: 'Enlaces con superposiciones',
       detalle: 'Repetí el proceso de enlaces (fijo, después libre) reemplazando los acordes originales por las superposiciones, en pocos compases. Ubicá las notas en pocas cuerdas, no más de 4 por acorde. Cantá y anticipate al acorde que viene.',
@@ -679,13 +689,13 @@ const PROGRAMA = {
 
     /* ---------- Módulo 2 ---------- */
     {
-      id: 'm1', etapa: 'm2', entrega: 'video',
+      id: 'm1', etapa: 'm2', entrega: 'video', envia: 'los videos de las ejercitaciones 1 y 2 de Cromáticos ascendentes.',
       titulo: 'Cromáticos ascendentes: ejercitaciones 1 y 2',
       detalle: 'En el módulo ADN del Jazz, mirá el video de Cromáticos Ascendentes, usá el PDF y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3.',
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
-      id: 'm2', etapa: 'm2', entrega: 'audio',
+      id: 'm2', etapa: 'm2', entrega: 'audio', envia: 'el audio de 30 segundos cantando el solo encima de la pista.',
       titulo: 'Elegir un solo y cantar 30 segundos',
       detalle: 'Mirá "Cómo transcribir eficientemente", descargá Audiostretch y cantá 30 segundos del solo elegido encima de la pista. Mandá el audio.',
     },
@@ -1089,8 +1099,8 @@ function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  return `<div class="pregunta"><h4>¿Cómo te fue?</h4>
-    <div class="ops" role="radiogroup" aria-label="Cómo te fue">
+  return `<div class="pregunta"><h4>${esc(p.pregunta || '¿Cómo te fue?')}</h4>
+    <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
     ${sel && sel.resp ? respuestaHTML(sel) : ''}
@@ -1135,41 +1145,55 @@ function envioHTML(st, p) {
   const ok = !!st.prog[p.id]?.envio;
   const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya le mandaste el ${esc(p.entrega)} a Andy` : `Antes de seguir, mandale el ${esc(p.entrega)} a Andy por WhatsApp`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy por WhatsApp ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok ? '' : `<p class="envio-c">Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>Ya se lo mandé</span></label></div>
   </div>`;
 }
 
 const OLAS = [0, 34, 68, 34];
+let verTodo = false;   // por defecto solo se ve el paso anterior, el actual y el siguiente
+function nodoHTML(st, e, p, n, total) {
+  const pr = st.prog[p.id] || {};
+  const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
+  const abiertoEste = p.id === abierto;
+  const sel = opcionElegida(st, p);
+  const sub = p.tipo === 'standard' && st.standard ? st.standard
+    : pr.hecho && sel && pr.como !== 'listo' ? sel.label
+    : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
+  return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
+    <div class="nodo-fila">
+      <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
+      <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+      ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
+    </div>
+    ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
+  </section>`;
+}
 function caminoHTML(st, e) {
-  let i = 0, total = 0;
+  // Todos los pasos visibles en orden, numerados de nuevo en cada etapa
+  const items = []; const cerradas = [];
+  PROGRAMA.etapas.forEach(et => {
+    const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
+    if (et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
+  });
+  const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
+  const desde = verTodo ? 0 : Math.max(0, idx - 1), hasta = verTodo ? items.length - 1 : Math.min(items.length - 1, idx + 1);
+  const antes = desde, despues = items.length - 1 - hasta;
+  let etapaPrev = null;
+  const cuerpo = items.slice(desde, hasta + 1).map(x => {
+    const lab = x.et !== etapaPrev ? `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>` : '';
+    etapaPrev = x.et;
+    return lab + nodoHTML(st, e, x.p, x.n, x.total);
+  }).join('');
+  const plural = (k, s1, s2) => `${k} ${k === 1 ? s1 : s2}`;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
-    ${PROGRAMA.etapas.map(et => {
-      const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
-      i = 0;
-      const cerrada = et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id));
-      return `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>${cerrada ? 'Se abre cuando llegues a la clase 4' : esc(et.sub)}</p></div>
-      ${cerrada ? '' : pasos.map(p => {
-        const n = ++i; total++;
-        const pr = st.prog[p.id] || {};
-        const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
-        const abiertoEste = p.id === abierto;
-        const sel = opcionElegida(st, p);
-        const sub = p.tipo === 'standard' && st.standard ? st.standard
-          : pr.hecho && sel && pr.como !== 'listo' ? sel.label
-          : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
-        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
-          <div class="nodo-fila">
-            <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
-            <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
-            ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
-          </div>
-          ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
-        </section>`;
-      }).join('')}`;
-    }).join('')}
-    <div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>
+    ${verTodo ? `<button class="mas-pasos" data-accion="ver-menos">Mostrar solo el paso actual</button>`
+      : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
+    ${cuerpo}
+    ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} del módulo</button>` : ''}
+    ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
 }
 
@@ -1344,6 +1368,7 @@ function irA(id, suave = true) {
 }
 function abrirPaso(id) {
   const cambio = id !== abierto;
+  verTodo = false;
   abierto = id; renderAlumno();
   videoParaAbierto(cambio);
   requestAnimationFrame(() => irA(id));
@@ -1378,6 +1403,8 @@ function enlazarAlumno() {
       ST.clase = (ST.clase || 0) + 1; ST.claseFecha = hoyISO(); guardarAlumno(); abierto = null; renderAlumno(true);
     } else if (d.accion === 'clase-no') renderAlumno();
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
+    else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }
     else if (d.accion === 'salir') salir();
     else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
   };

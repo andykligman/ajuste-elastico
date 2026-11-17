@@ -123,8 +123,8 @@ function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  return `<div class="pregunta"><h4>¿Cómo te fue?</h4>
-    <div class="ops" role="radiogroup" aria-label="Cómo te fue">
+  return `<div class="pregunta"><h4>${esc(p.pregunta || '¿Cómo te fue?')}</h4>
+    <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
     ${sel && sel.resp ? respuestaHTML(sel) : ''}
@@ -169,41 +169,55 @@ function envioHTML(st, p) {
   const ok = !!st.prog[p.id]?.envio;
   const wa = typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="secundario boton" href="https://wa.me/${WHATSAPP_ANDY}" target="_blank" rel="noopener">${ICONO.enviar}Abrir WhatsApp</a>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya le mandaste el ${esc(p.entrega)} a Andy` : `Antes de seguir, mandale el ${esc(p.entrega)} a Andy por WhatsApp`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok ? `Listo, ya se lo mandaste a Andy` : `Antes de seguir, mandale a Andy por WhatsApp ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok ? '' : `<p class="envio-c">Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     <div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>Ya se lo mandé</span></label></div>
   </div>`;
 }
 
 const OLAS = [0, 34, 68, 34];
+let verTodo = false;   // por defecto solo se ve el paso anterior, el actual y el siguiente
+function nodoHTML(st, e, p, n, total) {
+  const pr = st.prog[p.id] || {};
+  const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
+  const abiertoEste = p.id === abierto;
+  const sel = opcionElegida(st, p);
+  const sub = p.tipo === 'standard' && st.standard ? st.standard
+    : pr.hecho && sel && pr.como !== 'listo' ? sel.label
+    : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
+  return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
+    <div class="nodo-fila">
+      <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
+      <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+      ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
+    </div>
+    ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
+  </section>`;
+}
 function caminoHTML(st, e) {
-  let i = 0, total = 0;
+  // Todos los pasos visibles en orden, numerados de nuevo en cada etapa
+  const items = []; const cerradas = [];
+  PROGRAMA.etapas.forEach(et => {
+    const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
+    if (et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
+  });
+  const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
+  const desde = verTodo ? 0 : Math.max(0, idx - 1), hasta = verTodo ? items.length - 1 : Math.min(items.length - 1, idx + 1);
+  const antes = desde, despues = items.length - 1 - hasta;
+  let etapaPrev = null;
+  const cuerpo = items.slice(desde, hasta + 1).map(x => {
+    const lab = x.et !== etapaPrev ? `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>` : '';
+    etapaPrev = x.et;
+    return lab + nodoHTML(st, e, x.p, x.n, x.total);
+  }).join('');
+  const plural = (k, s1, s2) => `${k} ${k === 1 ? s1 : s2}`;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
-    ${PROGRAMA.etapas.map(et => {
-      const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
-      i = 0;
-      const cerrada = et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id));
-      return `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>${cerrada ? 'Se abre cuando llegues a la clase 4' : esc(et.sub)}</p></div>
-      ${cerrada ? '' : pasos.map(p => {
-        const n = ++i; total++;
-        const pr = st.prog[p.id] || {};
-        const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
-        const abiertoEste = p.id === abierto;
-        const sel = opcionElegida(st, p);
-        const sub = p.tipo === 'standard' && st.standard ? st.standard
-          : pr.hecho && sel && pr.como !== 'listo' ? sel.label
-          : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
-        return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
-          <div class="nodo-fila">
-            <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
-            <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
-            ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
-          </div>
-          ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
-        </section>`;
-      }).join('')}`;
-    }).join('')}
-    <div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>
+    ${verTodo ? `<button class="mas-pasos" data-accion="ver-menos">Mostrar solo el paso actual</button>`
+      : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
+    ${cuerpo}
+    ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} del módulo</button>` : ''}
+    ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
 }
 
@@ -378,6 +392,7 @@ function irA(id, suave = true) {
 }
 function abrirPaso(id) {
   const cambio = id !== abierto;
+  verTodo = false;
   abierto = id; renderAlumno();
   videoParaAbierto(cambio);
   requestAnimationFrame(() => irA(id));
@@ -412,6 +427,8 @@ function enlazarAlumno() {
       ST.clase = (ST.clase || 0) + 1; ST.claseFecha = hoyISO(); guardarAlumno(); abierto = null; renderAlumno(true);
     } else if (d.accion === 'clase-no') renderAlumno();
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
+    else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }
     else if (d.accion === 'salir') salir();
     else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
   };

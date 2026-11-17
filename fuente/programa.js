@@ -73,7 +73,7 @@ const PROGRAMA = {
   pasos: [
     /* ---------- Pre-sincrónico ---------- */
     {
-      id: 'p2', etapa: 'pre', entrega: 'video',
+      id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los intervalos enteros (7ma mayor, 5ta disminuida, etc.) en voz alta, en las 4 posiciones para los 4 tipos de acorde. Por ahora, solo las posiciones en las primeras 3 cuerdas.',
@@ -91,7 +91,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p3', etapa: 'pre', entrega: 'video',
+      id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
       detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos el nombre del intervalo: "siete, uno, tres" en vez de "séptima mayor, tónica, tercera mayor". Así no es tan engorroso y fluye mejor. Si aparecen errores, se corrigen al vuelo, o frenás el metrónomo, corregís en la pausa y retomás.',
@@ -104,7 +104,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p4', etapa: 'pre', entrega: 'video',
+      id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Aplicar el skipping',
       detalle: 'Repetí los dos pasos anteriores aplicando el skipping: primero sin tempo y después a tempo. Sirve para desordenar la información y asegurarte de que la asimilaste de verdad, no solo para arriba y para abajo.',
@@ -136,10 +136,15 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p6', etapa: 'pre', entrega: 'video o texto', sinProgreso: true,
+      id: 'p6', etapa: 'pre', entrega: 'video o texto', envia: 'un video corto o un texto con las posiciones que vas a usar para los primeros 4 acordes del standard.', sinProgreso: true,
       video: { id: 'PqJhew7HiLs' },
       titulo: 'Mostrar compases, acordes y posiciones',
-      detalle: 'Mirá este breve video sobre cómo acomodar las posiciones para realizar bien el ejercicio, y mandale a Andy un video corto o un texto indicando qué posiciones vas a usar para los primeros 4 acordes del standard.',
+      detalle: 'Este video corto muestra cómo acomodar las posiciones para que el ejercicio funcione: una por acorde y todas en la misma zona del diapasón.',
+      pregunta: '¿Se entendió el video?',
+      progreso: [
+        { id: 'listo', label: 'Sí, se entendió', nivel: 'listo' },
+        { id: 'duda', label: 'No del todo', nivel: 'cuesta', resp: 'Volvé a verlo con la guitarra en la mano. Si sigue sin cerrar, mandale igual tus posiciones a Andy y contale qué parte no entendiste.' },
+      ],
       recursos: [{ t: 'Video: cómo ordenar las posiciones para que funcione el ejercicio', url: 'https://www.youtube.com/watch?v=PqJhew7HiLs' }],
       problemas: [
         { id: 'zonas', q: 'Las posiciones me quedan en distintas zonas del diapasón',
@@ -159,7 +164,7 @@ const PROGRAMA = {
 
     /* ---------- Enlaces ---------- */
     {
-      id: 'e1', etapa: 'enlaces', entrega: 'video',
+      id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre tus 4 compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
       detalle: 'Las mismas reglas que sin tempo, ahora con metrónomo o iReal. Subí un poco el tempo con los días.\nUna vez que el ejercicio camina, es cuestión de encontrar los diferentes enlaces posibles dentro de esta limitación. La idea es no repetir mucho los enlaces e ir a buscar nuevos, empezando desde diferentes notas, o desde notas ya usadas pero en otra dirección.\nSe recomienda tener el [PDF](' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
@@ -192,7 +197,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e2', etapa: 'enlaces', entrega: 'video',
+      id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
       video: { id: 'TylWJrfPxu0', t: 1516 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
       titulo: 'Dirección melódica libre',
@@ -204,7 +209,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e3', etapa: 'enlaces', entrega: 'video',
+      id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video improvisando con ritmo libre sobre las mismas notas y compases.',
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'musica', label: 'Suena a música, dejo espacios', nivel: 'listo' }, { id: 'notas', label: 'Me sale, pero toco muchas notas', nivel: 'casi', muestra: ['muchas'] }, { id: 'pierdo', label: 'Me pierdo cuando suelto el ritmo', nivel: 'cuesta', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
@@ -242,7 +247,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
     },
     {
-      id: 'a2', etapa: 'antic', entrega: 'video',
+      id: 'a2', etapa: 'antic', entrega: 'video', envia: 'un video de las anticipaciones con ritmo fijo sobre tus compases.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [ { id: 'varias', label: 'Me sale a tempo en 2 o 3 cuerdas', nivel: 'listo' }, { id: 'una', label: 'Me sale con 1 cuerda o 1 nota por acorde', nivel: 'casi' }, { id: 'no', label: 'A tempo no me sale', nivel: 'cuesta', muestra: ['tempo'] } ],
       titulo: 'Anticipaciones con ritmo fijo',
@@ -254,7 +259,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'a3', etapa: 'antic', entrega: 'video',
+      id: 'a3', etapa: 'antic', entrega: 'video', envia: 'un video improvisando con ritmo libre y anticipando a veces el acorde que viene.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [ { id: 'natural', label: 'Anticipo a veces y suena natural', nivel: 'listo' }, { id: 'forzado', label: 'Anticipo, pero suena forzado', nivel: 'casi', muestra: ['forzado'] }, { id: 'olvido', label: 'Me olvido de anticipar o me pierdo', nivel: 'cuesta' } ],
       titulo: 'Ritmo libre, anticipando a veces',
@@ -293,7 +298,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 's3', etapa: 'super', entrega: 'video',
+      id: 's3', etapa: 'super', entrega: 'video', envia: 'un video de los enlaces con las superposiciones, en esos pocos compases.',
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       titulo: 'Enlaces con superposiciones',
       detalle: 'Repetí el proceso de enlaces (fijo, después libre) reemplazando los acordes originales por las superposiciones, en pocos compases. Ubicá las notas en pocas cuerdas, no más de 4 por acorde. Cantá y anticipate al acorde que viene.',
@@ -302,13 +307,13 @@ const PROGRAMA = {
 
     /* ---------- Módulo 2 ---------- */
     {
-      id: 'm1', etapa: 'm2', entrega: 'video',
+      id: 'm1', etapa: 'm2', entrega: 'video', envia: 'los videos de las ejercitaciones 1 y 2 de Cromáticos ascendentes.',
       titulo: 'Cromáticos ascendentes: ejercitaciones 1 y 2',
       detalle: 'En el módulo ADN del Jazz, mirá el video de Cromáticos Ascendentes, usá el PDF y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3.',
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
-      id: 'm2', etapa: 'm2', entrega: 'audio',
+      id: 'm2', etapa: 'm2', entrega: 'audio', envia: 'el audio de 30 segundos cantando el solo encima de la pista.',
       titulo: 'Elegir un solo y cantar 30 segundos',
       detalle: 'Mirá "Cómo transcribir eficientemente", descargá Audiostretch y cantá 30 segundos del solo elegido encima de la pista. Mandá el audio.',
     },
