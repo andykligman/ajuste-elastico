@@ -153,6 +153,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
+    ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">

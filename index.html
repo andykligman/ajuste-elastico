@@ -36,7 +36,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 
 /* Barra */
 .barra{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px;background:var(--sup);border-bottom:1px solid var(--linea)}
-.marca svg{height:30px;width:auto;display:block}
+.marca svg{height:56px;width:auto;display:block}
 .barra-der{display:flex;gap:14px;align-items:center;font-size:15px}
 .quien{font-weight:600}
 
@@ -245,6 +245,8 @@ a.mat svg{color:var(--azul-txt)}
 .envio-ok{background:#12251C;border-color:#3FB37F}
 .envio-ok .envio-t svg{color:#3FB37F}
 .envio-ok .fila-botones{margin-top:10px}
+.nota-paso{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--sup2);font-size:15px;color:var(--tinta)}
+.barra{position:relative;z-index:2}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -322,7 +324,7 @@ a.mat svg{color:var(--azul-txt)}
 @media (max-width:560px){
   body{font-size:16.5px}
   .barra{padding:12px 16px}
-  .marca svg{height:24px}
+  .marca svg{height:40px}
   .ajustes{grid-template-columns:1fr}
   .fila-extra{grid-template-columns:1fr}
 }
@@ -504,6 +506,7 @@ const PROGRAMA = {
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
         { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES },
       ],
+      nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
         { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: '¡Seguí adelante!', muestra: ['apoyo'] },
         { id: 'errores', label: 'Me sale, pero con errores o muy lento', nivel: 'casi', muestra: ['apoyo'] },
@@ -638,7 +641,7 @@ const PROGRAMA = {
       id: 'm1', etapa: 'm2', entrega: 'video',
       titulo: 'Cromáticos ascendentes: ejercitaciones 1 y 2',
       detalle: 'En el módulo ADN del Jazz, mirá el video de Cromáticos Ascendentes, usá el PDF y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3.',
-      recursos: [{ t: 'Aula virtual (Hotmart)', url: AULA }],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
       id: 'm2', etapa: 'm2', entrega: 'audio',
@@ -1074,6 +1077,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
+    ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">

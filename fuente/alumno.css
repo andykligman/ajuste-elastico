@@ -192,3 +192,5 @@ a.mat svg{color:var(--azul-txt)}
 .envio-ok{background:#12251C;border-color:#3FB37F}
 .envio-ok .envio-t svg{color:#3FB37F}
 .envio-ok .fila-botones{margin-top:10px}
+.nota-paso{margin:12px 0 0;padding:10px 14px;border-radius:10px;background:var(--sup2);font-size:15px;color:var(--tinta)}
+.barra{position:relative;z-index:2}

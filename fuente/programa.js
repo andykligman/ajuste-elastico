@@ -168,6 +168,7 @@ const PROGRAMA = {
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
         { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES },
       ],
+      nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
         { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: '¡Seguí adelante!', muestra: ['apoyo'] },
         { id: 'errores', label: 'Me sale, pero con errores o muy lento', nivel: 'casi', muestra: ['apoyo'] },
@@ -302,7 +303,7 @@ const PROGRAMA = {
       id: 'm1', etapa: 'm2', entrega: 'video',
       titulo: 'Cromáticos ascendentes: ejercitaciones 1 y 2',
       detalle: 'En el módulo ADN del Jazz, mirá el video de Cromáticos Ascendentes, usá el PDF y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3.',
-      recursos: [{ t: 'Aula virtual (Hotmart)', url: AULA }],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
       id: 'm2', etapa: 'm2', entrega: 'audio',
