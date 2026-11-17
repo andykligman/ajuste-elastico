@@ -91,7 +91,7 @@ function materialHTML(p) {
 function apoyoHTML(p) {
   return `<div class="apoyo"><h4>${esc(p.apoyo.titulo)}</h4>${p.apoyo.texto ? `<p>${esc(p.apoyo.texto)}</p>` : ''}
     ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
-      <div class="apoyo-links">${i.video ? `<button class="mat" data-seek="${ytId(i.video)}:0">${ICONO.video}<span>Ver el video</span></button>` : ''}<a class="mat" href="${esc(i.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>Leer el documento</span></a></div></div>`).join('')}</div>`;
+      ${(i.partes || [{ video: i.video, url: i.url }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';

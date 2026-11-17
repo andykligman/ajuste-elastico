@@ -7,7 +7,11 @@ const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
 const DOC_ENTRENAMIENTO = 'https://docs.google.com/document/d/19vNF5KkcPosVXsBOhwcwwpQZKdPk3Y0U5HtVnBXN_yc/edit';
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
-const DOC_CUELLO_1 = 'https://docs.google.com/document/d/12QpaeG62ULfvR2EB7ahvXKqRr09hR8r3YjRi9CnBdEI/edit';
+const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
+const DOC_CUELLO_1_EXPL = 'https://docs.google.com/document/d/1F4A99qcJbhQ3kTDGbBUI1NDt7gq_H0RG/edit';
+const DOC_PREVIA = 'https://docs.google.com/document/d/1U-WLpCr_hnW5ruUY3mWW3GThD1lYPX6y2AksiWiADnk/edit';
+const DOC_ANTIC = 'https://docs.google.com/document/d/1TaI7oAl4eMyHolWW7E-7TPfvxc4yk5SLBnzNlYOjrOM/edit';
+const DOC_SUPER = 'https://docs.google.com/document/d/1v3JwZIC3liAwwICnzZSHpBrMBP_4_4Kw9WqACELv35o/edit';
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -72,7 +76,7 @@ const PROGRAMA = {
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los intervalos enteros (7ma mayor, 5ta disminuida, etc.) en voz alta, en las 4 posiciones para los 4 tipos de acorde. Por ahora, solo las posiciones en las primeras 3 cuerdas.',
-      recursos: [{ t: 'Entrenamiento gratuito de arpegios', url: DOC_ENTRENAMIENTO }],
+      recursos: [{ t: 'Entrenamiento gratuito de arpegios', url: DOC_ENTRENAMIENTO }, { t: 'Doc: Previa técnica, arpegios base', url: DOC_PREVIA }],
       progreso: [
         { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: '¡Seguí adelante!' },
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
@@ -157,6 +161,7 @@ const PROGRAMA = {
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
+        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES },
       ],
       progreso: [
         { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: '¡Seguí adelante!', muestra: ['apoyo'] },
@@ -167,7 +172,9 @@ const PROGRAMA = {
         titulo: 'Cuellos de botella',
         texto: 'Antes de hacer el ejercicio a medias, conviene bajar un escalón con alguno de estos dos (o con los dos) y después volver al ejercicio completo.',
         items: [
-          { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Para cuando llega el cambio de acorde y te quedás en blanco.', url: DOC_CUELLO_1, video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M' },
+          { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Para cuando llega el cambio de acorde y te quedás en blanco.', partes: [
+            { titulo: 'Práctica', video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M', tv: 'Ver el video de la demostración', url: DOC_CUELLO_1_GUIA, td: 'Leer el documento práctico' },
+            { titulo: 'Explicación (si con la práctica no alcanza)', video: 'https://www.youtube.com/watch?v=iHEcRTrt12I', tv: 'Ver el video de la explicación', url: DOC_CUELLO_1_EXPL, td: 'Leer el documento de la explicación' } ] },
           { t: 'Cuello de botella #2: notas por cuerda', cuando: 'Para cuando sabés la progresión y entendés las posiciones, pero no lo manejás como quisieras.', url: DOC_CUELLO_2, video: 'https://www.youtube.com/watch?v=JHJhLmtCsno' },
         ],
       },
@@ -225,8 +232,8 @@ const PROGRAMA = {
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N2',
-      detalle: 'Video y PDF de anticipaciones armónicas en el aula virtual. Sirve para destrabar el "tejido" entre un compás y otro, para que no suene compartimentado cuando improvisás con ritmo libre.',
-      recursos: [{ t: 'Aula virtual (Hotmart)', url: AULA }],
+      detalle: 'Mirá el video y leé el documento de anticipaciones armónicas. Sirve para destrabar el "tejido" entre un compás y otro, para que no suene compartimentado cuando improvisás con ritmo libre.',
+      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
     },
     {
       id: 'a2', etapa: 'antic', entrega: 'video',
@@ -234,6 +241,7 @@ const PROGRAMA = {
       progreso: [ { id: 'varias', label: 'Me sale a tempo en 2 o 3 cuerdas', nivel: 'listo' }, { id: 'una', label: 'Me sale con 1 cuerda o 1 nota por acorde', nivel: 'casi' }, { id: 'no', label: 'A tempo no me sale', nivel: 'cuesta', muestra: ['tempo'] } ],
       titulo: 'Anticipaciones con ritmo fijo',
       detalle: 'Hacelo tal cual el video, con el ritmo fijo, sobre tus compases. Probá en grupos de 1, 2 y 3 cuerdas, y con 1, 2 y 3 notas por acorde. Que esté desafiante.',
+      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
       problemas: [
         { id: 'tempo', q: 'A tempo no me sale',
           fix: 'Empezá en una sola cuerda y con 1 nota por acorde. Cuando salga, sumá cuerdas o notas de a una.' },
@@ -245,6 +253,7 @@ const PROGRAMA = {
       progreso: [ { id: 'natural', label: 'Anticipo a veces y suena natural', nivel: 'listo' }, { id: 'forzado', label: 'Anticipo, pero suena forzado', nivel: 'casi', muestra: ['forzado'] }, { id: 'olvido', label: 'Me olvido de anticipar o me pierdo', nivel: 'cuesta' } ],
       titulo: 'Ritmo libre, anticipando a veces',
       detalle: 'Volvé a improvisar con ritmo libre, pero ahora anticipando a veces: alguna nota del acorde que viene en el "y" del 4, o hasta en el 4. No hace falta el ritmo fijo. Cantando, buscando dar discurso.',
+      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
       problemas: [
         { id: 'forzado', q: 'Anticipo todo el tiempo y suena forzado',
           fix: 'La idea es anticipar a veces, no siempre. Usalo como un recurso más para darle continuidad a la frase.' },
@@ -260,7 +269,7 @@ const PROGRAMA = {
       detalle: 'Mirá el video de superposiciones. No hace falta hacerlo todavía: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
-        { t: 'Aula virtual (Hotmart)', url: AULA },
+        { t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER },
       ],
     },
     {
@@ -269,6 +278,7 @@ const PROGRAMA = {
       sinProgreso: true,
       titulo: 'Elegir superposiciones para tu standard',
       detalle: 'Para cada acorde, al menos una opción de superposición (ideal, dos). Mandásela a Andy para el ok antes de practicarlas: así se corrigen los errores y te queda un documento para usar después.',
+      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
       problemas: [
         { id: 'menormaj', q: 'No entiendo cómo se escriben algunos acordes (por ejemplo -maj7)',
           fix: '-maj7 es menor con 7ma mayor: 3ra menor y 7ma mayor. Por ejemplo, A-maj7 es La menor con 7ma mayor.' },
@@ -279,6 +289,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       titulo: 'Enlaces con superposiciones',
       detalle: 'Repetí el proceso de enlaces (fijo, después libre) reemplazando los acordes originales por las superposiciones, en pocos compases. Ubicá las notas en pocas cuerdas, no más de 4 por acorde. Cantá y anticipate al acorde que viene.',
+      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
     },
 
     /* ---------- Módulo 2 ---------- */

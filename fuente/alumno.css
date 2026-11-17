@@ -172,3 +172,5 @@ a.mat svg{color:var(--azul-txt)}
 }
 
 .hebras{-webkit-mask-image:linear-gradient(90deg,transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(90deg,transparent,#000 25%,#000 75%,transparent);}
+
+.apoyo-parte{margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--tenue,#A4A7AE);}
