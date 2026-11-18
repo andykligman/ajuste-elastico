@@ -441,3 +441,42 @@ body.con-mapa{overflow:hidden}
 .mz-ayuda{max-width:920px;margin:14px auto 0;padding:0 16px;text-align:center;color:var(--gris);font-size:14px}
 .mz-extras{max-width:560px;margin:18px auto 0;padding:14px 16px;border-radius:14px;background:var(--sup);border:1.5px solid var(--naranja);--mc:var(--naranja)}
 .mz-extras h3{margin:0 0 4px;font:600 17px var(--display);color:var(--naranja)}
+
+/* Cuellos de botella cuando ya le sale: en verde */
+.apoyo-ok{background:#12251C;border:1.5px solid #3FB37F}
+.apoyo-ok h4{color:#5BD49A}
+.dif-q{font-style:italic}
+/* El proceso en círculo */
+.ruta-ciclo{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:4px auto 0}
+.ruta-ciclo svg{position:absolute;inset:0;width:100%;height:100%}
+.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6;stroke-dasharray:1.6 1.4}
+.rc-paso{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:170px;padding:7px 11px;border-radius:14px;background:var(--rc);color:#0d0e10;font:600 13.5px/1.2 var(--display);text-align:left;box-shadow:0 0 0 5px var(--sup)}
+.rc-paso small{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
+.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1}
+.rc-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;text-align:center;font:600 16px/1.3 var(--display);color:var(--tinta)}
+@media (max-width:560px){.rc-paso{max-width:92px;font-size:10.5px;padding:5px 7px;gap:4px;hyphens:auto;overflow-wrap:anywhere}.rc-paso small{width:15px;height:15px;font-size:9.5px}.rc-centro{font-size:13px;width:38%}}
+/* Gráfico de cómo sumar compases */
+.graf-comp{margin:14px 0 4px;border:1.5px solid var(--naranja);border-radius:14px;background:var(--naranja-claro);overflow:hidden}
+.graf-comp summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:2px;padding:12px 16px 12px 40px;position:relative}
+.graf-comp summary::before{content:"▸";position:absolute;left:16px;top:12px;color:var(--naranja);font-size:16px;transition:transform .2s}
+.graf-comp[open] summary::before{transform:rotate(90deg)}
+.graf-comp summary span{font:600 16.5px var(--display)}
+.graf-comp summary small{color:var(--gris);font-size:13.5px}
+.graf-comp>p,.graf-comp>h5,.graf-comp>.gc-grilla{margin-left:16px;margin-right:16px}
+.graf-comp>p{font-size:14.5px;color:#D6D9DF;margin-top:6px}
+.graf-comp h5{margin-top:14px;margin-bottom:6px;font:700 14px var(--sans)}
+.gc-si{color:#5BD49A}.gc-no{color:#FF8A6B}
+.gc-grilla{display:grid;gap:3px;overflow-x:auto}
+.gc-fila{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px}
+.gc-et{font-size:12.5px;color:var(--gris);white-space:nowrap}
+.gc-et em{font-style:normal;font-size:11px;opacity:.8}
+.gc-barras{display:grid;grid-template-columns:repeat(16,minmax(12px,1fr));gap:2px}
+.gc-barras i{height:14px;border-radius:3px;background:rgba(255,255,255,.06)}
+.gc-si .gc-barras i.on{background:#3FB37F}
+.gc-no .gc-barras i.on{background:#E2705A}
+.gc-veces b{display:grid;place-items:center;height:22px;border-radius:4px;font-size:11.5px;color:#0d0e10;background:rgba(255,255,255,calc(.15 + var(--v) * .8))}
+.gc-si .gc-veces b{background:color-mix(in srgb,#5BD49A calc(var(--v) * 100%),#1d2a23)}
+.gc-no .gc-veces b{background:color-mix(in srgb,#FF8A6B calc(var(--v) * 100%),#2e1d19)}
+.gc-num span{text-align:center;font-size:10.5px;color:var(--gris)}
+@media (max-width:560px){.gc-fila{grid-template-columns:56px 1fr;gap:5px}.gc-barras{grid-template-columns:repeat(16,minmax(10px,1fr));gap:1.5px}.gc-veces b{font-size:10px;height:19px}}
+.graf-comp summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}

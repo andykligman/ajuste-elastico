@@ -515,6 +515,45 @@ body.con-mapa{overflow:hidden}
 .mz-extras{max-width:560px;margin:18px auto 0;padding:14px 16px;border-radius:14px;background:var(--sup);border:1.5px solid var(--naranja);--mc:var(--naranja)}
 .mz-extras h3{margin:0 0 4px;font:600 17px var(--display);color:var(--naranja)}
 
+/* Cuellos de botella cuando ya le sale: en verde */
+.apoyo-ok{background:#12251C;border:1.5px solid #3FB37F}
+.apoyo-ok h4{color:#5BD49A}
+.dif-q{font-style:italic}
+/* El proceso en círculo */
+.ruta-ciclo{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:4px auto 0}
+.ruta-ciclo svg{position:absolute;inset:0;width:100%;height:100%}
+.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6;stroke-dasharray:1.6 1.4}
+.rc-paso{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:170px;padding:7px 11px;border-radius:14px;background:var(--rc);color:#0d0e10;font:600 13.5px/1.2 var(--display);text-align:left;box-shadow:0 0 0 5px var(--sup)}
+.rc-paso small{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
+.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1}
+.rc-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;text-align:center;font:600 16px/1.3 var(--display);color:var(--tinta)}
+@media (max-width:560px){.rc-paso{max-width:92px;font-size:10.5px;padding:5px 7px;gap:4px;hyphens:auto;overflow-wrap:anywhere}.rc-paso small{width:15px;height:15px;font-size:9.5px}.rc-centro{font-size:13px;width:38%}}
+/* Gráfico de cómo sumar compases */
+.graf-comp{margin:14px 0 4px;border:1.5px solid var(--naranja);border-radius:14px;background:var(--naranja-claro);overflow:hidden}
+.graf-comp summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:2px;padding:12px 16px 12px 40px;position:relative}
+.graf-comp summary::before{content:"▸";position:absolute;left:16px;top:12px;color:var(--naranja);font-size:16px;transition:transform .2s}
+.graf-comp[open] summary::before{transform:rotate(90deg)}
+.graf-comp summary span{font:600 16.5px var(--display)}
+.graf-comp summary small{color:var(--gris);font-size:13.5px}
+.graf-comp>p,.graf-comp>h5,.graf-comp>.gc-grilla{margin-left:16px;margin-right:16px}
+.graf-comp>p{font-size:14.5px;color:#D6D9DF;margin-top:6px}
+.graf-comp h5{margin-top:14px;margin-bottom:6px;font:700 14px var(--sans)}
+.gc-si{color:#5BD49A}.gc-no{color:#FF8A6B}
+.gc-grilla{display:grid;gap:3px;overflow-x:auto}
+.gc-fila{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px}
+.gc-et{font-size:12.5px;color:var(--gris);white-space:nowrap}
+.gc-et em{font-style:normal;font-size:11px;opacity:.8}
+.gc-barras{display:grid;grid-template-columns:repeat(16,minmax(12px,1fr));gap:2px}
+.gc-barras i{height:14px;border-radius:3px;background:rgba(255,255,255,.06)}
+.gc-si .gc-barras i.on{background:#3FB37F}
+.gc-no .gc-barras i.on{background:#E2705A}
+.gc-veces b{display:grid;place-items:center;height:22px;border-radius:4px;font-size:11.5px;color:#0d0e10;background:rgba(255,255,255,calc(.15 + var(--v) * .8))}
+.gc-si .gc-veces b{background:color-mix(in srgb,#5BD49A calc(var(--v) * 100%),#1d2a23)}
+.gc-no .gc-veces b{background:color-mix(in srgb,#FF8A6B calc(var(--v) * 100%),#2e1d19)}
+.gc-num span{text-align:center;font-size:10.5px;color:var(--gris)}
+@media (max-width:560px){.gc-fila{grid-template-columns:56px 1fr;gap:5px}.gc-barras{grid-template-columns:repeat(16,minmax(10px,1fr));gap:1.5px}.gc-veces b{font-size:10px;height:19px}}
+.graf-comp summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -774,7 +813,7 @@ const PROGRAMA = {
     {
       id: 'obj0', etapa: 'pre', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Generar un atajo en la velocidad con la que identificamos los intervalos** en las distintas posiciones en la viola.',
@@ -787,16 +826,16 @@ const PROGRAMA = {
         meta: 'Con todo eso hecho ya estás listo para **la clase 1**: ese es el objetivo de este módulo!',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
-      detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas 😉',
+      detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas',
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
-        { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: 'Espectacular! A lo que sigue 💪' },
+        { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: 'Espectacular! A lo que sigue' },
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
           resp: 'Si lo que te sale es en las primeras tres cuerdas, **está perfecto**: vamos a trabajar a fondo con esas cuerdas en la primera parte del programa, así que no hace falta más por ahora. Mandame video y seguimos!\n\nSi alguna posición de esas 3 cuerdas todavía no sale, **separá la información**: laburá solo sobre las que te cuestan y tomate el tiempo que necesites, despacito, para arriba y para abajo. Aislar lo que nos cuesta y trabajar sobre eso es de las cosas más importantes de la práctica.' },
         { id: 'dudo', label: 'Todavía dudo en casi todas', nivel: 'cuesta',
@@ -813,7 +852,7 @@ const PROGRAMA = {
       titulo: 'Lo mismo, a tempo',
       detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.\n# Si aparece un error, corregilo al vuelo: no hace falta arrancar de nuevo!\nO frená el metrónomo, corregí en la pausa y retomá desde ahí.',
       progreso: [
-        { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir 😉' },
+        { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
         { id: 'poco', label: 'Me equivoco un poco', nivel: 'casi',
           resp: 'Si tenés un **15-20% de error, está perfecto**. Podés darle un poquito más, pero ya estás para seguir.' },
         { id: 'mucho', label: 'Me equivoco todo el tiempo', nivel: 'cuesta',
@@ -826,7 +865,7 @@ const PROGRAMA = {
       titulo: 'Aplicar el skipping',
       detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad, no solo para arriba y para abajo en pelota parada.',
       progreso: [
-        { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante 🙌' },
+        { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante' },
         { id: 'sintempo', label: 'Me sale sin tempo, a tempo todavía no', nivel: 'casi',
           resp: 'Ya casi estás, un último esfuerzo! Aunque sea bien lento… **pero a tempo**. Igual ya hiciste un gran laburo y estás para seguir si querés.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta',
@@ -836,7 +875,7 @@ const PROGRAMA = {
     {
       id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
-      detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar 🎸',
+      detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar',
       pregunta: '¿Ya lo eligieron?',
       progreso: [{ id: 'listo', label: 'Ya lo elegimos juntos', nivel: 'listo' }],
     },
@@ -874,7 +913,7 @@ const PROGRAMA = {
       id: 'p7', etapa: 'pre', sinProgreso: true,
       video: { id: 'TylWJrfPxu0', t: 460 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, sin tempo',
-      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené el [PDF](' + DOC_ENLACES + ') a mano, ahí está el paso a paso.' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
+      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené a mano el PDF, está acá abajo 👇',
       recursos: [
         { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
         { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
@@ -885,26 +924,26 @@ const PROGRAMA = {
     {
       id: 'obj1', etapa: 'enlaces', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
-          'Enlaces con **dirección melódica fija y ritmo fijo**, a tiempo real.',
-          'Enlaces con **dirección melódica libre** y ritmo fijo.',
-          'Enlaces con dirección melódica libre y **ritmo libre**.',
-          '**Anticipaciones armónicas**: volver a hacer ritmo libre, pero anticipando un poco.',
+          'Enlaces con dirección melódica **fija** y ritmo **fijo**, a tiempo real.',
+          'Enlaces con dirección melódica **libre** y ritmo **fijo**.',
+          'Enlaces con dirección melódica **libre** y ritmo **libre**.',
+          '**Anticipaciones armónicas**: aprender a tocar notas del compás que viene antes de que llegue, para tejer los cambios y que no suene compartimentado. Después, volver a hacer ritmo libre anticipando un poco.',
           '**Superposiciones**: aprender de qué van (o reordenar los conceptos si ya las conocías), setear una superposición por acorde en algunos compases del standard y volver a hacer **el mismo proceso** de la Ejercitación Nº1.',
         ],
-        puente: { titulo: 'El proceso, con los arpegios y después con las superposiciones', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre'] },
+        puente: { ciclo: true, titulo: 'El proceso, una y otra vez', centro: 'Mismo proceso, información nueva', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
         meta: 'Llegar al **Módulo 2** con todo esto andando.',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
-      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené el [PDF](' + DOC_ENLACES + ') a mano, ahí está el paso a paso.' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
+      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené a mano el PDF, está acá abajo 👇',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
@@ -912,13 +951,14 @@ const PROGRAMA = {
       ],
       nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
-        { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: 'Joya! Seguí adelante 😉', muestra: ['apoyo'] },
+        { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: 'Joya! Podés seguir adelante, o ver si estos videos te ayudan a encontrar más enlaces o a llegar más rápido al objetivo.', muestra: ['apoyo'] },
         { id: 'errores', label: 'Me sale, pero con errores o muy lento', nivel: 'casi', muestra: ['apoyo'] },
         { id: 'trabo', label: 'Me trabo seguido', nivel: 'cuesta', muestra: ['apoyo', 'loop', 'complica'] },
       ],
       apoyo: {
         titulo: 'Cuellos de botella',
         texto: 'Antes de hacer el ejercicio a medias, conviene **dar un paso atrás** con alguno de estos dos (o con los dos) y después volver al ejercicio completo.',
+        textoListo: 'Si querés ir más allá, estos dos te pueden ayudar a encontrar más enlaces o a llegar más rápido al objetivo.',
         items: [
           { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Para cuando llega el cambio de acorde y te quedás en blanco.', partes: [
             { titulo: 'Práctica', video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M', tv: 'Ver el video de la demostración', url: DOC_CUELLO_1_GUIA, td: 'Leer el documento práctico' },
@@ -942,13 +982,13 @@ const PROGRAMA = {
       recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
-          fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [Cuellos de botella #3](https://www.youtube.com/watch?v=we8Wgy3SmF8).' },
+          fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [este video](https://www.youtube.com/watch?v=we8Wgy3SmF8), que te explica cómo hacerlo.' },
       ],
     },
     {
       id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video tocando con las posiciones de siempre, pero con ritmo libre.',
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío demasiado por el oído y pierdo las notas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
+      progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
       detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero **sin ritmo fijo ni dirección fija**.\nEl trabajo de las notas ya fue bastante profundo hasta acá. Ahora la idea es **darle un cauce musical** a todo eso.\nCambiamos el chip y usamos el oído: elegimos lo que queremos tocar y usamos **la voz** para conectarnos con algo más melódico que mecánico. Podés dejar espacios, repetir notas… buscá formas ingeniosas de tocar esas notas sobre la armonía, tejiendo los cambios con más aire.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
@@ -964,6 +1004,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
+      grafico: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       recursos: [{ t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
@@ -990,7 +1031,7 @@ const PROGRAMA = {
       id: 'a2', etapa: 'antic', entrega: 'video', envia: 'un video de las anticipaciones con ritmo fijo sobre tus compases.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [
-        { id: 'bien', label: 'Me sale bien', nivel: 'listo', resp: 'Bárbaro! A lo que sigue 😉' },
+        { id: 'bien', label: 'Me sale bien', nivel: 'listo', resp: 'Bárbaro! A lo que sigue' },
         { id: 'cuesta', label: 'Me cuesta', nivel: 'casi', resp: 'Cuando las anticipaciones se traban, casi siempre el problema está **un paso antes**. Fijate cuál de los destapa cuellos de botella se parece a lo que te pasa, practicalo un rato y volvé al ejercicio.', muestra: ['apoyo'] },
         { id: 'no', label: 'No me sale', nivel: 'cuesta', resp: 'Demos **un paso atrás**: fijate cuál de los destapa cuellos de botella se parece a lo que te pasa y laburalo antes de volver. Y si querés, escribime y lo vemos!', muestra: ['apoyo', 'tempo'] },
       ],
@@ -1032,7 +1073,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
-      tip: 'Aprovechá para mirar el video y anotar preguntas para la próxima clase. Seguro aparecen varias dudas teóricas, así que ¡a sacarle punta al lápiz! ✏️',
+      tip: 'Aprovechá para mirar el video y anotar preguntas para la próxima clase. Seguro aparecen varias dudas teóricas, así que ¡a sacarle punta al lápiz!',
       detalle: 'Mirá el video de **superposiciones**. Todavía no hace falta tocarlo: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
@@ -1059,7 +1100,7 @@ const PROGRAMA = {
         { id: 'listo', label: 'Ya estoy', nivel: 'listo' },
         { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva 😉',
+      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
     },
 
@@ -1067,7 +1108,7 @@ const PROGRAMA = {
     {
       id: 'obj2', etapa: 'm2', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Transcribir un solo**, o al menos un fragmento de 30 segundos. Primero cantando, luego en la guitarra.',
@@ -1086,7 +1127,7 @@ const PROGRAMA = {
       },
       pregunta: '¿Arrancamos?',
       progreso: [
-        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' },
+        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' },
       ],
     },
     {
@@ -1097,7 +1138,7 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'listo', envia: 'esos 15 segundos cantando el solo encima de la pista.', resp: 'Mandame esos 15 segundos y seguí sumando hasta los 30! Para lo que falta, **hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.' },
-        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.\nVa a salir 😉' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.\nVa a salir' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Cuando lo tengas, volvé a este paso y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
@@ -1155,13 +1196,13 @@ const PROGRAMA = {
       id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la viola los 30 segundos del solo.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Tu solo en la guitarra',
-      detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo 😉',
+      detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo cantado?',
         casos: {
-          listo: { tip: 'Ya tenés los 30 segundos cantados, buenísimo! Ahora a pasarlos a la viola y mandame video 🎥' },
+          listo: { tip: 'Ya tenés los 30 segundos cantados, buenísimo! Ahora a pasarlos a la viola y mandame video' },
           _: { opciones: [
-            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: 'Espectacular! A pasarlos a la viola y mandame video 🎥' },
+            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: 'Espectacular! A pasarlos a la viola y mandame video' },
             { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que el solo es prioridad! 😛 Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortitos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
@@ -1170,7 +1211,7 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Ya tengo 30 segundos o más en la guitarra', nivel: 'listo' },
         { id: 'armando', label: 'Lo voy armando', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, aunque no esté perfecto!' },
-        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! 😛 Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
+        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes colgado eh! Cuando lo tengas, volvé acá y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
@@ -1188,7 +1229,7 @@ const PROGRAMA = {
       pregunta: '¿Cómo venís con estos elementos?',
       progreso: [
         { id: 'trabajo', label: 'Estoy trabajando alguno', nivel: 'listo' },
-        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar** 😉' },
+        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar**' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
@@ -1209,7 +1250,7 @@ const PROGRAMA = {
     {
       id: 'obj3', etapa: 'ritmo', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Aprender un método para practicar ritmos con el cuerpo**, y distintos escalones para pasarlos al instrumento.',
@@ -1221,12 +1262,12 @@ const PROGRAMA = {
         meta: 'Llegar preparado a la **Curva del Solo**, el último módulo.',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
       titulo: 'Introducción: entrenamiento rítmico',
-      detalle: 'Mirá el video de introducción al módulo 🥁',
+      detalle: 'Mirá el video de introducción al módulo',
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
@@ -1724,7 +1765,7 @@ function hojaDeRutaHTML(p) {
   return `<div class="ruta" style="--rc:${color}">
     <h5>Objetivos</h5>
     <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
-    ${h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
+    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
       ${h.puente.desde ? `<span class="rp-extremo">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true">→</span>` : ''}
       ${h.puente.pasos.map((x, i) => `${i ? '<span class="rp-flecha" aria-hidden="true">→</span>' : ''}<span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
       ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo rp-meta">${esc(h.puente.hasta)}</span>` : ''}
@@ -1733,6 +1774,42 @@ function hojaDeRutaHTML(p) {
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
     ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
   </div>`;
+}
+/* El proceso como un círculo: se repite con información nueva */
+function cicloHTML(c) {
+  const n = c.pasos.length, R = 35;
+  const pos = a => `left:${(50 + R * Math.cos(a)).toFixed(2)}%;top:${(50 + R * Math.sin(a)).toFixed(2)}%`;
+  const ang = i => (i / n) * 2 * Math.PI - Math.PI / 2;
+  return `<div class="ruta-ciclo" role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" /></svg>
+    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};transform:translate(-50%,-50%) rotate(${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg)">➜</span>`).join('')}
+    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+    ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
+  </div>`;
+}
+/* Cómo sumar compases: por pedazos (sí) vs siempre desde el principio (no), con cuántas veces se toca cada compás */
+function graficoCompasesHTML() {
+  const SI = [[1, 4], [5, 8], [1, 8], [9, 12], [13, 16], [9, 16], [1, 8, 'repaso'], [1, 16]];
+  const NO = [[1, 4], [1, 8], [1, 12], [1, 16]];
+  const tabla = (filas, tipo) => {
+    const veces = Array.from({ length: 16 }, (_, k) => filas.filter(([a, b]) => k + 1 >= a && k + 1 <= b).length);
+    const max = Math.max(...veces);
+    return `<div class="gc-grilla gc-${tipo}">
+      ${filas.map(([a, b, nota]) => `<div class="gc-fila"><span class="gc-et">${a}–${b}${nota ? ` <em>${nota}</em>` : ''}</span><span class="gc-barras">${Array.from({ length: 16 }, (_, k) => `<i class="${k + 1 >= a && k + 1 <= b ? 'on' : ''}"></i>`).join('')}</span></div>`).join('')}
+      <div class="gc-fila gc-veces"><span class="gc-et">Veces</span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
+      <div class="gc-fila gc-num"><span class="gc-et">Compás</span><span class="gc-barras">${veces.map((_, k) => `<span>${k + 1}</span>`).join('')}</span></div>
+    </div>`;
+  };
+  return `<details class="graf-comp">
+    <summary><span>Cómo sumar compases sin que se desarme</span><small>Lo que sirve y lo que no</small></summary>
+    <p>Ejemplo con un tema de 16 compases. Cada fila es una tanda de práctica.</p>
+    <h5 class="gc-si">Así sí: por pedazos</h5>
+    ${tabla(SI, 'si')}
+    <p>Todos los compases se practican parecido, y cada parte nueva se trabaja sola antes de juntarla.</p>
+    <h5 class="gc-no">Así no: siempre desde el principio</h5>
+    ${tabla(NO, 'no')}
+    <p><strong>Los primeros compases los practicás 4 veces y los últimos una sola.</strong> Y justo lo nuevo, que es lo que más cuesta, es lo que menos se practica.</p>
+  </details>`;
 }
 function panelHTML(p) {
   if (!p.panel) return '';
@@ -1750,14 +1827,15 @@ function materialHTML(p) {
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
-function apoyoHTML(p) {
-  return `<div class="apoyo"><h4>${esc(p.apoyo.titulo)}</h4>${p.apoyo.texto ? `<p>${esc(p.apoyo.texto)}</p>` : ''}
+function apoyoHTML(p, sel) {
+  const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
+  return `<div class="apoyo ${ok ? 'apoyo-ok' : ''}"><h4>${esc(p.apoyo.titulo)}</h4>${ok ? `<p>${enLinea(p.apoyo.textoListo)}</p>` : p.apoyo.texto ? `<p>${enLinea(p.apoyo.texto)}</p>` : ''}
     ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
       ${(i.partes || [{ video: i.video, url: i.url }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
-  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p>${textoHTML(q.fix)}
+  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">“${esc(q.q)}”</p>${textoHTML(q.fix)}
     ${q.url ? linkHTML('Ver esa parte del video', esc(q.url)) : ''}
     ${q.doc ? `<a href="${esc(q.doc.url)}" target="_blank" rel="noopener">${esc(q.doc.t)}</a>` : ''}</div>`).join('')}</div>`;
 }
@@ -1781,14 +1859,14 @@ function preguntaHTML(st, p) {
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
     ${sel && (sel.resp || sel.nivel === 'listo') ? respuestaHTML(sel, p) : ''}
-    ${ayuda.apoyo ? apoyoHTML(p) : ''}
+    ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
 }
 
 /* Respuesta según cómo le fue: verde con tilde si va bien, recuadro de recomendación si no */
 /* Cuando marca que le salió y el paso no trae respuesta propia, igual le llega un mensaje en verde */
-const FESTEJOS = ['Bien ahí! A seguir así 😉', 'Espectacular! Vamo arriba 🙌', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue 💪'];
+const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue'];
 function respuestaHTML(sel, p) {
   const ok = sel.nivel === 'listo';
   if (ok && !sel.resp && p) {
@@ -1826,6 +1904,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
+    ${p.grafico === 'compases' ? graficoCompasesHTML() : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -2012,7 +2091,7 @@ function mapaHTML(st, e) {
     ${(st.extras || []).length ? `<section class="mz-extras"><h3>Te dejé</h3><ul class="mz-lista">${st.extras.map(x => `<li class="${x.hecho ? 'ok' : ''}">
         <button class="mz-tilde" data-mapa-extra="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="${x.hecho ? 'Desmarcar' : 'Marcar como hecha'}: ${esc(x.titulo)}"><i>${x.hecho ? ICONO.check : ''}</i></button>
         <span>${esc(x.titulo)}${x.detalle ? `<small>${esc(x.detalle)}</small>` : ''}</span></li>`).join('')}</ul></section>` : ''}
-    <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta 😉</p>
+    <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta</p>
     <ol class="mz-camino">${MODULOS.map((M, i) => {
       const pasos = pasosDelModulo(M.n).filter(p => !p.hojaDeRuta);
       const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === M.n);
@@ -2029,7 +2108,7 @@ function mapaHTML(st, e) {
           <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
           <p class="mz-estado">${esc(est)}</p>
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
-          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}</div>` : ''}
+          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
           ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
           ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
@@ -2638,7 +2717,7 @@ function renderRegistro(codigo, error, val = {}) {
   app().innerHTML = `${barra('')}
   <main class="entrada">
     <h1>Bienvenido al aula de Ajuste Elástico!</h1>
-    <p class="suave">Poné tu nombre, tu mail y elegí una contraseña. Con eso entrás siempre de acá en adelante 😉</p>
+    <p class="suave">Poné tu nombre, tu mail y elegí una contraseña. Con eso entrás siempre de acá en adelante</p>
     <form id="formRegistro" novalidate>
       <label for="r-nombre">Nombre y apellido</label>
       <input id="r-nombre" name="nombre" autocomplete="name" required value="${esc(val.nombre || '')}">
@@ -2842,7 +2921,7 @@ function marcarModulo(prog, m) {
 }
 let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
 function registroAdmHTML() {
-  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre 😉\n\n${linkReg}` : '';
+  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${linkReg}` : '';
   return `<section class="registro-adm">
     <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.</p></div>
       ${linkReg ? '' : `<button class="secundario" data-adm="ver-registro">Ver el link</button>`}</div>
@@ -2968,7 +3047,7 @@ const linksRecientes = {};
 function accesoHTML(a) {
   const link = linksRecientes[a.codigo];
   const estadoAcceso = a.tieneClave ? `Entra con <strong>${esc(a.email || 'sin email')}</strong> y su contraseña.` : `Todavía no creó su contraseña${a.email ? ` (${esc(a.email)})` : ''}.`;
-  const msgInv = link ? `${a.nombre.split(' ')[0]}! Te paso el link para entrar a tu mapa de Ajuste Elástico 🙌\n\nAbrilo, elegí una contraseña y listo. Después entrás siempre con tu email y esa contraseña.\n\n${link}` : '';
+  const msgInv = link ? `${a.nombre.split(' ')[0]}! Te paso el link para entrar a tu mapa de Ajuste Elástico\n\nAbrilo, elegí una contraseña y listo. Después entrás siempre con tu email y esa contraseña.\n\n${link}` : '';
   return `<div class="acceso">
     <div class="acceso-cab"><h3>Acceso</h3><span class="suave">${estadoAcceso}</span></div>
     <label class="bloque-email">Email<input type="email" data-campo="email" value="${esc(a.email || '')}"></label>

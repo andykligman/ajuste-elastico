@@ -163,7 +163,7 @@ function renderRegistro(codigo, error, val = {}) {
   app().innerHTML = `${barra('')}
   <main class="entrada">
     <h1>Bienvenido al aula de Ajuste Elástico!</h1>
-    <p class="suave">Poné tu nombre, tu mail y elegí una contraseña. Con eso entrás siempre de acá en adelante 😉</p>
+    <p class="suave">Poné tu nombre, tu mail y elegí una contraseña. Con eso entrás siempre de acá en adelante</p>
     <form id="formRegistro" novalidate>
       <label for="r-nombre">Nombre y apellido</label>
       <input id="r-nombre" name="nombre" autocomplete="name" required value="${esc(val.nombre || '')}">
@@ -367,7 +367,7 @@ function marcarModulo(prog, m) {
 }
 let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
 function registroAdmHTML() {
-  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre 😉\n\n${linkReg}` : '';
+  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${linkReg}` : '';
   return `<section class="registro-adm">
     <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.</p></div>
       ${linkReg ? '' : `<button class="secundario" data-adm="ver-registro">Ver el link</button>`}</div>
@@ -493,7 +493,7 @@ const linksRecientes = {};
 function accesoHTML(a) {
   const link = linksRecientes[a.codigo];
   const estadoAcceso = a.tieneClave ? `Entra con <strong>${esc(a.email || 'sin email')}</strong> y su contraseña.` : `Todavía no creó su contraseña${a.email ? ` (${esc(a.email)})` : ''}.`;
-  const msgInv = link ? `${a.nombre.split(' ')[0]}! Te paso el link para entrar a tu mapa de Ajuste Elástico 🙌\n\nAbrilo, elegí una contraseña y listo. Después entrás siempre con tu email y esa contraseña.\n\n${link}` : '';
+  const msgInv = link ? `${a.nombre.split(' ')[0]}! Te paso el link para entrar a tu mapa de Ajuste Elástico\n\nAbrilo, elegí una contraseña y listo. Después entrás siempre con tu email y esa contraseña.\n\n${link}` : '';
   return `<div class="acceso">
     <div class="acceso-cab"><h3>Acceso</h3><span class="suave">${estadoAcceso}</span></div>
     <label class="bloque-email">Email<input type="email" data-campo="email" value="${esc(a.email || '')}"></label>

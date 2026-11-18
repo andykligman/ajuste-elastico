@@ -97,7 +97,7 @@ function hojaDeRutaHTML(p) {
   return `<div class="ruta" style="--rc:${color}">
     <h5>Objetivos</h5>
     <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
-    ${h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
+    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
       ${h.puente.desde ? `<span class="rp-extremo">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true">→</span>` : ''}
       ${h.puente.pasos.map((x, i) => `${i ? '<span class="rp-flecha" aria-hidden="true">→</span>' : ''}<span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
       ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo rp-meta">${esc(h.puente.hasta)}</span>` : ''}
@@ -106,6 +106,42 @@ function hojaDeRutaHTML(p) {
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
     ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
   </div>`;
+}
+/* El proceso como un círculo: se repite con información nueva */
+function cicloHTML(c) {
+  const n = c.pasos.length, R = 35;
+  const pos = a => `left:${(50 + R * Math.cos(a)).toFixed(2)}%;top:${(50 + R * Math.sin(a)).toFixed(2)}%`;
+  const ang = i => (i / n) * 2 * Math.PI - Math.PI / 2;
+  return `<div class="ruta-ciclo" role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" /></svg>
+    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};transform:translate(-50%,-50%) rotate(${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg)">➜</span>`).join('')}
+    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+    ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
+  </div>`;
+}
+/* Cómo sumar compases: por pedazos (sí) vs siempre desde el principio (no), con cuántas veces se toca cada compás */
+function graficoCompasesHTML() {
+  const SI = [[1, 4], [5, 8], [1, 8], [9, 12], [13, 16], [9, 16], [1, 8, 'repaso'], [1, 16]];
+  const NO = [[1, 4], [1, 8], [1, 12], [1, 16]];
+  const tabla = (filas, tipo) => {
+    const veces = Array.from({ length: 16 }, (_, k) => filas.filter(([a, b]) => k + 1 >= a && k + 1 <= b).length);
+    const max = Math.max(...veces);
+    return `<div class="gc-grilla gc-${tipo}">
+      ${filas.map(([a, b, nota]) => `<div class="gc-fila"><span class="gc-et">${a}–${b}${nota ? ` <em>${nota}</em>` : ''}</span><span class="gc-barras">${Array.from({ length: 16 }, (_, k) => `<i class="${k + 1 >= a && k + 1 <= b ? 'on' : ''}"></i>`).join('')}</span></div>`).join('')}
+      <div class="gc-fila gc-veces"><span class="gc-et">Veces</span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
+      <div class="gc-fila gc-num"><span class="gc-et">Compás</span><span class="gc-barras">${veces.map((_, k) => `<span>${k + 1}</span>`).join('')}</span></div>
+    </div>`;
+  };
+  return `<details class="graf-comp">
+    <summary><span>Cómo sumar compases sin que se desarme</span><small>Lo que sirve y lo que no</small></summary>
+    <p>Ejemplo con un tema de 16 compases. Cada fila es una tanda de práctica.</p>
+    <h5 class="gc-si">Así sí: por pedazos</h5>
+    ${tabla(SI, 'si')}
+    <p>Todos los compases se practican parecido, y cada parte nueva se trabaja sola antes de juntarla.</p>
+    <h5 class="gc-no">Así no: siempre desde el principio</h5>
+    ${tabla(NO, 'no')}
+    <p><strong>Los primeros compases los practicás 4 veces y los últimos una sola.</strong> Y justo lo nuevo, que es lo que más cuesta, es lo que menos se practica.</p>
+  </details>`;
 }
 function panelHTML(p) {
   if (!p.panel) return '';
@@ -123,14 +159,15 @@ function materialHTML(p) {
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
-function apoyoHTML(p) {
-  return `<div class="apoyo"><h4>${esc(p.apoyo.titulo)}</h4>${p.apoyo.texto ? `<p>${esc(p.apoyo.texto)}</p>` : ''}
+function apoyoHTML(p, sel) {
+  const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
+  return `<div class="apoyo ${ok ? 'apoyo-ok' : ''}"><h4>${esc(p.apoyo.titulo)}</h4>${ok ? `<p>${enLinea(p.apoyo.textoListo)}</p>` : p.apoyo.texto ? `<p>${enLinea(p.apoyo.texto)}</p>` : ''}
     ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
       ${(i.partes || [{ video: i.video, url: i.url }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
-  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">${esc(q.q)}</p>${textoHTML(q.fix)}
+  return `<div class="dificultades"><h4>Dificultades comunes</h4>${difs.map(q => `<div class="dif"><p class="dif-q">“${esc(q.q)}”</p>${textoHTML(q.fix)}
     ${q.url ? linkHTML('Ver esa parte del video', esc(q.url)) : ''}
     ${q.doc ? `<a href="${esc(q.doc.url)}" target="_blank" rel="noopener">${esc(q.doc.t)}</a>` : ''}</div>`).join('')}</div>`;
 }
@@ -154,14 +191,14 @@ function preguntaHTML(st, p) {
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
     ${sel && (sel.resp || sel.nivel === 'listo') ? respuestaHTML(sel, p) : ''}
-    ${ayuda.apoyo ? apoyoHTML(p) : ''}
+    ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
 }
 
 /* Respuesta según cómo le fue: verde con tilde si va bien, recuadro de recomendación si no */
 /* Cuando marca que le salió y el paso no trae respuesta propia, igual le llega un mensaje en verde */
-const FESTEJOS = ['Bien ahí! A seguir así 😉', 'Espectacular! Vamo arriba 🙌', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue 💪'];
+const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue'];
 function respuestaHTML(sel, p) {
   const ok = sel.nivel === 'listo';
   if (ok && !sel.resp && p) {
@@ -199,6 +236,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
+    ${p.grafico === 'compases' ? graficoCompasesHTML() : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -385,7 +423,7 @@ function mapaHTML(st, e) {
     ${(st.extras || []).length ? `<section class="mz-extras"><h3>Te dejé</h3><ul class="mz-lista">${st.extras.map(x => `<li class="${x.hecho ? 'ok' : ''}">
         <button class="mz-tilde" data-mapa-extra="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="${x.hecho ? 'Desmarcar' : 'Marcar como hecha'}: ${esc(x.titulo)}"><i>${x.hecho ? ICONO.check : ''}</i></button>
         <span>${esc(x.titulo)}${x.detalle ? `<small>${esc(x.detalle)}</small>` : ''}</span></li>`).join('')}</ul></section>` : ''}
-    <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta 😉</p>
+    <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta</p>
     <ol class="mz-camino">${MODULOS.map((M, i) => {
       const pasos = pasosDelModulo(M.n).filter(p => !p.hojaDeRuta);
       const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === M.n);
@@ -402,7 +440,7 @@ function mapaHTML(st, e) {
           <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
           <p class="mz-estado">${esc(est)}</p>
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
-          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}</div>` : ''}
+          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
           ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
           ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
             const ok = hecho(st, p.id), cur = p.id === ahora;

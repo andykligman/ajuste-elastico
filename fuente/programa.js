@@ -94,7 +94,7 @@ const PROGRAMA = {
     {
       id: 'obj0', etapa: 'pre', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Generar un atajo en la velocidad con la que identificamos los intervalos** en las distintas posiciones en la viola.',
@@ -107,16 +107,16 @@ const PROGRAMA = {
         meta: 'Con todo eso hecho ya estás listo para **la clase 1**: ese es el objetivo de este módulo!',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
-      detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas 😉',
+      detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas',
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
-        { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: 'Espectacular! A lo que sigue 💪' },
+        { id: 'todas', label: 'Los nombro sin dudar en todas las posiciones de las primeras 3 cuerdas', nivel: 'listo', resp: 'Espectacular! A lo que sigue' },
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
           resp: 'Si lo que te sale es en las primeras tres cuerdas, **está perfecto**: vamos a trabajar a fondo con esas cuerdas en la primera parte del programa, así que no hace falta más por ahora. Mandame video y seguimos!\n\nSi alguna posición de esas 3 cuerdas todavía no sale, **separá la información**: laburá solo sobre las que te cuestan y tomate el tiempo que necesites, despacito, para arriba y para abajo. Aislar lo que nos cuesta y trabajar sobre eso es de las cosas más importantes de la práctica.' },
         { id: 'dudo', label: 'Todavía dudo en casi todas', nivel: 'cuesta',
@@ -133,7 +133,7 @@ const PROGRAMA = {
       titulo: 'Lo mismo, a tempo',
       detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.\n# Si aparece un error, corregilo al vuelo: no hace falta arrancar de nuevo!\nO frená el metrónomo, corregí en la pausa y retomá desde ahí.',
       progreso: [
-        { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir 😉' },
+        { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
         { id: 'poco', label: 'Me equivoco un poco', nivel: 'casi',
           resp: 'Si tenés un **15-20% de error, está perfecto**. Podés darle un poquito más, pero ya estás para seguir.' },
         { id: 'mucho', label: 'Me equivoco todo el tiempo', nivel: 'cuesta',
@@ -146,7 +146,7 @@ const PROGRAMA = {
       titulo: 'Aplicar el skipping',
       detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad, no solo para arriba y para abajo en pelota parada.',
       progreso: [
-        { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante 🙌' },
+        { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante' },
         { id: 'sintempo', label: 'Me sale sin tempo, a tempo todavía no', nivel: 'casi',
           resp: 'Ya casi estás, un último esfuerzo! Aunque sea bien lento… **pero a tempo**. Igual ya hiciste un gran laburo y estás para seguir si querés.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta',
@@ -156,7 +156,7 @@ const PROGRAMA = {
     {
       id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
-      detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar 🎸',
+      detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar',
       pregunta: '¿Ya lo eligieron?',
       progreso: [{ id: 'listo', label: 'Ya lo elegimos juntos', nivel: 'listo' }],
     },
@@ -194,7 +194,7 @@ const PROGRAMA = {
       id: 'p7', etapa: 'pre', sinProgreso: true,
       video: { id: 'TylWJrfPxu0', t: 460 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, sin tempo',
-      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené el [PDF](' + DOC_ENLACES + ') a mano, ahí está el paso a paso.' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
+      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené a mano el PDF, está acá abajo 👇',
       recursos: [
         { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
         { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
@@ -205,26 +205,26 @@ const PROGRAMA = {
     {
       id: 'obj1', etapa: 'enlaces', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
-          'Enlaces con **dirección melódica fija y ritmo fijo**, a tiempo real.',
-          'Enlaces con **dirección melódica libre** y ritmo fijo.',
-          'Enlaces con dirección melódica libre y **ritmo libre**.',
-          '**Anticipaciones armónicas**: volver a hacer ritmo libre, pero anticipando un poco.',
+          'Enlaces con dirección melódica **fija** y ritmo **fijo**, a tiempo real.',
+          'Enlaces con dirección melódica **libre** y ritmo **fijo**.',
+          'Enlaces con dirección melódica **libre** y ritmo **libre**.',
+          '**Anticipaciones armónicas**: aprender a tocar notas del compás que viene antes de que llegue, para tejer los cambios y que no suene compartimentado. Después, volver a hacer ritmo libre anticipando un poco.',
           '**Superposiciones**: aprender de qué van (o reordenar los conceptos si ya las conocías), setear una superposición por acorde en algunos compases del standard y volver a hacer **el mismo proceso** de la Ejercitación Nº1.',
         ],
-        puente: { titulo: 'El proceso, con los arpegios y después con las superposiciones', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre'] },
+        puente: { ciclo: true, titulo: 'El proceso, una y otra vez', centro: 'Mismo proceso, información nueva', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
         meta: 'Llegar al **Módulo 2** con todo esto andando.',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
-      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené el [PDF](' + DOC_ENLACES + ') a mano, ahí está el paso a paso.' + DOC_ENLACES + ') a mano, con el proceso paso a paso.',
+      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené a mano el PDF, está acá abajo 👇',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
@@ -232,13 +232,14 @@ const PROGRAMA = {
       ],
       nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
-        { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: 'Joya! Seguí adelante 😉', muestra: ['apoyo'] },
+        { id: 'fluye', label: 'Me sale a tempo con pocos errores', nivel: 'listo', resp: 'Joya! Podés seguir adelante, o ver si estos videos te ayudan a encontrar más enlaces o a llegar más rápido al objetivo.', muestra: ['apoyo'] },
         { id: 'errores', label: 'Me sale, pero con errores o muy lento', nivel: 'casi', muestra: ['apoyo'] },
         { id: 'trabo', label: 'Me trabo seguido', nivel: 'cuesta', muestra: ['apoyo', 'loop', 'complica'] },
       ],
       apoyo: {
         titulo: 'Cuellos de botella',
         texto: 'Antes de hacer el ejercicio a medias, conviene **dar un paso atrás** con alguno de estos dos (o con los dos) y después volver al ejercicio completo.',
+        textoListo: 'Si querés ir más allá, estos dos te pueden ayudar a encontrar más enlaces o a llegar más rápido al objetivo.',
         items: [
           { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Para cuando llega el cambio de acorde y te quedás en blanco.', partes: [
             { titulo: 'Práctica', video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M', tv: 'Ver el video de la demostración', url: DOC_CUELLO_1_GUIA, td: 'Leer el documento práctico' },
@@ -262,13 +263,13 @@ const PROGRAMA = {
       recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
-          fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [Cuellos de botella #3](https://www.youtube.com/watch?v=we8Wgy3SmF8).' },
+          fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [este video](https://www.youtube.com/watch?v=we8Wgy3SmF8), que te explica cómo hacerlo.' },
       ],
     },
     {
       id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video tocando con las posiciones de siempre, pero con ritmo libre.',
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío demasiado por el oído y pierdo las notas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
+      progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
       detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero **sin ritmo fijo ni dirección fija**.\nEl trabajo de las notas ya fue bastante profundo hasta acá. Ahora la idea es **darle un cauce musical** a todo eso.\nCambiamos el chip y usamos el oído: elegimos lo que queremos tocar y usamos **la voz** para conectarnos con algo más melódico que mecánico. Podés dejar espacios, repetir notas… buscá formas ingeniosas de tocar esas notas sobre la armonía, tejiendo los cambios con más aire.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
@@ -284,6 +285,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
+      grafico: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       recursos: [{ t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
@@ -310,7 +312,7 @@ const PROGRAMA = {
       id: 'a2', etapa: 'antic', entrega: 'video', envia: 'un video de las anticipaciones con ritmo fijo sobre tus compases.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
       progreso: [
-        { id: 'bien', label: 'Me sale bien', nivel: 'listo', resp: 'Bárbaro! A lo que sigue 😉' },
+        { id: 'bien', label: 'Me sale bien', nivel: 'listo', resp: 'Bárbaro! A lo que sigue' },
         { id: 'cuesta', label: 'Me cuesta', nivel: 'casi', resp: 'Cuando las anticipaciones se traban, casi siempre el problema está **un paso antes**. Fijate cuál de los destapa cuellos de botella se parece a lo que te pasa, practicalo un rato y volvé al ejercicio.', muestra: ['apoyo'] },
         { id: 'no', label: 'No me sale', nivel: 'cuesta', resp: 'Demos **un paso atrás**: fijate cuál de los destapa cuellos de botella se parece a lo que te pasa y laburalo antes de volver. Y si querés, escribime y lo vemos!', muestra: ['apoyo', 'tempo'] },
       ],
@@ -352,7 +354,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
-      tip: 'Aprovechá para mirar el video y anotar preguntas para la próxima clase. Seguro aparecen varias dudas teóricas, así que ¡a sacarle punta al lápiz! ✏️',
+      tip: 'Aprovechá para mirar el video y anotar preguntas para la próxima clase. Seguro aparecen varias dudas teóricas, así que ¡a sacarle punta al lápiz!',
       detalle: 'Mirá el video de **superposiciones**. Todavía no hace falta tocarlo: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
@@ -379,7 +381,7 @@ const PROGRAMA = {
         { id: 'listo', label: 'Ya estoy', nivel: 'listo' },
         { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva 😉',
+      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
     },
 
@@ -387,7 +389,7 @@ const PROGRAMA = {
     {
       id: 'obj2', etapa: 'm2', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Transcribir un solo**, o al menos un fragmento de 30 segundos. Primero cantando, luego en la guitarra.',
@@ -406,7 +408,7 @@ const PROGRAMA = {
       },
       pregunta: '¿Arrancamos?',
       progreso: [
-        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' },
+        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' },
       ],
     },
     {
@@ -417,7 +419,7 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'listo', envia: 'esos 15 segundos cantando el solo encima de la pista.', resp: 'Mandame esos 15 segundos y seguí sumando hasta los 30! Para lo que falta, **hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.' },
-        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.\nVa a salir 😉' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.\nVa a salir' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Cuando lo tengas, volvé a este paso y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
@@ -475,13 +477,13 @@ const PROGRAMA = {
       id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la viola los 30 segundos del solo.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Tu solo en la guitarra',
-      detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo 😉',
+      detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo cantado?',
         casos: {
-          listo: { tip: 'Ya tenés los 30 segundos cantados, buenísimo! Ahora a pasarlos a la viola y mandame video 🎥' },
+          listo: { tip: 'Ya tenés los 30 segundos cantados, buenísimo! Ahora a pasarlos a la viola y mandame video' },
           _: { opciones: [
-            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: 'Espectacular! A pasarlos a la viola y mandame video 🎥' },
+            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: 'Espectacular! A pasarlos a la viola y mandame video' },
             { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que el solo es prioridad! 😛 Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortitos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
@@ -490,7 +492,7 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Ya tengo 30 segundos o más en la guitarra', nivel: 'listo' },
         { id: 'armando', label: 'Lo voy armando', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, aunque no esté perfecto!' },
-        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! 😛 Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
+        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes colgado eh! Cuando lo tengas, volvé acá y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
@@ -508,7 +510,7 @@ const PROGRAMA = {
       pregunta: '¿Cómo venís con estos elementos?',
       progreso: [
         { id: 'trabajo', label: 'Estoy trabajando alguno', nivel: 'listo' },
-        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar** 😉' },
+        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar**' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
@@ -529,7 +531,7 @@ const PROGRAMA = {
     {
       id: 'obj3', etapa: 'ritmo', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Aprender un método para practicar ritmos con el cuerpo**, y distintos escalones para pasarlos al instrumento.',
@@ -541,12 +543,12 @@ const PROGRAMA = {
         meta: 'Llegar preparado a la **Curva del Solo**, el último módulo.',
       },
       pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
       titulo: 'Introducción: entrenamiento rítmico',
-      detalle: 'Mirá el video de introducción al módulo 🥁',
+      detalle: 'Mirá el video de introducción al módulo',
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
