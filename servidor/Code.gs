@@ -15,7 +15,7 @@ const ZONA = 'America/Argentina/Buenos_Aires';
 const HOJA = 'Alumnos';
 const HOJA_SESIONES = 'Sesiones';
 const COLUMNAS = ['codigo', 'nombre', 'email', 'standard', 'nivel', 'inicio', 'clase', 'claseFecha', 'pausa', 'nota',
-                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion'];
+                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion', 'modulos'];
 const JSON_COLS = ['extras', 'prog', 'probs'];
 const PRIVADAS = ['hash', 'sal', 'invitacion'];      // nunca salen de la planilla
 const DIAS_SESION = 180;

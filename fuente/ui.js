@@ -333,7 +333,14 @@ function restoHTML(a) {
     <label class="check"><input type="checkbox" data-campo="pausa" ${a.pausa ? 'checked' : ''}> En pausa (sin apuro, por ejemplo si se demora el pago)</label>
   </div>
 
-  <label class="bloque">Nota para ${esc(a.nombre.split(' ')[0])} <span class="suave">(la ve en su mapa y va al final del mensaje)</span>
+  <div class="bloque">
+    <h3>Acceso a los módulos</h3>
+    <div class="modulos-adm">${MODULOS.map(m => { const on = moduloHabilitado(a, m.n); return `<button class="mod-tg ${on ? 'on' : ''}" data-modulo="${m.n}" aria-pressed="${on}">
+      <span class="mod-sw" aria-hidden="true"><i></i></span><span><strong>${m.titulo}</strong><small>${m.sub}</small></span></button>`; }).join('')}</div>
+    <p class="suave chico">Lo que está apagado no aparece en su aula: ve un candado con «Andy te lo habilita cuando llegue el momento».</p>
+  </div>
+
+  <label class="bloque">Nota para ${esc(a.nombre.split(' ')[0])} <span class="suave">(la ve en su aula y va al final del mensaje)</span>
     <textarea data-campo="nota" rows="3">${esc(a.nota || '')}</textarea></label>
 
   <div class="bloque">
@@ -420,6 +427,12 @@ function enlazarAdmin() {
       else { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo para borrar'; }
     }
     else if (d.nivel) { a.nivel = +d.nivel; guardarAdm(a); }
+    else if (d.modulo !== undefined) {
+      const hab = new Set(MODULOS.filter(m => moduloHabilitado(a, m.n)).map(m => m.n));
+      hab.has(+d.modulo) ? hab.delete(+d.modulo) : hab.add(+d.modulo);
+      a.modulos = [...hab].sort().join('') || '-';   // '-' = ninguno habilitado
+      guardarAdm(a); refrescarMensaje(a);
+    }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
     else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
@@ -438,6 +451,7 @@ function enlazarAdmin() {
   if (fn) fn.onsubmit = async ev => {
     ev.preventDefault(); const f = new FormData(fn);
     const nuevo = alumnoVacio(f.get('nombre').trim(), +f.get('nivel'), f.get('inicio'));
+    nuevo.modulos = '0';   // los ingresantes arrancan solo con el módulo 0
     nuevo.email = String(f.get('email') || '').trim().toLowerCase();
     nuevo.codigo = codigoNuevo(nuevo.nombre);
     try {

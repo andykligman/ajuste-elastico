@@ -14,6 +14,18 @@ function requeridos(k, col) {
   return ORDEN.filter(id => s.has(id));
 }
 
+/* Módulos: 0 = antes de la clase 1, 1 = enlaces/anticipaciones/superposiciones, 2 = arranque del módulo 2.
+   st.modulos guarda los habilitados ('0', '01', '012'). Vacío = alumno de antes: todo habilitado. */
+const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2 };
+const MODULOS = [
+  { n: 0, titulo: 'Módulo 0', sub: 'Antes de la clase 1' },
+  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones' },
+  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz' },
+];
+const sinModulos = st => st.modulos === undefined || st.modulos === null || st.modulos === '';
+const moduloHabilitado = (st, n) => sinModulos(st) || String(st.modulos).includes(String(n));
+const pasoHabilitado = (st, id) => moduloHabilitado(st, MODULO_DE[PASO[id].etapa]);
+
 const hecho = (st, id) => !!(st.prog[id] && st.prog[id].hecho && st.prog[id].como !== 'cuesta');
 const tocado = (st, id) => !!(st.prog[id] && st.prog[id].hecho);
 
@@ -28,11 +40,11 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 function estado(st) {
   const col = clamp((st.nivel || 2) - 1, 0, 2);
   const k = Math.min((st.clase || 0) + 1, MAX_K);
-  const R = requeridos(k, col);
+  const R = requeridos(k, col).filter(id => pasoHabilitado(st, id));
   const faltan = R.filter(id => !hecho(st, id));
   // Avance medido sobre lo nuevo de esta clase más lo que haya quedado pendiente de antes.
   // Algo tildado como "me cuesta" cuenta como medio paso.
-  const previos = new Set(requeridos(k - 1, col));
+  const previos = new Set(requeridos(k - 1, col).filter(id => pasoHabilitado(st, id)));
   const foco = R.filter(id => !previos.has(id) || !hecho(st, id));
   const peso = id => hecho(st, id) ? 1 : tocado(st, id) ? 0.5 : 0;
   const frac = foco.length ? foco.reduce((s, id) => s + peso(id), 0) / foco.length : 1;
@@ -57,7 +69,7 @@ function estado(st) {
 function recomendaciones(st, n = 3) {
   const e = estado(st);
   const out = []; const ya = new Set();
-  const push = (id, motivo) => { if (!ya.has(id) && PASO[id]) { ya.add(id); out.push({ id, motivo }); } };
+  const push = (id, motivo) => { if (!ya.has(id) && PASO[id] && pasoHabilitado(st, id)) { ya.add(id); out.push({ id, motivo }); } };
   e.R.filter(id => st.prog[id]?.como === 'cuesta').forEach(id => push(id, 'seguir'));
   e.faltan.forEach(id => push(id, 'falta'));
   if (out.length < n) requeridos(e.k, 2).filter(id => !hecho(st, id)).forEach(id => push(id, 'extra'));

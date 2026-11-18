@@ -281,3 +281,9 @@ body.con-grabador{overflow:hidden}
 @keyframes girar{to{transform:rotate(1turn)}}
 .vid-pend{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;font-size:15px;color:var(--gris)}
 .vid-pend .sp-anillo{margin-top:3px}
+
+/* Módulo todavía no habilitado */
+.etapa-bloq{position:relative;z-index:1;display:flex;gap:12px;align-items:center;margin:22px 0 6px;padding:14px 16px;border:1px dashed #3A3D45;border-radius:14px;color:var(--gris);background:var(--fondo)}
+.etapa-bloq svg{width:22px;height:22px;flex:none}
+.etapa-bloq p{margin:0;font-size:15px}
+.etapa-bloq strong{display:block;color:var(--tinta);font-family:var(--display);font-weight:600}

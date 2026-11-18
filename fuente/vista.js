@@ -7,6 +7,7 @@
 const ICONO = {
   video: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>',
   doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 13h6M10 16.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+  candado: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
   cruz: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
   mandar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l15-7-4.5 15-3-6.2z" fill="currentColor"/></svg>',
   girar: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a8 8 0 0 1 14.5-3.5L20 7M20 15a8 8 0 0 1-14.5 3.5L4 17M20 3v4h-4M4 21v-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -145,7 +146,7 @@ function respuestaHTML(sel) {
   </div>`;
 }
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
-function siguienteDe(id) { const i = ORDEN.indexOf(id); return PASO[ORDEN[i + 1]] || null; }
+function siguienteDe(id) { const i = ORDEN.indexOf(id), sig = ORDEN[i + 1]; return sig && ST && pasoHabilitado(ST, sig) ? PASO[sig] : null; }
 
 function tarjetaHTML(st, e, p) {
   const sel = opcionElegida(st, p);
@@ -213,9 +214,12 @@ function nodoHTML(st, e, p, n, total) {
 function caminoHTML(st, e) {
   // Todos los pasos visibles en orden, numerados de nuevo en cada etapa
   const items = []; const cerradas = [];
+  const bloq = [];
   PROGRAMA.etapas.forEach(et => {
     const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
-    if (et.id === 'm2' && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    const m = MODULO_DE[et.id];
+    if (!moduloHabilitado(st, m)) { if (!bloq.includes(m)) bloq.push(m); return; }
+    if (et.id === 'm2' && sinModulos(st) && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
     pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
   });
   const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
@@ -233,6 +237,7 @@ function caminoHTML(st, e) {
       : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
     ${cuerpo}
     ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} del módulo</button>` : ''}
+    ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq">${ICONO.candado}<p><strong>${esc(MODULOS[bloq[0]].titulo)}</strong>Andy te lo habilita cuando llegue el momento.</p></div>` : ''}
     ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
 }
