@@ -50,7 +50,10 @@ function guardarAlumno() {
 function aviso(t, error) {
   const el = $('#aviso'); if (!el) return;
   el.textContent = t; el.classList.toggle('error', !!error); el.classList.add('visible');
-  clearTimeout(el._t); if (!error && t === 'Guardado') el._t = setTimeout(() => el.classList.remove('visible'), 1600);
+  // Los avisos de algo en curso («Guardando…») se quedan hasta que termina; el resto se va solo (los errores tardan más)
+  clearTimeout(el._t);
+  if (!/…$/.test(t)) el._t = setTimeout(() => el.classList.remove('visible'), error ? 6000 : 1800);
+  el.onclick = () => el.classList.remove('visible');
 }
 
 /*VISTA_ALUMNO*/
@@ -175,11 +178,16 @@ function salir() {
 let LISTA = [];
 let elegido = null;
 
-function pedirClave() {
+function pedirClave(error) {
   if (!API_URL) { claveAdmin = 'demo'; abrirAdmin(); return; }
   app().innerHTML = `${barra('')}<main class="entrada"><h1>Panel de Andy</h1>
-    <form id="formClave"><label for="clave">Clave</label><input id="clave" type="password" required><button class="primario">Entrar</button></form></main>`;
-  $('#formClave').onsubmit = ev => { ev.preventDefault(); guardarClaveAdmin($('#clave').value); abrirAdmin(); };
+    <form id="formClave"><label for="clave">Clave</label><input id="clave" type="password" required autocomplete="current-password">
+    ${error ? `<p class="error" role="alert">${esc(error)}</p>` : ''}<button class="primario">Entrar</button></form></main>`;
+  $('#formClave').onsubmit = ev => {
+    ev.preventDefault(); const b = $('#formClave button'); b.disabled = true; b.textContent = 'Entrando…';
+    guardarClaveAdmin($('#clave').value); abrirAdmin();
+  };
+  $('#clave').focus();
 }
 
 async function abrirAdmin() {
@@ -191,7 +199,7 @@ async function abrirAdmin() {
   let nueva;
   try { nueva = (await llamar('admin.lista', { clave: claveAdmin })).alumnos; }
   catch (e) {
-    if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave(); aviso(e.message, true); }
+    if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave('Clave incorrecta. Probá de nuevo.'); }
     else if (!LISTA.length) renderEntrada(e.message);
     else aviso('No pude actualizar el panel. Revisá la conexión.', true);
     return;
