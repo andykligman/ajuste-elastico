@@ -634,6 +634,10 @@ function selectorModulosHTML(st, e) {
 }
 
 /* Barra fija abajo: cuánto falta para la próxima clase y qué sigue (no el módulo entero) */
+/* La barra de abajo arranca plegada (solapita); se acuerda de lo que eligió el alumno */
+const leerLS = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (_) { return d; } };
+const guardarLS = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+let barraPlegada = leerLS('ae-barra', 'plegada') === 'plegada';
 function barraClaseHTML(st, e) {
   if (e.tipo === 'm2' || e.k > PROGRAMA.clases) return '';
   const prev = new Set(requeridos(e.k - 1, e.col));
@@ -646,11 +650,36 @@ function barraClaseHTML(st, e) {
     ? `<span class="bc-listo">${ICONO.check}Ya tenés todo para la clase ${e.k}</span>`
     : sig ? `<button class="bc-sig" data-abrir="${sig}"><small>${enActual ? 'Después' : 'Sigue'}</small><span>${esc(PASO[sig].titulo)}</span></button>`
     : `<span class="bc-listo bc-ultimo">Te queda este paso</span>`;
+  if (barraPlegada) return `<nav class="barra-clase plegada" aria-label="Avance para la próxima clase">
+    <button class="bc-solapa" data-plegar="abrir" aria-expanded="false"><strong>Para la clase ${e.k}</strong><span>${listos} de ${foco.length}</span><b aria-hidden="true">▴</b></button>
+  </nav>`;
   return `<nav class="barra-clase" aria-label="Avance para la próxima clase">
+    <button class="bc-cerrar" data-plegar="cerrar" aria-label="Plegar" aria-expanded="true">▾</button>
     <div class="bc-izq"><strong>Para la clase ${e.k}</strong><span>${listos} de ${foco.length} listos</span>
       <span class="bc-puntos" aria-hidden="true">${foco.map(id => `<i class="${hecho(st, id) ? 'ok' : id === abierto ? 'ahora' : ''}"></i>`).join('')}</span></div>
     ${der}
   </nav>`;
+}
+
+/* Botón sutil de consulta por WhatsApp: la primera vez muestra el cartelito, después queda solo el ícono */
+const ICONO_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3z"/></svg>';
+function consultaHTML() {
+  let el = document.getElementById('consulta');
+  if (typeof WHATSAPP_ANDY === 'undefined' || !WHATSAPP_ANDY || modo.startsWith('admin')) { if (el) el.remove(); return; }
+  const paso = PASO[abierto];
+  const txt = `Andy, tengo una consulta${paso ? ` sobre "${paso.titulo}"` : ''}: `;
+  const href = `https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(txt)}`;
+  if (!el) {
+    const primera = leerLS('ae-consulta', '') !== 'visto';
+    el = document.createElement('a'); el.id = 'consulta'; el.className = 'consulta' + (primera ? ' con-texto' : '');
+    el.target = '_blank'; el.rel = 'noopener'; el.setAttribute('aria-label', 'Consultas por WhatsApp');
+    el.innerHTML = `${ICONO_WA}<span>¿Una consulta? Escribime</span>`;
+    document.body.appendChild(el);
+    if (primera) setTimeout(() => { el.classList.remove('con-texto'); guardarLS('ae-consulta', 'visto'); }, 7000);
+    el.addEventListener('mouseenter', () => el.classList.add('con-texto'));
+    el.addEventListener('mouseleave', () => el.classList.remove('con-texto'));
+  }
+  el.href = href;
 }
 
 /* ---------- El camino dibujado ---------- */
@@ -777,6 +806,7 @@ function renderAlumno(animar) {
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
   requestAnimationFrame(activarAnimaciones);
+  consultaHTML();
   if (!playerVid) {
     const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
     asegurarYT(() => ponerVideo(v.id, v.t || 0, false));
@@ -810,6 +840,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
+    if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {
