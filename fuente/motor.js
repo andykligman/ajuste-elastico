@@ -14,13 +14,16 @@ function requeridos(k, col) {
   return ORDEN.filter(id => s.has(id));
 }
 
-/* Módulos: 0 = antes de la clase 1, 1 = enlaces/anticipaciones/superposiciones, 2 = arranque del módulo 2.
+/* Módulos: 0 = antes de la clase 1, 1 = enlaces/anticipaciones/superposiciones, 2 = ADN del Jazz,
+   3 = entrenamiento rítmico, 4 = Curva del Solo.
    st.modulos guarda los habilitados ('0', '01', '012'). Vacío = alumno de antes: todo habilitado. */
-const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2 };
+const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2, ritmo: 3, curva: 4 };
 const MODULOS = [
   { n: 0, titulo: 'Módulo 0', sub: 'Antes de la clase 1' },
   { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones' },
   { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz' },
+  { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico' },
+  { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo' },
 ];
 const sinModulos = st => st.modulos === undefined || st.modulos === null || st.modulos === '';
 const moduloHabilitado = (st, n) => sinModulos(st) || String(st.modulos).includes(String(n));

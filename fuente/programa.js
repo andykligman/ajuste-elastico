@@ -26,6 +26,22 @@ const VIDEOS = {
   '-M5xF9Crru8': 'Herramienta iReal: contrabajo acompañante',
   'c_aQIVXsF9M': 'Cuello de botella #1: anticipar los cambios',
   'JHJhLmtCsno': 'Cuello de botella #2: notas por cuerda',
+  /* Módulo 2: ADN del Jazz */
+  'BK6LGMZTU9M': 'Cómo transcribir eficientemente',
+  'o-sV1KM5J-o': 'Notas de aproximación: cromáticos ascendentes',
+  'saRjud2tZw4': 'Momento de integración libre',
+  'M6jHqGGAF8w': 'Notas de aproximación: cromático descendente',
+  'pd8IgNbFJIo': 'Notas de aproximación: auxiliar',
+  'C7LsWB2xgz4': 'Notas de aproximación: resoluciones indirectas (1)',
+  'JvzNRJduA_I': 'Notas de aproximación: resoluciones indirectas (2)',
+  'GrXVCxwRs6g': 'Combinación de elementos del lenguaje',
+  /* Módulo 3: Entrenamiento rítmico */
+  '2iYdNyLkTIc': 'Introducción: entrenamiento rítmico',
+  'CY11GrypJpo': 'Ritmo A + ritmo al cuerpo',
+  'Y5o2rSOFpnQ': 'Ritmo B + cómo destrabar cualquier ritmo',
+  'Zi8GzfFqmOI': 'Ritmo A + aplicaciones varias al instrumento',
+  'ersUb9-L1zA': 'Ritmo B: ejemplos en el instrumento',
+  'CHKJyTSdmIg': 'Ritmos C, D y E + improvisación en subdivisión de negra',
 };
 
 /* Standards para elegir. pdf: link a la parte para trabajar (vacío = Andy la manda por WhatsApp) */
@@ -68,7 +84,9 @@ const PROGRAMA = {
     { id: 'enlaces', titulo: 'Enlaces de arpegios', sub: 'Ejercitación N1: de lo fijo a lo libre' },
     { id: 'antic', titulo: 'Anticipaciones armónicas', sub: 'Ejercitación N2' },
     { id: 'super', titulo: 'Superposiciones', sub: 'Ejercitación N3' },
-    { id: 'm2', titulo: 'Arranque del módulo 2', sub: 'ADN del Jazz' },
+    { id: 'm2', titulo: 'Módulo 2: ADN del Jazz', sub: 'Notas de aproximación y transcripción' },
+    { id: 'ritmo', titulo: 'Módulo 3: Entrenamiento rítmico', sub: 'Ritmos A a E, al cuerpo y en el instrumento' },
+    { id: 'curva', titulo: 'Módulo 4: Curva del Solo', sub: 'Muy pronto' },
   ],
   pasos: [
     /* ---------- Pre-sincrónico ---------- */
@@ -305,17 +323,83 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
     },
 
-    /* ---------- Módulo 2 ---------- */
+    /* ---------- Módulo 2: ADN del Jazz ---------- */
+    {
+      id: 'm2', etapa: 'm2', entrega: 'audio', envia: 'el audio de 30 segundos cantando el solo encima de la pista.',
+      video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
+      titulo: 'Cómo transcribir eficientemente',
+      detalle: 'Mirá el video, elegí un solo, descargá Audiostretch y cantá 30 segundos del solo encima de la pista. Mandá el audio.',
+      recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
+    },
     {
       id: 'm1', etapa: 'm2', entrega: 'video', envia: 'los videos de las ejercitaciones 1 y 2 de Cromáticos ascendentes.',
-      titulo: 'Cromáticos ascendentes: ejercitaciones 1 y 2',
-      detalle: 'En el módulo ADN del Jazz, mirá el video de Cromáticos Ascendentes, usá el PDF y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3.',
+      video: { id: 'o-sV1KM5J-o' }, hotmart: 'RO9qy9mjOP',
+      titulo: 'Cromáticos ascendentes',
+      detalle: 'Mirá el video con el PDF al lado y mandá videos de las ejercitaciones 1 y 2 para pedir feedback. Después, la 3. Al final está el momento de integración libre.',
+      recursos: [
+        { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' },
+        { t: 'Video: Momento de integración libre', url: 'https://www.youtube.com/watch?v=saRjud2tZw4' },
+      ],
+    },
+    {
+      id: 'n3', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
+      titulo: 'Cromático descendente',
+      detalle: 'Mirá el video y hacé las ejercitaciones con el PDF de ADN del Jazz.',
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
-      id: 'm2', etapa: 'm2', entrega: 'audio', envia: 'el audio de 30 segundos cantando el solo encima de la pista.',
-      titulo: 'Elegir un solo y cantar 30 segundos',
-      detalle: 'Mirá "Cómo transcribir eficientemente", descargá Audiostretch y cantá 30 segundos del solo elegido encima de la pista. Mandá el audio.',
+      id: 'n4', etapa: 'm2', video: { id: 'pd8IgNbFJIo' }, hotmart: 'y4bVqNGy4R',
+      titulo: 'Auxiliar',
+      detalle: 'Mirá el video y hacé las ejercitaciones con el PDF de ADN del Jazz.',
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
+    },
+    {
+      id: 'n5', etapa: 'm2', video: { id: 'C7LsWB2xgz4' }, hotmart: 'E4zz5g9P4l',
+      titulo: 'Resoluciones indirectas',
+      detalle: 'Son dos videos: empezá por el primero y seguí con el segundo. Hacé las ejercitaciones con el PDF de ADN del Jazz.',
+      recursos: [
+        { t: 'Video: Resoluciones indirectas (2)', url: 'https://www.youtube.com/watch?v=JvzNRJduA_I' },
+        { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' },
+      ],
+    },
+    {
+      id: 'n6', etapa: 'm2', video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Combinación de elementos del lenguaje',
+      detalle: 'Mirá el video y seguí la guía práctica del documento.',
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
+    },
+    /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
+    {
+      id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
+      titulo: 'Introducción: entrenamiento rítmico',
+      detalle: 'Mirá el video de introducción al módulo.',
+    },
+    {
+      id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
+      titulo: 'Ritmo A + ritmo al cuerpo',
+      detalle: 'Mirá el video y practicá el ritmo A con el cuerpo, como se muestra.',
+    },
+    {
+      id: 'r3', etapa: 'ritmo', video: { id: 'Y5o2rSOFpnQ' }, hotmart: '97B2PPYx7p',
+      titulo: 'Ritmo B + cómo destrabar cualquier ritmo',
+      detalle: 'Mirá el video y practicá el ritmo B como se muestra.',
+    },
+    {
+      id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D',
+      titulo: 'Ritmo A + aplicaciones varias al instrumento',
+      detalle: 'Mirá el video con el PDF al lado y llevá el ritmo A a la guitarra.',
+      recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit' }],
+    },
+    {
+      id: 'r5', etapa: 'ritmo', video: { id: 'ersUb9-L1zA' }, hotmart: 'y4bp2dGy7R',
+      titulo: 'Ritmo B: ejemplos en el instrumento',
+      detalle: 'Mirá el video y llevá el ritmo B a la guitarra.',
+    },
+    {
+      id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
+      titulo: 'Ritmos C, D y E + improvisación en subdivisión de negra',
+      detalle: 'Mirá el video con el PDF al lado.',
+      recursos: [{ t: 'Doc: Ritmos C, D y E', url: 'https://docs.google.com/document/d/1A5RHqBYIycktRvhm_rEuvkYICkGyGFQ7b_lX-tTVQtU/edit' }],
     },
   ],
 

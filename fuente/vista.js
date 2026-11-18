@@ -97,7 +97,7 @@ function materialHTML(p) {
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
     const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t)}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
@@ -214,12 +214,13 @@ function nodoHTML(st, e, p, n, total) {
 function caminoHTML(st, e) {
   // Todos los pasos visibles en orden, numerados de nuevo en cada etapa
   const items = []; const cerradas = [];
-  const bloq = [];
+  const bloq = [], proximas = [];
   PROGRAMA.etapas.forEach(et => {
     const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
     const m = MODULO_DE[et.id];
     if (!moduloHabilitado(st, m)) { if (!bloq.includes(m)) bloq.push(m); return; }
-    if (et.id === 'm2' && sinModulos(st) && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    if (m >= 2 && sinModulos(st) && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    if (!pasos.length) { if (verTodo || !items.length) proximas.push(et); return; }
     pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
   });
   const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
@@ -238,6 +239,7 @@ function caminoHTML(st, e) {
     ${cuerpo}
     ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} del módulo</button>` : ''}
     ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq">${ICONO.candado}<p><strong>${esc(MODULOS[bloq[0]].titulo)}</strong>Andy te lo habilita cuando llegue el momento.</p></div>` : ''}
+    ${proximas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Muy pronto</p></div>`).join('')}
     ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
 }
