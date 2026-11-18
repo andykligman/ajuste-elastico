@@ -89,6 +89,11 @@ function docNuevo(p, r) {
   for (let j = 0; j < i; j++) if ((PASO[ORDEN[j]].recursos || []).some(x => x.url === r.url)) return false;
   return true;
 }
+/* Panel con varios videos a la vez (miniaturas que cargan el video de al lado) */
+function panelHTML(p) {
+  if (!p.panel) return '';
+  return `<div class="panel-vids">${p.panel.map(v => `<button class="panel-vid" data-seek="${v.video}:0"><img src="https://i.ytimg.com/vi/${esc(v.video)}/mqdefault.jpg" alt="" loading="lazy"><span>${ICONO.video}${esc(v.t)}</span></button>`).join('')}</div>`;
+}
 function materialHTML(p) {
   const rs = (p.recursos || []).filter(r => r.url);
   if (!rs.length) return '';
@@ -170,11 +175,12 @@ function tarjetaHTML(st, e, p) {
   return `<div class="tarjeta">
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandame un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
-    ${preguntaHTML(st, p)}
     ${seguimientoHTML(st, p)}
+    ${preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'

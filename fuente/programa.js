@@ -351,6 +351,7 @@ const PROGRAMA = {
     {
       id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
+      tip: 'El objetivo de este módulo: sacar un solo y tenerlo en la guitarra. Después, con el video de Combinación de elementos del lenguaje, sacar elementos de ese solo y pasarlos por el mismo proceso que vas a hacer con los cromáticos: reconocimiento, mecanización e integración. Idealmente, para la tercera clase del módulo.',
       titulo: 'Cómo transcribir eficientemente',
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir cantando, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melodía).',
       progreso: [
@@ -411,46 +412,49 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'n3', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
-      titulo: 'Cromático descendente',
-      detalle: 'Mirá el video y hacé el mismo proceso que usaste para los cromáticos ascendentes: las tres ejercitaciones, ahora con el cromático desde arriba.',
+      id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video tocando el fragmento de tu solo que decodificaste, mecanizado por la escala.',
+      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Combinación de elementos del lenguaje',
+      detalle: 'Mirá el video con el doc al lado. La idea es hacerlo con **el solo que transcribiste**:\n- Elegí un fragmento chico (no tiene que ser largo).\n- Decodificalo: en qué escala madre está y de qué está hecho, nota por nota o por intervalos. Anotalo.\n- Reconocelo en el diapasón, en todos los grados de la escala, dentro de una posición.\n- Mecanizalo y después integralo, igual que hiciste con los cromáticos ascendentes.\n[Ejemplos de decodificación](https://youtu.be/GrXVCxwRs6g?t=605)',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo?',
         casos: {
-          listo: { tip: 'Ya tenés tus 30 segundos de transcripción: empezá a pasarlos a la guitarra, de a poco.' },
+          listo: { tip: 'Ya tenés tus 30 segundos de transcripción: pasalos a la guitarra, de a poco, y de ahí sacá el fragmento para este paso.' },
           quince: { opciones: [
             { id: 'treinta', label: 'Ya tengo los 30 segundos', nivel: 'listo', resp: '¡Perfecto! Empezá a pasarlo a la guitarra, de a poco.' },
-            { id: 'quince', label: 'Todavía tengo 15', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Loops cortos que vas juntando de a poco.' },
+            { id: 'quince', label: 'Todavía tengo 15', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Mientras tanto, ya podés sacar un fragmento de lo que tenés.' },
           ] },
           _: { opciones: [
             { id: 'treinta', label: 'Ya tengo mis 30 segundos', nivel: 'listo', resp: '¡Perfecto! Mandámelo y empezá a pasarlo a la guitarra, de a poco.' },
             { id: 'quince', label: 'Tengo 15 segundos', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Mandame lo que tengas.' },
-            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Retomala: volvé al paso "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
+            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Retomala, que este paso se apoya en eso: volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
       },
-      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
-    },
-    {
-      id: 'n4', etapa: 'm2', video: { id: 'pd8IgNbFJIo' }, hotmart: 'y4bVqNGy4R',
-      titulo: 'Auxiliar',
-      detalle: 'Mirá el video y hacé las ejercitaciones con el PDF de ADN del Jazz.',
-      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
-    },
-    {
-      id: 'n5', etapa: 'm2', video: { id: 'C7LsWB2xgz4' }, hotmart: 'E4zz5g9P4l',
-      titulo: 'Resoluciones indirectas',
-      detalle: 'Son dos videos: empezá por el primero y seguí con el segundo. Hacé las ejercitaciones con el PDF de ADN del Jazz.',
-      recursos: [
-        { t: 'Video: Resoluciones indirectas (2)', url: 'https://www.youtube.com/watch?v=JvzNRJduA_I' },
-        { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' },
+      progreso: [
+        { id: 'listo', label: 'Ya decodifiqué un fragmento y lo estoy mecanizando', nivel: 'listo' },
+        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la guitarra. Mientras tanto, seguí con los cromáticos y mirá lo que viene. Cuando lo tengas, volvé a este paso.' },
+        { id: 'decodificar', label: 'No me doy cuenta de qué elementos tiene', nivel: 'cuesta', saltea: true, resp: 'Probá con un pedazo más corto, de 3 o 4 notas. Si igual no sale, está bien: por ahora quedate con conocer los elementos. Traé el fragmento a la clase y lo decodificamos juntos.' },
       ],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
     },
     {
-      id: 'n6', etapa: 'm2', video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
-      titulo: 'Combinación de elementos del lenguaje',
-      detalle: 'Mirá el video y seguí la guía práctica del documento.',
-      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
+      id: 'n7', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
+      titulo: 'Más elementos del lenguaje',
+      detalle: 'Estos son los otros elementos del módulo. Las ejercitaciones están explicadas en cada video, y son las mismas que hiciste con los cromáticos ascendentes.\nNo hace falta hacerlos todos. Lo importante es el proceso: **reconocimiento, mecanización e integración**. Mirá los videos y elegí con cuáles trabajar, sobre todo los que aparezcan en tu solo.',
+      panel: [
+        { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
+        { t: 'Auxiliar', video: 'pd8IgNbFJIo' },
+        { t: 'Resoluciones indirectas 1', video: 'C7LsWB2xgz4' },
+        { t: 'Resoluciones indirectas 2', video: 'JvzNRJduA_I' },
+      ],
+      pregunta: '¿Cómo venís con estos elementos?',
+      progreso: [
+        { id: 'trabajo', label: 'Estoy trabajando alguno', nivel: 'listo' },
+        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: '¡Bien! Si alguno aparece en tu solo, ese es buen candidato para mecanizar.' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: '¡Podés escribirme tus preguntas por WhatsApp!' },
+      ],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
     {
