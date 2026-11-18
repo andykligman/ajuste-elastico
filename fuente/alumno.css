@@ -480,3 +480,5 @@ body.con-mapa{overflow:hidden}
 .gc-num span{text-align:center;font-size:10.5px;color:var(--gris)}
 @media (max-width:560px){.gc-fila{grid-template-columns:56px 1fr;gap:5px}.gc-barras{grid-template-columns:repeat(16,minmax(10px,1fr));gap:1.5px}.gc-veces b{font-size:10px;height:19px}}
 .graf-comp summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
+.gc-cap{margin:8px 0 2px 86px;font-size:12.5px;font-weight:600;color:var(--tinta)}
+@media (max-width:560px){.gc-cap{margin-left:61px}}

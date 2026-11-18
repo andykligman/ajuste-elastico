@@ -128,11 +128,12 @@ function graficoCompasesHTML() {
     const max = Math.max(...veces);
     return `<div class="gc-grilla gc-${tipo}">
       ${filas.map(([a, b, nota]) => `<div class="gc-fila"><span class="gc-et">${a}–${b}${nota ? ` <em>${nota}</em>` : ''}</span><span class="gc-barras">${Array.from({ length: 16 }, (_, k) => `<i class="${k + 1 >= a && k + 1 <= b ? 'on' : ''}"></i>`).join('')}</span></div>`).join('')}
-      <div class="gc-fila gc-veces"><span class="gc-et">Veces</span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
+      <p class="gc-cap">Veces que practicaste cada compás</p>
+      <div class="gc-fila gc-veces"><span class="gc-et"></span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
       <div class="gc-fila gc-num"><span class="gc-et">Compás</span><span class="gc-barras">${veces.map((_, k) => `<span>${k + 1}</span>`).join('')}</span></div>
     </div>`;
   };
-  return `<details class="graf-comp">
+  return `<details class="graf-comp" open>
     <summary><span>Cómo sumar compases sin que se desarme</span><small>Lo que sirve y lo que no</small></summary>
     <p>Ejemplo con un tema de 16 compases. Cada fila es una tanda de práctica.</p>
     <h5 class="gc-si">Así sí: por pedazos</h5>

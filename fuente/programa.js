@@ -287,7 +287,6 @@ const PROGRAMA = {
       titulo: 'Sumar compases del standard',
       grafico: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
-      recursos: [{ t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
           fix: 'Lo mejor es avanzar **por pedazos chicos**. Por ejemplo, en un tema de 16 compases:\n- Del 1 al 4.\n- Del 5 al 8.\n- Del 1 al 8.\n- Del 9 al 12.\n- Del 13 al 16.\n- Del 9 al 16.\n- Repasar del 1 al 8.\n- Por último, atar del 1 al 16.\nSi algún sector falla, repasalo cuando quieras, bajando hasta grupos de 2 compases si hace falta.\nLo que no sirve es ir siempre desde el principio (1 al 4, después 1 al 8, después 1 al 12): así practicás mil veces lo primero y las partes difíciles casi nunca.' },
