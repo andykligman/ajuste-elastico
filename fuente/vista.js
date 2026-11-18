@@ -382,6 +382,10 @@ function mapaHTML(st, e) {
   const modAhora = MODULO_DE[PASO[ahora].etapa];
   return `<div class="mapa-zoom" role="dialog" aria-modal="true" aria-label="Tu mapa">
     <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Tu mapa</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar el mapa">✕</button></div>
+    ${(st.extras || []).length ? `<section class="mz-extras"><h3>Te dejé</h3><ul class="mz-lista">${st.extras.map(x => `<li class="${x.hecho ? 'ok' : ''}">
+        <button class="mz-tilde" data-mapa-extra="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="${x.hecho ? 'Desmarcar' : 'Marcar como hecha'}: ${esc(x.titulo)}"><i>${x.hecho ? ICONO.check : ''}</i></button>
+        <span>${esc(x.titulo)}${x.detalle ? `<small>${esc(x.detalle)}</small>` : ''}</span></li>`).join('')}</ul></section>` : ''}
+    <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta 😉</p>
     <ol class="mz-camino">${MODULOS.map((M, i) => {
       const pasos = pasosDelModulo(M.n).filter(p => !p.hojaDeRuta);
       const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === M.n);
@@ -402,7 +406,9 @@ function mapaHTML(st, e) {
           ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
           ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
-            return `<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod ? `<button data-mapa-paso="${p.id}">` : '<span>'}<i>${ok ? ICONO.check : ''}</i>${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}${abiertoMod ? '</button>' : '</span>'}</li>`;
+            return `<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
+              ? `<button class="mz-tilde" data-mapa-tilde="${p.id}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecho'}: ${esc(p.titulo)}"><i>${ok ? ICONO.check : ''}</i></button><button data-mapa-paso="${p.id}">${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}</button>`
+              : `<span><i></i>${esc(p.titulo)}</span>`}</li>`;
           }).join('')}</ul></details>` : ''}
         </div></li>`;
     }).join('')}</ol>
@@ -418,9 +424,28 @@ function abrirMapaZoom() {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.dataset.accion === 'cerrar-mapa') cerrarMapaZoom();
     else if (b.dataset.mapaPaso) { const id = b.dataset.mapaPaso; cerrarMapaZoom(); abrirPaso(id); }
+    else if (b.dataset.mapaTilde) {
+      const id = b.dataset.mapaTilde, pr = ST.prog[id];
+      if (hecho(ST, id)) { if (pr && pr.videos) ST.prog[id] = { videos: pr.videos }; else delete ST.prog[id]; }
+      else ST.prog[id] = Object.assign({}, pr, { hecho: true, como: 'listo', t: hoyISO() });
+      guardarAlumno(); renderAlumno(); refrescarMapaZoom();
+    } else if (b.dataset.mapaExtra) {
+      const x = (ST.extras || []).find(y => y.id === b.dataset.mapaExtra); if (!x) return;
+      x.hecho = !x.hecho; guardarAlumno(); renderAlumno(); refrescarMapaZoom();
+    }
   };
   const aca = el.querySelector('.mz-mod.aca'); if (aca) setTimeout(() => aca.scrollIntoView({ block: 'center' }), 30);
   el.querySelector('.mz-cerrar').focus();
+}
+/* Redibuja el mapa sin perder el scroll ni lo que estaba desplegado */
+function refrescarMapaZoom() {
+  const el = document.querySelector('.mapa-zoom'); if (!el) return;
+  const top = el.scrollTop, abiertos = [...el.querySelectorAll('.mz-det')].map(d => d.open);
+  const { e } = recomendaciones(ST, 1);
+  const tmp = document.createElement('div'); tmp.innerHTML = mapaHTML(ST, e);
+  el.innerHTML = tmp.firstElementChild.innerHTML;
+  el.querySelectorAll('.mz-det').forEach((d, i) => { if (i < abiertos.length) d.open = abiertos[i]; });
+  el.scrollTop = top;
 }
 function cerrarMapaZoom() { document.querySelector('.mapa-zoom')?.remove(); document.body.classList.remove('con-mapa'); }
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && document.querySelector('.mapa-zoom')) cerrarMapaZoom(); });
