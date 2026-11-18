@@ -142,6 +142,7 @@ async function renderInvitacion(token, error) {
 }
 
 function abrirMapa(alumno) {
+  document.title = 'Aula de Ajuste Elástico';
   ST = alumno; modo = 'alumno'; abierto = null;
   if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
   nav(location.pathname);
@@ -218,6 +219,7 @@ function todosLosVideos(a) {
   return Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid]);
 }
 function renderAdmin() {
+  document.title = 'Admin · Panel de Ajuste Elástico';   // para encontrarlo en Chrome escribiendo «admin» o «panel»
   const sel = elegido && elegido !== '__nuevo' && LISTA.find(a => a.codigo === elegido);
   app().innerHTML = `${barra('Andy')}
   <main class="admin ${sel || elegido === '__nuevo' ? 'admin-una' : ''}">
