@@ -98,9 +98,9 @@ function hojaDeRutaHTML(p) {
     <h5>Objetivos</h5>
     <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
     ${h.puente ? `<div class="ruta-puente" aria-label="El puente: ${esc(h.puente.join(', '))}">
-      <span class="rp-extremo">Lo que conocés</span>
+      <span class="rp-extremo">Lo que conocemos</span>
       ${h.puente.map((x, i) => `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
-      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usás al improvisar</span>
+      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usamos al improvisar</span>
     </div>` : ''}
     ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}

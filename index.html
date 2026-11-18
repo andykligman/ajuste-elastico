@@ -957,26 +957,26 @@ const PROGRAMA = {
     {
       id: 'obj2', etapa: 'm2',
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, leé esto con calma: es lo que vamos a buscar en este módulo y en qué orden.',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
       hojaDeRuta: {
         objetivos: [
-          '**Transcribir un solo**, o al menos un fragmento de 30 segundos: primero cantando, después en la guitarra.',
+          '**Transcribir un solo**, o al menos un fragmento de 30 segundos. Primero cantando, luego en la guitarra.',
           '**Conocer o reordenar los elementos** que componen el lenguaje del jazz.',
-          '**Entender cómo construir el puente** entre lo que conocés y lo que realmente lográs usar cuando improvisás.',
-          '**Aplicar ese proceso a los cromatismos ascendentes** y, si llegás con los tiempos, a algún otro recurso del módulo.',
-          '**Con el video de Combinación de elementos del lenguaje**, sacar uno o más fragmentos cortos de tu solo, decodificarlos y pasarlos por el mismo proceso.',
+          'Entender cómo construir **el puente entre lo que conocemos y lo que realmente logramos usar** en la improvisación. Este puente tiene 3 etapas: reconocimiento, mecanización e integración.',
+          '**Aplicar este principio sobre los cromatismos ascendentes** y, si llegás con los tiempos, sobre algún otro recurso del módulo.',
+          'Finalmente, con el video de **Combinación de elementos del lenguaje**, extraer uno o más fragmentos chiquitos de ese solo, decodificarlos y pasarlos por el mismo proceso que vas a hacer con los cromáticos.',
         ],
         puente: ['Reconocimiento', 'Mecanización', 'Integración'],
-        meta: 'Idealmente, llegar a este último punto para la tercera clase del módulo.',
+        meta: 'Idealmente, llegar a este punto final para la tercera clase del módulo.',
         importante: [
-          'Que entiendas el proceso de **reconocimiento, mecanización e integración**, que lo hagas a fondo y que recibas mis correcciones para hacerlo cada vez mejor. No importa en cuántos elementos lo hagas, sino **qué tan profundo** lo hacés y si lo hacés bien.',
-          'Después, **transcribir el solo**, por la misma razón: que yo pueda ver que aprendiste a decodificar bien el fragmento que elegiste, para después mecanizarlo e integrarlo.',
+          'Entender el proceso de **reconocimiento, mecanización e integración**, que lo puedas hacer a fondo y que recibas correcciones para mejorar en cómo lo hacés. No importa en cuántos elementos lo hagas, sino **qué tan profundo** lo hacés y si lo hacés bien.',
+          'Después, que puedas **transcribir un solo**, por la misma razón: que yo pueda ver que aprendiste a decodificar bien el fragmento elegido, para después mecanizarlo e integrarlo.',
         ],
-        cierre: 'La idea es que te vayas de este módulo con **un método eficiente para incorporar recursos del lenguaje del jazz a tu tocada**, de manera natural y clara.',
+        cierre: 'La idea es que te vayas de este módulo teniendo **un método eficiente para incorporar recursos del lenguaje de jazz a tu tocada**, de manera natural y clara.',
       },
       pregunta: '¿Arrancamos?',
       progreso: [
-        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo. ¡Estoy listo para avanzar!', nivel: 'listo' },
+        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' },
       ],
     },
     {
@@ -1577,9 +1577,9 @@ function hojaDeRutaHTML(p) {
     <h5>Objetivos</h5>
     <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
     ${h.puente ? `<div class="ruta-puente" aria-label="El puente: ${esc(h.puente.join(', '))}">
-      <span class="rp-extremo">Lo que conocés</span>
+      <span class="rp-extremo">Lo que conocemos</span>
       ${h.puente.map((x, i) => `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
-      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usás al improvisar</span>
+      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usamos al improvisar</span>
     </div>` : ''}
     ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
