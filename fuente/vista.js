@@ -90,6 +90,23 @@ function docNuevo(p, r) {
   return true;
 }
 /* Panel con varios videos a la vez (miniaturas que cargan el video de al lado) */
+/* Objetivos de un módulo: lista numerada, el puente de 3 etapas y lo más importante */
+function hojaDeRutaHTML(p) {
+  const h = p.hojaDeRuta; if (!h) return '';
+  const color = MODULOS[MODULO_DE[p.etapa]].color;
+  return `<div class="ruta" style="--rc:${color}">
+    <h5>Objetivos</h5>
+    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
+    ${h.puente ? `<div class="ruta-puente" aria-label="El puente: ${esc(h.puente.join(', '))}">
+      <span class="rp-extremo">Lo que conocés</span>
+      ${h.puente.map((x, i) => `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usás al improvisar</span>
+    </div>` : ''}
+    ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
+    ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
+    ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
+  </div>`;
+}
 function panelHTML(p) {
   if (!p.panel) return '';
   return `<div class="panel-vids">${p.panel.map(v => `<button class="panel-vid" data-seek="${v.video}:0"><img src="https://i.ytimg.com/vi/${esc(v.video)}/mqdefault.jpg" alt="" loading="lazy"><span>${ICONO.video}${esc(v.t)}</span></button>`).join('')}</div>`;
@@ -175,6 +192,7 @@ function tarjetaHTML(st, e, p) {
   return `<div class="tarjeta">
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.opcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${hojaDeRutaHTML(p)}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}

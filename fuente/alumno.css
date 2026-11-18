@@ -348,3 +348,22 @@ body.con-grabador{overflow:hidden}
 .panel-vid span{display:flex;align-items:center;gap:7px;padding:9px 11px;font-weight:600;font-size:14.5px;line-height:1.25}
 .panel-vid span svg{width:16px;height:16px;flex:none}
 .panel-vid:hover{border-color:var(--azul)}
+
+/* Objetivos del módulo */
+.ruta{margin:14px 0 6px;display:grid;gap:14px}
+.ruta h5{margin:0;font:600 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--rc)}
+.ruta-obj{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ruta-obj li{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--rc) 7%,transparent);border:1px solid color-mix(in srgb,var(--rc) 18%,transparent)}
+.ruta-obj p{margin:0;line-height:1.5}
+.ruta-n{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--rc);color:#0d0e10;font:700 14px var(--display)}
+.ruta-puente{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:16px 12px;border-radius:14px;background:color-mix(in srgb,var(--rc) 10%,transparent)}
+.rp-extremo{font-size:13.5px;color:var(--gris);font-style:italic}
+.rp-flecha{color:var(--rc);font-weight:700}
+.rp-etapa{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--rc);color:#0d0e10;font:600 14.5px var(--display)}
+.rp-etapa small{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
+.ruta-meta{margin:0;padding:10px 14px;border-left:3px solid var(--rc);background:color-mix(in srgb,var(--rc) 6%,transparent);border-radius:0 10px 10px 0}
+.ruta-clave{padding:14px 16px;border-radius:14px;border:1.5px solid #E8834F;background:rgba(232,131,79,.08)}
+.ruta-clave h5{color:#E8834F;margin-bottom:6px}
+.ruta-clave p{margin:6px 0 0;line-height:1.55}
+.ruta-cierre{margin:0;font:500 16.5px/1.5 var(--display);text-align:center;padding:4px 8px}
+@media (max-width:560px){.ruta-puente{flex-direction:column;gap:4px}.rp-flecha{transform:rotate(90deg)}}

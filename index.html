@@ -422,6 +422,25 @@ body.con-grabador{overflow:hidden}
 .panel-vid span svg{width:16px;height:16px;flex:none}
 .panel-vid:hover{border-color:var(--azul)}
 
+/* Objetivos del módulo */
+.ruta{margin:14px 0 6px;display:grid;gap:14px}
+.ruta h5{margin:0;font:600 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--rc)}
+.ruta-obj{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ruta-obj li{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--rc) 7%,transparent);border:1px solid color-mix(in srgb,var(--rc) 18%,transparent)}
+.ruta-obj p{margin:0;line-height:1.5}
+.ruta-n{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--rc);color:#0d0e10;font:700 14px var(--display)}
+.ruta-puente{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:16px 12px;border-radius:14px;background:color-mix(in srgb,var(--rc) 10%,transparent)}
+.rp-extremo{font-size:13.5px;color:var(--gris);font-style:italic}
+.rp-flecha{color:var(--rc);font-weight:700}
+.rp-etapa{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--rc);color:#0d0e10;font:600 14.5px var(--display)}
+.rp-etapa small{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
+.ruta-meta{margin:0;padding:10px 14px;border-left:3px solid var(--rc);background:color-mix(in srgb,var(--rc) 6%,transparent);border-radius:0 10px 10px 0}
+.ruta-clave{padding:14px 16px;border-radius:14px;border:1.5px solid #E8834F;background:rgba(232,131,79,.08)}
+.ruta-clave h5{color:#E8834F;margin-bottom:6px}
+.ruta-clave p{margin:6px 0 0;line-height:1.55}
+.ruta-cierre{margin:0;font:500 16.5px/1.5 var(--display);text-align:center;padding:4px 8px}
+@media (max-width:560px){.ruta-puente{flex-direction:column;gap:4px}.rp-flecha{transform:rotate(90deg)}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -936,9 +955,33 @@ const PROGRAMA = {
 
     /* ---------- Módulo 2: ADN del Jazz ---------- */
     {
+      id: 'obj2', etapa: 'm2',
+      titulo: 'Los objetivos de este módulo',
+      detalle: 'Antes de arrancar, leé esto con calma: es lo que vamos a buscar en este módulo y en qué orden.',
+      hojaDeRuta: {
+        objetivos: [
+          '**Transcribir un solo**, o al menos un fragmento de 30 segundos: primero cantando, después en la guitarra.',
+          '**Conocer o reordenar los elementos** que componen el lenguaje del jazz.',
+          '**Entender cómo construir el puente** entre lo que conocés y lo que realmente lográs usar cuando improvisás.',
+          '**Aplicar ese proceso a los cromatismos ascendentes** y, si llegás con los tiempos, a algún otro recurso del módulo.',
+          '**Con el video de Combinación de elementos del lenguaje**, sacar uno o más fragmentos cortos de tu solo, decodificarlos y pasarlos por el mismo proceso.',
+        ],
+        puente: ['Reconocimiento', 'Mecanización', 'Integración'],
+        meta: 'Idealmente, llegar a este último punto para la tercera clase del módulo.',
+        importante: [
+          'Que entiendas el proceso de **reconocimiento, mecanización e integración**, que lo hagas a fondo y que recibas mis correcciones para hacerlo cada vez mejor. No importa en cuántos elementos lo hagas, sino **qué tan profundo** lo hacés y si lo hacés bien.',
+          'Después, **transcribir el solo**, por la misma razón: que yo pueda ver que aprendiste a decodificar bien el fragmento que elegiste, para después mecanizarlo e integrarlo.',
+        ],
+        cierre: 'La idea es que te vayas de este módulo con **un método eficiente para incorporar recursos del lenguaje del jazz a tu tocada**, de manera natural y clara.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [
+        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo. ¡Estoy listo para avanzar!', nivel: 'listo' },
+      ],
+    },
+    {
       id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
-      tip: 'El objetivo de este módulo: sacar un solo y tenerlo en la guitarra. Después, con el video de Combinación de elementos del lenguaje, sacar elementos de ese solo y pasarlos por el mismo proceso que vas a hacer con los cromáticos: reconocimiento, mecanización e integración. Idealmente, para la tercera clase del módulo.',
       titulo: 'Cómo transcribir eficientemente',
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir cantando, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melodía).',
       progreso: [
@@ -1526,6 +1569,23 @@ function docNuevo(p, r) {
   return true;
 }
 /* Panel con varios videos a la vez (miniaturas que cargan el video de al lado) */
+/* Objetivos de un módulo: lista numerada, el puente de 3 etapas y lo más importante */
+function hojaDeRutaHTML(p) {
+  const h = p.hojaDeRuta; if (!h) return '';
+  const color = MODULOS[MODULO_DE[p.etapa]].color;
+  return `<div class="ruta" style="--rc:${color}">
+    <h5>Objetivos</h5>
+    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
+    ${h.puente ? `<div class="ruta-puente" aria-label="El puente: ${esc(h.puente.join(', '))}">
+      <span class="rp-extremo">Lo que conocés</span>
+      ${h.puente.map((x, i) => `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usás al improvisar</span>
+    </div>` : ''}
+    ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
+    ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
+    ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
+  </div>`;
+}
 function panelHTML(p) {
   if (!p.panel) return '';
   return `<div class="panel-vids">${p.panel.map(v => `<button class="panel-vid" data-seek="${v.video}:0"><img src="https://i.ytimg.com/vi/${esc(v.video)}/mqdefault.jpg" alt="" loading="lazy"><span>${ICONO.video}${esc(v.t)}</span></button>`).join('')}</div>`;
@@ -1611,6 +1671,7 @@ function tarjetaHTML(st, e, p) {
   return `<div class="tarjeta">
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.opcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${hojaDeRutaHTML(p)}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}

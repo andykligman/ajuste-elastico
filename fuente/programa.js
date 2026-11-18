@@ -349,9 +349,33 @@ const PROGRAMA = {
 
     /* ---------- Módulo 2: ADN del Jazz ---------- */
     {
+      id: 'obj2', etapa: 'm2',
+      titulo: 'Los objetivos de este módulo',
+      detalle: 'Antes de arrancar, leé esto con calma: es lo que vamos a buscar en este módulo y en qué orden.',
+      hojaDeRuta: {
+        objetivos: [
+          '**Transcribir un solo**, o al menos un fragmento de 30 segundos: primero cantando, después en la guitarra.',
+          '**Conocer o reordenar los elementos** que componen el lenguaje del jazz.',
+          '**Entender cómo construir el puente** entre lo que conocés y lo que realmente lográs usar cuando improvisás.',
+          '**Aplicar ese proceso a los cromatismos ascendentes** y, si llegás con los tiempos, a algún otro recurso del módulo.',
+          '**Con el video de Combinación de elementos del lenguaje**, sacar uno o más fragmentos cortos de tu solo, decodificarlos y pasarlos por el mismo proceso.',
+        ],
+        puente: ['Reconocimiento', 'Mecanización', 'Integración'],
+        meta: 'Idealmente, llegar a este último punto para la tercera clase del módulo.',
+        importante: [
+          'Que entiendas el proceso de **reconocimiento, mecanización e integración**, que lo hagas a fondo y que recibas mis correcciones para hacerlo cada vez mejor. No importa en cuántos elementos lo hagas, sino **qué tan profundo** lo hacés y si lo hacés bien.',
+          'Después, **transcribir el solo**, por la misma razón: que yo pueda ver que aprendiste a decodificar bien el fragmento que elegiste, para después mecanizarlo e integrarlo.',
+        ],
+        cierre: 'La idea es que te vayas de este módulo con **un método eficiente para incorporar recursos del lenguaje del jazz a tu tocada**, de manera natural y clara.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [
+        { id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo. ¡Estoy listo para avanzar!', nivel: 'listo' },
+      ],
+    },
+    {
       id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
-      tip: 'El objetivo de este módulo: sacar un solo y tenerlo en la guitarra. Después, con el video de Combinación de elementos del lenguaje, sacar elementos de ese solo y pasarlos por el mismo proceso que vas a hacer con los cromáticos: reconocimiento, mecanización e integración. Idealmente, para la tercera clase del módulo.',
       titulo: 'Cómo transcribir eficientemente',
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir cantando, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melodía).',
       progreso: [
