@@ -53,12 +53,12 @@ function manejar(d) {
       /* ----- Alumnos: cuenta ----- */
       case 'auth.invitacion': {
         const a = buscarPor('invitacion', d.invitacion);
-        if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.');
+        if (!a) throw new Error('Este link ya se usó o no es válido. Pedime uno nuevo por WhatsApp.');
         return { nombre: a.datos.nombre, email: a.datos.email };
       }
       case 'auth.crearClave': {
         const a = buscarPor('invitacion', d.invitacion);
-        if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.');
+        if (!a) throw new Error('Este link ya se usó o no es válido. Pedime uno nuevo por WhatsApp.');
         validarClaveNueva(d.clave);
         a.datos.sal = Utilities.getUuid();
         a.datos.hash = hashClave(String(d.clave), a.datos.sal);

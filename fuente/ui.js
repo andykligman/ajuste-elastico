@@ -101,7 +101,7 @@ function renderEntrada(error) {
   app().innerHTML = `${barra('')}
   <main class="entrada">
     <h1>Tu mapa de Ajuste Elástico</h1>
-    <p class="suave">Entrá con el email y la contraseña que creaste con el link que te mandó Andy.</p>
+    <p class="suave">Entrá con el email y la contraseña que creaste con el link que te mandé.</p>
     <form id="formEntrada" novalidate>
       <label for="email">Email</label>
       <input id="email" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" required>
@@ -110,7 +110,7 @@ function renderEntrada(error) {
       ${error ? `<p class="error" role="alert">${esc(error)}</p>` : ''}
       <button class="primario" type="submit">Entrar</button>
     </form>
-    <p class="suave chico">¿Te olvidaste la contraseña? Escribile a Andy por WhatsApp y te manda un link nuevo.</p>
+    <p class="suave chico">¿Te olvidaste la contraseña? Escribime por WhatsApp y te mando un link nuevo.</p>
     ${!API_URL ? `<div class="demo">
       <p><strong>Modo de prueba.</strong> Todavía no está conectado a la planilla: lo que marques queda solo en este navegador.</p>
       <p>Alumnos de ejemplo (contraseña <code>prueba123</code>):</p>
@@ -374,7 +374,7 @@ function restoHTML(a) {
     <h3>Acceso a los módulos</h3>
     <div class="modulos-adm">${MODULOS.map(m => { const on = moduloHabilitado(a, m.n); return `<button class="mod-tg ${on ? 'on' : ''}" data-modulo="${m.n}" aria-pressed="${on}">
       <span class="mod-sw" aria-hidden="true"><i></i></span><span><strong>${m.titulo}</strong><small>${m.sub}</small></span></button>`; }).join('')}</div>
-    <p class="suave chico">Lo que está apagado no aparece en su aula: ve un candado con «Andy te lo habilita cuando llegue el momento».</p>
+    <p class="suave chico">Lo que está apagado no aparece en su aula: ve un candado con «Te lo habilito cuando llegue el momento».</p>
   </div>
 
   <label class="bloque">Nota para ${esc(a.nombre.split(' ')[0])} <span class="suave">(la ve en su aula y va al final del mensaje)</span>

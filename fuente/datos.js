@@ -73,9 +73,9 @@ function demo(accion, d) {
   const deSesion = t => { const a = por('codigo', db.sesiones[t]); if (!a) throw new Error('Tu sesión se cerró. Volvé a entrar con tu email y contraseña.'); return a; };
   const sesion = a => { const t = tokenDemo(); db.sesiones[t] = a.codigo; escribirDemo(); return t; };
   switch (accion) {
-    case 'auth.invitacion': { const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.'); return { nombre: a.nombre, email: a.email }; }
+    case 'auth.invitacion': { const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedime uno nuevo por WhatsApp.'); return { nombre: a.nombre, email: a.email }; }
     case 'auth.crearClave': {
-      const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedile uno nuevo a Andy.');
+      const a = db.alumnos.find(x => x.invitacion && x.invitacion === d.invitacion); if (!a) throw new Error('Este link ya se usó o no es válido. Pedime uno nuevo por WhatsApp.');
       if (!d.clave || d.clave.length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.');
       a.clave = d.clave; a.invitacion = ''; return { token: sesion(a), alumno: publico(a) };
     }

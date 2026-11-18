@@ -137,9 +137,9 @@ const PROGRAMA = {
     {
       id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
-      detalle: 'Escribile a Andy por WhatsApp para elegir juntos el standard con el que vas a trabajar.',
+      detalle: 'Escribime por WhatsApp y elegimos juntos el standard con el que vas a trabajar.',
       pregunta: '¿Ya lo eligieron?',
-      progreso: [{ id: 'listo', label: 'Ya lo elegimos con Andy', nivel: 'listo' }],
+      progreso: [{ id: 'listo', label: 'Ya lo elegimos juntos', nivel: 'listo' }],
     },
     {
       id: 'p5b', etapa: 'pre',
@@ -163,7 +163,7 @@ const PROGRAMA = {
       pregunta: '¿Se entendió el video?',
       progreso: [
         { id: 'listo', label: 'Sí, se entendió', nivel: 'listo' },
-        { id: 'duda', label: 'No del todo', nivel: 'cuesta', resp: 'Volvé a verlo con la guitarra en la mano. Si sigue sin cerrar, mandale igual tus posiciones a Andy y contale qué parte no entendiste.' },
+        { id: 'duda', label: 'No del todo', nivel: 'cuesta', resp: 'Volvé a verlo con la guitarra en la mano. Si sigue sin cerrar, mandame igual tus posiciones y contame qué parte no entendiste.' },
       ],
       recursos: [{ t: 'Video: cómo ordenar las posiciones para que funcione el ejercicio', url: 'https://www.youtube.com/watch?v=PqJhew7HiLs' }],
       problemas: [

@@ -31,7 +31,7 @@ function bajadaEstado(st, e) {
   const proxima = e.k <= 4 ? `la clase ${e.k}` : 'lo que sigue';
   const nombres = ids => ids.slice(0, 3).map(id => PASO[id].titulo.toLowerCase()).join(', ').replace(/, ([^,]*)$/, ' y $1');
   if (e.tipo === 'm2') return 'Terminaste el módulo 1. El resto del módulo 2 lo seguimos por WhatsApp mientras se suma al mapa.';
-  if (e.tipo === 'pausa') return 'Andy dejó tu mapa en pausa. Avanzá cuando puedas, sin presión.';
+  if (e.tipo === 'pausa') return 'Dejé tu aula en pausa. Avanzá cuando puedas, sin presión.';
   if (e.tipo === 'meterle') return `Para ${proxima} conviene tener: ${nombres(e.faltan)}${e.faltan.length > 3 ? ', entre otras' : ''}.`;
   if (e.tipo === 'adelantado') return `Ya tenés lo necesario para ${proxima}. Si tenés ganas, podés seguir con lo que viene.`;
   if (e.faltan.length === 0) return `Ya tenés lo necesario para ${proxima}.`;
@@ -119,7 +119,7 @@ function standardHTML(st) {
   return `<div class="pregunta"><h4>¿Con qué tema vas a trabajar?</h4>
     <div class="standards" role="radiogroup" aria-label="Standards">${STANDARDS.map(x => `<button role="radio" aria-checked="${x.t === elegido}" class="chip-op ${x.t === elegido ? 'sel' : ''}" data-standard="${esc(x.t)}">${esc(x.t)}</button>`).join('')}</div>
     <form class="otro-standard" data-form-standard="1"><input name="otro" aria-label="Otro tema" placeholder="Otro tema" value="${item || !elegido ? '' : esc(elegido)}"><button class="secundario">Elegir este</button></form>
-    ${elegido ? `<div class="respuesta resp-ok festejo" role="status"><span class="resp-ico">${ICONO.ok}</span><div><p class="resp-tit">Elegiste ${esc(elegido)}</p><p>¡Ya estás muy cerca de agendar el inicio de tus encuentros sincrónicos en Ajuste Elástico!</p>${item && item.pdf ? `<a href="${esc(item.pdf)}" target="_blank" rel="noopener">Descargar la parte para trabajar (PDF)</a>` : '<p class="suave chico">Andy te pasa la parte del tema para trabajar.</p>'}</div></div>` : ''}
+    ${elegido ? `<div class="respuesta resp-ok festejo" role="status"><span class="resp-ico">${ICONO.ok}</span><div><p class="resp-tit">Elegiste ${esc(elegido)}</p><p>¡Ya estás muy cerca de agendar el inicio de tus encuentros sincrónicos en Ajuste Elástico!</p>${item && item.pdf ? `<a href="${esc(item.pdf)}" target="_blank" rel="noopener">Descargar la parte para trabajar (PDF)</a>` : '<p class="suave chico">Te paso la parte del tema para trabajar.</p>'}</div></div>` : ''}
   </div>`;
 }
 
@@ -154,7 +154,7 @@ function tarjetaHTML(st, e, p) {
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
-    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandar ${esc(p.entrega)} a Andy</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
+    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandame un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -182,11 +182,11 @@ function envioHTML(st, p) {
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandando tu video a Andy…' : ok ? `Listo, ya se lo mandaste a Andy` : `Mandale a Andy ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
-    ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandáselo por WhatsApp.' : 'Mandáselo por WhatsApp.'} Así lo ve antes de la clase y te devuelve lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
-    ${vids.length || pend.length ? '' : `<div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya se lo mandé por WhatsApp' : 'Ya se lo mandé'}</span></label></div>`}
+    ${vids.length || pend.length ? '' : `<div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
   </div>`;
 }
 // La explicación de cómo funciona el envío va solo en las primeras entregas del recorrido
@@ -249,7 +249,7 @@ function caminoHTML(st, e) {
       : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
     ${cuerpo}
     ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')}</button>` : ''}
-    ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq" style="--mc:${MODULOS[bloq[0]].color}">${ICONO.candado}<p><small>${esc(MODULOS[bloq[0]].titulo)}</small><strong>${esc(MODULOS[bloq[0]].nombre)}</strong>Andy te lo habilita cuando llegue el momento.</p></div>` : ''}
+    ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq" style="--mc:${MODULOS[bloq[0]].color}">${ICONO.candado}<p><small>${esc(MODULOS[bloq[0]].titulo)}</small><strong>${esc(MODULOS[bloq[0]].nombre)}</strong>Te lo habilito cuando llegue el momento.</p></div>` : ''}
     ${proximas.map(et => `<section class="mod-bloque mod-pronto" style="--mc:${MODULOS[MODULO_DE[et.id]].color}">${bannerModulo(MODULO_DE[et.id], et, 'Muy pronto')}</section>`).join('')}
     ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
@@ -291,12 +291,12 @@ function vistaHTML(st, e, animar) {
       <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
-      ${e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuviste la clase ${e.k} con Andy?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
+      ${e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
-    ${extrasPend.length ? `<section class="de-andy"><h2>Andy te dejó</h2>${extrasPend.map(x => `
+    ${extrasPend.length ? `<section class="de-andy"><h2>Te dejé</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
@@ -564,7 +564,7 @@ function abrirGrabador(pasoId, archivo) {
   el.className = 'grabador'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Grabar video');
   el.innerHTML = `<video class="gr-vivo" playsinline autoplay muted></video><video class="gr-ver" playsinline hidden></video>
     <div class="gr-cab"><button class="gr-x" data-gr="cerrar" aria-label="Cerrar">${ICONO.cruz}</button>
-      <div class="gr-tit"><small>Video para Andy</small><strong>${esc(p.titulo)}</strong></div><span class="gr-reloj" hidden>0:00</span></div>
+      <div class="gr-tit"><small>Tu video</small><strong>${esc(p.titulo)}</strong></div><span class="gr-reloj" hidden>0:00</span></div>
     <p class="gr-msg" hidden></p>
     <div class="gr-pie"></div>`;
   document.body.appendChild(el); document.body.classList.add('con-grabador');
@@ -636,9 +636,9 @@ function mostrarRevision(deGaleria) {
   gr.url = URL.createObjectURL(gr.blob); v.src = gr.url; v.hidden = false; v.controls = true;
   v.onloadedmetadata = () => { if (isFinite(v.duration)) gr.seg = v.duration; };
   const mb = gr.blob.size / 1048576;
-  msgGrabador(mb > 380 ? 'Este video es muy pesado para mandarlo desde acá. Mandáselo a Andy por WhatsApp.' : '');
+  msgGrabador(mb > 380 ? 'Este video es muy pesado para mandarlo desde acá. Mandámelo por WhatsApp.' : '');
   piesGrabador(`<button class="gr-texto" data-gr="${deGaleria ? 'cerrar' : 'otra'}">${deGaleria ? 'Cancelar' : 'Grabar de nuevo'}</button>
-    ${mb > 380 ? '' : `<button class="gr-mandar" data-gr="enviar" aria-label="Mandar a Andy">${ICONO.mandar}</button>`}`);
+    ${mb > 380 ? '' : `<button class="gr-mandar" data-gr="enviar" aria-label="Mandar el video">${ICONO.mandar}</button>`}`);
 }
 
 function accionGrabador(a) {
@@ -698,7 +698,7 @@ async function procesarCola() {
     setTimeout(procesarCola, 400);
   } catch (e) {
     const m = e.message || '';
-    subiendo.error = /permiso|autoriz|UrlFetch/i.test(m) ? 'No se pudo mandar el video por un problema del aula. Avisale a Andy.'
+    subiendo.error = /permiso|autoriz|UrlFetch/i.test(m) ? 'No se pudo mandar el video por un problema del aula. Avisame por WhatsApp.'
       : /Acción desconocida/.test(m) ? 'Todavía no se pueden mandar videos desde acá.'
       : 'Se cortó la conexión. Lo vuelvo a intentar solo.';
     pintarSubida();
@@ -712,7 +712,7 @@ function pintarSubida(listo) {
   let el = document.getElementById('subida');
   if (!el) { el = document.createElement('div'); el.id = 'subida'; el.className = 'subida-pill'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
   clearTimeout(el._t);
-  if (listo) { el.className = 'subida-pill ok'; el.innerHTML = `${ICONO.check}<span>Video enviado a Andy</span>`; el._t = setTimeout(() => el.remove(), 2600); return; }
+  if (listo) { el.className = 'subida-pill ok'; el.innerHTML = `${ICONO.check}<span>Video enviado</span>`; el._t = setTimeout(() => el.remove(), 2600); return; }
   if (!subiendo) { el.remove(); return; }
   const pct = Math.round(subiendo.p * 100), mas = COLA.length > 1 ? ` (${COLA.length})` : '';
   el.className = 'subida-pill' + (subiendo.error ? ' error' : '');
