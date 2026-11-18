@@ -152,27 +152,40 @@ function stopInner(id) {
       <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
       <button class="secundario" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
       <button class="primario" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>
+      ${S.audio && !no ? `<button class="secundario stop-son" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? 'Con audio' : 'Sin audio'}</button>` : ''}
     </div>`;
 }
+/* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
+let stopSonido = true;
+const stopAudio = new Audio();
+const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.mp3` : '';
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
-  const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } };
+  const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } stopAudio.onended = stopAudio.onerror = null; stopAudio.pause(); };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
-  if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); }
-  else if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); }
-  else if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; }
+  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = e.modo === 'no' ? (e.i === total() - 1 ? S.no.fin : S.no.t) : tt.t; return Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)); };
+  /* Suena la tanda actual; si "luego" viene, se llama al terminar (o con el tiempo de lectura si no hay audio) */
+  const sonar = luego => {
+    const src = audioDe(S, e);
+    if (!src) { if (luego) stopTimer.h = setTimeout(luego, espera()); return; }
+    stopAudio.src = src;
+    if (luego) { stopAudio.onended = () => { stopTimer.h = setTimeout(luego, 700); }; stopAudio.onerror = () => { stopTimer.h = setTimeout(luego, espera()); }; }
+    stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
+  };
+  if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
+  if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
+  if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; }
+  else if (acc === 'sonido') { stopSonido = !stopSonido; if (!stopSonido) stopAudio.pause(); }
   else if (acc === 'play') {
     if (stopTimer && stopTimer.id === id) parar();
     else {
       parar(); if (e.i >= total() - 1) e.i = 0;
       const paso = () => {
         if (e.i >= total() - 1) { parar(); pintar(); return; }
-        e.i++; pintar();
-        const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = e.modo === 'no' ? (e.i === total() - 1 ? S.no.fin : S.no.t) : tt.t;
-        stopTimer.h = setTimeout(paso, Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)));
+        e.i++; pintar(); sonar(paso);
       };
-      stopTimer = { id, h: setTimeout(paso, 3500) };
+      stopTimer = { id, h: null }; pintar(); sonar(paso); return;
     }
   }
   pintar();

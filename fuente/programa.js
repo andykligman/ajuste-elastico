@@ -80,7 +80,7 @@ const PROGRESO_BASE = [
    traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
 const STOPS = {
   compases: {
-    tipo: 'cifrado', titulo: 'Cómo sumar compases sin que se desarme',
+    tipo: 'cifrado', titulo: 'Cómo sumar compases sin que se desarme', audio: 'audio/compases/',
     sub: 'Los primeros 16 compases de un standard. Cada tanda es un rato de práctica.',
     unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
     acordes: ['C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6', 'C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6'],
