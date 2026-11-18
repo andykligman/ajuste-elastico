@@ -41,7 +41,8 @@ const VIDEOS = {
   'Y5o2rSOFpnQ': 'Ritmo B + cómo destrabar cualquier ritmo',
   'Zi8GzfFqmOI': 'Ritmo A + aplicaciones varias al instrumento',
   'ersUb9-L1zA': 'Ritmo B: ejemplos en el instrumento',
-  'CHKJyTSdmIg': 'Ritmos C, D y E + improvisación en subdivisión de negra',
+  'CHKJyTSdmIg': 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
+  'A4rxE6i5VwY': 'Unidades rítmicas y variabilidad en la improvisación',
 };
 
 /* Standards para elegir. pdf: link a la parte para trabajar (vacío = Andy la manda por WhatsApp) */
@@ -420,9 +421,18 @@ const PROGRAMA = {
     },
     {
       id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
-      titulo: 'Ritmos C, D y E + improvisación en subdivisión de negra',
+      titulo: 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
       detalle: 'Mirá el video con el PDF al lado.',
-      recursos: [{ t: 'Doc: Ritmos C, D y E', url: 'https://docs.google.com/document/d/1A5RHqBYIycktRvhm_rEuvkYICkGyGFQ7b_lX-tTVQtU/edit' }],
+      recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: 'https://docs.google.com/document/d/1A5RHqBYIycktRvhm_rEuvkYICkGyGFQ7b_lX-tTVQtU/edit' }],
+    },
+    {
+      id: 'r7', etapa: 'ritmo', video: { id: 'A4rxE6i5VwY' },
+      titulo: 'Unidades rítmicas y variabilidad en la improvisación',
+      detalle: 'Mirá el video con el documento al lado y practicá con el entrenador rítmico: elegís las unidades y te arma improvisaciones para leer y cantar.',
+      recursos: [
+        { t: 'Doc: Improvisación con unidades rítmicas', url: 'https://docs.google.com/document/d/1pKRZwbhdszAGjsV4x-b9d-kb7dDPlss7xGHkU_yEdxo/edit' },
+        { t: 'Entrenador rítmico', url: 'https://andykligman.github.io/entrenador-ritmico/' },
+      ],
     },
   ],
 
