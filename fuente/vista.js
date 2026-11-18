@@ -571,6 +571,7 @@ function mapaHTML(st, e) {
           ${aca ? '<span class="mz-aca">Estás acá</span>' : ''}
           <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
           <p class="mz-estado">${esc(est)}</p>
+          ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
           ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
           ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
@@ -594,6 +595,10 @@ function abrirMapaZoom() {
     const b = ev.target.closest('button'); if (!b) return;
     if (b.dataset.accion === 'cerrar-mapa') cerrarMapaZoom();
     else if (b.dataset.mapaPaso) { const id = b.dataset.mapaPaso; cerrarMapaZoom(); abrirPaso(id); }
+    else if (b.dataset.mapaModulo !== undefined) {
+      const ps = pasosDelModulo(+b.dataset.mapaModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps.find(x => !x.hojaDeRuta) || ps[0];
+      cerrarMapaZoom(); if (p) abrirPaso(p.id);
+    }
     else if (b.dataset.mapaTilde) {
       const id = b.dataset.mapaTilde, pr = ST.prog[id];
       if (hecho(ST, id)) { if (pr && pr.videos) ST.prog[id] = { videos: pr.videos }; else delete ST.prog[id]; }

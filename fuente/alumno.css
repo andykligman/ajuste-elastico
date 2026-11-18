@@ -583,3 +583,6 @@ body.con-mapa{overflow:hidden}
 .consulta span{max-width:0;overflow:hidden;white-space:nowrap;color:var(--tinta);font-size:14px;font-weight:600;transition:max-width .4s ease,margin .4s ease}
 .consulta.con-texto span{max-width:220px;margin-left:9px}
 @media (max-width:999px){body:has(.barra-clase) .consulta{bottom:68px}body:has(.barra-clase:not(.plegada)) .consulta{bottom:96px}}
+
+.mz-ir{display:inline-flex;align-items:center;gap:4px;margin:2px 0 8px;padding:7px 14px;border-radius:999px;background:var(--mc);color:#0d0e10;border:0;font:600 14px var(--display);cursor:pointer}
+.mz-ir:hover{filter:brightness(1.08)}
