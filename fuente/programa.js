@@ -5,7 +5,7 @@
    ===================================================================== */
 const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
-const WHATSAPP_ANDY = '';   // número con código de país, sin + ni espacios (ej. 5491112345678)
+const WHATSAPP_ANDY = '5491130994020';   // número con código de país, sin + ni espacios (ej. 5491112345678)
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
 const DOC_CUELLO_1_EXPL = 'https://docs.google.com/document/d/1F4A99qcJbhQ3kTDGbBUI1NDt7gq_H0RG/edit';
