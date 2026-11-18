@@ -1046,7 +1046,12 @@ let abierto = null;       // paso expandido
 let paso2 = {};
 const desplegadas = new Set(); // etapas completas que el alumno abrió           // paso -> 'como' | 'probs' (flujo después de tildar)
 let claveAdmin = '';
-try { claveAdmin = sessionStorage.getItem('mapaAE_clave') || ''; } catch (e) {}
+try { claveAdmin = localStorage.getItem('mapaAE_clave') || sessionStorage.getItem('mapaAE_clave') || ''; } catch (e) {}
+// Copias locales para mostrar todo al instante mientras el servidor (que tarda unos segundos) responde
+function leerLocal(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+function guardarLocal(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function guardarClaveAdmin(c) { claveAdmin = c || ''; try { c ? localStorage.setItem('mapaAE_clave', c) : (localStorage.removeItem('mapaAE_clave'), sessionStorage.removeItem('mapaAE_clave')); } catch (e) {} if (!c) guardarLocal('mapaAE_lista', null); }
+let ediciones = 0;   // cambios del alumno hechos antes de que llegue la respuesta del servidor
 
 const ETIQUETA_COMO = { cuesta: 'Me cuesta', casi: 'Casi', listo: 'Ya está' };
 const NOMBRE_ESTACION = ['Inicio', 'Clase 1', 'Clase 2', 'Clase 3', 'Clase 4', 'Módulo 2'];
@@ -1064,6 +1069,7 @@ function guardarToken(t) { TOKEN = t || ''; try { t ? localStorage.setItem('mapa
 let timerGuardar = null;
 function guardarAlumno() {
   if (modo === 'admin-prueba') { aviso('Vista de prueba: no se guarda nada'); return; }
+  if (modo === 'alumno') { ediciones++; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST }); }
   aviso('Guardando…');
   clearTimeout(timerGuardar);
   timerGuardar = setTimeout(async () => {
@@ -1898,19 +1904,33 @@ async function renderInvitacion(token, error) {
 
 function abrirMapa(alumno) {
   ST = alumno; modo = 'alumno'; abierto = null;
+  if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
   nav(location.pathname);
   renderAlumno(true);
   reanudarSubidas();   // si quedó un video a medio mandar, sigue solo
 }
 async function entrarConSesion() {
-  try { const { alumno } = await llamar('alumno.get', { token: TOKEN }); abrirMapa(alumno); }
+  const copia = leerLocal('mapaAE_alumno');
+  const conCopia = copia && copia.token === TOKEN && copia.alumno;
+  if (conCopia) abrirMapa(copia.alumno);                                  // al instante, con lo último guardado
+  const ed = ediciones;
+  try {
+    const { alumno } = await llamar('alumno.get', { token: TOKEN });
+    guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
+    if (!conCopia) abrirMapa(alumno);
+    else if (ediciones === ed && modo === 'alumno') { ST = alumno; renderAlumno(); }
+  }
   catch (e) {
+    if (conCopia && !/sesión se cerró/.test(e.message)) return;          // sin conexión: se sigue con la copia
+    guardarLocal('mapaAE_alumno', null);
     // Solo se borra la sesión si el servidor dice que se cerró; si falló la conexión, se queda guardada
     if (/sesión se cerró/.test(e.message)) { guardarToken(''); renderEntrada(); }
     else renderEntrada('No pude conectarme con el aula. Recargá la página en un ratito: tu sesión sigue guardada.');
   }
 }
 function salir() {
+  if (modo === 'admin') { guardarClaveAdmin(''); LISTA = []; elegido = null; nav(location.pathname); renderEntrada(); return; }
+  guardarLocal('mapaAE_alumno', null);
   const t = TOKEN; guardarToken(''); ST = null; nav(location.pathname); renderEntrada();
   if (t) llamar('auth.salir', { token: t }).catch(() => {});
 }
@@ -1923,15 +1943,28 @@ function pedirClave() {
   if (!API_URL) { claveAdmin = 'demo'; abrirAdmin(); return; }
   app().innerHTML = `${barra('')}<main class="entrada"><h1>Panel de Andy</h1>
     <form id="formClave"><label for="clave">Clave</label><input id="clave" type="password" required><button class="primario">Entrar</button></form></main>`;
-  $('#formClave').onsubmit = ev => { ev.preventDefault(); claveAdmin = $('#clave').value; try { sessionStorage.setItem('mapaAE_clave', claveAdmin); } catch (e) {} abrirAdmin(); };
+  $('#formClave').onsubmit = ev => { ev.preventDefault(); guardarClaveAdmin($('#clave').value); abrirAdmin(); };
 }
 
 async function abrirAdmin() {
   modo = 'admin';
-  try { LISTA = (await llamar('admin.lista', { clave: claveAdmin })).alumnos; }
-  catch (e) { claveAdmin = ''; try { sessionStorage.removeItem('mapaAE_clave'); } catch (_) {} renderEntrada(e.message); return; }
   nav('?admin');
-  renderAdmin();
+  const copia = leerLocal('mapaAE_lista');
+  if (copia && !LISTA.length) { LISTA = copia; renderAdmin(); }        // al instante, con lo último que se vio
+  else if (LISTA.length) renderAdmin();
+  let nueva;
+  try { nueva = (await llamar('admin.lista', { clave: claveAdmin })).alumnos; }
+  catch (e) {
+    if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave(); aviso(e.message, true); }
+    else if (!LISTA.length) renderEntrada(e.message);
+    else aviso('No pude actualizar el panel. Revisá la conexión.', true);
+    return;
+  }
+  LISTA = nueva; guardarLocal('mapaAE_lista', LISTA);
+  if (modo !== 'admin') return;
+  if (!elegido || elegido === '__nuevo') renderAdmin();
+  else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
+  else { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(LISTA.find(a => a.codigo === elegido)); enlazarAdmin(); } }
 }
 
 const ORDEN_TIPO = { meterle: 0, bien: 1, adelantado: 2, pausa: 3, m2: 4 };
@@ -2100,7 +2133,7 @@ function guardarAdm(a, rerender = true) {
   if (rerender) { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(a); enlazarAdmin(); } else renderAdmin(); }
   clearTimeout(timerAdm);
   timerAdm = setTimeout(async () => {
-    try { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); aviso('Guardado'); }
+    try { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); aviso('Guardado'); guardarLocal('mapaAE_lista', LISTA); }
     catch (e) { aviso('No se pudo guardar: ' + e.message, true); }
   }, 400);
 }
