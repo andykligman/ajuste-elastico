@@ -596,6 +596,7 @@ body.con-mapa{overflow:hidden}
 .stop-veces span.ok{outline:2px solid #5BD49A}
 .stop-ctrl{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .stop-ctrl .primario{flex:1}
+.stop-play1{font-size:17px;padding:14px 18px}
 .stop-ctrl button[disabled]{opacity:.4}
 @media (max-width:560px){.stop-veces b{font-size:11px}.stop-veces small{font-size:9px}.stop-texto{font-size:16.5px;min-height:96px}}
 
@@ -1974,16 +1975,17 @@ function stopInner(id) {
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
     <p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
-    <div class="stop-ctrl">
+    <div class="stop-ctrl">${!e.visto ? `
+      <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
       <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
-      <button class="secundario" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
-      <button class="primario" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>
+      <button class="${fin && !(stopTimer && stopTimer.id === id) ? 'primario' : 'secundario'}" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
+      <button class="${fin ? 'secundario' : 'primario'}" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>`}
       ${S.audio && !no ? `<button class="secundario stop-son" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? 'Con audio' : 'Sin audio'}</button>` : ''}
     </div>`;
 }
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
-const stopAudio = new Audio();
+const stopAudio = new Audio(); stopAudio.preload = 'auto';
 const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.mp3` : '';
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
@@ -2001,12 +2003,12 @@ function stopAccion(id, acc) {
   };
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
   if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
-  if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; }
+  if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; e.visto = false; }
   else if (acc === 'sonido') { stopSonido = !stopSonido; if (!stopSonido) stopAudio.pause(); }
   else if (acc === 'play') {
     if (stopTimer && stopTimer.id === id) parar();
     else {
-      parar(); if (e.i >= total() - 1) e.i = 0;
+      parar(); e.visto = true; if (e.i >= total() - 1) e.i = 0;
       const paso = () => {
         if (e.i >= total() - 1) { parar(); pintar(); return; }
         e.i++; pintar(); sonar(paso);

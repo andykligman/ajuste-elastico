@@ -523,6 +523,7 @@ body.con-mapa{overflow:hidden}
 .stop-veces span.ok{outline:2px solid #5BD49A}
 .stop-ctrl{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .stop-ctrl .primario{flex:1}
+.stop-play1{font-size:17px;padding:14px 18px}
 .stop-ctrl button[disabled]{opacity:.4}
 @media (max-width:560px){.stop-veces b{font-size:11px}.stop-veces small{font-size:9px}.stop-texto{font-size:16.5px;min-height:96px}}
 
