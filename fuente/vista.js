@@ -145,6 +145,20 @@ function respuestaHTML(sel) {
     <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
+/* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
+function seguimientoHTML(st, p) {
+  const sg = p.seguimiento; if (!sg) return '';
+  const prev = st.prog[sg.segun]?.op || '';
+  const caso = sg.casos[prev] || sg.casos._;
+  if (caso.tip) return `<div class="tip-paso">${ICONO.idea}<p>${enLinea(caso.tip)}</p></div>`;
+  const elegida = caso.opciones.find(o => o.id === st.prog[p.id + '_seg']?.op);
+  return `<div class="pregunta"><h4>${esc(sg.pregunta)}</h4>
+    <div class="ops" role="radiogroup" aria-label="${esc(sg.pregunta)}">
+      ${caso.opciones.map(o => `<button role="radio" aria-checked="${elegida === o}" class="op nivel-${o.nivel} ${elegida === o ? 'sel' : ''}" data-seg="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
+    </div>
+    ${elegida && elegida.resp ? respuestaHTML(elegida) : ''}
+  </div>`;
+}
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
 function siguienteDe(id) { const i = ORDEN.indexOf(id), sig = ORDEN[i + 1]; return sig && ST && pasoHabilitado(ST, sig) ? PASO[sig] : null; }
 
@@ -160,6 +174,7 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${preguntaHTML(st, p)}
+    ${seguimientoHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
@@ -171,6 +186,7 @@ function tarjetaHTML(st, e, p) {
 
 function envioHTML(st, p) {
   const pr = st.prog[p.id] || {};
+  const envia = opcionElegida(st, p)?.envia || p.envia;
   const ok = !!pr.envio;
   const vids = pr.videos || [];
   const conVideo = /video/.test(p.entrega || '');
@@ -182,7 +198,7 @@ function envioHTML(st, p) {
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
@@ -493,7 +509,11 @@ function enlazarAlumno() {
     const d = b.dataset;
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
-    else if (d.op) {
+    else if (d.seg) {
+      const [id, opId] = d.seg.split(':'); const k = id + '_seg';
+      if (ST.prog[k]?.op === opId) delete ST.prog[k]; else ST.prog[k] = { op: opId, t: hoyISO() };
+      guardarAlumno(); renderAlumno();
+    } else if (d.op) {
       const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }

@@ -903,8 +903,8 @@ const PROGRAMA = {
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir cantando, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melodía).',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'casi', resp: 'Mandame esos 15 segundos. Después seguí sumando de a poco: loops cortos que vas pegando hasta llegar a los 30.' },
-        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Hacelo por partes:\n- Loops cortos: de 2 a 5 segundos, de 3 a 10 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Bajá la velocidad todo lo que haga falta.\n- Armá los pedazos chicos que necesites y andá juntándolos de a poco, como muestro en el video.\nVa a salir. Si no, escribime.' },
+        { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'listo', envia: 'esos 15 segundos cantando el solo encima de la pista.', resp: 'Mandame esos 15 segundos y seguí sumando hasta llegar a los 30. Para lo que falta, hacelo por partes:\n- Loops cortos: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedazos chicos que necesites y andá juntándolos de a poco, como muestro en el video.' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: 'Hacelo por partes:\n- Loops cortos: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedazos chicos que necesites y andá juntándolos de a poco, como muestro en el video.\nVa a salir.' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Cuando lo tengas, volvé a este paso y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
@@ -913,30 +913,31 @@ const PROGRAMA = {
       id: 'm1', etapa: 'm2',
       video: { id: 'o-sV1KM5J-o' }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: mirar el video',
-      detalle: 'Mirá el video completo una vez, con el doc al lado. Todavía no hace falta tocar: en los pasos que siguen vamos ejercitación por ejercitación.',
-      progreso: [{ id: 'visto', label: 'Ya lo vi', nivel: 'listo' }],
+      detalle: 'Mirá el video completo una vez y después leé el doc. Todavía no hace falta tocar: en los pasos que siguen vamos ejercitación por ejercitación.',
+      progreso: [{ id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' }],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
       id: 'c1', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº1 a tempo, para arriba y para abajo.',
       video: { id: 'o-sV1KM5J-o', t: 178 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº1',
-      detalle: 'Hacé la Ejercitación Nº1 del doc:\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo, de la tónica a la 7ma. En cada una buscá la nota un semitono abajo: esa es su aproximación. Ojo con los dos casos especiales: hacia la 4ta el cromático es la 3ra, y hacia la tónica es la 7ma. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo: el cromático en el aire y la nota de la escala en la tierra. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te desafíe un poco, aunque sea lenta, pero constante.',
+      detalle: 'Hacé la Ejercitación Nº1 del doc. Antes de empezar, tené bien clara la escala y la posición en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo, de la tónica a la 7ma. En cada una buscá la nota un semitono abajo: esa es su aproximación. Ojo con los dos casos especiales: hacia la 4ta el cromático es la 3ra, y hacia la tónica es la 7ma. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo: el cromático en el aire y la nota de la escala en la tierra. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te desafíe un poco, aunque sea lenta, pero constante.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'lento', label: 'Me sale, pero lento', nivel: 'casi', resp: 'Está bien así: lento, pero constante. Mandámelo a esa velocidad y de ahí vamos subiendo de a poco.' },
-        { id: 'traba', label: 'Me trabo o me pierdo', nivel: 'cuesta', resp: 'Volvé al paso A en la zona donde te trabás, sin tempo, hasta que veas la nota antes de tocarla. Después retomá a tempo desde cerca del error, no desde el principio.' },
+        { id: 'lento', label: 'Me sale sin errores, pero lento', nivel: 'listo', resp: 'Está bien así: lento, pero constante. Mandámelo a esa velocidad y de ahí vamos subiendo de a poco.' },
+        { id: 'errores', label: 'Tengo trabas o errores', nivel: 'casi', resp: 'Podés hacer el ejercicio por partes, en grupos de a dos cuerdas, e ir juntándolas de a poquito.\nMandámelo como te salga, o cuando creas que está para mandar.' },
+        { id: 'traba', label: 'Me trabo o me pierdo', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos.' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
-      id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2 en grupos de 3 parejas, para arriba.',
+      id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº2',
-      detalle: 'La misma línea cromática, pero arrancando desde cada nota de la escala:\n- Grupos de 3 parejas (6 notas): cromático a la tónica, a la 2da y a la 3ra. Después desde la 2da: a la 2da, a la 3ra y a la 4ta. Después desde la 3ra, y así por toda la escala.\n- Antes de cada grupo, decí en voz alta en qué nota de la escala arrancás.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: esa nota se repite.\n- **Asegurate de copiar exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas. Si hace falta, bajale la velocidad.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)\nCuando salga, hacelo con grupos más largos (5 o 6 parejas) y con la escala descendente.',
+      detalle: 'Líneas cromáticas de 6 y de 10 notas que empiezan en cada grado de la escala. Antes de empezar, tené bien clara la escala y la posición en la que estás trabajando: todo el ejercicio se apoya en eso.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, decí en voz alta en qué grado arrancás.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: esa nota se repite.\n- **Asegurate de copiar exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas: no hace falta hacer todo de un tirón. Cuando tenés las partes, las juntás y hacés todo.\n- Finalmente, si podés, aumentá el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: en qué nota arrancás (decila en voz alta) y qué nota se repite (la 3ra o la 7ma). Mantené la misma longitud de grupo en toda la secuencia.' },
+        { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: en qué nota arrancás (decila en voz alta) y qué nota se repite (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, trabajando 3 o 4 líneas a la vez como máximo, y después juntar las piezas de a poco. Lo que te confunda, revisalo sin tempo.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Bajá la velocidad o volvé a la Ejercitación Nº1 desde la nota donde te trabás. Cuando lo veas claro, retomá a tempo desde ahí, no desde el principio.' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
@@ -945,7 +946,7 @@ const PROGRAMA = {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº3',
-      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá solo este recurso, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después mezclalo con la escala mayor, tocando libre y cantando si querés: lo nuevo con lo viejo. [Ver los ejemplos](https://youtu.be/o-sV1KM5J-o?t=604)',
+      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá solo este recurso, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después mezclalo con la escala mayor, tocando libre y cantando si querés: lo nuevo con lo viejo.\nAcá hay **dos videos**: primero los ejemplos de esta ejercitación y después el momento de integración libre, donde lo mezclo con todo lo demás. Miralos los dos.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes de a una: un rato solo líneas para abajo, otro solo largas, otro empezando en distintos lugares del compás. Después mezclalas.' },
@@ -953,13 +954,29 @@ const PROGRAMA = {
       ],
       recursos: [
         { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' },
-        { t: 'Video: Momento de integración libre', url: 'https://www.youtube.com/watch?v=saRjud2tZw4' },
+        { t: 'Video: Ejemplos de la Ejercitación Nº3', url: 'https://youtu.be/o-sV1KM5J-o?t=604' },
+        { t: 'Video: Momento de integración libre', url: 'https://youtu.be/saRjud2tZw4?t=0' },
       ],
     },
     {
       id: 'n3', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Cromático descendente',
-      detalle: 'Mirá el video y hacé las ejercitaciones con el PDF de ADN del Jazz.',
+      detalle: 'Mirá el video y hacé el mismo proceso que usaste para los cromáticos ascendentes: las tres ejercitaciones, ahora con el cromático desde arriba.',
+      seguimiento: {
+        segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo?',
+        casos: {
+          listo: { tip: 'Ya tenés tus 30 segundos de transcripción: empezá a pasarlos a la guitarra, de a poco.' },
+          quince: { opciones: [
+            { id: 'treinta', label: 'Ya tengo los 30 segundos', nivel: 'listo', resp: '¡Perfecto! Empezá a pasarlo a la guitarra, de a poco.' },
+            { id: 'quince', label: 'Todavía tengo 15', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Loops cortos que vas juntando de a poco.' },
+          ] },
+          _: { opciones: [
+            { id: 'treinta', label: 'Ya tengo mis 30 segundos', nivel: 'listo', resp: '¡Perfecto! Mandámelo y empezá a pasarlo a la guitarra, de a poco.' },
+            { id: 'quince', label: 'Tengo 15 segundos', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Mandame lo que tengas.' },
+            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Retomala: volvé al paso "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
+          ] },
+        },
+      },
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
     {
@@ -1062,7 +1079,7 @@ function requeridos(k, col) {
    st.modulos guarda los habilitados ('0', '01', '012'). Vacío = alumno de antes: todo habilitado. */
 const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2, ritmo: 3, curva: 4 };
 const MODULOS = [
-  { n: 0, titulo: 'Módulo 0', sub: 'Antes de la clase 1', nombre: 'Antes de la clase 1', color: '#8FA6D6' },
+  { n: 0, titulo: 'Módulo 0', sub: 'Antes de la primera clase', nombre: 'Antes de la primera clase', color: '#8FA6D6' },
   { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#E8834F' },
   { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#7DB4FF' },
   { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico', nombre: 'Entrenamiento rítmico', color: '#5BD49A' },
@@ -1502,6 +1519,20 @@ function respuestaHTML(sel) {
     <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
+/* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
+function seguimientoHTML(st, p) {
+  const sg = p.seguimiento; if (!sg) return '';
+  const prev = st.prog[sg.segun]?.op || '';
+  const caso = sg.casos[prev] || sg.casos._;
+  if (caso.tip) return `<div class="tip-paso">${ICONO.idea}<p>${enLinea(caso.tip)}</p></div>`;
+  const elegida = caso.opciones.find(o => o.id === st.prog[p.id + '_seg']?.op);
+  return `<div class="pregunta"><h4>${esc(sg.pregunta)}</h4>
+    <div class="ops" role="radiogroup" aria-label="${esc(sg.pregunta)}">
+      ${caso.opciones.map(o => `<button role="radio" aria-checked="${elegida === o}" class="op nivel-${o.nivel} ${elegida === o ? 'sel' : ''}" data-seg="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
+    </div>
+    ${elegida && elegida.resp ? respuestaHTML(elegida) : ''}
+  </div>`;
+}
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
 function siguienteDe(id) { const i = ORDEN.indexOf(id), sig = ORDEN[i + 1]; return sig && ST && pasoHabilitado(ST, sig) ? PASO[sig] : null; }
 
@@ -1517,6 +1548,7 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${preguntaHTML(st, p)}
+    ${seguimientoHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
     ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
@@ -1528,6 +1560,7 @@ function tarjetaHTML(st, e, p) {
 
 function envioHTML(st, p) {
   const pr = st.prog[p.id] || {};
+  const envia = opcionElegida(st, p)?.envia || p.envia;
   const ok = !!pr.envio;
   const vids = pr.videos || [];
   const conVideo = /video/.test(p.entrega || '');
@@ -1539,7 +1572,7 @@ function envioHTML(st, p) {
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(p.envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
@@ -1850,7 +1883,11 @@ function enlazarAlumno() {
     const d = b.dataset;
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
-    else if (d.op) {
+    else if (d.seg) {
+      const [id, opId] = d.seg.split(':'); const k = id + '_seg';
+      if (ST.prog[k]?.op === opId) delete ST.prog[k]; else ST.prog[k] = { op: opId, t: hoyISO() };
+      guardarAlumno(); renderAlumno();
+    } else if (d.op) {
       const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
