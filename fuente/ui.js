@@ -34,15 +34,42 @@ function guardarToken(t) { TOKEN = t || ''; try { t ? localStorage.setItem('mapa
 
 /* ---------------- Guardado ---------------- */
 let timerGuardar = null;
+/* ---- Guardar solo lo que cambió (para no pisar lo hecho en otro dispositivo o desde el panel) ---- */
+const clonar = o => JSON.parse(JSON.stringify(o ?? null));
+function difPasos(base, cur) {
+  const d = {}; base = base || {}; cur = cur || {};
+  new Set([...Object.keys(base), ...Object.keys(cur)]).forEach(id => {
+    if (JSON.stringify(base[id]) !== JSON.stringify(cur[id])) d[id] = id in cur ? cur[id] : null;
+  });
+  return d;
+}
+function aplicarPasos(o, d) { const r = Object.assign({}, o || {}); Object.keys(d).forEach(id => { if (d[id] === null) delete r[id]; else r[id] = clonar(d[id]); }); return r; }
+let BASE = null;   // lo último que se sabe que está en el servidor, para el alumno
+const ORIG = {};   // ídem por alumno, para el panel
+function difAlumno(base, cur) {
+  const c = {};
+  Object.keys(cur).forEach(k => {
+    if (k === 'prog' || k === 'probs') { const d = difPasos(base?.[k], cur[k]); if (Object.keys(d).length) c[k + 'Cambios'] = d; }
+    else if (JSON.stringify(base?.[k]) !== JSON.stringify(cur[k])) c[k] = clonar(cur[k]);
+  });
+  return c;
+}
+
 function guardarAlumno() {
   if (modo === 'admin-prueba') { aviso('Vista de prueba: no se guarda nada'); return; }
-  if (modo === 'alumno') { ediciones++; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST }); }
+  if (modo === 'alumno') { ediciones++; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST, base: BASE }); }
   aviso('Guardando…');
   clearTimeout(timerGuardar);
   timerGuardar = setTimeout(async () => {
     try {
-      if (modo === 'admin-vista') await llamar('admin.guardar', { clave: claveAdmin, alumno: ST });
-      else await llamar('alumno.guardar', { token: TOKEN, cambios: { prog: ST.prog, probs: ST.probs, clase: ST.clase, claseFecha: ST.claseFecha, extras: ST.extras, standard: ST.standard } });
+      if (modo === 'admin-vista') { await guardarCambiosAdm(ST); aviso('Guardado'); return; }
+      const enviado = clonar(ST);
+      const progCambios = difPasos(BASE?.prog, enviado.prog), probsCambios = difPasos(BASE?.probs, enviado.probs);
+      await llamar('alumno.guardar', { token: TOKEN, cambios: { progCambios, probsCambios, prog: enviado.prog, probs: enviado.probs,
+        clase: enviado.clase, claseFecha: enviado.claseFecha, extras: enviado.extras, standard: enviado.standard } });
+      BASE = Object.assign(clonar(BASE || {}), { clase: enviado.clase, claseFecha: enviado.claseFecha, standard: enviado.standard,
+        prog: aplicarPasos(BASE?.prog, progCambios), probs: aplicarPasos(BASE?.probs, probsCambios) });
+      guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST, base: BASE });
       aviso('Guardado');
     } catch (e) { aviso(/sesión/.test(e.message) ? e.message : 'No se pudo guardar. Revisá la conexión y volvé a intentar.', true); }
   }, 500);
@@ -144,7 +171,8 @@ async function renderInvitacion(token, error) {
 function abrirMapa(alumno) {
   document.title = 'Aula de Ajuste Elástico';
   ST = alumno; modo = 'alumno'; abierto = null;
-  if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
+  if (TOKEN && !BASE) BASE = clonar(alumno);
+  if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno, base: BASE });
   nav(location.pathname);
   renderAlumno(true);
   setTimeout(quizasCelebrar, 400);
@@ -153,13 +181,20 @@ function abrirMapa(alumno) {
 async function entrarConSesion() {
   const copia = leerLocal('mapaAE_alumno');
   const conCopia = copia && copia.token === TOKEN && copia.alumno;
-  if (conCopia) abrirMapa(copia.alumno);                                  // al instante, con lo último guardado
-  const ed = ediciones;
+  if (conCopia) { BASE = copia.base || null; abrirMapa(copia.alumno); }   // al instante, con lo último guardado
   try {
     const { alumno } = await llamar('alumno.get', { token: TOKEN });
-    guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
-    if (!conCopia) abrirMapa(alumno);
-    else if (ediciones === ed && modo === 'alumno') { ST = alumno; renderAlumno(); }
+    if (!conCopia) { BASE = clonar(alumno); abrirMapa(alumno); return; }
+    if (modo !== 'alumno') return;
+    // Llegó lo del servidor (puede traer avances hechos en otro dispositivo): se le suman los cambios de acá que todavía no se guardaron
+    const pend = BASE ? difAlumno(BASE, ST) : {};
+    BASE = clonar(alumno);
+    const nuevo = clonar(alumno);
+    ['prog', 'probs'].forEach(k => { if (pend[k + 'Cambios']) nuevo[k] = aplicarPasos(nuevo[k], pend[k + 'Cambios']); });
+    ['clase', 'claseFecha', 'standard'].forEach(k => { if (k in pend) nuevo[k] = pend[k]; });
+    ST = nuevo; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST, base: BASE });
+    renderAlumno();
+    if (Object.keys(pend).length) guardarAlumno();
   }
   catch (e) {
     if (conCopia && !/sesión se cerró/.test(e.message)) return;          // sin conexión: se sigue con la copia
@@ -171,7 +206,7 @@ async function entrarConSesion() {
 }
 function salir() {
   if (modo === 'admin') { guardarClaveAdmin(''); LISTA = []; elegido = null; nav(location.pathname); renderEntrada(); return; }
-  guardarLocal('mapaAE_alumno', null);
+  guardarLocal('mapaAE_alumno', null); BASE = null;
   const t = TOKEN; guardarToken(''); ST = null; nav(location.pathname); renderEntrada();
   if (t) llamar('auth.salir', { token: t }).catch(() => {});
 }
@@ -207,6 +242,7 @@ async function abrirAdmin() {
     return;
   }
   LISTA = nueva; guardarLocal('mapaAE_lista', LISTA);
+  LISTA.forEach(a => { ORIG[a.codigo] = clonar(a); });
   if (modo !== 'admin') return;
   if (!elegido || elegido === '__nuevo') renderAdmin();
   else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
@@ -381,13 +417,31 @@ function accesoHTML(a) {
 
 let timerAdm = null;
 function refrescarMensaje(a) { const m = $('#revMsg'); if (m) m.innerHTML = mensajeAdmHTML(a, videoActual(a).cur?.pid || null); }
+async function guardarCambiosAdm(a) {
+  const base = ORIG[a.codigo];
+  if (!base) { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[a.codigo] = clonar(a); return; }
+  const cambios = difAlumno(base, a);
+  if (!Object.keys(cambios).length) return;
+  try {
+    const r = await llamar('admin.cambiar', { clave: claveAdmin, codigo: a.codigo, cambios });
+    // Lo que trae el servidor ya incluye lo último del alumno: se actualiza sin perder lo que se esté tocando
+    const local = difAlumno(base, a); Object.keys(cambios).forEach(k => delete local[k]);
+    const fresco = r.alumno;
+    ORIG[a.codigo] = clonar(fresco);
+    ['prog', 'probs'].forEach(k => { fresco[k] = aplicarPasos(fresco[k], local[k + 'Cambios'] || {}); delete local[k + 'Cambios']; });
+    Object.assign(a, fresco, local);
+  } catch (e) {
+    if (!/Acción desconocida/.test(e.message)) throw e;
+    await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[a.codigo] = clonar(a);   // servidor viejo
+  }
+}
 function guardarAdm(a, rerender = true) {
   aviso('Guardando…');
   // Solo se redibuja la parte de abajo: el video y el mensaje que estás escribiendo no se tocan
   if (rerender) { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(a); enlazarAdmin(); } else renderAdmin(); }
   clearTimeout(timerAdm);
   timerAdm = setTimeout(async () => {
-    try { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); aviso('Guardado'); guardarLocal('mapaAE_lista', LISTA); }
+    try { await guardarCambiosAdm(a); aviso('Guardado'); guardarLocal('mapaAE_lista', LISTA); }
     catch (e) { aviso('No se pudo guardar: ' + e.message, true); }
   }, 400);
 }

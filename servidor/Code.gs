@@ -81,7 +81,10 @@ function manejar(d) {
       case 'alumno.guardar': {
         const a = alumnoDeSesion(d.token);
         const c = d.cambios || {};
-        ['prog', 'probs', 'clase', 'claseFecha', 'standard'].forEach(k => { if (k in c) a.datos[k] = c[k]; });
+        ['clase', 'claseFecha', 'standard'].forEach(k => { if (k in c) a.datos[k] = c[k]; });
+        // Paso por paso: solo se tocan los pasos que cambiaron en ese dispositivo (no se pisa lo hecho en otro)
+        if (c.progCambios) a.datos.prog = unirPasos(a.datos.prog, c.progCambios); else if ('prog' in c) a.datos.prog = c.prog;
+        if (c.probsCambios) a.datos.probs = unirPasos(a.datos.probs, c.probsCambios); else if ('probs' in c) a.datos.probs = c.probs;
         if (Array.isArray(c.extras)) {
           a.datos.extras = (a.datos.extras || []).map(x => {
             const y = c.extras.find(z => z.id === x.id);
@@ -139,6 +142,26 @@ function manejar(d) {
         PRIVADAS.forEach(k => { al[k] = a.datos[k]; });   // el panel no toca contraseñas
         escribir(a.fila, al);
         return { ok: true };
+      }
+      case 'admin.cambiar': {
+        // Guarda solo lo que se cambió en el panel; el avance del alumno se une paso por paso
+        validarPanel(d.clave);
+        const a = buscarPor('codigo', d.codigo);
+        if (!a) throw new Error('No existe ese alumno');
+        const c = d.cambios || {};
+        if ('email' in c) {
+          c.email = normEmail(c.email);
+          const otro = c.email && buscarPor('email', c.email);
+          if (otro && otro.datos.codigo !== a.datos.codigo) throw new Error('Ya hay otro alumno con ese email');
+        }
+        Object.keys(c).forEach(k => {
+          if (PRIVADAS.includes(k) || k === 'codigo') return;
+          if (k === 'progCambios') a.datos.prog = unirPasos(a.datos.prog, c.progCambios);
+          else if (k === 'probsCambios') a.datos.probs = unirPasos(a.datos.probs, c.probsCambios);
+          else if (COLUMNAS.includes(k)) a.datos[k] = c[k];
+        });
+        escribir(a.fila, a.datos);
+        return { alumno: publico(a.datos, true) };
       }
       case 'admin.invitar': {
         validarPanel(d.clave);
@@ -269,4 +292,21 @@ function configurarVideos() { carpetaVideos(); asegurarLimpieza(); Logger.log('L
 function autorizarVideos() {
   UrlFetchApp.fetch('https://www.googleapis.com/drive/v3/about?fields=user', { headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() } });
   Logger.log('Listo: permisos para subir videos.');
+}
+
+/* Une cambios paso por paso: null borra el paso; los videos ya vistos por Andy siguen marcados como vistos */
+function unirPasos(actual, cambios) {
+  const o = Object.assign({}, actual || {});
+  Object.keys(cambios || {}).forEach(id => {
+    const v = cambios[id];
+    if (v === null) { delete o[id]; return; }
+    const viejo = o[id];
+    if (v && viejo && Array.isArray(v.videos) && Array.isArray(viejo.videos)) {
+      const visto = {}; viejo.videos.forEach(x => { if (x.visto) visto[x.id] = true; });
+      v.videos.forEach(x => { if (visto[x.id]) x.visto = true; });
+      viejo.videos.forEach(x => { if (!v.videos.some(y => y.id === x.id)) v.videos.push(x); });
+    }
+    o[id] = v;
+  });
+  return o;
 }
