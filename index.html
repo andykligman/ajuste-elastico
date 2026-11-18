@@ -865,22 +865,23 @@ const STOPS = {
     acordes: ['C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6', 'C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6'],
     contar: 'Veces que practicaste cada compás',
     tandas: [
-      { sel: [0, 3], t: 'Arrancás por los primeros 4.' },
-      { sel: [2, 2], traba: 2, t: 'Te trabás en el **compás 3**. Frená y revisá la info de ese compás: qué acorde es, qué notas tenés ahí.' },
-      { sel: [2, 3], zoom: true, t: 'Ahora el 3 con el 4…' },
-      { sel: [1, 2], zoom: true, t: '…y el 2 con el 3, para entrar bien.' },
+      { sel: [0, 3], t: 'Arrancás por los primeros 4 compases.' },
+      { sel: [2, 2], traba: 2, t: 'Por ahí te trabaste en el **3**. Ahí conviene frenar y fijarte bien las notas de la posición.' },
+      { sel: [2, 3], zoom: true, t: 'Ahora solamente el 3 con el 4.' },
+      { sel: [1, 2], zoom: true, t: 'Después el 2 con el 3.' },
       { sel: [0, 3], arregla: 2, t: 'Volvés a los 4. El 3 ya sale.' },
-      { sel: [4, 7], t: 'Del 5 al 8.' },
-      { sel: [6, 6], traba: 6, t: 'Se complica el **7**. Lo mismo: revisás el 7 solo.' },
+      { sel: [4, 7], t: 'Pasamos a lo siguiente, del 5 al 8.' },
+      { sel: [6, 6], traba: 6, t: 'Se complica el **7**. Lo mismo: el 7 solo, en pelota parada.' },
       { sel: [5, 6], zoom: true, t: '6 y 7…' },
-      { sel: [6, 7], zoom: true, t: '…7 y 8.' },
-      { sel: [4, 7], arregla: 6, t: 'Y de nuevo del 5 al 8.' },
-      { sel: [0, 7], t: 'Ahora sí, **del 1 al 8 parejo**.' },
+      { sel: [6, 7], zoom: true, t: '…o 7 y 8, depende de qué te convenga más.' },
+      { sel: [4, 7], arregla: 6, t: 'Y de nuevo, del 5 al 8.' },
+      { sel: [4, 7], pausa: true, t: 'No siempre es necesario hacer todos estos pasos, pero muchas veces es lo más inteligente si podemos pasar estas etapas rápido. Y tenemos como objetivo el final.' },
+      { sel: [0, 7], t: 'Ahora sí: ya practicaste del 1 al 4 y del 5 al 8. Ahora podés hacer **del 1 al 8**.' },
       { sel: [8, 11], t: 'Del 9 al 12.' },
       { sel: [12, 15], t: 'Del 13 al 16.' },
       { sel: [8, 15], t: 'Del 9 al 16.' },
       { sel: [0, 7], t: 'Un repaso del 1 al 8.' },
-      { sel: [0, 15], t: 'Y juntás todo. Si el tema tiene 32, hacés lo mismo en espejo con los 16 que siguen.' },
+      { sel: [0, 15], t: 'Y juntás todo. Si el tema tiene 32, hacés lo mismo con los 16 que siguen.' },
     ],
     no: {
       tandas: [{ sel: [0, 3] }, { sel: [0, 7] }, { sel: [0, 11] }, { sel: [0, 15] }],
@@ -1956,7 +1957,7 @@ function stopInner(id) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const no = e.modo === 'no', tandas = no ? S.no.tandas : S.tandas, n = S.unidades.length;
   const i = Math.min(e.i, tandas.length - 1), tanda = tandas[i];
-  const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
+  const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { if (t.pausa) return; for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
   const estadoU = Array(n).fill('');
   if (!no) tandas.slice(0, i + 1).forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
   const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
@@ -1969,7 +1970,7 @@ function stopInner(id) {
       <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">Tanda ${i + 1} de ${tandas.length}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
     <p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
