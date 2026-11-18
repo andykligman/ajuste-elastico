@@ -221,7 +221,7 @@ function caminoHTML(st, e) {
     const pasos = PROGRAMA.pasos.filter(p => p.etapa === et.id);
     const m = MODULO_DE[et.id];
     if (!moduloHabilitado(st, m)) { if (!bloq.includes(m)) bloq.push(m); return; }
-    if (m >= 2 && sinModulos(st) && e.k < 4 && !pasos.some(p => tocado(st, p.id))) { cerradas.push(et); return; }
+    if (moduloCerradoPorClase(st, e, m)) { cerradas.push(et); return; }
     if (!pasos.length) { if (verTodo || !items.length) proximas.push(et); return; }
     pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
   });
@@ -300,7 +300,28 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
+    ${selectorModulosHTML(st, e)}
     ${barraClaseHTML(st, e)}`;
+}
+
+// Alumnos de antes (sin módulos asignados): del módulo 2 en adelante se abre después de la clase 4
+function moduloCerradoPorClase(st, e, m) {
+  if (modo === 'admin-prueba' || m < 2 || !sinModulos(st) || e.k >= 4) return false;
+  return !PROGRAMA.pasos.some(p => MODULO_DE[p.etapa] === m && tocado(st, p.id));
+}
+function pasosDelModulo(m) { return PROGRAMA.pasos.filter(p => MODULO_DE[p.etapa] === m); }
+/* Abajo de todo: elegir módulo. Los que todavía no están habilitados, con candado */
+function selectorModulosHTML(st, e) {
+  const actual = abierto && PASO[abierto] ? MODULO_DE[PASO[abierto].etapa] : -1;
+  return `<section class="selector-mod" aria-label="Módulos"><h3>Módulos</h3><div class="sm-lista">${MODULOS.map(M => {
+    const pasos = pasosDelModulo(M.n);
+    const abiertoMod = moduloHabilitado(st, M.n) && !moduloCerradoPorClase(st, e, M.n);
+    const listos = pasos.filter(p => hecho(st, p.id)).length;
+    const estado = !abiertoMod ? `${ICONO.candado}<span>Todavía no</span>` : !pasos.length ? '<span>Muy pronto</span>'
+      : listos === pasos.length ? `${ICONO.check}<span>Completo</span>` : `<span>${listos} de ${pasos.length}</span>`;
+    return `<button class="sm-item ${M.n === actual ? 'actual' : ''} ${abiertoMod && pasos.length ? '' : 'bloq'}" style="--mc:${M.color}" data-ir-modulo="${M.n}" ${abiertoMod && pasos.length ? '' : 'disabled'}>
+      <small>${esc(M.titulo)}</small><strong>${esc(M.nombre)}</strong><span class="sm-estado">${estado}</span></button>`;
+  }).join('')}</div></section>`;
 }
 
 /* Barra fija abajo: cuánto falta para la próxima clase y qué sigue (no el módulo entero) */
@@ -498,6 +519,7 @@ function enlazarAlumno() {
     } else if (d.accion === 'clase-no') { const c = $('#claseHecha'); if (c && c.classList.contains('pregunta-clase')) c.outerHTML = `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${(ST.clase || 0) + 1}</button></div>`; else renderAlumno(); }
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
     else if (d.accion === 'instalar-app' && avisoInstalar) { avisoInstalar.prompt(); avisoInstalar.userChoice.finally(() => { avisoInstalar = null; renderAlumno(); }); }
     else if (d.accion === 'no-instalar') { try { localStorage.setItem('mapaAE_sinInstalar', '1'); } catch (e) {} renderAlumno(); }
     else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }

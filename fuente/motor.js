@@ -26,7 +26,8 @@ const MODULOS = [
   { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo', nombre: 'Curva del Solo', color: '#C7A6F2' },
 ];
 const sinModulos = st => st.modulos === undefined || st.modulos === null || st.modulos === '';
-const moduloHabilitado = (st, n) => sinModulos(st) || String(st.modulos).includes(String(n));
+// En la vista de prueba del panel se ve todo abierto
+const moduloHabilitado = (st, n) => (typeof modo !== 'undefined' && modo === 'admin-prueba') || sinModulos(st) || String(st.modulos).includes(String(n));
 const pasoHabilitado = (st, id) => moduloHabilitado(st, MODULO_DE[PASO[id].etapa]);
 
 const hecho = (st, id) => !!(st.prog[id] && st.prog[id].hecho && st.prog[id].como !== 'cuesta');
