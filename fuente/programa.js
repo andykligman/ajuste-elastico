@@ -436,33 +436,33 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la guitarra los 30 segundos del solo que transcribiste.',
+      id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la viola los 30 segundos del solo.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Tu solo en la guitarra',
-      detalle: 'Ahora la prioridad es el solo que transcribiste: pasá esos 30 segundos a la guitarra y mandame un video tocándolos.\n- Hacelo por partes: frases cortas, de a una, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con la pista hasta tenerla clara y recién ahí buscala en el diapasón.\nCuando me lo mandes, seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que se hace sobre este solo.',
+      detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo 😉',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo cantado?',
         casos: {
-          listo: { tip: 'Ya tenés tus 30 segundos cantados: ahora pasalos a la guitarra y mandame el video.' },
+          listo: { tip: 'Ya tenés los 30 segundos cantados, buenísimo! Ahora a pasarlos a la viola y mandame video 🎥' },
           _: { opciones: [
-            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: '¡Perfecto! Pasalos a la guitarra y mandame el video.' },
-            { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: '¡Ponete las pilas, que el solo es la prioridad ahora! Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
+            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: 'Espectacular! A pasarlos a la viola y mandame video 🎥' },
+            { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que el solo es prioridad! 😛 Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortitos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
       },
       pregunta: '¿Ya lo estás pasando a la guitarra?',
       progreso: [
         { id: 'listo', label: 'Ya tengo 30 segundos o más en la guitarra', nivel: 'listo' },
-        { id: 'armando', label: 'Lo voy armando', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, ¡aunque no esté perfecto!' },
-        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: '¡Ponete las pilas, que es la prioridad ahora! Tomá una frase sola, cantala con la pista y buscala nota por nota en el diapasón. Si alguna no aparece, escribime y lo resolvemos.' },
-        { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes: cuando lo tengas, volvé a este paso y mandámelo.' },
+        { id: 'armando', label: 'Lo voy armando', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, aunque no esté perfecto!' },
+        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! 😛 Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
+        { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes colgado eh! Cuando lo tengas, volvé acá y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
     },
     {
-      id: 'n7', etapa: 'm2', entrega: 'video', opcional: true, envia: 'videos de tu proceso de mecanización o de integración. Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
+      id: 'n7', etapa: 'm2', entrega: 'video', opcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
-      detalle: 'Estos son los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en cada video, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y hacer con él el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
+      detalle: 'Acá están los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en los videos, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y realizar el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en poder sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
       panel: [
         { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
         { t: 'Auxiliar', video: 'pd8IgNbFJIo' },

@@ -142,8 +142,8 @@ function renderEntrada(error) {
 function renderRegistro(codigo, error, val = {}) {
   app().innerHTML = `${barra('')}
   <main class="entrada">
-    <h1>Bienvenido a Ajuste Elástico</h1>
-    <p class="suave">Creá tu cuenta para entrar a tu aula. Después entrás siempre con tu email y esta contraseña.</p>
+    <h1>Bienvenido al aula de Ajuste Elástico!</h1>
+    <p class="suave">Poné tu nombre, tu mail y elegí una contraseña. Con eso entrás siempre de acá en adelante 😉</p>
     <form id="formRegistro" novalidate>
       <label for="r-nombre">Nombre y apellido</label>
       <input id="r-nombre" name="nombre" autocomplete="name" required value="${esc(val.nombre || '')}">
@@ -345,7 +345,7 @@ function marcarModulo(prog, m) {
 }
 let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
 function registroAdmHTML() {
-  const msg = linkReg ? `¡Hola! Te paso el link para entrar al aula de Ajuste Elástico 🙌\n\nAbrilo, poné tu nombre, tu email y elegí una contraseña. Después entrás siempre con tu email y esa contraseña.\n\n${linkReg}` : '';
+  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre 😉\n\n${linkReg}` : '';
   return `<section class="registro-adm">
     <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.</p></div>
       ${linkReg ? '' : `<button class="secundario" data-adm="ver-registro">Ver el link</button>`}</div>
