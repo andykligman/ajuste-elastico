@@ -528,33 +528,73 @@ body.con-mapa{overflow:hidden}
 .rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1}
 .rc-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;text-align:center;font:600 16px/1.3 var(--display);color:var(--tinta)}
 @media (max-width:560px){.rc-paso{max-width:92px;font-size:10.5px;padding:5px 7px;gap:4px;hyphens:auto;overflow-wrap:anywhere}.rc-paso small{width:15px;height:15px;font-size:9.5px}.rc-centro{font-size:13px;width:38%}}
-/* Gráfico de cómo sumar compases */
-.graf-comp{margin:14px 0 4px;border:1.5px solid var(--naranja);border-radius:14px;background:var(--naranja-claro);overflow:hidden}
-.graf-comp summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:2px;padding:12px 16px 12px 40px;position:relative}
-.graf-comp summary::before{content:"▸";position:absolute;left:16px;top:12px;color:var(--naranja);font-size:16px;transition:transform .2s}
-.graf-comp[open] summary::before{transform:rotate(90deg)}
-.graf-comp summary span{font:600 16.5px var(--display)}
-.graf-comp summary small{color:var(--gris);font-size:13.5px}
-.graf-comp>p,.graf-comp>h5,.graf-comp>.gc-grilla{margin-left:16px;margin-right:16px}
-.graf-comp>p{font-size:14.5px;color:#D6D9DF;margin-top:6px}
-.graf-comp h5{margin-top:14px;margin-bottom:6px;font:700 14px var(--sans)}
-.gc-si{color:#5BD49A}.gc-no{color:#FF8A6B}
-.gc-grilla{display:grid;gap:3px;overflow-x:auto}
-.gc-fila{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:8px}
-.gc-et{font-size:12.5px;color:var(--gris);white-space:nowrap}
-.gc-et em{font-style:normal;font-size:11px;opacity:.8}
-.gc-barras{display:grid;grid-template-columns:repeat(16,minmax(12px,1fr));gap:2px}
-.gc-barras i{height:14px;border-radius:3px;background:rgba(255,255,255,.06)}
-.gc-si .gc-barras i.on{background:#3FB37F}
-.gc-no .gc-barras i.on{background:#E2705A}
-.gc-veces b{display:grid;place-items:center;height:22px;border-radius:4px;font-size:11.5px;color:#0d0e10;background:rgba(255,255,255,calc(.15 + var(--v) * .8))}
-.gc-si .gc-veces b{background:color-mix(in srgb,#5BD49A calc(var(--v) * 100%),#1d2a23)}
-.gc-no .gc-veces b{background:color-mix(in srgb,#FF8A6B calc(var(--v) * 100%),#2e1d19)}
-.gc-num span{text-align:center;font-size:10.5px;color:var(--gris)}
-@media (max-width:560px){.gc-fila{grid-template-columns:56px 1fr;gap:5px}.gc-barras{grid-template-columns:repeat(16,minmax(10px,1fr));gap:1.5px}.gc-veces b{font-size:10px;height:19px}}
-.graf-comp summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
+.stop summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
 .gc-cap{margin:8px 0 2px 86px;font-size:12.5px;font-weight:600;color:var(--tinta)}
 @media (max-width:560px){.gc-cap{margin-left:61px}}
+
+/* Stops de segmentación */
+.stop{margin:14px 0 4px;border:1.5px solid var(--linea);border-radius:16px;background:var(--sup2);overflow:hidden;--sc:#7DB4FF}
+.stop-cuerdas{--sc:#E8C35A}.stop-melodia{--sc:#C7A6F2}.stop-ola{--sc:#7DB4FF}
+.stop summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:3px;padding:13px 16px 13px 40px;position:relative}
+.stop summary::before{content:"▸";position:absolute;left:16px;top:13px;color:var(--sc);font-size:16px;transition:transform .2s}
+.stop[open] summary::before{transform:rotate(90deg)}
+.stop summary span{font:600 16.5px var(--display)}
+.stop summary small{color:var(--gris);font-size:14px}
+.stop summary small strong{color:var(--tinta)}
+.stop-cuerpo{padding:2px 16px 16px}
+.stop-modos{display:inline-flex;gap:4px;padding:3px;border-radius:999px;background:var(--sup);margin:4px 0 10px}
+.stop-modos button{border:0;background:none;color:var(--gris);font:600 13.5px var(--sans);padding:6px 14px;border-radius:999px;cursor:pointer}
+.stop-modos button.on{background:#2C5E45;color:#E9FFF3}
+.stop-modos button.on.no{background:#6B2E22;color:#FFE9E3}
+.stop-dibujo{border-radius:12px;background:#121317;padding:8px 6px 4px}
+.stop-dibujo svg{display:block;width:100%;height:auto}
+.stop-dibujo.modo-no{--sc:#E2705A}
+/* onda */
+.ola-b{fill:#3A3D45;transition:fill .25s}
+.ola-b.on{fill:var(--sc)}
+.ola-b.on.traba{fill:#FF6B57}.ola-b.ok{fill:#5BD49A}
+.ola-sel{fill:color-mix(in srgb,var(--sc) 14%,transparent)}
+.ola-sel.traba{fill:rgba(255,107,87,.16)}.ola-sel.ok{fill:rgba(91,212,154,.12)}
+.ola-compas{stroke:#2A2C33;stroke-width:1}
+.ola-num{fill:#6B6F79;font:600 12px var(--sans);text-anchor:middle}
+.ola-num.on{fill:var(--tinta)}
+.ola-alerta{fill:#FF6B57;font:800 15px var(--sans);text-anchor:middle}
+/* cuerdas */
+.trastes{stroke:#2E3038;stroke-width:2}
+.cejilla{fill:#4A4D56}
+.cuerda{stroke:#5A5E68;transition:stroke .25s}
+.cuerda.on{stroke:var(--sc)}
+.cuerda.on.traba{stroke:#FF6B57}.cuerda.ok{stroke:#5BD49A}
+.c-brillo{stroke:color-mix(in srgb,var(--sc) 22%,transparent);stroke-linecap:round}
+.c-brillo.traba{stroke:rgba(255,107,87,.25)}
+.c-num{fill:#6B6F79;font:700 15px var(--display);text-anchor:middle}
+.c-num.on{fill:var(--tinta)}
+/* melodía */
+.m-linea{fill:none;stroke:#3F424B;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.m-linea.on{stroke:var(--sc)}.m-linea.on.traba{stroke:#FF6B57}.m-linea.ok{stroke:#5BD49A}
+.m-nota{fill:#3F424B}.m-nota.on{fill:var(--sc)}.m-nota.on.traba{fill:#FF6B57}.m-nota.ok{fill:#5BD49A}
+.m-llave{fill:none;stroke:#3F424B;stroke-width:1.5}
+.m-llave.on{stroke:var(--sc)}.m-llave.traba{stroke:#FF6B57}.m-llave.ok{stroke:#5BD49A}
+.m-letra{fill:#6B6F79;font:700 13px var(--display);text-anchor:middle}.m-letra.on{fill:var(--tinta)}
+.m-sub{fill:#6B6F79;font:600 11px var(--sans);text-anchor:middle}.m-sub.on{fill:var(--tinta)}
+.m-corte{stroke:#FF6B57;stroke-width:1;stroke-dasharray:3 3;opacity:.7}
+/* texto, contador y controles */
+.stop-texto{display:flex;gap:10px;align-items:baseline;min-height:48px;margin:12px 0 4px;font-size:16px;line-height:1.45;color:var(--tinta)}
+.stop-texto.zoom{color:#FFB8A8}
+.stop-texto.malo{color:#FFB8A8}
+.stop-num{flex:none;font:600 12px var(--sans);color:var(--gris);min-width:36px}
+.stop-cap{margin:8px 0 4px;font-size:12.5px;font-weight:600;color:var(--gris)}
+.stop-veces{display:grid;gap:3px}
+.stop-veces span{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px;border-radius:6px;background:color-mix(in srgb,var(--sc) calc(var(--v) * 75%),#1C1D22);transition:background .3s}
+.stop-veces.modo-no span{background:color-mix(in srgb,#E2705A calc(var(--v) * 75%),#1C1D22)}
+.stop-veces b{font-size:13px;color:#fff}
+.stop-veces small{font-size:10.5px;color:rgba(255,255,255,.7)}
+.stop-veces span.traba{outline:2px solid #FF6B57}
+.stop-veces span.ok{outline:2px solid #5BD49A}
+.stop-ctrl{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.stop-ctrl .primario{flex:1}
+.stop-ctrl button[disabled]{opacity:.4}
+@media (max-width:560px){.stop-veces b{font-size:11px}.stop-veces small{font-size:9px}.stop-texto{font-size:15px}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -796,6 +836,98 @@ const PROGRESO_BASE = [
   { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta' },
 ];
 
+/* Stops de segmentación: cómo se juntan las piezas (y qué pasa cuando algo se traba).
+   unidades: lo que se ve; tandas: cada tanda de práctica (sel = índices desde 0).
+   traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
+const STOPS = {
+  compases: {
+    tipo: 'ola', titulo: 'Cómo sumar compases sin que se desarme',
+    sub: 'Un tema de 16 compases. Cada tanda es un rato de práctica.',
+    unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
+    contar: 'Veces que practicaste cada compás',
+    tandas: [
+      { sel: [0, 3], t: 'Arrancás por los primeros 4.' },
+      { sel: [2, 2], traba: 2, t: 'Te trabás en el **compás 3**. Frená y revisá la info de ese compás: qué acorde es, qué notas tenés ahí.' },
+      { sel: [2, 3], zoom: true, t: 'Ahora el 3 con el 4…' },
+      { sel: [1, 2], zoom: true, t: '…y el 2 con el 3, para entrar bien.' },
+      { sel: [0, 3], arregla: 2, t: 'Volvés a los 4. El 3 ya sale.' },
+      { sel: [4, 7], t: 'Del 5 al 8.' },
+      { sel: [6, 6], traba: 6, t: 'Se complica el **7**. Lo mismo: revisás el 7 solo.' },
+      { sel: [5, 6], zoom: true, t: '6 y 7…' },
+      { sel: [6, 7], zoom: true, t: '…7 y 8.' },
+      { sel: [4, 7], arregla: 6, t: 'Y de nuevo del 5 al 8.' },
+      { sel: [0, 7], t: 'Ahora sí, **del 1 al 8 parejo**.' },
+      { sel: [8, 11], t: 'Del 9 al 12.' },
+      { sel: [12, 15], t: 'Del 13 al 16.' },
+      { sel: [8, 15], t: 'Del 9 al 16.' },
+      { sel: [0, 7], t: 'Un repaso del 1 al 8.' },
+      { sel: [0, 15], t: 'Y juntás todo. Si el tema tiene 32, hacés lo mismo en espejo con los 16 que siguen.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 3] }, { sel: [0, 7] }, { sel: [0, 11] }, { sel: [0, 15] }],
+      t: 'Siempre desde el principio: 1 al 4, 1 al 8, 1 al 12, 1 al 16.',
+      fin: '**El compás 1 lo practicaste 4 veces y el 16 una sola.** Y justo lo nuevo, que es lo que más cuesta, es lo que menos atención recibe.',
+    },
+  },
+  cuerdas: {
+    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas',
+    sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
+    unidades: ['1ª', '2ª', '3ª'],
+    contar: 'Veces que practicaste cada cuerda',
+    tandas: [
+      { sel: [0, 1], t: 'Bajás a 2 cuerdas: **la 1 y la 2**.' },
+      { sel: [1, 2], t: 'Después **la 2 y la 3**.' },
+      { sel: [0, 2], t: 'Y recién ahí **las 3 juntas**.' },
+      { sel: [1, 2], traba: 2, t: 'Si con la 2 y la 3 te seguís trabando, bajá a una…' },
+      { sel: [1, 1], zoom: true, t: '…la 2 sola…' },
+      { sel: [2, 2], zoom: true, t: '…la 3 sola…' },
+      { sel: [1, 2], arregla: 2, t: '…otra vez la 2 y la 3…' },
+      { sel: [0, 2], t: '…y las 3 juntas.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 1] }, { sel: [0, 2] }],
+      t: 'La 1 y la 2, y de ahí directo a las 3.',
+      fin: '**El paso de la 2 a la 3 nunca lo trabajaste**, y es justo donde se va a trabar.',
+    },
+  },
+  transcripcion: {
+    tipo: 'melodia', titulo: 'Cómo armar el solo por partes',
+    sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
+    unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
+    grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
+    contar: 'Veces que cantaste cada parte',
+    tandas: [
+      { sel: [0, 0], t: 'Frase A.' },
+      { sel: [1, 3], traba: 1, t: 'Frase B… y se complica.' },
+      { sel: [1, 1], zoom: true, partir: 1, t: 'Partís la B en las partes que necesites: **B1**…' },
+      { sel: [2, 2], zoom: true, t: '…B2…' },
+      { sel: [3, 3], zoom: true, t: '…B3.' },
+      { sel: [1, 2], zoom: true, t: 'B1 con B2…' },
+      { sel: [2, 3], zoom: true, t: '…B2 con B3…' },
+      { sel: [1, 3], arregla: 1, t: '…y la B entera. Ya sale.' },
+      { sel: [0, 3], t: 'A con B.' },
+      { sel: [4, 4], t: 'C.' },
+      { sel: [5, 5], t: 'D.' },
+      { sel: [4, 5], t: 'C con D.' },
+      { sel: [1, 5], t: 'B, C y D.' },
+      { sel: [0, 5], t: 'A, B, C y D.' },
+      { sel: [6, 6], t: 'E.' },
+      { sel: [7, 7], t: 'F.' },
+      { sel: [4, 7], t: 'De la C a la F.' },
+      { sel: [8, 8], t: 'G.' },
+      { sel: [9, 9], t: 'H.' },
+      { sel: [6, 9], t: 'De la E a la H.' },
+      { sel: [0, 5], t: 'Un repaso de la A a la D.' },
+      { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**. Si en algún momento vuelve a aparecer una traba, en la B1 o donde sea, vas directo ahí.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 0] }, { sel: [0, 3] }, { sel: [0, 4] }, { sel: [0, 5] }, { sel: [0, 6] }, { sel: [0, 7] }, { sel: [0, 8] }, { sel: [0, 9] }],
+      t: 'Siempre desde el principio: A, A-B, A-B-C…',
+      fin: '**La A la cantaste 8 veces y la H una sola.** Y las partes difíciles nunca las trabajaste solas.',
+    },
+  },
+};
+
 const PROGRAMA = {
   programa: 'Ajuste Elástico',
   modulo: 'Cambios de acorde: construyendo control y fluidez',
@@ -979,6 +1111,7 @@ const PROGRAMA = {
       id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
       video: { id: 'TylWJrfPxu0', t: 1516 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
+      stop: 'cuerdas', stopCerrado: true,
       titulo: 'Dirección melódica libre',
       detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora **elegís cómo enlazar**: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear…\n# Buscá caminos sorpresivos, no lo automático\nConviene empezar en 2 cuerdas (o hasta en 1) y después juntar las 3.',
       recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
@@ -1006,7 +1139,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
-      grafico: 'compases',
+      stop: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       problemas: [
         { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
@@ -1134,6 +1267,7 @@ const PROGRAMA = {
     {
       id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
+      stop: 'transcripcion',
       titulo: 'Cómo transcribir eficientemente',
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir **cantando**, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melo!).',
       progreso: [
@@ -1788,30 +1922,110 @@ function cicloHTML(c) {
     ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
   </div>`;
 }
-/* Cómo sumar compases: por pedazos (sí) vs siempre desde el principio (no), con cuántas veces se toca cada compás */
-function graficoCompasesHTML() {
-  const SI = [[1, 4], [5, 8], [1, 8], [9, 12], [13, 16], [9, 16], [1, 8, 'repaso'], [1, 16]];
-  const NO = [[1, 4], [1, 8], [1, 12], [1, 16]];
-  const tabla = (filas, tipo) => {
-    const veces = Array.from({ length: 16 }, (_, k) => filas.filter(([a, b]) => k + 1 >= a && k + 1 <= b).length);
-    const max = Math.max(...veces);
-    return `<div class="gc-grilla gc-${tipo}">
-      ${filas.map(([a, b, nota]) => `<div class="gc-fila"><span class="gc-et">${a}–${b}${nota ? ` <em>${nota}</em>` : ''}</span><span class="gc-barras">${Array.from({ length: 16 }, (_, k) => `<i class="${k + 1 >= a && k + 1 <= b ? 'on' : ''}"></i>`).join('')}</span></div>`).join('')}
-      <p class="gc-cap">Veces que practicaste cada compás</p>
-      <div class="gc-fila gc-veces"><span class="gc-et"></span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
-      <div class="gc-fila gc-num"><span class="gc-et">Compás</span><span class="gc-barras">${veces.map((_, k) => `<span>${k + 1}</span>`).join('')}</span></div>
+/* ===== Stops de segmentación: se recorren tanda por tanda ===== */
+const stopEst = {};   // id -> { i, modo: 'si' | 'no' }
+let stopTimer = null;
+function stopHTML(p) {
+  const id = p.stop, S = STOPS[id]; if (!S) return '';
+  return `<details class="stop stop-${S.tipo}" ${p.stopCerrado ? '' : 'open'}><summary><span>${esc(S.titulo)}</span><small>${enLinea(S.sub)}</small></summary>
+    <div class="stop-cuerpo" data-stop-caja="${id}">${stopInner(id)}</div></details>`;
+}
+function stopInner(id) {
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const no = e.modo === 'no', tandas = no ? S.no.tandas : S.tandas, n = S.unidades.length;
+  const i = Math.min(e.i, tandas.length - 1), tanda = tandas[i];
+  const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
+  const estadoU = Array(n).fill('');
+  if (!no) tandas.slice(0, i + 1).forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
+  const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
+  const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
+  const max = Math.max(1, ...veces);
+  const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
+  const fin = i === tandas.length - 1;
+  const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
+  return `<div class="stop-modos" role="tablist">
+      <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
+      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
+    </div>
+    <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${i + 1}/${tandas.length}</span><span>${enLinea(texto)}</span></p>
+    <p class="stop-cap">${esc(S.contar)}</p>
+    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
+    <div class="stop-ctrl">
+      <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
+      <button class="secundario" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
+      <button class="primario" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>
     </div>`;
-  };
-  return `<details class="graf-comp" open>
-    <summary><span>Cómo sumar compases sin que se desarme</span><small>Lo que sirve y lo que no</small></summary>
-    <p>Ejemplo con un tema de 16 compases. Cada fila es una tanda de práctica.</p>
-    <h5 class="gc-si">Así sí: por pedazos</h5>
-    ${tabla(SI, 'si')}
-    <p>Todos los compases se practican parecido, y cada parte nueva se trabaja sola antes de juntarla.</p>
-    <h5 class="gc-no">Así no: siempre desde el principio</h5>
-    ${tabla(NO, 'no')}
-    <p><strong>Los primeros compases los practicás 4 veces y los últimos una sola.</strong> Y justo lo nuevo, que es lo que más cuesta, es lo que menos se practica.</p>
-  </details>`;
+}
+function stopAccion(id, acc) {
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
+  const parar = () => { if (stopTimer) { clearInterval(stopTimer.h); stopTimer = null; } };
+  const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
+  if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); }
+  else if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); }
+  else if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; }
+  else if (acc === 'play') {
+    if (stopTimer && stopTimer.id === id) parar();
+    else {
+      parar(); if (e.i >= total() - 1) e.i = 0;
+      stopTimer = { id, h: setInterval(() => { if (e.i >= total() - 1) { parar(); pintar(); return; } e.i++; pintar(); }, e.modo === 'no' ? 1600 : 1900) };
+    }
+  }
+  pintar();
+}
+const ruido = (k, j) => { const x = Math.sin(k * 12.9898 + j * 78.233) * 43758.5453; return x - Math.floor(x); };
+function stopOla(S, enSel, est) {
+  const n = S.unidades.length, W = 640, H = 96, u = W / n, cy = 42;
+  let barras = '', marcas = '', fondos = '';
+  for (let k = 0; k < n; k++) {
+    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+    if (on) fondos += `<rect class="ola-sel ${cl}" x="${k * u + 1}" y="4" width="${u - 2}" height="${cy * 2 - 8}" rx="4"/>`;
+    for (let j = 0; j < 7; j++) {
+      const a = 6 + ruido(k, j) * 26 * (0.55 + 0.45 * Math.sin((k * 7 + j) / 3) ** 2);
+      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(k * u + (j + 0.6) * u / 7.6).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${(u / 12).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
+    }
+    marcas += `${k ? `<line class="ola-compas" x1="${k * u}" y1="6" x2="${k * u}" y2="${cy * 2 - 6}"/>` : ''}<text class="ola-num ${on ? 'on' : ''}" x="${k * u + u / 2}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
+    if (cl === 'traba') marcas += `<text class="ola-alerta" x="${k * u + u / 2}" y="16">!</text>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="Compases del tema">${fondos}${barras}${marcas}</svg>`;
+}
+function stopCuerdas(S, enSel, est) {
+  const W = 640, H = 132, ys = [28, 66, 104], grosor = [1.6, 2.4, 3.4];
+  let t = '';
+  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * 95}" y1="14" x2="${70 + f * 95}" y2="118"/>`;
+  t += `<rect class="cejilla" x="64" y="12" width="6" height="108" rx="2"/>`;
+  ys.forEach((y, k) => {
+    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+    t += `<text class="c-num ${on ? 'on' : ''}" x="28" y="${y + 5}">${esc(S.unidades[k])}</text>
+      ${on ? `<line class="c-brillo ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k] + 9}"/>` : ''}
+      <line class="cuerda ${on ? 'on' : ''} ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k]}"/>
+      ${cl === 'traba' ? `<text class="ola-alerta" x="${W - 30}" y="${y - 8}">!</text>` : ''}`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-cuerdas" role="img" aria-label="Cuerdas 1, 2 y 3">${t}</svg>`;
+}
+function stopMelodia(S, enSel, est, partido) {
+  const W = 640, H = 124, n = S.unidades.length, uw = W / n;
+  let t = '';
+  S.grupos.forEach(([letra, a, b]) => {
+    const x0 = a * uw + 6, x1 = (b + 1) * uw - 6, subs = b - a + 1, sw = (x1 - x0) / subs;
+    const anyOn = [...Array(subs)].some((_, s) => enSel(a + s));
+    const tr = [...Array(subs)].some((_, s) => est[a + s] === 'traba'), ok = [...Array(subs)].some((_, s) => est[a + s] === 'ok');
+    t += `<path class="m-llave ${anyOn ? 'on' : ''} ${tr ? 'traba' : ok ? 'ok' : ''}" d="M${x0} 22 v-6 H${x1} v6"/><text class="m-letra ${anyOn ? 'on' : ''}" x="${(x0 + x1) / 2}" y="11">${letra}</text>`;
+    for (let s = 0; s < subs; s++) {
+      const k = a + s, on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+      const xa = x0 + s * sw, pts = [];
+      for (let j = 0; j <= 6; j++) pts.push(`${(xa + 3 + j * (sw - 6) / 6).toFixed(1)},${(70 - (ruido(k, j) - .5) * 52 - Math.sin(j / 2 + k) * 8).toFixed(1)}`);
+      t += `<polyline class="m-linea ${on ? 'on' : ''} ${cl}" points="${pts.join(' ')}"/>`;
+      pts.forEach((p, j) => { if (j % 2 === 0) { const [x, y] = p.split(','); t += `<circle class="m-nota ${on ? 'on' : ''} ${cl}" cx="${x}" cy="${y}" r="3.2"/>`; } });
+      if (subs > 1 && partido) {
+        t += `<text class="m-sub ${on ? 'on' : ''}" x="${xa + sw / 2}" y="${H - 6}">${esc(S.unidades[k])}</text>`;
+        if (s) t += `<line class="m-corte" x1="${xa}" y1="30" x2="${xa}" y2="108"/>`;
+      }
+    }
+    if (tr) t += `<text class="ola-alerta" x="${x1 - 4}" y="34">!</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-melodia" role="img" aria-label="El solo dividido en frases">${t}</svg>`;
 }
 function panelHTML(p) {
   if (!p.panel) return '';
@@ -1906,7 +2120,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
-    ${p.grafico === 'compases' ? graficoCompasesHTML() : ''}
+    ${p.stop ? stopHTML(p) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -2343,6 +2557,7 @@ function enlazarAlumno() {
   root.onclick = ev => {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
+    if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {

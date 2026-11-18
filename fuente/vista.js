@@ -119,30 +119,110 @@ function cicloHTML(c) {
     ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
   </div>`;
 }
-/* Cómo sumar compases: por pedazos (sí) vs siempre desde el principio (no), con cuántas veces se toca cada compás */
-function graficoCompasesHTML() {
-  const SI = [[1, 4], [5, 8], [1, 8], [9, 12], [13, 16], [9, 16], [1, 8, 'repaso'], [1, 16]];
-  const NO = [[1, 4], [1, 8], [1, 12], [1, 16]];
-  const tabla = (filas, tipo) => {
-    const veces = Array.from({ length: 16 }, (_, k) => filas.filter(([a, b]) => k + 1 >= a && k + 1 <= b).length);
-    const max = Math.max(...veces);
-    return `<div class="gc-grilla gc-${tipo}">
-      ${filas.map(([a, b, nota]) => `<div class="gc-fila"><span class="gc-et">${a}–${b}${nota ? ` <em>${nota}</em>` : ''}</span><span class="gc-barras">${Array.from({ length: 16 }, (_, k) => `<i class="${k + 1 >= a && k + 1 <= b ? 'on' : ''}"></i>`).join('')}</span></div>`).join('')}
-      <p class="gc-cap">Veces que practicaste cada compás</p>
-      <div class="gc-fila gc-veces"><span class="gc-et"></span><span class="gc-barras">${veces.map(v => `<b style="--v:${(v / max).toFixed(2)}">${v}</b>`).join('')}</span></div>
-      <div class="gc-fila gc-num"><span class="gc-et">Compás</span><span class="gc-barras">${veces.map((_, k) => `<span>${k + 1}</span>`).join('')}</span></div>
+/* ===== Stops de segmentación: se recorren tanda por tanda ===== */
+const stopEst = {};   // id -> { i, modo: 'si' | 'no' }
+let stopTimer = null;
+function stopHTML(p) {
+  const id = p.stop, S = STOPS[id]; if (!S) return '';
+  return `<details class="stop stop-${S.tipo}" ${p.stopCerrado ? '' : 'open'}><summary><span>${esc(S.titulo)}</span><small>${enLinea(S.sub)}</small></summary>
+    <div class="stop-cuerpo" data-stop-caja="${id}">${stopInner(id)}</div></details>`;
+}
+function stopInner(id) {
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const no = e.modo === 'no', tandas = no ? S.no.tandas : S.tandas, n = S.unidades.length;
+  const i = Math.min(e.i, tandas.length - 1), tanda = tandas[i];
+  const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
+  const estadoU = Array(n).fill('');
+  if (!no) tandas.slice(0, i + 1).forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
+  const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
+  const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
+  const max = Math.max(1, ...veces);
+  const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
+  const fin = i === tandas.length - 1;
+  const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
+  return `<div class="stop-modos" role="tablist">
+      <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
+      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
+    </div>
+    <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${i + 1}/${tandas.length}</span><span>${enLinea(texto)}</span></p>
+    <p class="stop-cap">${esc(S.contar)}</p>
+    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
+    <div class="stop-ctrl">
+      <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
+      <button class="secundario" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
+      <button class="primario" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>
     </div>`;
-  };
-  return `<details class="graf-comp" open>
-    <summary><span>Cómo sumar compases sin que se desarme</span><small>Lo que sirve y lo que no</small></summary>
-    <p>Ejemplo con un tema de 16 compases. Cada fila es una tanda de práctica.</p>
-    <h5 class="gc-si">Así sí: por pedazos</h5>
-    ${tabla(SI, 'si')}
-    <p>Todos los compases se practican parecido, y cada parte nueva se trabaja sola antes de juntarla.</p>
-    <h5 class="gc-no">Así no: siempre desde el principio</h5>
-    ${tabla(NO, 'no')}
-    <p><strong>Los primeros compases los practicás 4 veces y los últimos una sola.</strong> Y justo lo nuevo, que es lo que más cuesta, es lo que menos se practica.</p>
-  </details>`;
+}
+function stopAccion(id, acc) {
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
+  const parar = () => { if (stopTimer) { clearInterval(stopTimer.h); stopTimer = null; } };
+  const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
+  if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); }
+  else if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); }
+  else if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; }
+  else if (acc === 'play') {
+    if (stopTimer && stopTimer.id === id) parar();
+    else {
+      parar(); if (e.i >= total() - 1) e.i = 0;
+      stopTimer = { id, h: setInterval(() => { if (e.i >= total() - 1) { parar(); pintar(); return; } e.i++; pintar(); }, e.modo === 'no' ? 1600 : 1900) };
+    }
+  }
+  pintar();
+}
+const ruido = (k, j) => { const x = Math.sin(k * 12.9898 + j * 78.233) * 43758.5453; return x - Math.floor(x); };
+function stopOla(S, enSel, est) {
+  const n = S.unidades.length, W = 640, H = 96, u = W / n, cy = 42;
+  let barras = '', marcas = '', fondos = '';
+  for (let k = 0; k < n; k++) {
+    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+    if (on) fondos += `<rect class="ola-sel ${cl}" x="${k * u + 1}" y="4" width="${u - 2}" height="${cy * 2 - 8}" rx="4"/>`;
+    for (let j = 0; j < 7; j++) {
+      const a = 6 + ruido(k, j) * 26 * (0.55 + 0.45 * Math.sin((k * 7 + j) / 3) ** 2);
+      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(k * u + (j + 0.6) * u / 7.6).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${(u / 12).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
+    }
+    marcas += `${k ? `<line class="ola-compas" x1="${k * u}" y1="6" x2="${k * u}" y2="${cy * 2 - 6}"/>` : ''}<text class="ola-num ${on ? 'on' : ''}" x="${k * u + u / 2}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
+    if (cl === 'traba') marcas += `<text class="ola-alerta" x="${k * u + u / 2}" y="16">!</text>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="Compases del tema">${fondos}${barras}${marcas}</svg>`;
+}
+function stopCuerdas(S, enSel, est) {
+  const W = 640, H = 132, ys = [28, 66, 104], grosor = [1.6, 2.4, 3.4];
+  let t = '';
+  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * 95}" y1="14" x2="${70 + f * 95}" y2="118"/>`;
+  t += `<rect class="cejilla" x="64" y="12" width="6" height="108" rx="2"/>`;
+  ys.forEach((y, k) => {
+    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+    t += `<text class="c-num ${on ? 'on' : ''}" x="28" y="${y + 5}">${esc(S.unidades[k])}</text>
+      ${on ? `<line class="c-brillo ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k] + 9}"/>` : ''}
+      <line class="cuerda ${on ? 'on' : ''} ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k]}"/>
+      ${cl === 'traba' ? `<text class="ola-alerta" x="${W - 30}" y="${y - 8}">!</text>` : ''}`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-cuerdas" role="img" aria-label="Cuerdas 1, 2 y 3">${t}</svg>`;
+}
+function stopMelodia(S, enSel, est, partido) {
+  const W = 640, H = 124, n = S.unidades.length, uw = W / n;
+  let t = '';
+  S.grupos.forEach(([letra, a, b]) => {
+    const x0 = a * uw + 6, x1 = (b + 1) * uw - 6, subs = b - a + 1, sw = (x1 - x0) / subs;
+    const anyOn = [...Array(subs)].some((_, s) => enSel(a + s));
+    const tr = [...Array(subs)].some((_, s) => est[a + s] === 'traba'), ok = [...Array(subs)].some((_, s) => est[a + s] === 'ok');
+    t += `<path class="m-llave ${anyOn ? 'on' : ''} ${tr ? 'traba' : ok ? 'ok' : ''}" d="M${x0} 22 v-6 H${x1} v6"/><text class="m-letra ${anyOn ? 'on' : ''}" x="${(x0 + x1) / 2}" y="11">${letra}</text>`;
+    for (let s = 0; s < subs; s++) {
+      const k = a + s, on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+      const xa = x0 + s * sw, pts = [];
+      for (let j = 0; j <= 6; j++) pts.push(`${(xa + 3 + j * (sw - 6) / 6).toFixed(1)},${(70 - (ruido(k, j) - .5) * 52 - Math.sin(j / 2 + k) * 8).toFixed(1)}`);
+      t += `<polyline class="m-linea ${on ? 'on' : ''} ${cl}" points="${pts.join(' ')}"/>`;
+      pts.forEach((p, j) => { if (j % 2 === 0) { const [x, y] = p.split(','); t += `<circle class="m-nota ${on ? 'on' : ''} ${cl}" cx="${x}" cy="${y}" r="3.2"/>`; } });
+      if (subs > 1 && partido) {
+        t += `<text class="m-sub ${on ? 'on' : ''}" x="${xa + sw / 2}" y="${H - 6}">${esc(S.unidades[k])}</text>`;
+        if (s) t += `<line class="m-corte" x1="${xa}" y1="30" x2="${xa}" y2="108"/>`;
+      }
+    }
+    if (tr) t += `<text class="ola-alerta" x="${x1 - 4}" y="34">!</text>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-melodia" role="img" aria-label="El solo dividido en frases">${t}</svg>`;
 }
 function panelHTML(p) {
   if (!p.panel) return '';
@@ -237,7 +317,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
-    ${p.grafico === 'compases' ? graficoCompasesHTML() : ''}
+    ${p.stop ? stopHTML(p) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -674,6 +754,7 @@ function enlazarAlumno() {
   root.onclick = ev => {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
+    if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {

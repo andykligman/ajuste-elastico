@@ -75,6 +75,98 @@ const PROGRESO_BASE = [
   { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta' },
 ];
 
+/* Stops de segmentación: cómo se juntan las piezas (y qué pasa cuando algo se traba).
+   unidades: lo que se ve; tandas: cada tanda de práctica (sel = índices desde 0).
+   traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
+const STOPS = {
+  compases: {
+    tipo: 'ola', titulo: 'Cómo sumar compases sin que se desarme',
+    sub: 'Un tema de 16 compases. Cada tanda es un rato de práctica.',
+    unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
+    contar: 'Veces que practicaste cada compás',
+    tandas: [
+      { sel: [0, 3], t: 'Arrancás por los primeros 4.' },
+      { sel: [2, 2], traba: 2, t: 'Te trabás en el **compás 3**. Frená y revisá la info de ese compás: qué acorde es, qué notas tenés ahí.' },
+      { sel: [2, 3], zoom: true, t: 'Ahora el 3 con el 4…' },
+      { sel: [1, 2], zoom: true, t: '…y el 2 con el 3, para entrar bien.' },
+      { sel: [0, 3], arregla: 2, t: 'Volvés a los 4. El 3 ya sale.' },
+      { sel: [4, 7], t: 'Del 5 al 8.' },
+      { sel: [6, 6], traba: 6, t: 'Se complica el **7**. Lo mismo: revisás el 7 solo.' },
+      { sel: [5, 6], zoom: true, t: '6 y 7…' },
+      { sel: [6, 7], zoom: true, t: '…7 y 8.' },
+      { sel: [4, 7], arregla: 6, t: 'Y de nuevo del 5 al 8.' },
+      { sel: [0, 7], t: 'Ahora sí, **del 1 al 8 parejo**.' },
+      { sel: [8, 11], t: 'Del 9 al 12.' },
+      { sel: [12, 15], t: 'Del 13 al 16.' },
+      { sel: [8, 15], t: 'Del 9 al 16.' },
+      { sel: [0, 7], t: 'Un repaso del 1 al 8.' },
+      { sel: [0, 15], t: 'Y juntás todo. Si el tema tiene 32, hacés lo mismo en espejo con los 16 que siguen.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 3] }, { sel: [0, 7] }, { sel: [0, 11] }, { sel: [0, 15] }],
+      t: 'Siempre desde el principio: 1 al 4, 1 al 8, 1 al 12, 1 al 16.',
+      fin: '**El compás 1 lo practicaste 4 veces y el 16 una sola.** Y justo lo nuevo, que es lo que más cuesta, es lo que menos atención recibe.',
+    },
+  },
+  cuerdas: {
+    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas',
+    sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
+    unidades: ['1ª', '2ª', '3ª'],
+    contar: 'Veces que practicaste cada cuerda',
+    tandas: [
+      { sel: [0, 1], t: 'Bajás a 2 cuerdas: **la 1 y la 2**.' },
+      { sel: [1, 2], t: 'Después **la 2 y la 3**.' },
+      { sel: [0, 2], t: 'Y recién ahí **las 3 juntas**.' },
+      { sel: [1, 2], traba: 2, t: 'Si con la 2 y la 3 te seguís trabando, bajá a una…' },
+      { sel: [1, 1], zoom: true, t: '…la 2 sola…' },
+      { sel: [2, 2], zoom: true, t: '…la 3 sola…' },
+      { sel: [1, 2], arregla: 2, t: '…otra vez la 2 y la 3…' },
+      { sel: [0, 2], t: '…y las 3 juntas.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 1] }, { sel: [0, 2] }],
+      t: 'La 1 y la 2, y de ahí directo a las 3.',
+      fin: '**El paso de la 2 a la 3 nunca lo trabajaste**, y es justo donde se va a trabar.',
+    },
+  },
+  transcripcion: {
+    tipo: 'melodia', titulo: 'Cómo armar el solo por partes',
+    sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
+    unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
+    grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
+    contar: 'Veces que cantaste cada parte',
+    tandas: [
+      { sel: [0, 0], t: 'Frase A.' },
+      { sel: [1, 3], traba: 1, t: 'Frase B… y se complica.' },
+      { sel: [1, 1], zoom: true, partir: 1, t: 'Partís la B en las partes que necesites: **B1**…' },
+      { sel: [2, 2], zoom: true, t: '…B2…' },
+      { sel: [3, 3], zoom: true, t: '…B3.' },
+      { sel: [1, 2], zoom: true, t: 'B1 con B2…' },
+      { sel: [2, 3], zoom: true, t: '…B2 con B3…' },
+      { sel: [1, 3], arregla: 1, t: '…y la B entera. Ya sale.' },
+      { sel: [0, 3], t: 'A con B.' },
+      { sel: [4, 4], t: 'C.' },
+      { sel: [5, 5], t: 'D.' },
+      { sel: [4, 5], t: 'C con D.' },
+      { sel: [1, 5], t: 'B, C y D.' },
+      { sel: [0, 5], t: 'A, B, C y D.' },
+      { sel: [6, 6], t: 'E.' },
+      { sel: [7, 7], t: 'F.' },
+      { sel: [4, 7], t: 'De la C a la F.' },
+      { sel: [8, 8], t: 'G.' },
+      { sel: [9, 9], t: 'H.' },
+      { sel: [6, 9], t: 'De la E a la H.' },
+      { sel: [0, 5], t: 'Un repaso de la A a la D.' },
+      { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**. Si en algún momento vuelve a aparecer una traba, en la B1 o donde sea, vas directo ahí.' },
+    ],
+    no: {
+      tandas: [{ sel: [0, 0] }, { sel: [0, 3] }, { sel: [0, 4] }, { sel: [0, 5] }, { sel: [0, 6] }, { sel: [0, 7] }, { sel: [0, 8] }, { sel: [0, 9] }],
+      t: 'Siempre desde el principio: A, A-B, A-B-C…',
+      fin: '**La A la cantaste 8 veces y la H una sola.** Y las partes difíciles nunca las trabajaste solas.',
+    },
+  },
+};
+
 const PROGRAMA = {
   programa: 'Ajuste Elástico',
   modulo: 'Cambios de acorde: construyendo control y fluidez',
@@ -258,6 +350,7 @@ const PROGRAMA = {
       id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
       video: { id: 'TylWJrfPxu0', t: 1516 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
+      stop: 'cuerdas', stopCerrado: true,
       titulo: 'Dirección melódica libre',
       detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora **elegís cómo enlazar**: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear…\n# Buscá caminos sorpresivos, no lo automático\nConviene empezar en 2 cuerdas (o hasta en 1) y después juntar las 3.',
       recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
@@ -285,7 +378,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
-      grafico: 'compases',
+      stop: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       problemas: [
         { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
@@ -413,6 +506,7 @@ const PROGRAMA = {
     {
       id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
+      stop: 'transcripcion',
       titulo: 'Cómo transcribir eficientemente',
       detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir **cantando**, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melo!).',
       progreso: [
