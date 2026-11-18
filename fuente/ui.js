@@ -63,7 +63,7 @@ function guardarAlumno() {
   clearTimeout(timerGuardar);
   timerGuardar = setTimeout(async () => {
     try {
-      if (modo === 'admin-vista') { await guardarCambiosAdm(ST); aviso('Guardado'); return; }
+      if (modo === 'admin-vista') { const i = LISTA.findIndex(x => x.codigo === ST.codigo); if (i >= 0) LISTA[i] = ST; await guardarCambiosAdm(ST.codigo); aviso('Guardado'); return; }
       const enviado = clonar(ST);
       const progCambios = difPasos(BASE?.prog, enviado.prog), probsCambios = difPasos(BASE?.probs, enviado.probs);
       await llamar('alumno.guardar', { token: TOKEN, cambios: { progCambios, probsCambios, prog: enviado.prog, probs: enviado.probs,
@@ -277,8 +277,13 @@ async function abrirAdmin() {
     else aviso('No pude actualizar el panel. Revisá la conexión.', true);
     return;
   }
+  nueva.forEach(n => {
+    const viejo = LISTA.find(x => x.codigo === n.codigo), base = ORIG[n.codigo];
+    const local = viejo && base ? difAlumno(base, viejo) : {};
+    ORIG[n.codigo] = clonar(n);
+    if (Object.keys(local).length) aplicarLocal(n, clonar(n), local);
+  });
   LISTA = nueva; guardarLocal('mapaAE_lista', LISTA);
-  LISTA.forEach(a => { ORIG[a.codigo] = clonar(a); });
   if (modo !== 'admin') return;
   if (!elegido || elegido === '__nuevo') renderAdmin();
   else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
@@ -335,6 +340,10 @@ function inicioAdmHTML() {
       </table>
     </section>`;
 }
+function marcarModulo(prog, m) {
+  const ps = pasosDelModulo(m), todo = ps.every(x => prog[x.id]?.hecho);
+  ps.forEach(x => { if (todo) delete prog[x.id]; else if (!prog[x.id]?.hecho) prog[x.id] = { hecho: true, como: 'listo', t: hoyISO() }; });
+}
 let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
 function registroAdmHTML() {
   const msg = linkReg ? `¡Hola! Te paso el link para entrar al aula de Ajuste Elástico 🙌\n\nAbrilo, poné tu nombre, tu email y elegí una contraseña. Después entrás siempre con tu email y esa contraseña.\n\n${linkReg}` : '';
@@ -360,6 +369,12 @@ function nuevoHTML() {
     <label>Nivel <span class="suave">(el alumno no lo ve)</span>
       <select name="nivel"><option value="1">1: se lo compara con el mínimo</option><option value="2" selected>2: con lo esperado</option><option value="3">3: con lo ideal</option></select></label>
     <label>Fecha de la llamada de bienvenida<input type="date" name="inicio" value="${hoyISO()}"></label>
+    <details class="ya-hecho"><summary>¿Ya hizo algo? Marcá lo que tiene hecho <span class="suave">(opcional)</span></summary>
+      <p class="suave chico">Lo que marques le aparece hecho en el aula. Los módulos donde marques algo le quedan habilitados.</p>
+      ${MODULOS.map(M => { const ps = pasosDelModulo(M.n); if (!ps.length) return '';
+        return `<fieldset class="nh-mod" style="--mc:${M.color}"><legend><label class="check"><input type="checkbox" data-nmod="${M.n}"> <strong>${esc(M.titulo)} · ${esc(M.nombre)}</strong> <span class="suave">(todo el módulo)</span></label></legend>
+          ${ps.map(p => `<label class="check"><input type="checkbox" name="paso" value="${p.id}" data-nmod-de="${M.n}"> ${esc(p.titulo)}</label>`).join('')}</fieldset>`; }).join('')}
+    </details>
     <button class="primario">Crear y generar el link de acceso</button>
   </form>`;
 }
@@ -442,7 +457,8 @@ function restoHTML(a) {
     <h3>Avance</h3>
     <p class="suave chico">Tocá un paso para marcarlo como hecho (o para desmarcarlo).</p>
     <ul class="avance-adm">${PROGRAMA.pasos.map((p, i) => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
-      const m = MODULO_DE[p.etapa], cab = !i || MODULO_DE[PROGRAMA.pasos[i - 1].etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}">${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</li>` : '';
+      const m = MODULO_DE[p.etapa], todo = pasosDelModulo(m).every(x => a.prog[x.id]?.hecho);
+      const cab = !i || MODULO_DE[PROGRAMA.pasos[i - 1].etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}"><span>${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</span><button class="link suave" data-mod-tilde="${m}">${todo ? 'Desmarcar el módulo entero' : 'Marcar el módulo entero'}</button></li>` : '';
       return `${cab}<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><button class="av-tit" data-adm-tilde="${p.id}">${esc(p.titulo)}</button>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>
   </div>
 
@@ -469,33 +485,46 @@ function accesoHTML(a) {
 
 let timerAdm = null;
 function refrescarMensaje(a) { const m = $('#revMsg'); if (m) m.innerHTML = mensajeAdmHTML(a, videoActual(a).cur?.pid || null); }
-async function guardarCambiosAdm(a) {
-  const base = ORIG[a.codigo];
-  if (!base) { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[a.codigo] = clonar(a); return; }
-  const cambios = difAlumno(base, a);
+/* Guardar desde el panel: de a una tanda por vez, y lo que se toque mientras viaja la anterior no se pierde */
+async function guardarCambiosAdm(codigo) {
+  const a = LISTA.find(x => x.codigo === codigo); if (!a) return;
+  const base = ORIG[codigo];
+  if (!base) { await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[codigo] = clonar(a); return; }
+  const enviado = clonar(a);
+  const cambios = difAlumno(base, enviado);
   if (!Object.keys(cambios).length) return;
   try {
-    const r = await llamar('admin.cambiar', { clave: claveAdmin, codigo: a.codigo, cambios });
-    // Lo que trae el servidor ya incluye lo último del alumno: se actualiza sin perder lo que se esté tocando
-    const local = difAlumno(base, a); Object.keys(cambios).forEach(k => delete local[k]);
+    const r = await llamar('admin.cambiar', { clave: claveAdmin, codigo, cambios });
     const fresco = r.alumno;
-    ORIG[a.codigo] = clonar(fresco);
-    ['prog', 'probs'].forEach(k => { fresco[k] = aplicarPasos(fresco[k], local[k + 'Cambios'] || {}); delete local[k + 'Cambios']; });
-    Object.assign(a, fresco, local);
+    ORIG[codigo] = clonar(fresco);
+    const actual = LISTA.find(x => x.codigo === codigo); if (!actual) return;
+    aplicarLocal(actual, fresco, difAlumno(enviado, actual));   // fresco del servidor + lo tocado mientras tanto
   } catch (e) {
     if (!/Acción desconocida/.test(e.message)) throw e;
-    await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[a.codigo] = clonar(a);   // servidor viejo
+    await llamar('admin.guardar', { clave: claveAdmin, alumno: a }); ORIG[codigo] = clonar(a);   // servidor viejo
   }
 }
+function aplicarLocal(destino, fresco, local) {
+  const r = clonar(fresco);
+  ['prog', 'probs'].forEach(k => { if (local[k + 'Cambios']) r[k] = aplicarPasos(r[k], local[k + 'Cambios']); delete local[k + 'Cambios']; });
+  Object.keys(destino).forEach(k => delete destino[k]);
+  Object.assign(destino, r, local);
+}
+let colaAdm = Promise.resolve();
+const pendientesAdm = new Set();
 function guardarAdm(a, rerender = true) {
   aviso('Guardando…');
   // Solo se redibuja la parte de abajo: el video y el mensaje que estás escribiendo no se tocan
   if (rerender) { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(a); enlazarAdmin(); } else renderAdmin(); }
+  pendientesAdm.add(a.codigo);
   clearTimeout(timerAdm);
-  timerAdm = setTimeout(async () => {
-    try { await guardarCambiosAdm(a); aviso('Guardado'); guardarLocal('mapaAE_lista', LISTA); }
-    catch (e) { aviso('No se pudo guardar: ' + e.message, true); }
-  }, 400);
+  timerAdm = setTimeout(() => {
+    const cods = [...pendientesAdm]; pendientesAdm.clear();
+    colaAdm = colaAdm.then(async () => {
+      try { for (const c of cods) await guardarCambiosAdm(c); if (!pendientesAdm.size) aviso('Guardado'); guardarLocal('mapaAE_lista', LISTA); }
+      catch (e) { aviso('No se pudo guardar: ' + e.message, true); }
+    });
+  }, 500);
 }
 
 function enlazarAdmin() {
@@ -550,6 +579,7 @@ function enlazarAdmin() {
       guardarAdm(a); refrescarMensaje(a);
     }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
+    else if (d.modTilde !== undefined && a) { marcarModulo(a.prog, +d.modTilde); guardarAdm(a); }
     else if (d.extraTilde) { const x = (a.extras || []).find(y => y.id === d.extraTilde); if (x) { x.hecho = !x.hecho; guardarAdm(a); refrescarMensaje(a); } }
     else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
@@ -568,13 +598,21 @@ function enlazarAdmin() {
   if (fn) fn.onsubmit = async ev => {
     ev.preventDefault(); const f = new FormData(fn);
     const nuevo = alumnoVacio(f.get('nombre').trim(), +f.get('nivel'), f.get('inicio'));
-    nuevo.modulos = '0';   // los ingresantes arrancan solo con el módulo 0
+    const hechos = f.getAll('paso');
+    hechos.forEach(id => { nuevo.prog[id] = { hecho: true, como: 'listo', t: hoyISO() }; });
+    // Arrancan con el módulo 0, más los módulos donde ya tienen algo hecho
+    nuevo.modulos = [...new Set([0, ...hechos.map(id => MODULO_DE[PASO[id].etapa])])].sort().join('');
     nuevo.email = String(f.get('email') || '').trim().toLowerCase();
     nuevo.codigo = codigoNuevo(nuevo.nombre);
     try {
       const r = await llamar('admin.crear', { clave: claveAdmin, alumno: nuevo });
       LISTA.push(r.alumno); elegido = nuevo.codigo; videoSel = null; linksRecientes[nuevo.codigo] = linkInvitacion(r.invitacion); renderAdmin();
     } catch (e) { aviso(e.message, true); }
+  };
+  if (fn) fn.onchange = ev => {
+    const t = ev.target;
+    if (t.dataset.nmod !== undefined) fn.querySelectorAll(`[data-nmod-de="${t.dataset.nmod}"]`).forEach(x => { x.checked = t.checked; });
+    else if (t.dataset.nmodDe !== undefined) { const g = [...fn.querySelectorAll(`[data-nmod-de="${t.dataset.nmodDe}"]`)]; fn.querySelector(`[data-nmod="${t.dataset.nmodDe}"]`).checked = g.every(x => x.checked); }
   };
   const fe = $('#formExtra');
   if (fe) fe.onsubmit = ev => {
