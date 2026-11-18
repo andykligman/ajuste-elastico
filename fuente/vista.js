@@ -142,7 +142,7 @@ function respuestaHTML(sel) {
   const ok = sel.nivel === 'listo';
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${String(sel.resp).split('\n\n').map(t => `<p>${esc(t)}</p>`).join('')}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 function videoAnterior(id) { const i = ORDEN.indexOf(id); for (let j = i - 1; j >= 0; j--) if (PASO[ORDEN[j]].video) return PASO[ORDEN[j]].video.id; return null; }
@@ -160,8 +160,8 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${preguntaHTML(st, p)}
-    ${respondido && p.entrega ? envioHTML(st, p) : ''}
-    ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio) ? `<div class="seguir">
+    ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
+    ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
