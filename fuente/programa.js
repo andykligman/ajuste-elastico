@@ -311,7 +311,7 @@ const PROGRAMA = {
           '**Anticipaciones armónicas**: aprender a tocar notas del compás que viene antes de que llegue, para tejer los cambios y que no suene compartimentado. Después, volver a hacer ritmo libre anticipando un poco.',
           '**Superposiciones**: aprender de qué van (o reordenar los conceptos si ya las conocías), setear una superposición por acorde en algunos compases del standard y volver a hacer **el mismo proceso** de la Ejercitación Nº1.',
         ],
-        puente: { ciclo: true, titulo: 'El proceso, una y otra vez', centro: 'Mismo proceso, información nueva', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
+        puente: { ciclo: true, pasos: ['Acomodar posiciones de los arpegios', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
         meta: 'Llegar al **Módulo 2** con todo esto andando.',
       },
       pregunta: '¿Arrancamos?',
@@ -379,8 +379,7 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'e4', etapa: 'enlaces',
-      video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
+      id: 'e4', etapa: 'enlaces', sinVideo: true, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
       stop: 'compases',

@@ -541,3 +541,10 @@ body.con-mapa{overflow:hidden}
 .cf-compas i{position:absolute;top:3px;right:8px;color:#FF6B57;font:800 15px var(--sans);font-style:normal}
 .modo-no .cf-compas.on{background:rgba(226,112,90,.22)}
 @media (max-width:560px){.cf-compas{min-height:52px;padding:4px 6px}.cf-compas span{font-size:14.5px}}
+
+.layout.sin-video{grid-template-columns:minmax(0,1fr)}
+.layout.sin-video .panel-video{display:none}
+.layout.sin-video .alumno{max-width:1100px;width:100%;margin:0 auto}
+.stop-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.stop-top .stop-son{background:none;border:1px solid var(--linea);color:var(--tinta);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.stop-top .stop-son.off{color:var(--gris)}

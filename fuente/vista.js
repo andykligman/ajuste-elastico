@@ -140,9 +140,10 @@ function stopInner(id) {
   const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
   const fin = i === tandas.length - 1;
   const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
-  return `<div class="stop-modos" role="tablist">
+  return `<div class="stop-top"><div class="stop-modos" role="tablist">
       <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
-      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
+      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button></div>
+      ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
@@ -153,13 +154,12 @@ function stopInner(id) {
       <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
       <button class="${fin && !(stopTimer && stopTimer.id === id) ? 'primario' : 'secundario'}" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
       <button class="${fin ? 'secundario' : 'primario'}" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>`}
-      ${S.audio && !no ? `<button class="secundario stop-son" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? 'Con audio' : 'Sin audio'}</button>` : ''}
     </div>`;
 }
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.mp3` : '';
+const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.m4a` : '';
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
@@ -758,6 +758,9 @@ function renderAlumno(animar) {
     app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
+  const sinVid = !!(PASO[abierto] && PASO[abierto].sinVideo);   // pasos sin video: el contenido ocupa toda la pantalla
+  $('.layout').classList.toggle('sin-video', sinVid);
+  if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
   if (!playerVid) {
     const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
