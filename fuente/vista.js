@@ -339,6 +339,7 @@ function vistaHTML(st, e, animar) {
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
     ${selectorModulosHTML(st, e)}
+    ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${barraClaseHTML(st, e)}`;
 }
 

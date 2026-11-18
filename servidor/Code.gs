@@ -15,7 +15,7 @@ const ZONA = 'America/Argentina/Buenos_Aires';
 const HOJA = 'Alumnos';
 const HOJA_SESIONES = 'Sesiones';
 const COLUMNAS = ['codigo', 'nombre', 'email', 'standard', 'nivel', 'inicio', 'clase', 'claseFecha', 'pausa', 'nota',
-                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion', 'modulos'];
+                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion', 'modulos', 'ajustar'];
 const JSON_COLS = ['extras', 'prog', 'probs'];
 const PRIVADAS = ['hash', 'sal', 'invitacion'];      // nunca salen de la planilla
 const DIAS_SESION = 180;
@@ -65,6 +65,22 @@ function manejar(d) {
         a.datos.invitacion = '';
         escribir(a.fila, a.datos);
         return { token: nuevaSesion(a.datos.codigo), alumno: publico(a.datos) };
+      }
+      /* ----- Link único para alumnos nuevos: se registran solos y Andy ajusta nivel y fecha ----- */
+      case 'auth.registrar': {
+        validarRegistro(d.registro);
+        const nombre = String(d.nombre || '').trim().replace(/\s+/g, ' ');
+        const email = normEmail(d.email);
+        if (nombre.length < 2) throw new Error('Escribí tu nombre y apellido.');
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Revisá el email: parece que tiene un error.');
+        validarClaveNueva(d.clave);
+        if (buscarPor('email', email)) throw new Error('Ya hay una cuenta con ese email. Entrá con tu contraseña, o escribime por WhatsApp si no te acordás.');
+        const al = { codigo: codigoNuevo(nombre), nombre, email, standard: '', nivel: 2, inicio: hoy(), clase: 0, claseFecha: '', pausa: false,
+                     nota: '', extras: [], prog: {}, probs: {}, act: hoy(), invitacion: '', modulos: '0', ajustar: '1' };
+        al.sal = Utilities.getUuid();
+        al.hash = hashClave(String(d.clave), al.sal);
+        hoja().appendRow(aFila(al));
+        return { token: nuevaSesion(al.codigo), alumno: publico(al) };
       }
       case 'auth.entrar': {
         const a = buscarPor('email', normEmail(d.email));
@@ -163,6 +179,14 @@ function manejar(d) {
         escribir(a.fila, a.datos);
         return { alumno: publico(a.datos, true) };
       }
+      case 'admin.registro': {
+        // El código del link único; con nuevo: true se cambia y el link anterior deja de andar
+        validarPanel(d.clave);
+        const p = PropertiesService.getScriptProperties();
+        let c = p.getProperty('REGISTRO');
+        if (!c || d.nuevo) { c = nuevoToken().slice(0, 12); p.setProperty('REGISTRO', c); }
+        return { registro: c };
+      }
       case 'admin.invitar': {
         validarPanel(d.clave);
         const a = buscarPor('codigo', d.codigo);
@@ -195,6 +219,17 @@ function hashClave(clave, sal) {
 }
 function nuevoToken() { return Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); }
 function validarClaveNueva(c) { if (!c || String(c).length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.'); }
+function validarRegistro(c) {
+  const r = PropertiesService.getScriptProperties().getProperty('REGISTRO');
+  if (!r || String(c || '') !== r) throw new Error('Este link ya no funciona. Pedime uno nuevo por WhatsApp.');
+}
+function codigoNuevo(nombre) {
+  const base = String(nombre || 'alumno').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '').slice(0, 8) || 'alumno';
+  const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+  let c;
+  do { c = base + '-'; for (let i = 0; i < 4; i++) c += abc[Math.floor(Math.random() * abc.length)]; } while (buscarPor('codigo', c));
+  return c;
+}
 function validarPanel(c) {
   const p = PropertiesService.getScriptProperties();
   if (!p.getProperty('PANEL_HASH')) {                 // primera vez: esta clave queda como clave del panel

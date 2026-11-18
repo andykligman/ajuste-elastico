@@ -79,6 +79,15 @@ function demo(accion, d) {
       if (!d.clave || d.clave.length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.');
       a.clave = d.clave; a.invitacion = ''; return { token: sesion(a), alumno: publico(a) };
     }
+    case 'auth.registrar': {
+      if (!db.registro || d.registro !== db.registro) throw new Error('Este link ya no funciona. Pedime uno nuevo por WhatsApp.');
+      const email = String(d.email || '').trim().toLowerCase();
+      if (por('email', email)) throw new Error('Ya hay una cuenta con ese email. Entrá con tu contraseña, o escribime por WhatsApp si no te acordás.');
+      if (!d.clave || d.clave.length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.');
+      const al = alumnoVacio(String(d.nombre).trim(), 2, hoyISO()); al.codigo = codigoNuevo(al.nombre); al.email = email; al.clave = d.clave; al.modulos = '0'; al.ajustar = '1';
+      db.alumnos.push(al); escribirDemo(); return { token: sesion(al), alumno: publico(al) };
+    }
+    case 'admin.registro': { if (!db.registro || d.nuevo) db.registro = tokenDemo().slice(0, 12); escribirDemo(); return { registro: db.registro }; }
     case 'auth.entrar': { const a = por('email', String(d.email || '').toLowerCase()); if (!a || !a.clave || a.clave !== d.clave) throw new Error('El email o la contraseña no coinciden.'); return { token: sesion(a), alumno: publico(a) }; }
     case 'auth.salir': delete db.sesiones[d.token]; escribirDemo(); return { ok: true };
     case 'alumno.get': return { alumno: publico(deSesion(d.token)) };

@@ -27,6 +27,7 @@ function nav(url) { try { history.replaceState(null, '', url); } catch (e) {} }
 function linkInvitacion(token) {
   const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
 }
+function linkRegistro(c) { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('registro', c); return u.toString(); }
 function linkMapa() { const u = new URL(location.href); u.search = ''; u.hash = ''; return u.toString(); }
 let TOKEN = '';
 try { TOKEN = localStorage.getItem('mapaAE_token') || ''; } catch (e) {}
@@ -90,8 +91,8 @@ function barra(nombre) {
     <div class="barra-der">
       ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
-      ${nombre && modo !== 'admin-prueba' ? `<span class="quien">${esc(nombre)}</span>` : ''}
-      ${!modo.startsWith('admin-') && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
+      ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
+      ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
     </div>
   </header>`;
 }
@@ -134,6 +135,41 @@ function renderEntrada(error) {
     if (b.dataset.demoInv) renderInvitacion(b.dataset.demoInv);
     if (b.dataset.demoAdmin) pedirClave();
     if (b.dataset.demoReset) { guardarToken(''); llamar('demo.reset', {}).then(() => renderEntrada()); }
+  };
+}
+
+/* Link único para alumnos nuevos: se registran solos (nombre, email y contraseña) y arrancan con el módulo 0 */
+function renderRegistro(codigo, error, val = {}) {
+  app().innerHTML = `${barra('')}
+  <main class="entrada">
+    <h1>Bienvenido a Ajuste Elástico</h1>
+    <p class="suave">Creá tu cuenta para entrar a tu aula. Después entrás siempre con tu email y esta contraseña.</p>
+    <form id="formRegistro" novalidate>
+      <label for="r-nombre">Nombre y apellido</label>
+      <input id="r-nombre" name="nombre" autocomplete="name" required value="${esc(val.nombre || '')}">
+      <label for="r-email">Email</label>
+      <input id="r-email" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" required value="${esc(val.email || '')}">
+      <label for="r-c1">Contraseña <span class="suave">(al menos 6 caracteres)</span></label>
+      <input id="r-c1" name="c1" type="password" autocomplete="new-password" required minlength="6">
+      <label for="r-c2">Repetila</label>
+      <input id="r-c2" name="c2" type="password" autocomplete="new-password" required>
+      ${error ? `<p class="error" role="alert">${esc(error)}</p>` : ''}
+      <button class="primario" type="submit">Crear mi cuenta y entrar</button>
+    </form>
+    <p class="suave chico">¿Ya tenés cuenta? <button class="link suave" data-ya-tengo="1">Entrá acá</button></p>
+  </main>`;
+  app().onclick = ev => { if (ev.target.closest('[data-ya-tengo]')) { nav(location.pathname); renderEntrada(); } };
+  const f = $('#formRegistro');
+  f.onsubmit = async ev => {
+    ev.preventDefault();
+    const v = { nombre: f.nombre.value.trim(), email: f.email.value.trim().toLowerCase() };
+    if (v.nombre.length < 2) return renderRegistro(codigo, 'Escribí tu nombre y apellido.', v);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) return renderRegistro(codigo, 'Revisá el email: parece que tiene un error.', v);
+    if (f.c1.value.length < 6) return renderRegistro(codigo, 'La contraseña tiene que tener al menos 6 caracteres.', v);
+    if (f.c1.value !== f.c2.value) return renderRegistro(codigo, 'Las dos contraseñas no son iguales.', v);
+    const btn = f.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Creando tu cuenta…';
+    try { const r = await llamar('auth.registrar', { registro: codigo, nombre: v.nombre, email: v.email, clave: f.c1.value }); guardarToken(r.token); nav(location.pathname); abrirMapa(r.alumno); }
+    catch (e) { renderRegistro(codigo, e.message, v); }
   };
 }
 
@@ -274,6 +310,7 @@ function inicioAdmHTML() {
       <button class="secundario" data-adm="actualizar">Actualizar</button>
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+    ${registroAdmHTML()}
     <section class="por-ver">
       <h2>Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
       ${nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
@@ -289,7 +326,7 @@ function inicioAdmHTML() {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
           return `<tr data-elegir="${esc(a.codigo)}" tabindex="0">
-            <td><strong>${esc(a.nombre)}</strong>${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
+            <td><strong>${esc(a.nombre)}</strong>${a.ajustar ? `<span class="marca-ajustar">Nuevo: ajustá nivel y fecha</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
             <td class="nw">${e.k <= 4 ? 'Clase ' + e.k : 'Módulo 2'}</td>
             <td><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></td>
             <td>${a.nivel}</td>
@@ -297,6 +334,18 @@ function inicioAdmHTML() {
           </tr>`; }).join('') || '<tr><td colspan="5" class="suave">Todavía no hay alumnos.</td></tr>'}</tbody>
       </table>
     </section>`;
+}
+let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
+function registroAdmHTML() {
+  const msg = linkReg ? `¡Hola! Te paso el link para entrar al aula de Ajuste Elástico 🙌\n\nAbrilo, poné tu nombre, tu email y elegí una contraseña. Después entrás siempre con tu email y esa contraseña.\n\n${linkReg}` : '';
+  return `<section class="registro-adm">
+    <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.</p></div>
+      ${linkReg ? '' : `<button class="secundario" data-adm="ver-registro">Ver el link</button>`}</div>
+    ${linkReg ? `<textarea id="msgReg" rows="5">${esc(msg)}</textarea>
+      <span class="fila-botones"><button class="secundario" data-adm="copiar-reg">Copiar mensaje</button><button class="secundario" data-adm="copiar-link">Copiar solo el link</button>
+      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir en WhatsApp</a>
+      <button class="link suave" data-adm="nuevo-registro">Cambiar el link</button></span>` : ''}
+  </section>`;
 }
 const ICONO_PLAY = '<svg class="tv-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.55)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>';
 function miniDrive(id) { return String(id).startsWith('demo-') ? '' : `<img src="https://drive.google.com/thumbnail?id=${encodeURIComponent(id)}&sz=w400" alt="" loading="lazy" onerror="this.remove()">`; }
@@ -320,6 +369,7 @@ function alumnoAdmHTML(a) {
   const e = estado(a);
   return `<div class="adm-top"><button class="link volver-adm" data-adm="volver">← Todos los alumnos</button><button class="secundario" data-adm="ver">Ver su aula</button></div>
   <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
+  ${a.ajustar ? `<div class="aviso-ajustar"><p><strong>Se registró solo con el link.</strong> Ajustale el nivel y la fecha de la llamada de bienvenida (abajo).</p><button class="secundario" data-adm="ajustado">Ya está</button></div>` : ''}
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
   <section class="revision" id="revision">${revisionHTML(a)}</section>
   <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
@@ -472,6 +522,15 @@ function enlazarAdmin() {
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
+    else if (d.adm === 'copiar-reg') copiar($('#msgReg').value, b, 'Copiado');
+    else if (d.adm === 'copiar-link') copiar(linkReg, b, 'Copiado');
+    else if (d.adm === 'ver-registro' || d.adm === 'nuevo-registro') {
+      if (d.adm === 'nuevo-registro' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
+      b.disabled = true; b.textContent = 'Un momento…';
+      try { const r = await llamar('admin.registro', { clave: claveAdmin, nuevo: d.adm === 'nuevo-registro' }); linkReg = linkRegistro(r.registro); renderAdmin(); if (d.adm === 'nuevo-registro') aviso('Listo: link nuevo. El anterior ya no funciona.'); }
+      catch (e) { aviso(/Acción desconocida/.test(e.message) ? 'Falta actualizar el servidor en Apps Script.' : e.message, true); b.disabled = false; b.textContent = 'Ver el link'; }
+    }
+    else if (d.adm === 'ajustado' && a) { a.ajustar = ''; guardarAdm(a); $('.aviso-ajustar')?.remove(); }
     else if (d.adm === 'invitar') {
       try { const r = await llamar('admin.invitar', { clave: claveAdmin, codigo: a.codigo }); linksRecientes[a.codigo] = linkInvitacion(r.invitacion); a.invitacionPendiente = true; renderAdmin(); }
       catch (e) { aviso(e.message, true); }
@@ -538,6 +597,7 @@ window.addEventListener('resize', () => {
 (function inicio() {
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
+  if (params.get('registro')) { renderRegistro(params.get('registro')); return; }
   TOKEN ? entrarConSesion() : renderEntrada();
 })();
 
