@@ -391,7 +391,7 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: en qué nota arrancás (decila en voz alta) y qué nota se repite (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, trabajando 3 o 4 líneas a la vez como máximo, y después juntar las piezas de a poco. Lo que te confunda, revisalo sin tempo.' },
-        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Bajá la velocidad o volvé a la Ejercitación Nº1 desde la nota donde te trabás. Cuando lo veas claro, retomá a tempo desde ahí, no desde el principio.' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Bajá la velocidad o volvé a la Ejercitación Nº1 desde la nota donde te trabás. o escribime y lo resolvemos.' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
     },
