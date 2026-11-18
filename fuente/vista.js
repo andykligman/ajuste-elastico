@@ -97,10 +97,10 @@ function hojaDeRutaHTML(p) {
   return `<div class="ruta" style="--rc:${color}">
     <h5>Objetivos</h5>
     <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
-    ${h.puente ? `<div class="ruta-puente" aria-label="El puente: ${esc(h.puente.join(', '))}">
-      <span class="rp-extremo">Lo que conocemos</span>
-      ${h.puente.map((x, i) => `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
-      <span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo">Lo que usamos al improvisar</span>
+    ${h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
+      ${h.puente.desde ? `<span class="rp-extremo">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true">→</span>` : ''}
+      ${h.puente.pasos.map((x, i) => `${i ? '<span class="rp-flecha" aria-hidden="true">→</span>' : ''}<span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+      ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo rp-meta">${esc(h.puente.hasta)}</span>` : ''}
     </div>` : ''}
     ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
@@ -166,7 +166,7 @@ function respuestaHTML(sel, p) {
   const ok = sel.nivel === 'listo';
   if (ok && !sel.resp && p) {
     const n = [...p.id].reduce((t, c) => t + c.charCodeAt(0), 0);
-    sel = Object.assign({}, sel, { resp: p.entrega && !p.opcional ? 'Buenísimo! Mandámelo acá abajo 👇' : FESTEJOS[n % FESTEJOS.length] });
+    sel = Object.assign({}, sel, { resp: p.entrega && !p.entregaOpcional ? 'Buenísimo! Mandámelo acá abajo 👇' : FESTEJOS[n % FESTEJOS.length] });
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
@@ -196,7 +196,7 @@ function tarjetaHTML(st, e, p) {
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
-    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.opcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
+    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${panelHTML(p)}
@@ -206,7 +206,7 @@ function tarjetaHTML(st, e, p) {
     ${seguimientoHTML(st, p)}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
-    ${respondido && sig && (!p.entrega || p.opcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+    ${respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
@@ -228,7 +228,7 @@ function envioHTML(st, p) {
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.opcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
@@ -349,7 +349,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}</p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}Ver el mapa</button></p>
       <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
@@ -374,6 +374,57 @@ function moduloCerradoPorClase(st, e, m) {
 }
 function pasosDelModulo(m) { return PROGRAMA.pasos.filter(p => MODULO_DE[p.etapa] === m); }
 /* Abajo de todo: elegir módulo. Los que todavía no están habilitados, con candado */
+/* El mapa completo: un "zoom out" del aula, módulo por módulo, sin videos */
+const ICONO_MAPA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5zM9 4v13.5M15 6.5V20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+function mapaHTML(st, e) {
+  const { lista } = recomendaciones(st, 1);
+  const ahora = lista[0] ? lista[0].id : (abierto || ORDEN[0]);
+  const modAhora = MODULO_DE[PASO[ahora].etapa];
+  return `<div class="mapa-zoom" role="dialog" aria-modal="true" aria-label="Tu mapa">
+    <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Tu mapa</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar el mapa">✕</button></div>
+    <ol class="mz-camino">${MODULOS.map((M, i) => {
+      const pasos = pasosDelModulo(M.n).filter(p => !p.hojaDeRuta);
+      const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === M.n);
+      const abiertoMod = moduloHabilitado(st, M.n) && !moduloCerradoPorClase(st, e, M.n);
+      const listos = pasos.filter(p => hecho(st, p.id)).length;
+      const completo = pasos.length && listos === pasos.length;
+      const aca = M.n === modAhora && !completo;
+      const est = !pasos.length ? 'Muy pronto' : completo ? 'Completo' : !abiertoMod ? 'Todavía no' : `${listos} de ${pasos.length} pasos`;
+      const h = obj && obj.hojaDeRuta;
+      return `<li class="mz-mod ${completo ? 'completo' : ''} ${aca ? 'aca' : ''} ${abiertoMod && pasos.length ? '' : 'bloq'} ${i % 2 ? 'der' : 'izq'}" style="--mc:${M.color}">
+        <span class="mz-parada">${completo ? ICONO.check : !abiertoMod || !pasos.length ? ICONO.candado : M.n}</span>
+        <div class="mz-tarjeta">
+          ${aca ? '<span class="mz-aca">Estás acá</span>' : ''}
+          <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
+          <p class="mz-estado">${esc(est)}</p>
+          ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
+          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}</div>` : ''}
+          ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
+          ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
+            const ok = hecho(st, p.id), cur = p.id === ahora;
+            return `<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod ? `<button data-mapa-paso="${p.id}">` : '<span>'}<i>${ok ? ICONO.check : ''}</i>${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}${abiertoMod ? '</button>' : '</span>'}</li>`;
+          }).join('')}</ul></details>` : ''}
+        </div></li>`;
+    }).join('')}</ol>
+  </div>`;
+}
+function abrirMapaZoom() {
+  const { e } = recomendaciones(ST, 1);
+  document.querySelector('.mapa-zoom')?.remove();
+  document.body.insertAdjacentHTML('beforeend', mapaHTML(ST, e));
+  document.body.classList.add('con-mapa');
+  const el = document.querySelector('.mapa-zoom');
+  el.onclick = ev => {
+    const b = ev.target.closest('button'); if (!b) return;
+    if (b.dataset.accion === 'cerrar-mapa') cerrarMapaZoom();
+    else if (b.dataset.mapaPaso) { const id = b.dataset.mapaPaso; cerrarMapaZoom(); abrirPaso(id); }
+  };
+  const aca = el.querySelector('.mz-mod.aca'); if (aca) setTimeout(() => aca.scrollIntoView({ block: 'center' }), 30);
+  el.querySelector('.mz-cerrar').focus();
+}
+function cerrarMapaZoom() { document.querySelector('.mapa-zoom')?.remove(); document.body.classList.remove('con-mapa'); }
+document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && document.querySelector('.mapa-zoom')) cerrarMapaZoom(); });
+
 function selectorModulosHTML(st, e) {
   const actual = abierto && PASO[abierto] ? MODULO_DE[PASO[abierto].etapa] : -1;
   return `<section class="selector-mod" aria-label="Módulos"><h3>Módulos</h3><div class="sm-lista">${MODULOS.map(M => {
@@ -516,7 +567,11 @@ function videoParaAbierto(cambioDePaso) {
 /* ---------- Render ---------- */
 function renderAlumno(animar) {
   const st = ST; const { e, lista } = recomendaciones(st, 3);
-  if (!abierto || !PASO[abierto]) abierto = (lista[0] && lista[0].id) || ORDEN[0];
+  if (!abierto || !PASO[abierto]) {
+    abierto = (lista[0] && lista[0].id) || ORDEN[0];
+    const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === MODULO_DE[PASO[abierto].etapa]);
+    if (obj && !hecho(st, obj.id) && pasoHabilitado(st, obj.id)) abierto = obj.id;   // si no leyó los objetivos del módulo, arranca por ahí
+  }
   if (!$('#vista') || animar) {
     player = null; playerVid = null;
     app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
@@ -587,6 +642,7 @@ function enlazarAlumno() {
     } else if (d.accion === 'clase-no') { const c = $('#claseHecha'); if (c && c.classList.contains('pregunta-clase')) c.outerHTML = `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${(ST.clase || 0) + 1}</button></div>`; else renderAlumno(); }
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }

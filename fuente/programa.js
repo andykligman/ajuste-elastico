@@ -92,6 +92,24 @@ const PROGRAMA = {
   pasos: [
     /* ---------- Pre-sincrónico ---------- */
     {
+      id: 'obj0', etapa: 'pre', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      hojaDeRuta: {
+        objetivos: [
+          '**Generar un atajo en la velocidad con la que identificamos los intervalos** en las distintas posiciones en la viola.',
+          '**Ordenar las posiciones en 3 cuerdas**, para disminuir la cantidad de información.',
+          '**Nombrar los intervalos en pelota parada**, para arriba y para abajo, y luego **a tempo**.',
+          'Volver a pelota parada, pero nombrándolos **con skipping**, y luego a tempo.',
+          'Una vez que eso está, hacer **una primera experiencia con los enlaces** de estos arpegios sobre un standard, a tiempo real.',
+        ],
+        puente: { pasos: ['Pelota parada', 'A tempo', 'Skipping', 'Skipping a tempo', 'Primeros enlaces'], hasta: 'Clase 1' },
+        meta: 'Con todo eso hecho ya estás listo para **la clase 1**: ese es el objetivo de este módulo!',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+    },
+    {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
@@ -184,6 +202,24 @@ const PROGRAMA = {
     },
 
     /* ---------- Enlaces ---------- */
+    {
+      id: 'obj1', etapa: 'enlaces', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      hojaDeRuta: {
+        objetivos: [
+          'Enlaces con **dirección melódica fija y ritmo fijo**, a tiempo real.',
+          'Enlaces con **dirección melódica libre** y ritmo fijo.',
+          'Enlaces con dirección melódica libre y **ritmo libre**.',
+          '**Anticipaciones armónicas**: volver a hacer ritmo libre, pero anticipando un poco.',
+          '**Superposiciones**: aprender de qué van (o reordenar los conceptos si ya las conocías), setear una superposición por acorde en algunos compases del standard y volver a hacer **el mismo proceso** de la Ejercitación Nº1.',
+        ],
+        puente: { titulo: 'El proceso, con los arpegios y después con las superposiciones', pasos: ['Acomodar las posiciones', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre'] },
+        meta: 'Llegar al **Módulo 2** con todo esto andando.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+    },
     {
       id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
@@ -349,7 +385,7 @@ const PROGRAMA = {
 
     /* ---------- Módulo 2: ADN del Jazz ---------- */
     {
-      id: 'obj2', etapa: 'm2',
+      id: 'obj2', etapa: 'm2', opcional: true,
       titulo: 'Los objetivos de este módulo',
       detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
       hojaDeRuta: {
@@ -360,7 +396,7 @@ const PROGRAMA = {
           '**Aplicar este principio sobre los cromatismos ascendentes** y, si llegás con los tiempos, sobre algún otro recurso del módulo (auxiliares, resoluciones indirectas, etc.).',
           'Finalmente, con el video de **Combinación de elementos del lenguaje**, extraer uno o más fragmentos chiquitos de ese solo, decodificarlos y pasarlos por el mismo proceso que vas a hacer con los cromáticos.',
         ],
-        puente: ['Reconocimiento', 'Mecanización', 'Integración'],
+        puente: { desde: 'Lo que conocemos', pasos: ['Reconocimiento', 'Mecanización', 'Integración'], hasta: 'Lo que usamos al improvisar' },
         meta: 'Llegar a trabajar con un fragmento de tu solo **entre la clase 3 y la 4** del módulo. Mientras antes, mejor: más tiempo nos sobra para mejorar el método de estudio.',
         importante: [
           'Entender el proceso de **reconocimiento, mecanización e integración**, que lo puedas hacer a fondo y que recibas correcciones para mejorar en cómo lo hacés. No importa en cuántos elementos lo hagas, sino **qué tan profundo** lo hacés y si lo hacés bien.',
@@ -460,7 +496,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
     },
     {
-      id: 'n7', etapa: 'm2', entrega: 'video', opcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
+      id: 'n7', etapa: 'm2', entrega: 'video', entregaOpcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
       detalle: 'Acá están los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en los videos, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y realizar el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en poder sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
       panel: [
@@ -490,6 +526,23 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
     },
     /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
+    {
+      id: 'obj3', etapa: 'ritmo', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos 😉',
+      hojaDeRuta: {
+        objetivos: [
+          '**Aprender un método para practicar ritmos con el cuerpo**, y distintos escalones para pasarlos al instrumento.',
+          'Testearlo con **diferentes ritmos**.',
+          'Aprender a **improvisar con unidades rítmicas** y con el entrenador rítmico virtual.',
+          'Mejorar tu improvisación con **unidades rítmicas puntuales**, para prepararte para el estudio del **desarrollo motívico** del último módulo, la Curva del Solo.',
+        ],
+        puente: { titulo: 'Los escalones para pasar un ritmo a la viola', desde: 'Con el cuerpo', pasos: ['Una sola nota', 'Escala fija', 'Escala con más libertades', 'Cambios de acorde con arpegios', 'Cambios de acorde con escalas'] },
+        meta: 'Llegar preparado a la **Curva del Solo**, el último módulo.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡estoy listo para avanzar!', nivel: 'listo' }],
+    },
     {
       id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
       titulo: 'Introducción: entrenamiento rítmico',
