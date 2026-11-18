@@ -91,6 +91,7 @@
 .mat svg{width:17px;height:17px;flex:none;color:var(--naranja)}
 a.mat svg{color:var(--azul-txt)}
 .mat small{display:block;font-weight:400;color:var(--gris);font-size:13px}
+.mat-sec span{font-weight:500}.mat-sec b{font-weight:700}
 .pregunta{margin-top:18px;padding-top:16px;border-top:1px solid var(--linea)}
 .pregunta h4{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 10px}
 .ops{display:grid;gap:8px}

@@ -253,9 +253,11 @@ function materialHTML(p) {
   const rs = (p.recursos || []).filter(r => r.url);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
-  const resto = rs.filter(r => !nuevos.includes(r));
+  /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
+  const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
+    if (r.sec) return `<a class="mat mat-sec" href="${esc(r.url.replace(/#.*$/, '') + '#heading=' + r.sec[0])}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a esta parte del doc: <b>${esc(r.sec[1])}</b><small>${esc(r.t.replace(/^Doc:\s*/, ''))}</small></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;

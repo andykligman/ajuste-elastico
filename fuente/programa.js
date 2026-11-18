@@ -232,6 +232,7 @@ const PROGRAMA = {
         { id: 'mucho', label: 'Me equivoco todo el tiempo', nivel: 'cuesta',
           resp: 'Si el error ronda el 50%, hay que dar **un paso atrás**: apagá el metrónomo y repasá la posición que haga falta, tomate tu tiempo. También podés pasar a tempo primero las posiciones que más te cuestan, y después juntarlas con las demás.' },
       ],
+      recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.7icmi6cvsqs0', 'Segundo paso: pasar a tempo'] }],
     },
     {
       id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
@@ -245,6 +246,7 @@ const PROGRAMA = {
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta',
           resp: 'Mirá los intervalos de la posición en el orden normal una vez, y después con skipping, sobre cada tipo de acorde. **De a poquito, por sectores** y a tu ritmo. Cuando un sector esté cómodo, probalo a tempo.' },
       ],
+      recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.mbggwpqnwk8v', 'Skipping'] }],
     },
     {
       id: 'p5', etapa: 'pre',
@@ -291,6 +293,7 @@ const PROGRAMA = {
       recursos: [
         { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
         { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
+        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.i4h42i2cmk7d', 'Paso 1 · Elegir la zona y observar los enlaces'] },
       ],
     },
 
@@ -321,7 +324,7 @@ const PROGRAMA = {
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
-        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES },
+        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.u80juzhmtbbk', 'Paso 2 · Tocar a tempo, manteniendo dirección y ritmo fijos'] },
       ],
       nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
@@ -354,7 +357,7 @@ const PROGRAMA = {
       stop: 'cuerdas', stopCerrado: true,
       titulo: 'Dirección melódica libre',
       detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora **elegís cómo enlazar**: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear…\n# Buscá caminos sorpresivos, no lo automático\nConviene empezar en 2 cuerdas (o hasta en 1) y después juntar las 3.',
-      recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
+      recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.q2948mi1lvc6', 'Paso 3 · Soltar la dirección melódica'] }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
           fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [este video](https://www.youtube.com/watch?v=we8Wgy3SmF8), que te explica cómo hacerlo.' },
@@ -366,7 +369,7 @@ const PROGRAMA = {
       progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
       detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero **sin ritmo fijo ni dirección fija**.\nEl trabajo de las notas ya fue bastante profundo hasta acá. Ahora la idea es **darle un cauce musical** a todo eso.\nCambiamos el chip y usamos el oído: elegimos lo que queremos tocar y usamos **la voz** para conectarnos con algo más melódico que mecánico. Podés dejar espacios, repetir notas… buscá formas ingeniosas de tocar esas notas sobre la armonía, tejiendo los cambios con más aire.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
-      recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
+      recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.1u2xjx9x7ij7', 'Paso 4 · Soltar el ritmo'] }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
           fix: 'Probá limitarte a tocar de **0 a 3 notas por acorde**. Recordá que ahora vale tocar una sola nota o dejar silencio durante los compases que quieras. **Mejor ir de menos a más.**' },
@@ -422,7 +425,7 @@ const PROGRAMA = {
       },
       titulo: 'Anticipaciones con ritmo fijo',
       detalle: 'Hacelo tal cual el video, **con el ritmo fijo**, sobre tus compases. Probá en grupos de **1, 2 y 3 cuerdas**, y con **1, 2 y 3 notas por acorde**. Que esté desafiante!',
-      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
+      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC, sec: ['h.d64b8tcry81', 'El ejercicio'] }],
       problemas: [
         { id: 'tempo', q: 'A tempo no me sale',
           fix: 'Empezá en **una sola cuerda** y con **1 nota por acorde**. Cuando salga, sumá cuerdas o notas de a una.' },
@@ -434,7 +437,7 @@ const PROGRAMA = {
       progreso: [ { id: 'natural', label: 'Anticipo a veces y suena natural', nivel: 'listo' }, { id: 'forzado', label: 'Anticipo, pero suena forzado', nivel: 'casi', muestra: ['forzado'] }, { id: 'olvido', label: 'Me olvido de anticipar o me pierdo', nivel: 'cuesta' } ],
       titulo: 'Ritmo libre, anticipando a veces',
       detalle: 'Volvé a improvisar con ritmo libre, pero ahora **anticipando a veces**: alguna nota del acorde que viene en el "y" del 4, o hasta en el 4. Acá no hace falta el ritmo fijo.\nCantando, y buscando dar **discurso**.',
-      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
+      recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC, sec: ['h.d64b8tcry81', 'El ejercicio'] }],
       problemas: [
         { id: 'forzado', q: 'Anticipo todo el tiempo y suena forzado',
           fix: 'La idea es anticipar **a veces**, no siempre. Usalo como un recurso más para darle continuidad a la frase.' },
@@ -460,7 +463,7 @@ const PROGRAMA = {
       sinProgreso: true,
       titulo: 'Elegir superposiciones y ordenar las posiciones a utilizar',
       detalle: 'Elegí **1 sola superposición para cada acorde** de la armonía que vas a practicar (idealmente, 4 compases de tu standard).\nAcomodá las posiciones como hiciste con los arpegios originales.\nDespués mandame un video mostrando las posiciones y **nombrando los intervalos** que significa esa superposición para el acorde original y para el nuevo.',
-      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
+      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER, sec: ['h.vfkluicha2wa', '¿Cómo usar estas tablas?'] }],
       problemas: [
         { id: 'menormaj', q: 'No entiendo cómo se escriben algunos acordes (por ejemplo -maj7)',
           fix: '-maj7 es menor con 7ma mayor: 3ra menor y 7ma mayor. Por ejemplo, A-maj7 es La menor con 7ma mayor.' },
@@ -475,7 +478,7 @@ const PROGRAMA = {
         { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva',
-      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
+      recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER, sec: ['h.vug3bvs4kaom', 'Tablas de superposición de arpegios'] }],
     },
 
     /* ---------- Módulo 2: ADN del Jazz ---------- */
@@ -537,7 +540,7 @@ const PROGRAMA = {
         { id: 'errores', label: 'Tengo trabas o errores', nivel: 'casi', resp: 'Podés hacerlo **por partes**, de a dos cuerdas, e ir juntando de a poquito.\nMandámelo como te salga, no tiene que ser perfecto!' },
         { id: 'traba', label: 'Me trabo o me pierdo', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
       ],
-      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit', sec: ['h.jdcef9tf1otq', 'Ejercitación 1'] }],
     },
     {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
@@ -549,7 +552,7 @@ const PROGRAMA = {
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: **en qué nota arrancás** (decila en voz alta) y **qué nota se repite** (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, de a 3 o 4 líneas como máximo, y después juntar las piezas. Lo que te confunda, revisalo sin tempo.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Bajá la velocidad o volvé a la Ejercitación Nº1 desde la nota donde te trabás, o escribime y lo resolvemos.' },
       ],
-      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit', sec: ['h.fxoyvbdit16z', 'Ejercitación 2: Etapa de Mecanización'] }],
     },
     {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
@@ -562,7 +565,7 @@ const PROGRAMA = {
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Volvé un rato a la Ejercitación Nº2 y después probá con **líneas cortas sobre un solo acorde**. Y si querés, escribime por WhatsApp!' },
       ],
       recursos: [
-        { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' },
+        { t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit', sec: ['h.aib8rdfi7b9', 'Ejercitación 3: Etapa de Integración'] },
         { t: 'Video: Ejemplos de la Ejercitación Nº3', url: 'https://youtu.be/o-sV1KM5J-o?t=604' },
         { t: 'Video: Momento de integración libre', url: 'https://youtu.be/saRjud2tZw4?t=0' },
       ],
@@ -589,7 +592,7 @@ const PROGRAMA = {
         { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: 'Ponete las pilas que es prioridad! Agarrá una frase sola, cantala con el audio y buscala nota por nota en la viola. Si alguna no aparece, escribime y lo resolvemos.' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes colgado eh! Cuando lo tengas, volvé acá y mandámelo.' },
       ],
-      recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
+      recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit', sec: ['h.g588m8ye6z2g', 'Recién ahora, la guitarra'] }],
     },
     {
       id: 'n7', etapa: 'm2', entrega: 'video', entregaOpcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
@@ -607,7 +610,7 @@ const PROGRAMA = {
         { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar**' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
+      recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit', sec: ['h.wuqwlhdguj6r', 'Entonces, recapitulando…'] }],
     },
     {
       id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video tocando el fragmento de tu solo que decodificaste, mecanizado por la escala.',
@@ -619,7 +622,7 @@ const PROGRAMA = {
         { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la viola. Mientras tanto, seguí con los cromáticos y mirá lo que viene. Cuando lo tengas, volvé acá!' },
         { id: 'decodificar', label: 'No me doy cuenta de qué elementos tiene', nivel: 'cuesta', saltea: true, resp: 'Probá con un pedazo más corto, de 3 o 4 notas. Si igual no sale, no hay drama: traé el fragmento a la clase y lo decodificamos juntos.' },
       ],
-      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit', sec: ['h.jx2axfx9nqcx', 'Las 4 etapas del proceso'] }],
     },
     /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
     {
