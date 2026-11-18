@@ -579,10 +579,12 @@ body.con-mapa{overflow:hidden}
 .m-sub{fill:#6B6F79;font:600 11px var(--sans);text-anchor:middle}.m-sub.on{fill:var(--tinta)}
 .m-corte{stroke:#FF6B57;stroke-width:1;stroke-dasharray:3 3;opacity:.7}
 /* texto, contador y controles */
-.stop-texto{display:flex;gap:10px;align-items:baseline;min-height:48px;margin:12px 0 4px;font-size:16px;line-height:1.45;color:var(--tinta)}
+.stop-texto{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:92px;margin:4px 0 12px;padding:10px 14px;border-radius:12px;background:var(--sup);text-align:center;font:600 19px/1.4 var(--display);color:var(--tinta)}
+.stop-frase{animation:stopFrase .45s ease both}
+@keyframes stopFrase{from{opacity:0;transform:translateY(4px)}}
 .stop-texto.zoom{color:#FFB8A8}
 .stop-texto.malo{color:#FFB8A8}
-.stop-num{flex:none;font:600 12px var(--sans);color:var(--gris);min-width:36px}
+.stop-num{font:600 12px var(--sans);color:var(--gris);letter-spacing:.04em}
 .stop-cap{margin:8px 0 4px;font-size:12.5px;font-weight:600;color:var(--gris)}
 .stop-veces{display:grid;gap:3px}
 .stop-veces span{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0 3px;border-radius:6px;background:color-mix(in srgb,var(--sc) calc(var(--v) * 75%),#1C1D22);transition:background .3s}
@@ -594,7 +596,22 @@ body.con-mapa{overflow:hidden}
 .stop-ctrl{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .stop-ctrl .primario{flex:1}
 .stop-ctrl button[disabled]{opacity:.4}
-@media (max-width:560px){.stop-veces b{font-size:11px}.stop-veces small{font-size:9px}.stop-texto{font-size:15px}}
+@media (max-width:560px){.stop-veces b{font-size:11px}.stop-veces small{font-size:9px}.stop-texto{font-size:16.5px;min-height:96px}}
+
+/* cifrado de un standard */
+.cifrado{display:grid;grid-template-columns:repeat(4,1fr);border-left:2px solid #4A4D56;margin:4px}
+.cf-compas{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:62px;padding:6px 10px;border-right:2px solid #4A4D56;border-bottom:1px solid #26282E;transition:background .3s}
+.cf-compas small{position:absolute;top:4px;left:6px;font-size:10.5px;color:#6B6F79}
+.cf-compas span{font:600 19px var(--display);color:#8A8E98;margin-top:8px}
+.cf-compas.on{background:color-mix(in srgb,var(--sc) 22%,transparent)}
+.cf-compas.on span{color:var(--tinta)}
+.cf-compas.on small{color:var(--tinta)}
+.cf-compas.traba{background:rgba(255,107,87,.2)}
+.cf-compas.traba span{color:#FFB8A8}
+.cf-compas.ok{box-shadow:inset 0 -3px 0 #5BD49A}
+.cf-compas i{position:absolute;top:3px;right:8px;color:#FF6B57;font:800 15px var(--sans);font-style:normal}
+.modo-no .cf-compas.on{background:rgba(226,112,90,.22)}
+@media (max-width:560px){.cf-compas{min-height:52px;padding:4px 6px}.cf-compas span{font-size:14.5px}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -841,9 +858,10 @@ const PROGRESO_BASE = [
    traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
 const STOPS = {
   compases: {
-    tipo: 'ola', titulo: 'Cómo sumar compases sin que se desarme',
-    sub: 'Un tema de 16 compases. Cada tanda es un rato de práctica.',
+    tipo: 'cifrado', titulo: 'Cómo sumar compases sin que se desarme',
+    sub: 'Los primeros 16 compases de un standard. Cada tanda es un rato de práctica.',
     unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
+    acordes: ['C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6', 'C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6'],
     contar: 'Veces que practicaste cada compás',
     tandas: [
       { sel: [0, 3], t: 'Arrancás por los primeros 4.' },
@@ -891,7 +909,7 @@ const STOPS = {
     },
   },
   transcripcion: {
-    tipo: 'melodia', titulo: 'Cómo armar el solo por partes',
+    tipo: 'ola', titulo: 'Cómo armar el solo por partes',
     sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
     unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
@@ -1129,7 +1147,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
-          fix: 'Probá la pauta de **0 a 3 notas por acorde**. Vale tocar una sola nota o dejar silencio. Mejor de menos a más.' },
+          fix: 'Probá limitarte a tocar de **0 a 3 notas por acorde**. Recordá que ahora vale tocar una sola nota o dejar silencio durante los compases que quieras. **Mejor ir de menos a más.**' },
         { id: 'porque', q: 'Siento que toco por tocar, suena a ejercicio',
           fix: 'Cantá mientras tocás y **esperá a que venga una idea**. Si no viene nada, no toques nada; cuando venga, plasmala como puedas y volvé a esperar. En criollo… no toques por tocar 😉' },
       ],
@@ -1940,15 +1958,15 @@ function stopInner(id) {
   const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
   const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
   const max = Math.max(1, ...veces);
-  const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
+  const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
   const fin = i === tandas.length - 1;
   const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
   return `<div class="stop-modos" role="tablist">
       <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
     </div>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">Tanda ${i + 1} de ${tandas.length}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${i + 1}/${tandas.length}</span><span>${enLinea(texto)}</span></p>
     <p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
     <div class="stop-ctrl">
@@ -1960,7 +1978,7 @@ function stopInner(id) {
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
-  const parar = () => { if (stopTimer) { clearInterval(stopTimer.h); stopTimer = null; } };
+  const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); }
   else if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); }
@@ -1969,26 +1987,47 @@ function stopAccion(id, acc) {
     if (stopTimer && stopTimer.id === id) parar();
     else {
       parar(); if (e.i >= total() - 1) e.i = 0;
-      stopTimer = { id, h: setInterval(() => { if (e.i >= total() - 1) { parar(); pintar(); return; } e.i++; pintar(); }, e.modo === 'no' ? 1600 : 1900) };
+      const paso = () => {
+        if (e.i >= total() - 1) { parar(); pintar(); return; }
+        e.i++; pintar();
+        const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = e.modo === 'no' ? (e.i === total() - 1 ? S.no.fin : S.no.t) : tt.t;
+        stopTimer.h = setTimeout(paso, Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)));
+      };
+      stopTimer = { id, h: setTimeout(paso, 3500) };
     }
   }
   pintar();
 }
+function stopCifrado(S, enSel, est) {
+  return `<div class="cifrado">${S.acordes.map((ac, k) => {
+    const cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+    return `<div class="cf-compas ${enSel(k) ? 'on' : ''} ${cl}"><small>${k + 1}</small><span>${esc(ac).replace(/b(?=\d|maj|$)/g, '♭').replace(/^([A-G])b/, '$1♭')}</span>${cl === 'traba' ? '<i>!</i>' : ''}</div>`;
+  }).join('')}</div>`;
+}
 const ruido = (k, j) => { const x = Math.sin(k * 12.9898 + j * 78.233) * 43758.5453; return x - Math.floor(x); };
-function stopOla(S, enSel, est) {
-  const n = S.unidades.length, W = 640, H = 96, u = W / n, cy = 42;
+function stopOla(S, enSel, est, partido) {
+  const n = S.unidades.length, W = 640, H = 112, u = W / n, cy = 62;
+  const grupos = S.grupos || S.unidades.map((x, k) => [x, k, k]);
   let barras = '', marcas = '', fondos = '';
   for (let k = 0; k < n; k++) {
     const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
-    if (on) fondos += `<rect class="ola-sel ${cl}" x="${k * u + 1}" y="4" width="${u - 2}" height="${cy * 2 - 8}" rx="4"/>`;
-    for (let j = 0; j < 7; j++) {
-      const a = 6 + ruido(k, j) * 26 * (0.55 + 0.45 * Math.sin((k * 7 + j) / 3) ** 2);
-      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(k * u + (j + 0.6) * u / 7.6).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${(u / 12).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
+    if (on) fondos += `<rect class="ola-sel ${cl}" x="${k * u + 1}" y="26" width="${u - 2}" height="${cy * 2 - 46}" rx="4"/>`;
+    for (let j = 0; j < 9; j++) {
+      const a = 4 + ruido(k, j) * 22 * (0.5 + 0.5 * Math.sin((k * 5 + j) / 2.3) ** 2);
+      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(k * u + 4 + j * (u - 8) / 9).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${((u - 8) / 16).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
     }
-    marcas += `${k ? `<line class="ola-compas" x1="${k * u}" y1="6" x2="${k * u}" y2="${cy * 2 - 6}"/>` : ''}<text class="ola-num ${on ? 'on' : ''}" x="${k * u + u / 2}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
-    if (cl === 'traba') marcas += `<text class="ola-alerta" x="${k * u + u / 2}" y="16">!</text>`;
   }
-  return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="Compases del tema">${fondos}${barras}${marcas}</svg>`;
+  grupos.forEach(([letra, a, b]) => {
+    const x0 = a * u + 5, x1 = (b + 1) * u - 5, on = [...Array(b - a + 1)].some((_, s) => enSel(a + s));
+    const tr = [...Array(b - a + 1)].some((_, s) => est[a + s] === 'traba'), ok = [...Array(b - a + 1)].some((_, s) => est[a + s] === 'ok');
+    marcas += `<path class="m-llave ${on ? 'on' : ''} ${tr ? 'traba' : ok ? 'ok' : ''}" d="M${x0} 24 v-6 H${x1} v6"/><text class="m-letra ${on ? 'on' : ''}" x="${(x0 + x1) / 2}" y="13">${esc(letra)}</text>`;
+    if (tr) marcas += `<text class="ola-alerta" x="${x1 - 2}" y="15">!</text>`;
+    if (b > a && partido) for (let k = a; k <= b; k++) {
+      marcas += `<text class="ola-num ${enSel(k) ? 'on' : ''}" x="${k * u + u / 2}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
+      if (k > a) marcas += `<line class="m-corte" x1="${k * u}" y1="30" x2="${k * u}" y2="${H - 14}"/>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="El solo como una onda, dividido en frases">${fondos}${barras}${marcas}</svg>`;
 }
 function stopCuerdas(S, enSel, est) {
   const W = 640, H = 132, ys = [28, 66, 104], grosor = [1.6, 2.4, 3.4];

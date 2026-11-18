@@ -80,9 +80,10 @@ const PROGRESO_BASE = [
    traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
 const STOPS = {
   compases: {
-    tipo: 'ola', titulo: 'Cómo sumar compases sin que se desarme',
-    sub: 'Un tema de 16 compases. Cada tanda es un rato de práctica.',
+    tipo: 'cifrado', titulo: 'Cómo sumar compases sin que se desarme',
+    sub: 'Los primeros 16 compases de un standard. Cada tanda es un rato de práctica.',
     unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
+    acordes: ['C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6', 'C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6'],
     contar: 'Veces que practicaste cada compás',
     tandas: [
       { sel: [0, 3], t: 'Arrancás por los primeros 4.' },
@@ -130,7 +131,7 @@ const STOPS = {
     },
   },
   transcripcion: {
-    tipo: 'melodia', titulo: 'Cómo armar el solo por partes',
+    tipo: 'ola', titulo: 'Cómo armar el solo por partes',
     sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
     unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
@@ -368,7 +369,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
-          fix: 'Probá la pauta de **0 a 3 notas por acorde**. Vale tocar una sola nota o dejar silencio. Mejor de menos a más.' },
+          fix: 'Probá limitarte a tocar de **0 a 3 notas por acorde**. Recordá que ahora vale tocar una sola nota o dejar silencio durante los compases que quieras. **Mejor ir de menos a más.**' },
         { id: 'porque', q: 'Siento que toco por tocar, suena a ejercicio',
           fix: 'Cantá mientras tocás y **esperá a que venga una idea**. Si no viene nada, no toques nada; cuando venga, plasmala como puedas y volvé a esperar. En criollo… no toques por tocar 😉' },
       ],
