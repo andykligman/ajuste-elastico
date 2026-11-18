@@ -147,6 +147,7 @@ function abrirMapa(alumno) {
   if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno });
   nav(location.pathname);
   renderAlumno(true);
+  setTimeout(quizasCelebrar, 400);
   reanudarSubidas();   // si quedó un video a medio mandar, sigue solo
 }
 async function entrarConSesion() {

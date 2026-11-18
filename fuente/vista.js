@@ -226,22 +226,60 @@ function caminoHTML(st, e) {
   const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
   const desde = verTodo ? 0 : Math.max(0, idx - 1), hasta = verTodo ? items.length - 1 : Math.min(items.length - 1, idx + 1);
   const antes = desde, despues = items.length - 1 - hasta;
-  let etapaPrev = null;
-  const cuerpo = items.slice(desde, hasta + 1).map(x => {
-    const lab = x.et !== etapaPrev ? `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>` : '';
+  // Cada módulo va en su propio bloque, con su color y un título grande arriba: el cambio de módulo se nota
+  let etapaPrev = null, modPrev = null, cuerpo = '';
+  const etapasDelMod = m => PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length;
+  items.slice(desde, hasta + 1).forEach(x => {
+    const m = MODULO_DE[x.et.id];
+    if (m !== modPrev) {
+      if (modPrev !== null) cuerpo += '</section>';
+      cuerpo += `<section class="mod-bloque" style="--mc:${MODULOS[m].color}">${bannerModulo(m, x.et)}`;
+      modPrev = m; etapaPrev = etapasDelMod(m) === 1 ? x.et : null;
+    }
+    if (x.et !== etapaPrev) cuerpo += `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>`;
     etapaPrev = x.et;
-    return lab + nodoHTML(st, e, x.p, x.n, x.total);
-  }).join('');
+    cuerpo += nodoHTML(st, e, x.p, x.n, x.total);
+  });
+  if (modPrev !== null) cuerpo += '</section>';
   const plural = (k, s1, s2) => `${k} ${k === 1 ? s1 : s2}`;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
     ${verTodo ? `<button class="mas-pasos" data-accion="ver-menos">Mostrar solo el paso actual</button>`
       : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
     ${cuerpo}
-    ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} del módulo</button>` : ''}
-    ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq">${ICONO.candado}<p><strong>${esc(MODULOS[bloq[0]].titulo)}</strong>Andy te lo habilita cuando llegue el momento.</p></div>` : ''}
-    ${proximas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Muy pronto</p></div>`).join('')}
+    ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')}</button>` : ''}
+    ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq" style="--mc:${MODULOS[bloq[0]].color}">${ICONO.candado}<p><small>${esc(MODULOS[bloq[0]].titulo)}</small><strong>${esc(MODULOS[bloq[0]].nombre)}</strong>Andy te lo habilita cuando llegue el momento.</p></div>` : ''}
+    ${proximas.map(et => `<section class="mod-bloque mod-pronto" style="--mc:${MODULOS[MODULO_DE[et.id]].color}">${bannerModulo(MODULO_DE[et.id], et, 'Muy pronto')}</section>`).join('')}
     ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}
   </div>`;
+}
+
+function bannerModulo(m, et, sub) {
+  const M = MODULOS[m];
+  return `<div class="mod-banner"><small>${esc(M.titulo)}</small><h2>${esc(M.nombre)}</h2>${sub || etapasUnica(m) ? `<p>${esc(sub || et.sub)}</p>` : ''}</div>`;
+}
+function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
+
+/* Al entrar por primera vez a un módulo nuevo: pantalla de «Pasaste al módulo N» */
+function moduloVisto(m) { const l = leerLocal('mapaAE_modVistos_' + (ST?.codigo || '')) || []; return l.includes(m); }
+function marcarModuloVisto(m) { const k = 'mapaAE_modVistos_' + (ST?.codigo || ''); const l = leerLocal(k) || []; if (!l.includes(m)) { l.push(m); guardarLocal(k, l); } }
+function celebrarModulo(m, alCerrar) {
+  marcarModuloVisto(m);
+  const M = MODULOS[m];
+  const el = document.createElement('div');
+  el.className = 'pase-modulo'; el.style.setProperty('--mc', M.color); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Nuevo módulo');
+  el.innerHTML = `<div class="pm-in"><p class="pm-pre">${m === 0 ? 'Empezás' : 'Pasaste al'}</p><p class="pm-num">${esc(M.titulo)}</p><h2>${esc(M.nombre)}</h2>
+    <button class="primario" data-pm>${m === 0 ? 'Empezar' : 'Arrancar'}</button></div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('visible'));
+  const cerrar = () => { el.classList.remove('visible'); setTimeout(() => el.remove(), 400); alCerrar && alCerrar(); };
+  el.querySelector('[data-pm]').onclick = cerrar;
+  el.querySelector('[data-pm]').focus();
+}
+function quizasCelebrar() {
+  if (modo !== 'alumno' || !ST || !abierto || !PASO[abierto]) return;
+  const m = MODULO_DE[PASO[abierto].etapa];
+  if (m > 0 && !moduloVisto(m)) celebrarModulo(m);
+  else if (m === 0) marcarModuloVisto(0);
 }
 
 function vistaHTML(st, e, animar) {
@@ -419,6 +457,7 @@ function abrirPaso(id) {
   abierto = id; renderAlumno();
   videoParaAbierto(cambio);
   requestAnimationFrame(() => irA(id));
+  quizasCelebrar();
 }
 
 function enlazarAlumno() {

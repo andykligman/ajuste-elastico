@@ -84,9 +84,9 @@ const PROGRAMA = {
     { id: 'enlaces', titulo: 'Enlaces de arpegios', sub: 'Ejercitación N1: de lo fijo a lo libre' },
     { id: 'antic', titulo: 'Anticipaciones armónicas', sub: 'Ejercitación N2' },
     { id: 'super', titulo: 'Superposiciones', sub: 'Ejercitación N3' },
-    { id: 'm2', titulo: 'Módulo 2: ADN del Jazz', sub: 'Notas de aproximación y transcripción' },
-    { id: 'ritmo', titulo: 'Módulo 3: Entrenamiento rítmico', sub: 'Ritmos A a E, al cuerpo y en el instrumento' },
-    { id: 'curva', titulo: 'Módulo 4: Curva del Solo', sub: 'Muy pronto' },
+    { id: 'm2', titulo: 'ADN del Jazz', sub: 'Notas de aproximación y transcripción' },
+    { id: 'ritmo', titulo: 'Entrenamiento rítmico', sub: 'Ritmos A a E, al cuerpo y en el instrumento' },
+    { id: 'curva', titulo: 'Curva del Solo', sub: 'Muy pronto' },
   ],
   pasos: [
     /* ---------- Pre-sincrónico ---------- */

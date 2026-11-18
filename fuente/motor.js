@@ -19,11 +19,11 @@ function requeridos(k, col) {
    st.modulos guarda los habilitados ('0', '01', '012'). Vacío = alumno de antes: todo habilitado. */
 const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2, ritmo: 3, curva: 4 };
 const MODULOS = [
-  { n: 0, titulo: 'Módulo 0', sub: 'Antes de la clase 1' },
-  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones' },
-  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz' },
-  { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico' },
-  { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo' },
+  { n: 0, titulo: 'Módulo 0', sub: 'Antes de la clase 1', nombre: 'Antes de la clase 1', color: '#8FA6D6' },
+  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#E8834F' },
+  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#7DB4FF' },
+  { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico', nombre: 'Entrenamiento rítmico', color: '#5BD49A' },
+  { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo', nombre: 'Curva del Solo', color: '#C7A6F2' },
 ];
 const sinModulos = st => st.modulos === undefined || st.modulos === null || st.modulos === '';
 const moduloHabilitado = (st, n) => sinModulos(st) || String(st.modulos).includes(String(n));
