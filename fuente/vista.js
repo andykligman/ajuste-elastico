@@ -173,7 +173,7 @@ function tarjetaHTML(st, e, p) {
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
-    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}Mandame un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
+    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.opcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${panelHTML(p)}
     ${materialHTML(p)}
@@ -182,7 +182,7 @@ function tarjetaHTML(st, e, p) {
     ${seguimientoHTML(st, p)}
     ${preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
-    ${respondido && sig && (!p.entrega || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+    ${respondido && sig && (!p.entrega || p.opcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
@@ -204,7 +204,7 @@ function envioHTML(st, p) {
   const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
-    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `Mandame ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
+    <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.opcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
@@ -250,23 +250,27 @@ function caminoHTML(st, e) {
   });
   const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
   const desde = verTodo ? 0 : Math.max(0, idx - 1), hasta = verTodo ? items.length - 1 : Math.min(items.length - 1, idx + 1);
-  const antes = desde, despues = items.length - 1 - hasta;
+  // Los botones cuentan solo los pasos del módulo actual; los otros módulos se ven plegados
+  const mAct = items[idx] ? MODULO_DE[items[idx].et.id] : -1;
+  const delActual = items.map((x, i) => MODULO_DE[x.et.id] === mAct ? i : -1).filter(i => i >= 0);
+  const antes = delActual.filter(i => i < desde).length, despues = delActual.filter(i => i > hasta).length;
+  const otrosAntes = items.slice(0, desde).some(x => MODULO_DE[x.et.id] !== mAct), otrosDespues = items.slice(hasta + 1).some(x => MODULO_DE[x.et.id] !== mAct);
   // Cada módulo va en su propio bloque, con su color y un título grande arriba: el cambio de módulo se nota
   let etapaPrev = null, modPrev = null, cuerpo = '';
   const etapasDelMod = m => PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length;
   // Al ver todos los pasos, los módulos anteriores al actual quedan plegados; se despliegan con un botón
   const modActual = items[idx] ? MODULO_DE[items[idx].et.id] : -1;
-  const plegado = m => verTodo && m < modActual && !desplegados.has(m);
+  const plegado = m => verTodo && m !== modActual && !desplegados.has(m);
   items.slice(desde, hasta + 1).forEach(x => {
     const m = MODULO_DE[x.et.id];
     if (m !== modPrev) {
       if (modPrev !== null) cuerpo += '</section>';
       const delMod = items.filter(y => MODULO_DE[y.et.id] === m);
       const listos = delMod.filter(y => hecho(st, y.p.id)).length;
-      const resumen = `${delMod.length === 1 ? '1 paso' : delMod.length + ' pasos'} · ${listos === delMod.length ? 'completo' : listos + ' listos'}`;
+      const resumen = `${delMod.length === 1 ? '1 paso' : delMod.length + ' pasos'} · ${listos === delMod.length ? 'completo' : listos ? listos + ' listos' : 'por hacer'}`;
       cuerpo += `<section class="mod-bloque ${plegado(m) ? 'mod-plegado' : ''}" style="--mc:${MODULOS[m].color}">${bannerModulo(m, x.et)}`
         + (plegado(m) ? `<button class="mod-pliegue" data-desplegar="${m}" aria-expanded="false">${ICONO.abajo}<span>Ver los pasos</span><small>${resumen}</small></button>`
-          : verTodo && m < modActual ? `<button class="mod-pliegue abierto" data-plegar="${m}" aria-expanded="true">${ICONO.abajo}<span>Plegar</span><small>${resumen}</small></button>` : '');
+          : verTodo && m !== modActual ? `<button class="mod-pliegue abierto" data-plegar="${m}" aria-expanded="true">${ICONO.abajo}<span>Plegar</span><small>${resumen}</small></button>` : '');
       modPrev = m; etapaPrev = etapasDelMod(m) === 1 ? x.et : null;
     }
     if (plegado(m)) return;
@@ -278,9 +282,11 @@ function caminoHTML(st, e) {
   const plural = (k, s1, s2) => `${k} ${k === 1 ? s1 : s2}`;
   return `<div class="camino" id="camino"><svg class="trazo" aria-hidden="true"><path class="trazo-base"/><path class="trazo-hecho"/></svg>
     ${verTodo ? `<button class="mas-pasos" data-accion="ver-menos">Mostrar solo el paso actual</button>`
-      : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>` : ''}
+      : antes ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(antes, 'paso anterior', 'pasos anteriores')}</button>`
+      : otrosAntes ? `<button class="mas-pasos" data-accion="ver-todo">Ver módulos anteriores</button>` : ''}
     ${cuerpo}
-    ${!verTodo && despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')}</button>` : ''}
+    ${verTodo ? '' : despues ? `<button class="mas-pasos" data-accion="ver-todo">Ver ${plural(despues, 'paso más', 'pasos más')} de este módulo</button>`
+      : otrosDespues ? `<button class="mas-pasos" data-accion="ver-todo">Ver los módulos que siguen</button>` : ''}
     ${bloq.length && (verTodo || !despues) ? `<div class="etapa-bloq" style="--mc:${MODULOS[bloq[0]].color}">${ICONO.candado}<p><small>${esc(MODULOS[bloq[0]].titulo)}</small><strong>${esc(MODULOS[bloq[0]].nombre)}</strong>Te lo habilito cuando llegue el momento.</p></div>` : ''}
     ${proximas.map(et => `<section class="mod-bloque mod-pronto" style="--mc:${MODULOS[MODULO_DE[et.id]].color}">${bannerModulo(MODULO_DE[et.id], et, 'Muy pronto')}</section>`).join('')}
     ${verTodo ? cerradas.map(et => `<div class="etapa-label"><h3>${esc(et.titulo)}</h3><p>Se abre cuando llegues a la clase 4</p></div>`).join('') + `<div class="meta"><span>${ICONO.check}</span><p>Fin del módulo 1</p></div>` : ''}

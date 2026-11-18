@@ -417,25 +417,26 @@ const PROGRAMA = {
       titulo: 'Tu solo en la guitarra',
       detalle: 'Ahora la prioridad es el solo que transcribiste: pasá esos 30 segundos a la guitarra y mandame un video tocándolos.\n- Hacelo por partes: frases cortas, de a una, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con la pista hasta tenerla clara y recién ahí buscala en el diapasón.\nCuando me lo mandes, seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que se hace sobre este solo.',
       seguimiento: {
-        segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo?',
+        segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo cantado?',
         casos: {
           listo: { tip: 'Ya tenés tus 30 segundos cantados: ahora pasalos a la guitarra y mandame el video.' },
           _: { opciones: [
-            { id: 'treinta', label: 'Ya tengo los 30 segundos', nivel: 'listo', resp: '¡Perfecto! Pasalos a la guitarra y mandame el video.' },
-            { id: 'quince', label: 'Tengo 15 segundos', nivel: 'casi', resp: 'Vamos por esos 30, que es la prioridad ahora. Loops cortos, de 2 a 5 segundos, y andá juntando los pedazos. Mientras, ya podés ir pasando a la guitarra lo que tenés.' },
-            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Esta es la prioridad ahora: sin el solo no podemos hacer el último proceso del módulo. Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
+            { id: 'treinta', label: 'Ya tengo 30 segundos o más', nivel: 'listo', resp: '¡Perfecto! Pasalos a la guitarra y mandame el video.' },
+            { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: '¡Ponete las pilas, que el solo es la prioridad ahora! Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
       },
+      pregunta: '¿Ya lo estás pasando a la guitarra?',
       progreso: [
-        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'pasando', label: 'Lo estoy pasando a la guitarra', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, aunque sea lento.' },
-        { id: 'cuesta', label: 'Me cuesta pasarlo a la guitarra', nivel: 'cuesta', resp: 'Tomá una frase sola, cantala con la pista y buscala nota por nota en el diapasón. Si alguna no aparece, escribime y lo resolvemos.' },
+        { id: 'listo', label: 'Ya tengo 30 segundos o más en la guitarra', nivel: 'listo' },
+        { id: 'armando', label: 'Lo voy armando', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, ¡aunque no esté perfecto!' },
+        { id: 'flojo', label: 'Ando flojo', nivel: 'cuesta', resp: '¡Ponete las pilas, que es la prioridad ahora! Tomá una frase sola, cantala con la pista y buscala nota por nota en el diapasón. Si alguna no aparece, escribime y lo resolvemos.' },
+        { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Pero no lo dejes: cuando lo tengas, volvé a este paso y mandámelo.' },
       ],
       recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
     },
     {
-      id: 'n7', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
+      id: 'n7', etapa: 'm2', entrega: 'video', opcional: true, envia: 'videos de tu proceso de mecanización o de integración. Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
       detalle: 'Estos son los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en cada video, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y hacer con él el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
       panel: [
