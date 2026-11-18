@@ -284,7 +284,7 @@ function pedirClave(error) {
 }
 
 async function abrirAdmin() {
-  modo = 'admin';
+  modo = 'admin'; document.getElementById('consulta')?.remove();
   const copia = leerLocal('mapaAE_lista');
   if (copia && !LISTA.length) { LISTA = copia; if (!aplicarDestino()) renderAdmin(); }        // al instante, con lo último que se vio
   else if (LISTA.length) renderAdmin();
