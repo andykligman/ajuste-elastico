@@ -523,13 +523,20 @@ body.con-grabador{overflow:hidden}
 .segmentado button.sel{background:var(--azul);color:var(--blanco)}
 .bloque{margin-top:20px}
 .extras-adm,.probs-adm,.avance-adm{list-style:none;margin:6px 0 0;padding:0;font-weight:400}
-.extras-adm li{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--linea)}
+.extras-adm li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--linea)}
 .extras-adm li>span{flex:1;min-width:0}
 .extras-adm li.hecha strong{text-decoration:line-through;color:var(--gris)}
 .fila-extra{display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;margin-top:8px}
 .probs-adm li{padding:4px 0}
 .avance-adm li{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:15px}
 .avance-adm li span:nth-child(2){flex:1}
+.av-tit{flex:1;text-align:left;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+.av-tit:hover{color:var(--azul-txt)}
+.avance-adm li.av-mod{margin-top:14px;padding-top:6px;font:600 12.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--mc);border-top:1px solid var(--linea)}
+.avance-adm li.av-mod:first-child{margin-top:0;border-top:0}
+.mini-nodo{cursor:pointer;position:relative}
+.mini-nodo[aria-pressed=true]::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.extras-adm .mini-nodo[aria-pressed=true]{background:var(--azul);border-color:var(--azul-txt)}
 .mini-nodo{width:18px;height:18px;border-radius:50%;border:2px solid var(--linea);background:var(--sup);flex:none}
 .avance-adm .est-listo .mini-nodo,.avance-adm .est-casi .mini-nodo{background:var(--azul);border-color:var(--azul-txt)}
 .avance-adm .est-cuesta .mini-nodo{background:var(--oxido-claro);border-color:var(--oxido-txt)}
@@ -2616,7 +2623,7 @@ function restoHTML(a) {
 
   <div class="bloque">
     <h3>Tareas personalizadas</h3>
-    <ul class="extras-adm">${(a.extras || []).map(x => `<li class="${x.hecho ? 'hecha' : ''}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? ` <span class="suave">${esc(x.detalle)}</span>` : ''}</span><button class="link suave" data-quitar="${esc(x.id)}">Quitar</button></li>`).join('') || '<li class="suave">Ninguna por ahora.</li>'}</ul>
+    <ul class="extras-adm">${(a.extras || []).map(x => `<li class="${x.hecho ? 'hecha' : ''}"><button class="mini-nodo" data-extra-tilde="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="Marcar como hecha"></button><span><strong>${esc(x.titulo)}</strong>${x.detalle ? ` <span class="suave">${esc(x.detalle)}</span>` : ''}</span><button class="link suave" data-quitar="${esc(x.id)}">Quitar</button></li>`).join('') || '<li class="suave">Ninguna por ahora.</li>'}</ul>
     <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>
   </div>
 
@@ -2624,8 +2631,10 @@ function restoHTML(a) {
 
   <div class="bloque">
     <h3>Avance</h3>
-    <ul class="avance-adm">${PROGRAMA.pasos.map(p => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
-      return `<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><span>${esc(p.titulo)}</span>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>
+    <p class="suave chico">Tocá un paso para marcarlo como hecho (o para desmarcarlo).</p>
+    <ul class="avance-adm">${PROGRAMA.pasos.map((p, i) => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
+      const m = MODULO_DE[p.etapa], cab = !i || MODULO_DE[PROGRAMA.pasos[i - 1].etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}">${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</li>` : '';
+      return `${cab}<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><button class="av-tit" data-adm-tilde="${p.id}">${esc(p.titulo)}</button>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>
   </div>
 
   <div class="bloque links-adm">
@@ -2732,6 +2741,7 @@ function enlazarAdmin() {
       guardarAdm(a); refrescarMensaje(a);
     }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
+    else if (d.extraTilde) { const x = (a.extras || []).find(y => y.id === d.extraTilde); if (x) { x.hecho = !x.hecho; guardarAdm(a); refrescarMensaje(a); } }
     else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
       const id = d.admTilde; if (a.prog[id] && a.prog[id].hecho) delete a.prog[id]; else a.prog[id] = { hecho: true, como: 'listo', t: hoyISO() };

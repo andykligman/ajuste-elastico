@@ -432,7 +432,7 @@ function restoHTML(a) {
 
   <div class="bloque">
     <h3>Tareas personalizadas</h3>
-    <ul class="extras-adm">${(a.extras || []).map(x => `<li class="${x.hecho ? 'hecha' : ''}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? ` <span class="suave">${esc(x.detalle)}</span>` : ''}</span><button class="link suave" data-quitar="${esc(x.id)}">Quitar</button></li>`).join('') || '<li class="suave">Ninguna por ahora.</li>'}</ul>
+    <ul class="extras-adm">${(a.extras || []).map(x => `<li class="${x.hecho ? 'hecha' : ''}"><button class="mini-nodo" data-extra-tilde="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="Marcar como hecha"></button><span><strong>${esc(x.titulo)}</strong>${x.detalle ? ` <span class="suave">${esc(x.detalle)}</span>` : ''}</span><button class="link suave" data-quitar="${esc(x.id)}">Quitar</button></li>`).join('') || '<li class="suave">Ninguna por ahora.</li>'}</ul>
     <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>
   </div>
 
@@ -440,8 +440,10 @@ function restoHTML(a) {
 
   <div class="bloque">
     <h3>Avance</h3>
-    <ul class="avance-adm">${PROGRAMA.pasos.map(p => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
-      return `<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><span>${esc(p.titulo)}</span>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>
+    <p class="suave chico">Tocá un paso para marcarlo como hecho (o para desmarcarlo).</p>
+    <ul class="avance-adm">${PROGRAMA.pasos.map((p, i) => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
+      const m = MODULO_DE[p.etapa], cab = !i || MODULO_DE[PROGRAMA.pasos[i - 1].etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}">${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</li>` : '';
+      return `${cab}<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><button class="av-tit" data-adm-tilde="${p.id}">${esc(p.titulo)}</button>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>
   </div>
 
   <div class="bloque links-adm">
@@ -548,6 +550,7 @@ function enlazarAdmin() {
       guardarAdm(a); refrescarMensaje(a);
     }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
+    else if (d.extraTilde) { const x = (a.extras || []).find(y => y.id === d.extraTilde); if (x) { x.hecho = !x.hecho; guardarAdm(a); refrescarMensaje(a); } }
     else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
       const id = d.admTilde; if (a.prog[id] && a.prog[id].hecho) delete a.prog[id]; else a.prog[id] = { hecho: true, como: 'listo', t: hoyISO() };
