@@ -312,7 +312,6 @@ function inicioAdmHTML() {
   const nuevos = LISTA.flatMap(a => todosLosVideos(a).filter(x => !x.v.visto).map(x => ({ ...x, a })))
     .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
   return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
-      <button class="secundario" data-adm="actualizar">Actualizar</button>
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     ${registroAdmHTML()}

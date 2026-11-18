@@ -79,7 +79,7 @@ function manejar(d) {
                      nota: '', extras: [], prog: {}, probs: {}, act: hoy(), invitacion: '', modulos: '0', ajustar: '1' };
         al.sal = Utilities.getUuid();
         al.hash = hashClave(String(d.clave), al.sal);
-        hoja().appendRow(aFila(al));
+        agregarFila(al);
         return { token: nuevaSesion(al.codigo), alumno: publico(al) };
       }
       case 'auth.entrar': {
@@ -144,7 +144,7 @@ function manejar(d) {
         if (!al.codigo || !al.nombre) throw new Error('Falta el nombre');
         if (al.email && buscarPor('email', al.email)) throw new Error('Ya hay un alumno con ese email');
         al.invitacion = nuevoToken();
-        hoja().appendRow(aFila(al));
+        agregarFila(al);
         return { alumno: publico(al, true), invitacion: al.invitacion };
       }
       case 'admin.guardar': {
@@ -296,7 +296,9 @@ function deFila(r) {
 function aFila(o) {
   return COLUMNAS.map(k => JSON_COLS.includes(k) ? JSON.stringify(o[k] || (k === 'extras' ? [] : {})) : (o[k] === undefined || o[k] === null ? '' : String(o[k])));
 }
-function escribir(fila, o) { hoja().getRange(fila, 1, 1, COLUMNAS.length).setValues([aFila(o)]); }
+// Todo como texto: si no, la planilla convierte «01» (módulos 0 y 1) en el número 1 y se pierde el módulo 0
+function escribir(fila, o) { hoja().getRange(fila, 1, 1, COLUMNAS.length).setNumberFormat('@').setValues([aFila(o)]); }
+function agregarFila(o) { const sh = hoja(); const f = sh.getLastRow() + 1; sh.getRange(f, 1, 1, COLUMNAS.length).setNumberFormat('@').setValues([aFila(o)]); }
 
 /* ----- Videos en Drive ----- */
 function carpetaVideos() {
