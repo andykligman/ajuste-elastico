@@ -426,7 +426,8 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: 'https://docs.google.com/document/d/1A5RHqBYIycktRvhm_rEuvkYICkGyGFQ7b_lX-tTVQtU/edit' }],
     },
     {
-      id: 'r7', etapa: 'ritmo', video: { id: 'A4rxE6i5VwY' },
+      id: 'r7', etapa: 'ritmo', entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
+      video: { id: 'A4rxE6i5VwY' },
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
       detalle: 'Mirá el video con el documento al lado y practicá con el entrenador rítmico: elegís las unidades y te arma improvisaciones para leer y cantar.',
       recursos: [
