@@ -523,10 +523,10 @@ body.con-mapa{overflow:hidden}
 /* El proceso en círculo */
 .ruta-ciclo{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:4px auto 0}
 .ruta-ciclo svg{position:absolute;inset:0;width:100%;height:100%}
-.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6;stroke-dasharray:1.6 1.4}
+.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6}
 .rc-paso{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:170px;padding:7px 11px;border-radius:14px;background:var(--rc);color:#0d0e10;font:600 13.5px/1.2 var(--display);text-align:left;box-shadow:0 0 0 5px var(--sup)}
 .rc-paso small{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
-.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1}
+.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1;transform:translate(-50%,-50%) rotate(var(--rot))}
 .rc-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;text-align:center;font:600 16px/1.3 var(--display);color:var(--tinta)}
 @media (max-width:560px){.rc-paso{max-width:92px;font-size:10.5px;padding:5px 7px;gap:4px;hyphens:auto;overflow-wrap:anywhere}.rc-paso small{width:15px;height:15px;font-size:9.5px}.rc-centro{font-size:13px;width:38%}}
 .stop summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
@@ -621,6 +621,25 @@ body.con-mapa{overflow:hidden}
 .stop-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .stop-top .stop-son{background:none;border:1px solid var(--linea);color:var(--tinta);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
 .stop-top .stop-son.off{color:var(--gris)}
+
+/* Animaciones de objetivos, puente y ciclo (paso = 0,55 s) */
+.anim .ruta-obj li,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
+.anim .ruta-obj li{opacity:0;animation:aeSube .5s ease forwards;animation-delay:calc(var(--k) * .35s)}
+.anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rp-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rp-meta{animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards,aeBrilla 1.4s ease 2;animation-delay:calc(.4s + var(--k) * .55s),calc(.9s + var(--k) * .55s)}
+.anim .rc-paso{opacity:0;animation:aePopC .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rc-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .55s);animation-delay:calc(.4s + var(--k0) * .55s)}
+.anim.go .ruta-obj li,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
+@keyframes aeSube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes aePop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes aePopC{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%)}}
+@keyframes aeFade{from{opacity:0}to{opacity:1}}
+@keyframes aeTrazo{to{stroke-dashoffset:0}}
+@keyframes aeBrilla{50%{text-shadow:0 0 14px var(--rc)}}
+.ciclo-paso{margin:14px 0}
+@media (prefers-reduced-motion:reduce){.anim *{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -975,7 +994,6 @@ const PROGRAMA = {
     {
       id: 'obj0', etapa: 'pre', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Generar un atajo en la velocidad con la que identificamos los intervalos** en las distintas posiciones en la viola.',
@@ -1077,7 +1095,7 @@ const PROGRAMA = {
       id: 'p7', etapa: 'pre', sinProgreso: true,
       video: { id: 'TylWJrfPxu0', t: 460 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, sin tempo',
-      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené a mano el PDF, está acá abajo 👇',
+      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.',
       recursos: [
         { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
         { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
@@ -1089,7 +1107,6 @@ const PROGRAMA = {
     {
       id: 'obj1', etapa: 'enlaces', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           'Enlaces con dirección melódica **fija** y ritmo **fijo**, a tiempo real.',
@@ -1108,7 +1125,7 @@ const PROGRAMA = {
       id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
-      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené a mano el PDF, está acá abajo 👇',
+      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
@@ -1156,7 +1173,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
-      detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero **sin ritmo fijo ni dirección fija**.\nEl trabajo de las notas ya fue bastante profundo hasta acá. Ahora la idea es **darle un cauce musical** a todo eso.\nCambiamos el chip y usamos el oído: elegimos lo que queremos tocar y usamos **la voz** para conectarnos con algo más melódico que mecánico. Podés dejar espacios, repetir notas… buscá formas ingeniosas de tocar esas notas sobre la armonía, tejiendo los cambios con más aire.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
+      detalle: 'Mismas notas, mismos lugares, pero **sin ritmo ni dirección fijos**.\nUsá el oído: dejá espacios, repetí notas, buscá formas de tejer los cambios.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.1u2xjx9x7ij7', 'Paso 4 · Soltar el ritmo'] }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
@@ -1170,10 +1187,10 @@ const PROGRAMA = {
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
       stop: 'compases',
-      detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
+      detalle: 'Con los compases que siguen, repetí el proceso desde cero.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       problemas: [
         { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
-          fix: 'Lo mejor es avanzar **por pedazos chicos**. Por ejemplo, en un tema de 16 compases:\n- Del 1 al 4.\n- Del 5 al 8.\n- Del 1 al 8.\n- Del 9 al 12.\n- Del 13 al 16.\n- Del 9 al 16.\n- Repasar del 1 al 8.\n- Por último, atar del 1 al 16.\nSi algún sector falla, repasalo cuando quieras, bajando hasta grupos de 2 compases si hace falta.\nLo que no sirve es ir siempre desde el principio (1 al 4, después 1 al 8, después 1 al 12): así practicás mil veces lo primero y las partes difíciles casi nunca.' },
+          fix: 'Mirá el ejemplo de arriba: **Así sí** y **Así no**.' },
         { id: 'posiciones', q: 'No sé si sumar más posiciones o seguir con el tema',
           fix: 'Primero **el tema entero con control**, después cambiar de posiciones.' },
       ],
@@ -1264,7 +1281,8 @@ const PROGRAMA = {
         { id: 'listo', label: 'Ya estoy', nivel: 'listo' },
         { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva',
+      detalle: 'Repetí todo el proceso de enlaces, ahora con las superposiciones en vez de los acordes originales. Por partes, como antes, y terminá **cantando**.',
+      ciclo: { pasos: ['Acomodar las posiciones', 'Dirección y ritmo fijos, sin tempo', 'Dirección y ritmo fijos, a tempo', 'Dirección melódica libre', 'Ritmo libre'] },
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER, sec: ['h.vug3bvs4kaom', 'Tablas de superposición de arpegios'] }],
     },
 
@@ -1272,7 +1290,6 @@ const PROGRAMA = {
     {
       id: 'obj2', etapa: 'm2', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Transcribir un solo**, o al menos un fragmento de 30 segundos. Primero cantando, luego en la guitarra.',
@@ -1333,7 +1350,7 @@ const PROGRAMA = {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº2',
-      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala. Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
+      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: **en qué nota arrancás** (decila en voz alta) y **qué nota se repite** (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, de a 3 o 4 líneas como máximo, y después juntar las piezas. Lo que te confunda, revisalo sin tempo.' },
@@ -1345,7 +1362,7 @@ const PROGRAMA = {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº3',
-      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\nAcá hay **dos videos**: primero los ejemplos de esta ejercitación y después el momento de integración libre, donde lo mezclo con todo lo demás. ¡Mirate ambos!',
+      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\nHay **dos videos**, mirate ambos.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes **de a una**: un rato solo líneas para abajo, otro solo largas, otro empezando en distintos lugares del compás. Después mezclalas.' },
@@ -1384,7 +1401,7 @@ const PROGRAMA = {
     {
       id: 'n7', etapa: 'm2', entrega: 'video', entregaOpcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
-      detalle: 'Acá están los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en los videos, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y realizar el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en poder sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
+      detalle: 'Elegí alguno de estos elementos y hacé el mismo proceso que con los cromáticos: **reconocimiento, mecanización e integración**.\nLa prioridad sigue siendo el solo.',
       panel: [
         { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
         { t: 'Auxiliar', video: 'pd8IgNbFJIo' },
@@ -1415,7 +1432,6 @@ const PROGRAMA = {
     {
       id: 'obj3', etapa: 'ritmo', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Aprender un método para practicar ritmos con el cuerpo**, y distintos escalones para pasarlos al instrumento.',
@@ -1927,28 +1943,41 @@ function docNuevo(p, r) {
 function hojaDeRutaHTML(p) {
   const h = p.hojaDeRuta; if (!h) return '';
   const color = MODULOS[MODULO_DE[p.etapa]].color;
-  return `<div class="ruta" style="--rc:${color}">
+  const no = h.objetivos.length;
+  return `<div class="ruta ${animClase(p.id)}" data-anim="${p.id}" style="--rc:${color}">
     <h5>Objetivos</h5>
-    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
-    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
-      ${h.puente.desde ? `<span class="rp-extremo">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true">→</span>` : ''}
-      ${h.puente.pasos.map((x, i) => `${i ? '<span class="rp-flecha" aria-hidden="true">→</span>' : ''}<span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
-      ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo rp-meta">${esc(h.puente.hasta)}</span>` : ''}
+    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li style="--k:${i}"><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
+    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente, no)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
+      ${h.puente.desde ? `<span class="rp-extremo" style="--k:${no}">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true" style="--k:${no}">→</span>` : ''}
+      ${h.puente.pasos.map((x, i) => `${i ? `<span class="rp-flecha" aria-hidden="true" style="--k:${no + i}">→</span>` : ''}<span class="rp-etapa" style="--k:${no + i + .3}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+      ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true" style="--k:${no + h.puente.pasos.length}">→</span><span class="rp-extremo rp-meta" style="--k:${no + h.puente.pasos.length + .3}">${esc(h.puente.hasta)}</span>` : ''}
     </div>` : ''}
     ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
     ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
   </div>`;
 }
+/* Animaciones que arrancan solas cuando entran en pantalla, una sola vez por sesión */
+const animVistas = new Set();
+const animClase = key => animVistas.has(key) ? '' : 'anim';
+let animObs = null;
+function activarAnimaciones() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.anim').forEach(el => { el.classList.add('go'); animVistas.add(el.dataset.anim); }); return; }
+  animObs = animObs || new IntersectionObserver(ents => ents.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('go'); animVistas.add(en.target.dataset.anim); animObs.unobserve(en.target);
+  }), { threshold: 0.35 });
+  document.querySelectorAll('.anim:not(.go)').forEach(el => animObs.observe(el));
+}
 /* El proceso como un círculo: se repite con información nueva */
-function cicloHTML(c) {
+function cicloHTML(c, k0 = 0, key) {
   const n = c.pasos.length, R = 35;
   const pos = a => `left:${(50 + R * Math.cos(a)).toFixed(2)}%;top:${(50 + R * Math.sin(a)).toFixed(2)}%`;
   const ang = i => (i / n) * 2 * Math.PI - Math.PI / 2;
-  return `<div class="ruta-ciclo" role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" /></svg>
-    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};transform:translate(-50%,-50%) rotate(${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg)">➜</span>`).join('')}
-    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+  return `<div class="ruta-ciclo ${key ? animClase(key) : ''}" ${key ? `data-anim="${key}"` : ''} role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar" style="--k0:${k0};--n:${n}">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" transform="rotate(-90 50 50)" pathLength="100" /></svg>
+    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};--rot:${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg;--k:${k0 + i + .6}">➜</span>`).join('')}
+    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))};--k:${k0 + i}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
     ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
   </div>`;
 }
@@ -2187,6 +2216,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
+    ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
@@ -2595,6 +2625,7 @@ function renderAlumno(animar) {
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
+  requestAnimationFrame(activarAnimaciones);
   if (!playerVid) {
     const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
     asegurarYT(() => ponerVideo(v.id, v.t || 0, false));

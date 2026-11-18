@@ -188,7 +188,6 @@ const PROGRAMA = {
     {
       id: 'obj0', etapa: 'pre', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Generar un atajo en la velocidad con la que identificamos los intervalos** en las distintas posiciones en la viola.',
@@ -290,7 +289,7 @@ const PROGRAMA = {
       id: 'p7', etapa: 'pre', sinProgreso: true,
       video: { id: 'TylWJrfPxu0', t: 460 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, sin tempo',
-      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.\nTené a mano el PDF, está acá abajo 👇',
+      detalle: 'En pelota parada, sin tempo, buscá enlaces posibles con **dirección melódica fija** entre las posiciones que elegiste para los 4 compases del standard.\n- **No vale cambiar de dirección en el medio.** Solo se sube hasta la nota más aguda posible de las posiciones, y recién ahí se puede bajar.\n- **No vale saltear notas:** conectás siempre por nota más cercana hacia el acorde siguiente.\n- Solo **blancas**, y respetando las posiciones elegidas.',
       recursos: [
         { t: 'Volver a ver la explicación', url: 'https://youtu.be/TylWJrfPxu0?t=460' },
         { t: 'Volver a ver el ejemplo', url: 'https://youtu.be/TylWJrfPxu0?t=671' },
@@ -302,7 +301,6 @@ const PROGRAMA = {
     {
       id: 'obj1', etapa: 'enlaces', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           'Enlaces con dirección melódica **fija** y ritmo **fijo**, a tiempo real.',
@@ -321,7 +319,7 @@ const PROGRAMA = {
       id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
-      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.\nTené a mano el PDF, está acá abajo 👇',
+      detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
@@ -369,7 +367,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
-      detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero **sin ritmo fijo ni dirección fija**.\nEl trabajo de las notas ya fue bastante profundo hasta acá. Ahora la idea es **darle un cauce musical** a todo eso.\nCambiamos el chip y usamos el oído: elegimos lo que queremos tocar y usamos **la voz** para conectarnos con algo más melódico que mecánico. Podés dejar espacios, repetir notas… buscá formas ingeniosas de tocar esas notas sobre la armonía, tejiendo los cambios con más aire.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
+      detalle: 'Mismas notas, mismos lugares, pero **sin ritmo ni dirección fijos**.\nUsá el oído: dejá espacios, repetí notas, buscá formas de tejer los cambios.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.1u2xjx9x7ij7', 'Paso 4 · Soltar el ritmo'] }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
@@ -383,10 +381,10 @@ const PROGRAMA = {
       progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
       stop: 'compases',
-      detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
+      detalle: 'Con los compases que siguen, repetí el proceso desde cero.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
       problemas: [
         { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
-          fix: 'Lo mejor es avanzar **por pedazos chicos**. Por ejemplo, en un tema de 16 compases:\n- Del 1 al 4.\n- Del 5 al 8.\n- Del 1 al 8.\n- Del 9 al 12.\n- Del 13 al 16.\n- Del 9 al 16.\n- Repasar del 1 al 8.\n- Por último, atar del 1 al 16.\nSi algún sector falla, repasalo cuando quieras, bajando hasta grupos de 2 compases si hace falta.\nLo que no sirve es ir siempre desde el principio (1 al 4, después 1 al 8, después 1 al 12): así practicás mil veces lo primero y las partes difíciles casi nunca.' },
+          fix: 'Mirá el ejemplo de arriba: **Así sí** y **Así no**.' },
         { id: 'posiciones', q: 'No sé si sumar más posiciones o seguir con el tema',
           fix: 'Primero **el tema entero con control**, después cambiar de posiciones.' },
       ],
@@ -477,7 +475,8 @@ const PROGRAMA = {
         { id: 'listo', label: 'Ya estoy', nivel: 'listo' },
         { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases **por partes**, como antes. La idea es terminar **cantando** y dándole un cauce musical a esto también.\n# Mismo proceso, información nueva',
+      detalle: 'Repetí todo el proceso de enlaces, ahora con las superposiciones en vez de los acordes originales. Por partes, como antes, y terminá **cantando**.',
+      ciclo: { pasos: ['Acomodar las posiciones', 'Dirección y ritmo fijos, sin tempo', 'Dirección y ritmo fijos, a tempo', 'Dirección melódica libre', 'Ritmo libre'] },
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER, sec: ['h.vug3bvs4kaom', 'Tablas de superposición de arpegios'] }],
     },
 
@@ -485,7 +484,6 @@ const PROGRAMA = {
     {
       id: 'obj2', etapa: 'm2', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Transcribir un solo**, o al menos un fragmento de 30 segundos. Primero cantando, luego en la guitarra.',
@@ -546,7 +544,7 @@ const PROGRAMA = {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº2',
-      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala. Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
+      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: **en qué nota arrancás** (decila en voz alta) y **qué nota se repite** (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, de a 3 o 4 líneas como máximo, y después juntar las piezas. Lo que te confunda, revisalo sin tempo.' },
@@ -558,7 +556,7 @@ const PROGRAMA = {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº3',
-      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\nAcá hay **dos videos**: primero los ejemplos de esta ejercitación y después el momento de integración libre, donde lo mezclo con todo lo demás. ¡Mirate ambos!',
+      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\nHay **dos videos**, mirate ambos.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes **de a una**: un rato solo líneas para abajo, otro solo largas, otro empezando en distintos lugares del compás. Después mezclalas.' },
@@ -597,7 +595,7 @@ const PROGRAMA = {
     {
       id: 'n7', etapa: 'm2', entrega: 'video', entregaOpcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
-      detalle: 'Acá están los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en los videos, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y realizar el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en poder sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
+      detalle: 'Elegí alguno de estos elementos y hacé el mismo proceso que con los cromáticos: **reconocimiento, mecanización e integración**.\nLa prioridad sigue siendo el solo.',
       panel: [
         { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
         { t: 'Auxiliar', video: 'pd8IgNbFJIo' },
@@ -628,7 +626,6 @@ const PROGRAMA = {
     {
       id: 'obj3', etapa: 'ritmo', opcional: true,
       titulo: 'Los objetivos de este módulo',
-      detalle: 'Antes de arrancar, te dejo acá los objetivos del módulo así tenés claro hacia dónde vamos',
       hojaDeRuta: {
         objetivos: [
           '**Aprender un método para practicar ritmos con el cuerpo**, y distintos escalones para pasarlos al instrumento.',

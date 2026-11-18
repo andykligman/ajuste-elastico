@@ -94,28 +94,41 @@ function docNuevo(p, r) {
 function hojaDeRutaHTML(p) {
   const h = p.hojaDeRuta; if (!h) return '';
   const color = MODULOS[MODULO_DE[p.etapa]].color;
-  return `<div class="ruta" style="--rc:${color}">
+  const no = h.objetivos.length;
+  return `<div class="ruta ${animClase(p.id)}" data-anim="${p.id}" style="--rc:${color}">
     <h5>Objetivos</h5>
-    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
-    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
-      ${h.puente.desde ? `<span class="rp-extremo">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true">→</span>` : ''}
-      ${h.puente.pasos.map((x, i) => `${i ? '<span class="rp-flecha" aria-hidden="true">→</span>' : ''}<span class="rp-etapa"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
-      ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true">→</span><span class="rp-extremo rp-meta">${esc(h.puente.hasta)}</span>` : ''}
+    <ol class="ruta-obj">${h.objetivos.map((o, i) => `<li style="--k:${i}"><span class="ruta-n">${i + 1}</span><p>${enLinea(o)}</p></li>`).join('')}</ol>
+    ${h.puente && h.puente.ciclo ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}${cicloHTML(h.puente, no)}` : h.puente ? `${h.puente.titulo ? `<h5>${esc(h.puente.titulo)}</h5>` : ''}<div class="ruta-puente" aria-label="${esc(h.puente.pasos.join(', '))}">
+      ${h.puente.desde ? `<span class="rp-extremo" style="--k:${no}">${esc(h.puente.desde)}</span><span class="rp-flecha" aria-hidden="true" style="--k:${no}">→</span>` : ''}
+      ${h.puente.pasos.map((x, i) => `${i ? `<span class="rp-flecha" aria-hidden="true" style="--k:${no + i}">→</span>` : ''}<span class="rp-etapa" style="--k:${no + i + .3}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+      ${h.puente.hasta ? `<span class="rp-flecha" aria-hidden="true" style="--k:${no + h.puente.pasos.length}">→</span><span class="rp-extremo rp-meta" style="--k:${no + h.puente.pasos.length + .3}">${esc(h.puente.hasta)}</span>` : ''}
     </div>` : ''}
     ${h.meta ? `<p class="ruta-meta"><strong>Meta:</strong> ${enLinea(h.meta)}</p>` : ''}
     ${h.importante ? `<div class="ruta-clave"><h5>Lo más importante</h5>${h.importante.map(t => `<p>${enLinea(t)}</p>`).join('')}</div>` : ''}
     ${h.cierre ? `<p class="ruta-cierre">${enLinea(h.cierre)}</p>` : ''}
   </div>`;
 }
+/* Animaciones que arrancan solas cuando entran en pantalla, una sola vez por sesión */
+const animVistas = new Set();
+const animClase = key => animVistas.has(key) ? '' : 'anim';
+let animObs = null;
+function activarAnimaciones() {
+  if (!('IntersectionObserver' in window)) { document.querySelectorAll('.anim').forEach(el => { el.classList.add('go'); animVistas.add(el.dataset.anim); }); return; }
+  animObs = animObs || new IntersectionObserver(ents => ents.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('go'); animVistas.add(en.target.dataset.anim); animObs.unobserve(en.target);
+  }), { threshold: 0.35 });
+  document.querySelectorAll('.anim:not(.go)').forEach(el => animObs.observe(el));
+}
 /* El proceso como un círculo: se repite con información nueva */
-function cicloHTML(c) {
+function cicloHTML(c, k0 = 0, key) {
   const n = c.pasos.length, R = 35;
   const pos = a => `left:${(50 + R * Math.cos(a)).toFixed(2)}%;top:${(50 + R * Math.sin(a)).toFixed(2)}%`;
   const ang = i => (i / n) * 2 * Math.PI - Math.PI / 2;
-  return `<div class="ruta-ciclo" role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar">
-    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" /></svg>
-    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};transform:translate(-50%,-50%) rotate(${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg)">➜</span>`).join('')}
-    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
+  return `<div class="ruta-ciclo ${key ? animClase(key) : ''}" ${key ? `data-anim="${key}"` : ''} role="img" aria-label="${esc(c.pasos.join(', '))}, y vuelta a empezar" style="--k0:${k0};--n:${n}">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="${R}" transform="rotate(-90 50 50)" pathLength="100" /></svg>
+    ${c.pasos.map((x, i) => `<span class="rc-flecha" style="${pos(ang(i + .5))};--rot:${(ang(i + .5) * 180 / Math.PI + 90).toFixed(1)}deg;--k:${k0 + i + .6}">➜</span>`).join('')}
+    ${c.pasos.map((x, i) => `<span class="rc-paso" style="${pos(ang(i))};--k:${k0 + i}"><small>${i + 1}</small>${esc(x)}</span>`).join('')}
     ${c.centro ? `<span class="rc-centro">${esc(c.centro)}</span>` : ''}
   </div>`;
 }
@@ -354,6 +367,7 @@ function tarjetaHTML(st, e, p) {
     <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
+    ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
@@ -762,6 +776,7 @@ function renderAlumno(animar) {
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
+  requestAnimationFrame(activarAnimaciones);
   if (!playerVid) {
     const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
     asegurarYT(() => ponerVideo(v.id, v.t || 0, false));

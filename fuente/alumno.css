@@ -450,10 +450,10 @@ body.con-mapa{overflow:hidden}
 /* El proceso en círculo */
 .ruta-ciclo{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:4px auto 0}
 .ruta-ciclo svg{position:absolute;inset:0;width:100%;height:100%}
-.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6;stroke-dasharray:1.6 1.4}
+.ruta-ciclo circle{fill:none;stroke:color-mix(in srgb,var(--rc) 45%,transparent);stroke-width:.6}
 .rc-paso{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:6px;width:max-content;max-width:170px;padding:7px 11px;border-radius:14px;background:var(--rc);color:#0d0e10;font:600 13.5px/1.2 var(--display);text-align:left;box-shadow:0 0 0 5px var(--sup)}
 .rc-paso small{flex:none;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
-.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1}
+.rc-flecha{position:absolute;color:var(--rc);font-size:15px;line-height:1;transform:translate(-50%,-50%) rotate(var(--rot))}
 .rc-centro{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:42%;text-align:center;font:600 16px/1.3 var(--display);color:var(--tinta)}
 @media (max-width:560px){.rc-paso{max-width:92px;font-size:10.5px;padding:5px 7px;gap:4px;hyphens:auto;overflow-wrap:anywhere}.rc-paso small{width:15px;height:15px;font-size:9.5px}.rc-centro{font-size:13px;width:38%}}
 .stop summary::-webkit-details-marker,.mz-det summary::-webkit-details-marker{display:none}
@@ -548,3 +548,22 @@ body.con-mapa{overflow:hidden}
 .stop-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .stop-top .stop-son{background:none;border:1px solid var(--linea);color:var(--tinta);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
 .stop-top .stop-son.off{color:var(--gris)}
+
+/* Animaciones de objetivos, puente y ciclo (paso = 0,55 s) */
+.anim .ruta-obj li,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
+.anim .ruta-obj li{opacity:0;animation:aeSube .5s ease forwards;animation-delay:calc(var(--k) * .35s)}
+.anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rp-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rp-meta{animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards,aeBrilla 1.4s ease 2;animation-delay:calc(.4s + var(--k) * .55s),calc(.9s + var(--k) * .55s)}
+.anim .rc-paso{opacity:0;animation:aePopC .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim .rc-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
+.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .55s);animation-delay:calc(.4s + var(--k0) * .55s)}
+.anim.go .ruta-obj li,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
+@keyframes aeSube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes aePop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes aePopC{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%)}}
+@keyframes aeFade{from{opacity:0}to{opacity:1}}
+@keyframes aeTrazo{to{stroke-dashoffset:0}}
+@keyframes aeBrilla{50%{text-shadow:0 0 14px var(--rc)}}
+.ciclo-paso{margin:14px 0}
+@media (prefers-reduced-motion:reduce){.anim *{animation:none!important;opacity:1!important;stroke-dashoffset:0!important}}
