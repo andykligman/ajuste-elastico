@@ -66,7 +66,7 @@ const STANDARDS = [
 /* Para pasos que son "mirar" o "mandar": hecho, o pedir ayuda */
 const PROGRESO_SIMPLE = [
   { id: 'listo', label: 'Listo, lo hice', nivel: 'listo' },
-  { id: 'duda', label: 'No entiendo una parte', nivel: 'cuesta', resp: 'Escribile a Andy por WhatsApp y lo ven juntos.' },
+  { id: 'duda', label: 'No entiendo una parte', nivel: 'cuesta', resp: '¡Podés escribirme tus preguntas por WhatsApp!' },
 ];
 const PROGRESO_BASE = [
   { id: 'listo', label: 'Ya me sale', nivel: 'listo' },
@@ -101,7 +101,7 @@ const PROGRAMA = {
         { id: 'algunas', label: 'Algunas posiciones me salen y otras todavía no', nivel: 'casi',
           resp: 'Si lo que te sale es solo en las primeras tres cuerdas, está perfecto. Vamos a trabajar en profundidad con esas cuerdas en la primera parte del programa y no hace falta más por ahora. Mandame un video y vas a estar listo para seguir avanzando.\n\nSi estás teniendo inconvenientes con algunas posiciones en estas primeras tres cuerdas, separá la información. Trabajá solo sobre las que todavía no salen y tomate el tiempo que necesites para aprenderlas bien, revisando despacito, para arriba y para abajo. Aislar lo que nos cuesta y trabajar en eso es una de las cosas más importantes de la práctica.' },
         { id: 'dudo', label: 'Todavía dudo en casi todas', nivel: 'cuesta',
-          resp: 'Escribile a Andy por WhatsApp y lo ven juntos.', muestra: ['dedos'] },
+          resp: '¡Podés escribirme tus preguntas por WhatsApp!', muestra: ['dedos'] },
       ],
       problemas: [
         { id: 'dedos', q: 'Los dedos van solos, pero no sé bien qué intervalo estoy tocando',
@@ -135,9 +135,11 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'p5', etapa: 'pre', tipo: 'standard',
+      id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
-      detalle: 'Elegí de la lista el tema con el que vas a trabajar. Si tenés otro en mente, escribilo y lo definimos con Andy.',
+      detalle: 'Escribile a Andy por WhatsApp para elegir juntos el standard con el que vas a trabajar.',
+      pregunta: '¿Ya lo eligieron?',
+      progreso: [{ id: 'listo', label: 'Ya lo elegimos con Andy', nivel: 'listo' }],
     },
     {
       id: 'p5b', etapa: 'pre',
@@ -223,15 +225,15 @@ const PROGRAMA = {
       recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
-          fix: 'Es fácil esconderse en lo conocido. Bajá a dos cuerdas y agotá todas las combinaciones ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, [mirá el video auxiliar](https://www.youtube.com/watch?v=we8Wgy3SmF8).' },
+          fix: 'Es fácil esconderse en lo conocido. Bajá a dos cuerdas y agotá todas las combinaciones ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirá [Cuellos de botella #3](https://www.youtube.com/watch?v=we8Wgy3SmF8).' },
       ],
     },
     {
-      id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video improvisando con ritmo libre sobre las mismas notas y compases.',
+      id: 'e3', etapa: 'enlaces', entrega: 'video', envia: 'un video tocando con las posiciones de siempre, pero con ritmo libre.',
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'musica', label: 'Suena a música, dejo espacios', nivel: 'listo' }, { id: 'notas', label: 'Me sale, pero toco muchas notas', nivel: 'casi', muestra: ['muchas'] }, { id: 'pierdo', label: 'Me pierdo cuando suelto el ritmo', nivel: 'cuesta', muestra: ['muchas', 'porque'] } ],
+      progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío demasiado por el oído y pierdo las notas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
-      detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero sin ritmo fijo. Usá más el oído, dejá espacios, repetí notas, buscá formas ingeniosas de tocar esas notas sobre la armonía. Cantá lo que tocás, aunque no afines: el impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
+      detalle: 'Mismas notas, mismos lugares del diapasón, mismos compases, pero sin ritmo fijo ni dirección fija.\nEl trabajo de las notas ya fue bastante profundo hasta acá. La idea ahora es darle un cauce musical a ese trabajo.\nCambiamos el chip y usamos el oído: buscamos elegir lo que queremos tocar y usamos la voz para conectarnos con un sentido más melódico que mecánico.\nAhora podés dejar espacios, repetir notas… Buscá formas ingeniosas de tocar esas notas que entrenaste sobre la armonía, cantando y buscando tejer los cambios con más aire.\nCantá lo que tocás, aunque no afines: el impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
         { id: 'muchas', q: 'Toco muchas más notas que antes, casi toda la posición',
@@ -243,13 +245,13 @@ const PROGRAMA = {
     {
       id: 'e4', etapa: 'enlaces',
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, alguno falla', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Al sumar compases se me desarma', nivel: 'cuesta', muestra: ['compas'] } ],
+      progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: '¡Podés escribirme y charlamos!', muestra: ['compas'] } ],
       titulo: 'Sumar compases del standard',
-      detalle: 'Repetí el proceso desde cero (fijo, después dirección libre, después ritmo libre) con los compases que siguen, y juntá los grupos en bloques cada vez más grandes. Cuando sientas que estás al 80-85%, es buen momento para avanzar.',
+      detalle: 'Con los compases que siguen, repetí el proceso desde cero:\n- 1) Acomodar las posiciones para que queden bien.\n- 2) Mirar enlaces con dirección y ritmo fijos.\n- 3) Hacerlo a tempo: corregir errores y dominarlo.\n- 4) Revisar opciones de dirección libre.\n- 5) Hacerlo a tempo.\n- 6) Ritmo libre.\nCuando sientas que estás al 80-85%, es buen momento para avanzar.',
       recursos: [{ t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES }],
       problemas: [
-        { id: 'compas', q: 'Hay un compás donde siempre me equivoco',
-          fix: 'No practiques todo el bloque: aislá ese compás con el anterior en loop, y después volvé a juntar el grupo.' },
+        { id: 'compas', q: 'Hay compases en los que siempre me equivoco o que manejo peor',
+          fix: 'La mejor manera de avanzar es por pedazos chicos. Por ejemplo, en un tema de 16 compases:\n- Del 1 al 4.\n- Del 5 al 8.\n- Del 1 al 8.\n- Del 9 al 12.\n- Del 13 al 16.\n- Del 9 al 16.\n- Repasar del 1 al 8.\n- Por último, atar del 1 al 16.\nSi algún sector falla, repasalo en cualquier momento, bajando hasta grupos de 2 compases si hace falta.\nLo que no sirve es ir siempre desde el principio (1 al 4, después 1 al 8, después 1 al 12): así practicás mucho más lo primero y las partes difíciles no reciben la atención que necesitan.' },
         { id: 'posiciones', q: 'No sé si sumar más posiciones o seguir con el tema',
           fix: 'Primero el tema entero con control, después cambiar de posiciones.' },
       ],
@@ -259,7 +261,10 @@ const PROGRAMA = {
     {
       id: 'a1', etapa: 'antic',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
-      sinProgreso: true,
+      progreso: [
+        { id: 'listo', label: 'Ya lo vi, ¡se entiende bien!', nivel: 'listo' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: '¡Podés escribirme tus preguntas por WhatsApp!' },
+      ],
       titulo: 'Mirar la Ejercitación N2',
       detalle: 'Mirá el video y leé el documento de anticipaciones armónicas. Sirve para destrabar el "tejido" entre un compás y otro, para que no suene compartimentado cuando improvisás con ritmo libre.',
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
@@ -267,7 +272,22 @@ const PROGRAMA = {
     {
       id: 'a2', etapa: 'antic', entrega: 'video', envia: 'un video de las anticipaciones con ritmo fijo sobre tus compases.',
       video: { id: '86aNkZzca64' }, hotmart: 'R4jj2lj24a',
-      progreso: [ { id: 'varias', label: 'Me sale a tempo en 2 o 3 cuerdas', nivel: 'listo' }, { id: 'una', label: 'Me sale con 1 cuerda o 1 nota por acorde', nivel: 'casi' }, { id: 'no', label: 'A tempo no me sale', nivel: 'cuesta', muestra: ['tempo'] } ],
+      progreso: [
+        { id: 'bien', label: 'Me sale bien', nivel: 'listo', resp: '¡Seguí adelante!' },
+        { id: 'cuesta', label: 'Me cuesta', nivel: 'casi', resp: 'Cuando las anticipaciones se traban, casi siempre el problema está un paso antes. Mirá cuál de los destapa cuellos de botella se parece a lo que te pasa, practicalo un rato y volvé al ejercicio.', muestra: ['apoyo'] },
+        { id: 'no', label: 'No me sale', nivel: 'cuesta', resp: 'Bajá un escalón: mirá cuál de los destapa cuellos de botella se parece a lo que te pasa y trabajalo antes de volver. Y si querés, ¡escribime y lo vemos!', muestra: ['apoyo', 'tempo'] },
+      ],
+      apoyo: {
+        titulo: 'Destapa cuellos de botella',
+        texto: 'Cada uno ataca un problema distinto. Elegí el que se parece a lo que te pasa.',
+        items: [
+          { t: 'Cuello de botella #1: anticipar los cambios de acorde', cuando: 'Si cuando llega el cambio de acorde te quedás en blanco: entrena tener el acorde que viene en la cabeza antes de que llegue, que es justo lo que pide anticipar.', partes: [
+            { titulo: 'Práctica', video: 'https://www.youtube.com/watch?v=c_aQIVXsF9M', tv: 'Ver el video de la demostración', url: DOC_CUELLO_1_GUIA, td: 'Leer el documento práctico' },
+            { titulo: 'Explicación (si con la práctica no alcanza)', video: 'https://www.youtube.com/watch?v=iHEcRTrt12I', tv: 'Ver el video de la explicación', url: DOC_CUELLO_1_EXPL, td: 'Leer el documento de la explicación' } ] },
+          { t: 'Cuello de botella #2: notas por cuerda', cuando: 'Si sabés la progresión y entendés las posiciones, pero no encontrás rápido las notas en cada cuerda: para anticipar necesitás tenerlas a mano.', url: DOC_CUELLO_2, video: 'https://www.youtube.com/watch?v=JHJhLmtCsno' },
+          { t: 'Cuello de botella #3: dirección melódica libre', cuando: 'Si las notas las tenés, pero los enlaces te salen siempre iguales o rígidos: suelta la dirección para que la anticipación pueda caer donde la frase lo pide.', video: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' },
+        ],
+      },
       titulo: 'Anticipaciones con ritmo fijo',
       detalle: 'Hacelo tal cual el video, con el ritmo fijo, sobre tus compases. Probá en grupos de 1, 2 y 3 cuerdas, y con 1, 2 y 3 notas por acorde. Que esté desafiante.',
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_ANTIC }],
@@ -295,7 +315,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
-      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
+      tip: 'Aprovechá para mirar el video y traer preguntas a tu próxima clase. Es posible que te salgan varias dudas teóricas viendo este material, así que ¡a sacarle punta al lápiz!',
       detalle: 'Mirá el video de superposiciones. No hace falta hacerlo todavía: traé las dudas a la clase.',
       recursos: [
         { t: 'Video: Ejercitación N3', url: 'https://www.youtube.com/watch?v=_GkCOK9r3Wg' },
@@ -303,12 +323,11 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 's2', etapa: 'super', entrega: 'video o texto', envia: 'un video corto o un texto con las superposiciones que elegiste para cada acorde y las posiciones que vas a usar.',
+      id: 's2', etapa: 'super', entrega: 'video', envia: 'un video mostrando las posiciones y nombrando qué intervalos son para el acorde original y para el nuevo.',
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Elegir superposiciones y ordenar las posiciones a utilizar',
-      tip: 'Si tenés preguntas teóricas, aprovechá la clase para hacerlas y resolver tus dudas. Podés anotarlas antes, así no se te escapa ninguna.',
-      detalle: 'Para cada acorde, al menos una opción de superposición (ideal, dos), y ordená las posiciones que vas a usar. Mandáselas a Andy para el ok antes de practicarlas: así se corrigen los errores y te queda un documento para usar después.',
+      detalle: 'Elegí 1 sola superposición para cada acorde de la armonía que vas a practicar (idealmente, 4 compases del standard que estás tocando).\nAcomodá las posiciones como lo hiciste con los arpegios originales.\nDespués mandá un video mostrando las posiciones y nombrando qué intervalos significa esa superposición para el acorde original y para el nuevo.',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
       problemas: [
         { id: 'menormaj', q: 'No entiendo cómo se escriben algunos acordes (por ejemplo -maj7)',
@@ -319,7 +338,11 @@ const PROGRAMA = {
       id: 's3', etapa: 'super', entrega: 'video', envia: 'un video de los enlaces con las superposiciones, en esos pocos compases.',
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       titulo: 'Enlaces con superposiciones',
-      detalle: 'Repetí el proceso de enlaces (fijo, después libre) reemplazando los acordes originales por las superposiciones, en pocos compases. Ubicá las notas en pocas cuerdas, no más de 4 por acorde. Cantá y anticipate al acorde que viene.',
+      progreso: [
+        { id: 'listo', label: 'Ya estoy', nivel: 'listo' },
+        { id: 'cuesta', label: 'Todavía me cuesta', nivel: 'cuesta', resp: '¡Podés escribirme tus preguntas por WhatsApp!' },
+      ],
+      detalle: 'Repetí todo el proceso de enlaces, reemplazando los acordes originales por las superposiciones:\n- 1) Acomodar las posiciones.\n- 2) Dirección y ritmo fijos, sin tempo.\n- 3) Dirección y ritmo fijos, a tempo.\n- 4) Dirección melódica libre.\n- 5) Ritmo libre.\nConquistá los compases por partes, como lo hiciste antes. La idea es terminar cantando y dándole un cauce musical a esto también.\nMismo proceso, información nueva.',
       recursos: [{ t: 'Doc: Superposiciones de arpegios', url: DOC_SUPER }],
     },
 
