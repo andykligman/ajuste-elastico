@@ -66,7 +66,7 @@ function enLinea(l) {
 function textoHTML(t) {
   const out = []; let lista = [];
   const cerrar = () => { if (lista.length) { out.push(`<ul class="reglas">${lista.map(l => `<li>${enLinea(l)}</li>`).join('')}</ul>`); lista = []; } };
-  String(t || '').split('\n').forEach(l => { if (l.startsWith('- ')) lista.push(l.slice(2)); else { cerrar(); if (l.trim()) out.push(`<p>${enLinea(l)}</p>`); } });
+  String(t || '').split('\n').forEach(l => { if (l.startsWith('- ')) lista.push(l.slice(2)); else { cerrar(); if (l.startsWith('# ')) out.push(`<p class="destacado">${enLinea(l.slice(2))}</p>`); else if (l.trim()) out.push(`<p>${enLinea(l)}</p>`); } });
   cerrar(); return out.join('');
 }
 
@@ -153,15 +153,21 @@ function preguntaHTML(st, p) {
     <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && sel.resp ? respuestaHTML(sel) : ''}
+    ${sel && (sel.resp || sel.nivel === 'listo') ? respuestaHTML(sel, p) : ''}
     ${ayuda.apoyo ? apoyoHTML(p) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
 }
 
 /* Respuesta según cómo le fue: verde con tilde si va bien, recuadro de recomendación si no */
-function respuestaHTML(sel) {
+/* Cuando marca que le salió y el paso no trae respuesta propia, igual le llega un mensaje en verde */
+const FESTEJOS = ['Bien ahí! A seguir así 😉', 'Espectacular! Vamo arriba 🙌', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue 💪'];
+function respuestaHTML(sel, p) {
   const ok = sel.nivel === 'listo';
+  if (ok && !sel.resp && p) {
+    const n = [...p.id].reduce((t, c) => t + c.charCodeAt(0), 0);
+    sel = Object.assign({}, sel, { resp: p.entrega && !p.opcional ? 'Buenísimo! Mandámelo acá abajo 👇' : FESTEJOS[n % FESTEJOS.length] });
+  }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
     <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
@@ -524,6 +530,7 @@ function renderAlumno(animar) {
   enlazarAlumno();
   enlazarFormStandard();
   if (animar) setTimeout(() => irA(abierto, false), 80);
+  if (modo.startsWith('admin-')) urlAdmin();
 }
 
 function irA(id, suave = true) {

@@ -5,6 +5,24 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const app = () => $('#app');
 const params = new URLSearchParams(location.search);
+/* En el panel la dirección dice dónde estás (alumno, vista de alumno, paso), así recargar te deja en el mismo lugar */
+let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.get('ver'), prueba: params.has('prueba'), paso: params.get('paso') } : null;
+function urlAdmin() {
+  if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
+  else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
+  else if (modo === 'admin-prueba') { nav(`?admin&prueba${abierto ? '&paso=' + abierto : ''}`); try { sessionStorage.setItem('mapaAE_prueba', JSON.stringify(ST)); } catch (e) {} }
+}
+function aplicarDestino() {
+  const d = DESTINO; if (!d) return false; DESTINO = null;
+  if (d.ver) { const a = LISTA.find(x => x.codigo === d.ver); if (a) { ST = clonar(a); modo = 'admin-vista'; abierto = d.paso; renderAlumno(true); return true; } }
+  if (d.prueba) {
+    let guardado = null; try { guardado = JSON.parse(sessionStorage.getItem('mapaAE_prueba') || 'null'); } catch (e) {}
+    ST = guardado || Object.assign(alumnoVacio('Alumno de prueba', 2, hoyISO()), { codigo: '__prueba' });
+    modo = 'admin-prueba'; abierto = d.paso; renderAlumno(true); return true;
+  }
+  if (d.alumno && LISTA.some(x => x.codigo === d.alumno)) elegido = d.alumno;
+  return false;
+}
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 let ST = null;            // alumno abierto
@@ -56,8 +74,10 @@ function difAlumno(base, cur) {
   return c;
 }
 
+let stIntacto = true;   // en la vista de alumno del panel: todavía no se tocó nada (se puede refrescar con lo del servidor)
 function guardarAlumno() {
-  if (modo === 'admin-prueba') { aviso('Vista de prueba: no se guarda nada'); return; }
+  if (modo === 'admin-prueba') { urlAdmin(); aviso('Vista de prueba: no se guarda nada'); return; }
+  stIntacto = false;
   if (modo === 'alumno') { ediciones++; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST, base: BASE }); }
   aviso('Guardando…');
   clearTimeout(timerGuardar);
@@ -265,9 +285,8 @@ function pedirClave(error) {
 
 async function abrirAdmin() {
   modo = 'admin';
-  nav('?admin');
   const copia = leerLocal('mapaAE_lista');
-  if (copia && !LISTA.length) { LISTA = copia; renderAdmin(); }        // al instante, con lo último que se vio
+  if (copia && !LISTA.length) { LISTA = copia; if (!aplicarDestino()) renderAdmin(); }        // al instante, con lo último que se vio
   else if (LISTA.length) renderAdmin();
   let nueva;
   try { nueva = (await llamar('admin.lista', { clave: claveAdmin })).alumnos; }
@@ -284,6 +303,8 @@ async function abrirAdmin() {
     if (Object.keys(local).length) aplicarLocal(n, clonar(n), local);
   });
   LISTA = nueva; guardarLocal('mapaAE_lista', LISTA);
+  if (DESTINO && aplicarDestino()) return;
+  if (modo === 'admin-vista' && stIntacto) { const n = LISTA.find(x => x.codigo === ST.codigo); if (n) { ST = clonar(n); renderAlumno(); } return; }
   if (modo !== 'admin') return;
   if (!elegido || elegido === '__nuevo') renderAdmin();
   else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
@@ -304,6 +325,7 @@ function renderAdmin() {
     ${sel ? alumnoAdmHTML(sel) : elegido === '__nuevo' ? `<button class="link volver-adm" data-adm="volver">← Todos los alumnos</button>${nuevoHTML()}` : inicioAdmHTML()}
   </main>`;
   enlazarAdmin();
+  urlAdmin();
 }
 
 /* Inicio del panel: primero los videos para ver, después todos los alumnos */
@@ -536,7 +558,7 @@ function enlazarAdmin() {
     if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
-    if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
+    if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {} modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
@@ -565,7 +587,7 @@ function enlazarAdmin() {
       try { const r = await llamar('admin.invitar', { clave: claveAdmin, codigo: a.codigo }); linksRecientes[a.codigo] = linkInvitacion(r.invitacion); a.invitacionPendiente = true; renderAdmin(); }
       catch (e) { aviso(e.message, true); }
     }
-    else if (d.adm === 'ver') { ST = JSON.parse(JSON.stringify(a)); modo = 'admin-vista'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); }
+    else if (d.adm === 'ver') { ST = JSON.parse(JSON.stringify(a)); stIntacto = true; modo = 'admin-vista'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); }
     else if (d.adm === 'borrar') {
       if (b.dataset.seguro) { await llamar('admin.borrar', { clave: claveAdmin, codigo: a.codigo }); LISTA = LISTA.filter(x => x !== a); elegido = null; videoSel = null; renderAdmin(); }
       else { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo para borrar'; }

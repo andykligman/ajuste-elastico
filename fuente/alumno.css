@@ -99,6 +99,8 @@ a.mat svg{color:var(--azul-txt)}
 .op-punto{width:18px;height:18px;border-radius:50%;border:2px solid #5A5E68;flex:none}
 .op.sel{border-color:var(--tinta);background:#2A2C32}
 .op.sel .op-punto{border:6px solid var(--tinta)}
+.op.sel.nivel-listo{border-color:#3FB37F;background:#12251C}
+.op.sel.nivel-listo .op-punto{border-color:#5BD49A}
 .op.sel.nivel-cuesta{border-color:var(--oxido);background:var(--oxido-claro)}
 .op.sel.nivel-cuesta .op-punto{border-color:var(--oxido-txt)}
 .respuesta{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;border:1.5px solid var(--azul);background:var(--azul-velo);animation:aparecerResp .35s cubic-bezier(.2,.8,.3,1) both}
@@ -367,3 +369,8 @@ body.con-grabador{overflow:hidden}
 .ruta-clave p{margin:6px 0 0;line-height:1.55}
 .ruta-cierre{margin:0;font:500 16.5px/1.5 var(--display);text-align:center;padding:4px 8px}
 @media (max-width:560px){.ruta-puente{flex-direction:column;gap:4px}.rp-flecha{transform:rotate(90deg)}}
+
+/* Línea destacada dentro de una consigna (en el texto: una línea que empieza con «# ») */
+.destacado{margin:12px 0!important;padding:2px 0 2px 14px;border-left:3px solid var(--naranja);font:600 19px/1.35 var(--display);color:var(--tinta)}
+.consigna strong,.respuesta strong{color:var(--tinta);font-weight:700}
+@media (max-width:560px){.destacado{font-size:17.5px}}

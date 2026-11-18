@@ -101,7 +101,8 @@ function posicion(st) {
 function mensajeWhatsApp(st, link, pasoVideo) {
   const { e, lista } = recomendaciones(st, 3);
   const nombre = (st.nombre || '').split(' ')[0];
-  const limpio = t => String(t || '').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1: $2');
+  const limpio = t => String(t || '').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1: $2')
+    .replace(/^# (.+)$/gm, '*$1*').replace(/\*\*(.+?)\*\*/g, '*$1*');   // al estilo WhatsApp
   let txt = pasoVideo && PASO[pasoVideo] ? `${nombre}! Ya vi tu video de «${PASO[pasoVideo].titulo}».\n\n\n\n` : `${nombre}! `;
   const extra = (st.extras || []).find(x => !x.hecho);
   const r = lista.find(x => x.id !== pasoVideo || x.motivo === 'seguir');
