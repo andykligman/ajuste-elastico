@@ -298,6 +298,13 @@ body.con-grabador{overflow:hidden}
 .mod-banner p{margin:4px 0 0;font-size:14.5px;color:var(--gris)}
 .mod-banner::before{content:"";position:absolute;left:30px;top:22px;width:12px;height:12px;border-radius:50%;background:var(--mc);box-shadow:0 0 0 5px color-mix(in srgb,var(--mc) 22%,transparent)}
 .mod-pronto{opacity:.75}
+.mod-plegado{padding-bottom:10px}
+.mod-pliegue{position:relative;z-index:1;display:flex;align-items:center;gap:10px;width:calc(100% - 64px);margin:8px 0 0 64px;padding:10px 14px;border:1px solid color-mix(in srgb,var(--mc) 35%,transparent);border-radius:12px;background:color-mix(in srgb,var(--mc) 8%,var(--fondo));color:var(--tinta);font:600 14.5px var(--sans);cursor:pointer;text-align:left}
+.mod-pliegue:hover{background:color-mix(in srgb,var(--mc) 15%,var(--fondo))}
+.mod-pliegue svg{width:18px;height:18px;flex:none;color:var(--mc);transition:transform .2s}
+.mod-pliegue.abierto svg{transform:rotate(180deg)}
+.mod-pliegue small{margin-left:auto;font-weight:400;color:var(--gris)}
+@media (max-width:560px){.mod-pliegue{margin-left:58px;width:calc(100% - 58px)}}
 .etapa-bloq small{display:block;font:600 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--mc,var(--gris))}
 @media (max-width:560px){.mod-bloque{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}.mod-banner{padding-left:58px}.mod-banner::before{left:26px}}
 /* Pantalla de cambio de módulo */

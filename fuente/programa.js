@@ -399,7 +399,7 @@ const PROGRAMA = {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación Nº3',
-      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá solo este recurso, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después mezclalo con la escala mayor, tocando libre y cantando si querés: lo nuevo con lo viejo.\nAcá hay **dos videos**: primero los ejemplos de esta ejercitación y después el momento de integración libre, donde lo mezclo con todo lo demás. Miralos los dos.',
+      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá solo este recurso, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después mezclalo con la escala mayor, tocando libre y cantando si querés: lo nuevo con lo viejo.\nAcá hay **dos videos**: primero los ejemplos de esta ejercitación y después el momento de integración libre, donde lo mezclo con todo lo demás. ¡Mirate ambos!',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes de a una: un rato solo líneas para abajo, otro solo largas, otro empezando en distintos lugares del compás. Después mezclalas.' },
@@ -412,36 +412,32 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video tocando el fragmento de tu solo que decodificaste, mecanizado por la escala.',
-      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
-      titulo: 'Combinación de elementos del lenguaje',
-      detalle: 'Mirá el video con el doc al lado. La idea es hacerlo con **el solo que transcribiste**:\n- Elegí un fragmento chico (no tiene que ser largo).\n- Decodificalo: en qué escala madre está y de qué está hecho, nota por nota o por intervalos. Anotalo.\n- Reconocelo en el diapasón, en todos los grados de la escala, dentro de una posición.\n- Mecanizalo y después integralo, igual que hiciste con los cromáticos ascendentes.\n[Ejemplos de decodificación](https://youtu.be/GrXVCxwRs6g?t=605)',
+      id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la guitarra los 30 segundos del solo que transcribiste.',
+      video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
+      titulo: 'Tu solo en la guitarra',
+      detalle: 'Ahora la prioridad es el solo que transcribiste: pasá esos 30 segundos a la guitarra y mandame un video tocándolos.\n- Hacelo por partes: frases cortas, de a una, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con la pista hasta tenerla clara y recién ahí buscala en el diapasón.\nCuando me lo mandes, seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que se hace sobre este solo.',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo?',
         casos: {
-          listo: { tip: 'Ya tenés tus 30 segundos de transcripción: pasalos a la guitarra, de a poco, y de ahí sacá el fragmento para este paso.' },
-          quince: { opciones: [
-            { id: 'treinta', label: 'Ya tengo los 30 segundos', nivel: 'listo', resp: '¡Perfecto! Empezá a pasarlo a la guitarra, de a poco.' },
-            { id: 'quince', label: 'Todavía tengo 15', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Mientras tanto, ya podés sacar un fragmento de lo que tenés.' },
-          ] },
+          listo: { tip: 'Ya tenés tus 30 segundos cantados: ahora pasalos a la guitarra y mandame el video.' },
           _: { opciones: [
-            { id: 'treinta', label: 'Ya tengo mis 30 segundos', nivel: 'listo', resp: '¡Perfecto! Mandámelo y empezá a pasarlo a la guitarra, de a poco.' },
-            { id: 'quince', label: 'Tengo 15 segundos', nivel: 'casi', resp: '¡Dale, vamos por esos 30! Mandame lo que tengas.' },
-            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Retomala, que este paso se apoya en eso: volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
+            { id: 'treinta', label: 'Ya tengo los 30 segundos', nivel: 'listo', resp: '¡Perfecto! Pasalos a la guitarra y mandame el video.' },
+            { id: 'quince', label: 'Tengo 15 segundos', nivel: 'casi', resp: 'Vamos por esos 30, que es la prioridad ahora. Loops cortos, de 2 a 5 segundos, y andá juntando los pedazos. Mientras, ya podés ir pasando a la guitarra lo que tenés.' },
+            { id: 'nada', label: 'Todavía no la empecé', nivel: 'cuesta', resp: 'Esta es la prioridad ahora: sin el solo no podemos hacer el último proceso del módulo. Volvé a "Cómo transcribir eficientemente" y arrancá con loops cortos, de 3 a 5 notas. Si algo no sale, escribime y lo resolvemos.' },
           ] },
         },
       },
       progreso: [
-        { id: 'listo', label: 'Ya decodifiqué un fragmento y lo estoy mecanizando', nivel: 'listo' },
-        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la guitarra. Mientras tanto, seguí con los cromáticos y mirá lo que viene. Cuando lo tengas, volvé a este paso.' },
-        { id: 'decodificar', label: 'No me doy cuenta de qué elementos tiene', nivel: 'cuesta', saltea: true, resp: 'Probá con un pedazo más corto, de 3 o 4 notas. Si igual no sale, está bien: por ahora quedate con conocer los elementos. Traé el fragmento a la clase y lo decodificamos juntos.' },
+        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
+        { id: 'pasando', label: 'Lo estoy pasando a la guitarra', nivel: 'casi', resp: 'Seguí por partes, de a una frase. Mandámelo cuando tengas los 30 segundos, aunque sea lento.' },
+        { id: 'cuesta', label: 'Me cuesta pasarlo a la guitarra', nivel: 'cuesta', resp: 'Tomá una frase sola, cantala con la pista y buscala nota por nota en el diapasón. Si alguna no aparece, escribime y lo resolvemos.' },
       ],
-      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
+      recursos: [{ t: 'Doc: Cómo transcribir eficientemente', url: 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1QV6Qdn1eIEBfNaqM/edit' }],
     },
     {
       id: 'n7', etapa: 'm2', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
-      detalle: 'Estos son los otros elementos del módulo. Las ejercitaciones están explicadas en cada video, y son las mismas que hiciste con los cromáticos ascendentes.\nNo hace falta hacerlos todos. Lo importante es el proceso: **reconocimiento, mecanización e integración**. Mirá los videos y elegí con cuáles trabajar, sobre todo los que aparezcan en tu solo.',
+      detalle: 'Estos son los otros elementos del lenguaje del módulo. Los ejercicios puntuales están en cada video, pero el principio es el mismo. Lo importante es el proceso: **reconocimiento, mecanización e integración**.\nPodés elegir alguno de estos elementos y hacer con él el mismo proceso que hiciste con los cromáticos ascendentes.\nLa prioridad ahora está en sacar este primer solo, para poder hacer un último proceso antes de terminar el módulo.',
       panel: [
         { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
         { t: 'Auxiliar', video: 'pd8IgNbFJIo' },
@@ -455,6 +451,18 @@ const PROGRAMA = {
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: '¡Podés escribirme tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: 'https://docs.google.com/document/d/1FVQ5RILkfJnro_aNtwZop-l6jbJqvHRJfgN_NgSCv0g/edit' }],
+    },
+    {
+      id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video tocando el fragmento de tu solo que decodificaste, mecanizado por la escala.',
+      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Combinación de elementos del lenguaje',
+      detalle: 'Mirá el video con el doc al lado. La idea es hacerlo con **el solo que transcribiste**:\n- Elegí un fragmento chico (no tiene que ser largo).\n- Decodificalo: en qué escala madre está y de qué está hecho, nota por nota o por intervalos. Anotalo.\n- Reconocelo en el diapasón, en todos los grados de la escala, dentro de una posición.\n- Mecanizalo y después integralo, igual que hiciste con los cromáticos ascendentes.\n[Ejemplos de decodificación](https://youtu.be/GrXVCxwRs6g?t=605)',
+      progreso: [
+        { id: 'listo', label: 'Ya decodifiqué un fragmento y lo estoy mecanizando', nivel: 'listo' },
+        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la guitarra. Mientras tanto, seguí con los cromáticos y mirá lo que viene. Cuando lo tengas, volvé a este paso.' },
+        { id: 'decodificar', label: 'No me doy cuenta de qué elementos tiene', nivel: 'cuesta', saltea: true, resp: 'Probá con un pedazo más corto, de 3 o 4 notas. Si igual no sale, está bien: por ahora quedate con conocer los elementos. Traé el fragmento a la clase y lo decodificamos juntos.' },
+      ],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: 'https://docs.google.com/document/d/1qfI-iy2YXxOiD083q6OSH9_0qr3yo9XbUQ6FOv4c0rI/edit' }],
     },
     /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
     {

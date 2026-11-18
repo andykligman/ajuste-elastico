@@ -217,7 +217,8 @@ function fechaCorta(f) { const [y, m, d] = String(f || '').split('-'); return d 
 function duracion(seg) { seg = Math.round(seg); return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, '0')}`; }
 
 const OLAS = [0, 34, 68, 34];
-let verTodo = false;   // por defecto solo se ve el paso anterior, el actual y el siguiente
+let verTodo = false;
+const desplegados = new Set();   // módulos anteriores que el alumno abrió al ver todos los pasos   // por defecto solo se ve el paso anterior, el actual y el siguiente
 function nodoHTML(st, e, p, n, total) {
   const pr = st.prog[p.id] || {};
   const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
@@ -253,13 +254,22 @@ function caminoHTML(st, e) {
   // Cada módulo va en su propio bloque, con su color y un título grande arriba: el cambio de módulo se nota
   let etapaPrev = null, modPrev = null, cuerpo = '';
   const etapasDelMod = m => PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length;
+  // Al ver todos los pasos, los módulos anteriores al actual quedan plegados; se despliegan con un botón
+  const modActual = items[idx] ? MODULO_DE[items[idx].et.id] : -1;
+  const plegado = m => verTodo && m < modActual && !desplegados.has(m);
   items.slice(desde, hasta + 1).forEach(x => {
     const m = MODULO_DE[x.et.id];
     if (m !== modPrev) {
       if (modPrev !== null) cuerpo += '</section>';
-      cuerpo += `<section class="mod-bloque" style="--mc:${MODULOS[m].color}">${bannerModulo(m, x.et)}`;
+      const delMod = items.filter(y => MODULO_DE[y.et.id] === m);
+      const listos = delMod.filter(y => hecho(st, y.p.id)).length;
+      const resumen = `${delMod.length === 1 ? '1 paso' : delMod.length + ' pasos'} · ${listos === delMod.length ? 'completo' : listos + ' listos'}`;
+      cuerpo += `<section class="mod-bloque ${plegado(m) ? 'mod-plegado' : ''}" style="--mc:${MODULOS[m].color}">${bannerModulo(m, x.et)}`
+        + (plegado(m) ? `<button class="mod-pliegue" data-desplegar="${m}" aria-expanded="false">${ICONO.abajo}<span>Ver los pasos</span><small>${resumen}</small></button>`
+          : verTodo && m < modActual ? `<button class="mod-pliegue abierto" data-plegar="${m}" aria-expanded="true">${ICONO.abajo}<span>Plegar</span><small>${resumen}</small></button>` : '');
       modPrev = m; etapaPrev = etapasDelMod(m) === 1 ? x.et : null;
     }
+    if (plegado(m)) return;
     if (x.et !== etapaPrev) cuerpo += `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>`;
     etapaPrev = x.et;
     cuerpo += nodoHTML(st, e, x.p, x.n, x.total);
@@ -545,6 +555,8 @@ function enlazarAlumno() {
     } else if (d.accion === 'clase-no') { const c = $('#claseHecha'); if (c && c.classList.contains('pregunta-clase')) c.outerHTML = `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${(ST.clase || 0) + 1}</button></div>`; else renderAlumno(); }
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
+    else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
     else if (d.accion === 'instalar-app' && avisoInstalar) { avisoInstalar.prompt(); avisoInstalar.userChoice.finally(() => { avisoInstalar = null; renderAlumno(); }); }
     else if (d.accion === 'no-instalar') { try { localStorage.setItem('mapaAE_sinInstalar', '1'); } catch (e) {} renderAlumno(); }
