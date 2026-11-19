@@ -777,6 +777,8 @@ body.con-mapa{overflow:hidden}
 .in-escena[data-s="0"]{display:none}.in-caja:has(.in-escena[data-s="0"]) .in-texto{font-size:clamp(30px,7.5vw,42px);min-height:0;margin:10px 0 30px}
 .stop-texto.grande{min-height:120px;font-size:clamp(21px,3.4vw,27px);line-height:1.3;color:var(--naranja)}
 @media (max-width:560px){.stop-texto.grande{font-size:20px;min-height:128px}}
+.stop-texto.grande{min-height:260px;font-size:clamp(22px,3.8vw,30px)}
+@media (max-width:560px){.stop-texto.grande{min-height:300px;font-size:22px}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -2156,8 +2158,8 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
-    <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
-    ${S.contar ? `<p class="stop-cap">${esc(S.contar)}</p>
+    ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
+    ${S.contar && !tanda.grande ? `<p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
     <div class="stop-ctrl">${!e.visto ? `
       <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
