@@ -373,7 +373,12 @@ const PROGRAMA = {
     },
     {
       id: 'e4', etapa: 'enlaces', sinVideo: true, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
+      entrega: 'video', envia: 'un video dominando nuevos compases de la armonía',
+      pregunta: '¿Cómo seguimos?',
+      progreso: [
+        { id: 'video', label: 'Te mando un video dominando nuevos compases', nivel: 'listo' },
+        { id: 'saltear', label: 'Saltear por ahora', nivel: 'listo', saltea: true, resp: 'Dale, seguimos!' },
+      ],
       titulo: 'Sumar compases del standard',
       stop: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',

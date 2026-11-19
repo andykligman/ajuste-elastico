@@ -1316,7 +1316,12 @@ const PROGRAMA = {
     },
     {
       id: 'e4', etapa: 'enlaces', sinVideo: true, hotmart: 'PeAgJn18OW',
-      progreso: [ { id: 'control', label: 'Sumé compases con el mismo control', nivel: 'listo' }, { id: 'alguno', label: 'Sumé compases, algunos fallan', nivel: 'casi', muestra: ['compas', 'posiciones'] }, { id: 'desarma', label: 'Sumé compases, se me desarma', nivel: 'cuesta', resp: 'Escribime y lo charlamos!', muestra: ['compas'] } ],
+      entrega: 'video', envia: 'un video dominando nuevos compases de la armonía',
+      pregunta: '¿Cómo seguimos?',
+      progreso: [
+        { id: 'video', label: 'Te mando un video dominando nuevos compases', nivel: 'listo' },
+        { id: 'saltear', label: 'Saltear por ahora', nivel: 'listo', saltea: true, resp: 'Dale, seguimos!' },
+      ],
       titulo: 'Sumar compases del standard',
       stop: 'compases',
       detalle: 'Con los compases que siguen, repetí el proceso desde cero.\n# Cuando estés al 80-85%, es el mejor momento para avanzar!',
@@ -2157,7 +2162,7 @@ function stopInner(id) {
       <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
       <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
       <button class="${fin && !(stopTimer && stopTimer.id === id) ? 'primario' : 'secundario'}" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
-      <button class="${fin ? 'secundario' : 'primario'}" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>`}
+      ${fin && (!no || !S.empiezaNo) ? `<button class="primario" data-stop-acc="seguir" data-stop-id="${id}">Seguir ↓</button>` : `<button class="${fin ? 'secundario' : 'primario'}" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>`}`}
     </div>`;
 }
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
@@ -2178,6 +2183,7 @@ function stopAccion(id, acc) {
     if (luego) { stopAudio.onended = () => { stopTimer.h = setTimeout(luego, 250); }; stopAudio.onerror = () => { stopTimer.h = setTimeout(luego, espera()); }; }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
+  if (acc === 'seguir') { parar(); const c = document.querySelector(`[data-stop-caja="${id}"]`); const q = c && c.closest('.tarjeta')?.querySelector('.pregunta, .envio, .seguir'); if (q) q.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; }
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
   if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
   if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; e.visto = false; }
