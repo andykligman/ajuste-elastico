@@ -849,6 +849,15 @@ body.con-mapa{overflow:hidden}
 .ll-testimonios figcaption{margin-top:8px;font-weight:600;color:var(--gris)}
 .ll-fin{text-align:center;font-size:20px;font-weight:600;margin:30px 0 10px}
 
+/* Visor de una parte del doc adentro del aula (celu) */
+.doc-visor{position:fixed;inset:0;z-index:2000;background:#fff;display:flex;flex-direction:column}
+.dv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));border-bottom:1px solid var(--linea);background:#fff}
+.dv-cerrar{background:none;border:1px solid var(--linea);border-radius:999px;padding:8px 14px;font:600 15px var(--sans);color:var(--tinta);cursor:pointer}
+.dv-barra a{font-size:14px;color:var(--gris)}
+.dv-marco{flex:1;position:relative;overflow:auto;-webkit-overflow-scrolling:touch}
+.dv-marco iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+body.dv-abierto{overflow:hidden}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2190,6 +2199,28 @@ function linkSeccion(url, h) {
   const cel = window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
   return cel ? `${base}/mobilebasic#${h}` : `${base}/edit#heading=${h}`;
 }
+/* En el iPhone, un link a docs.google.com abre la app de Docs, que arranca al principio del doc.
+   Así que en el celu la parte del doc se muestra adentro del aula (la versión simple sí salta al título) */
+function verDocEnAula(url) {
+  cerrarDocEnAula();
+  const full = url.replace(/\/mobilebasic#.*$/, '/edit');
+  const d = document.createElement('div'); d.className = 'doc-visor';
+  d.innerHTML = `<div class="dv-barra"><button class="dv-cerrar" data-dv-cerrar>✕ Cerrar</button><a href="${esc(full)}" target="_blank" rel="noopener">Abrir el doc completo</a></div>
+    <div class="dv-marco"><iframe src="${esc(url)}" title="Documento"></iframe></div>`;
+  document.body.appendChild(d); document.body.classList.add('dv-abierto');
+  history.pushState({ dv: 1 }, '');
+}
+function cerrarDocEnAula(desdeAtras) {
+  const d = document.querySelector('.doc-visor'); if (!d) return;
+  d.remove(); document.body.classList.remove('dv-abierto');
+  if (!desdeAtras && history.state && history.state.dv) history.back();
+}
+window.addEventListener('popstate', () => cerrarDocEnAula(true));
+document.addEventListener('click', ev => {
+  if (ev.target.closest('[data-dv-cerrar]')) { cerrarDocEnAula(); return; }
+  const a = ev.target.closest('a[href*="/mobilebasic#"]'); if (!a) return;
+  ev.preventDefault(); verDocEnAula(a.href);
+}, true);
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
 const esDoc = r => r.url && !ytId(r.url);
 function docNuevo(p, r) {
