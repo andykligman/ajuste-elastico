@@ -426,7 +426,7 @@ function tarjetaHTML(st, e, p) {
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
-    ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
+    ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
     ${recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
@@ -644,12 +644,12 @@ function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
       <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones"><button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button><button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
-      <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
+      <h1>${esLlamada ? 'Hola!' : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
       ${e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
-        : e.k <= 4 ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
+        : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Te dejé</h2>${extrasPend.map(x => `
@@ -1044,6 +1044,7 @@ function enlazarAlumno() {
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
+    else if (d.accion === 'presentacion') renderLlamada();
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }

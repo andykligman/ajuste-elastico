@@ -27,7 +27,7 @@ const MODULOS = [
 ];
 const sinModulos = st => st.modulos === undefined || st.modulos === null || st.modulos === '';
 // En la vista de prueba del panel se ve todo abierto
-const moduloHabilitado = (st, n) => (typeof modo !== 'undefined' && modo === 'admin-prueba') || sinModulos(st) || String(st.modulos).includes(String(n));
+const moduloHabilitado = (st, n) => (typeof modo !== 'undefined' && modo === 'admin-prueba' && !(typeof esLlamada !== 'undefined' && esLlamada)) || sinModulos(st) || String(st.modulos).includes(String(n));
 const pasoHabilitado = (st, id) => moduloHabilitado(st, MODULO_DE[PASO[id].etapa]);
 
 const hecho = (st, id) => !!(st.prog[id] && st.prog[id].hecho && st.prog[id].como !== 'cuesta');

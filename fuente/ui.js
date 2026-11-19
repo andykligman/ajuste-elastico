@@ -7,20 +7,22 @@ const app = () => $('#app');
 const params = new URLSearchParams(location.search);
 /* En el panel la dirección dice dónde estás (alumno, vista de alumno, paso), así recargar te deja en el mismo lugar */
 // ?demo: la vista de alumno de prueba sin clave (se guarda en este aparato, con «Reiniciar»)
-const esDemo = params.has('demo');
-const clavePrueba = () => esDemo ? 'mapaAE_demo' : 'mapaAE_prueba';
+const esLlamada = params.has('llamada');            // quienes tienen la llamada conmigo: presentación + módulo 0
+const esDemo = params.has('demo') || esLlamada;
+const clavePrueba = () => esLlamada ? 'mapaAE_llamada' : esDemo ? 'mapaAE_demo' : 'mapaAE_prueba';
+const codPrueba = () => esLlamada ? '__llamada' : esDemo ? '__demo' : '__prueba';
 let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.get('ver'), prueba: params.has('prueba'), paso: params.get('paso') } : null;
 function urlAdmin() {
   if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
   else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
-  else if (modo === 'admin-prueba') { nav(`${esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); } catch (e) {} }
+  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); } catch (e) {} }
 }
 function aplicarDestino() {
   const d = DESTINO; if (!d) return false; DESTINO = null;
   if (d.ver) { const a = LISTA.find(x => x.codigo === d.ver); if (a) { ST = clonar(a); modo = 'admin-vista'; abierto = d.paso; renderAlumno(true); return true; } }
   if (d.prueba) {
     let guardado = null; try { guardado = JSON.parse(localStorage.getItem(clavePrueba()) || 'null'); } catch (e) {}
-    ST = guardado || Object.assign(alumnoVacio('Alumno de prueba', 2, hoyISO()), { codigo: esDemo ? '__demo' : '__prueba' });
+    ST = guardado || Object.assign(alumnoVacio(esLlamada ? 'Invitado' : 'Alumno de prueba', 2, hoyISO()), { codigo: codPrueba(), ...(esLlamada ? { modulos: '0' } : {}) });
     modo = 'admin-prueba'; abierto = d.paso; renderAlumno(true); return true;
   }
   if (d.alumno && LISTA.some(x => x.codigo === d.alumno)) elegido = d.alumno;
@@ -112,7 +114,7 @@ function aviso(t, error) {
 
 /* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
 function reiniciarPrueba() {
-  const cod = esDemo ? '__demo' : '__prueba';
+  const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
   try { localStorage.removeItem(clavePrueba()); } catch (e) {}
   ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = cod;
@@ -123,7 +125,7 @@ function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="https://aula.ajuste-elastico.com/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
-      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
+      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
@@ -170,6 +172,26 @@ function renderEntrada(error) {
     if (b.dataset.demoAdmin) pedirClave();
     if (b.dataset.demoReset) { guardarToken(''); llamar('demo.reset', {}).then(() => renderEntrada()); }
   };
+}
+
+/* Presentación para quienes van a tener la llamada conmigo: no explica el aula, invita a explorar */
+function renderLlamada() {
+  modo = 'llamada'; nav('?llamada');
+  const yt = id => `<div class="ll-video"><iframe src="https://www.youtube-nocookie.com/embed/${esc(id)}?rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>`;
+  const tes = (LLAMADA.testimonios || []).filter(t => t.id);
+  app().innerHTML = `${barra('')}
+  <main class="llamada">
+    <p class="ll-sobre">Ajuste Elástico</p>
+    <h1>Si te llegó este link es porque vamos a tener una llamada 🙌</h1>
+    <p class="ll-texto">Te dejo un <strong>entrenamiento gratuito</strong> y una primera experiencia con el mapa de Ajuste Elástico.</p>
+    <p class="ll-texto">No tenés que traer nada preparado para la llamada: es para que explores si tenés ganas 😉</p>
+    ${LLAMADA.bienvenida ? yt(LLAMADA.bienvenida) : ''}
+    <button class="primario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>
+    ${tes.length ? `<h2>Algunos alumnos</h2><div class="ll-testimonios">${tes.map(t => `<figure>${yt(t.id)}<figcaption>${esc(t.nombre)}</figcaption></figure>`).join('')}</div>
+    <button class="secundario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>` : ''}
+  </main>`;
+  app().onclick = ev => { if (ev.target.closest('[data-ll-entrar]')) { DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); } };
+  window.scrollTo(0, 0);
 }
 
 /* Link único para alumnos nuevos: se registran solos (nombre, email y contraseña) y arrancan con el módulo 0 */
@@ -672,6 +694,7 @@ window.addEventListener('resize', () => {
 
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
+  if (esLlamada && !params.has('aula')) { renderLlamada(); return; }
   if (esDemo) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); return; }
   if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }

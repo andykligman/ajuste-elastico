@@ -761,3 +761,16 @@ body.con-mapa{overflow:hidden}
 .consulta.apagado{opacity:0;pointer-events:none}
 .pv-cerrar{font-size:13.5px!important;font-weight:600;padding:4px 10px!important;border:1px solid var(--linea)!important;border-radius:999px}
 .seguir [data-rec-ok]{padding:12px 34px;font-size:17px}
+
+/* Presentación para quienes tienen la llamada (?llamada) */
+.llamada{max-width:720px;margin:6vh auto 70px;padding:0 20px}
+.ll-sobre{margin:0 0 10px;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--naranja)}
+.llamada h1{font-size:clamp(26px,5vw,36px);line-height:1.15;margin:0 0 16px}
+.llamada h2{font-size:22px;margin:44px 0 14px}
+.ll-texto{font-size:18px;line-height:1.5;color:var(--tinta);margin:0 0 10px}
+.ll-video{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--linea);margin-top:22px}
+.ll-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ll-boton{margin-top:26px;padding:14px 26px;font-size:17px}
+.ll-testimonios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.ll-testimonios figure{margin:0}.ll-testimonios .ll-video{margin-top:0}
+.ll-testimonios figcaption{margin-top:8px;font-weight:600;color:var(--gris)}

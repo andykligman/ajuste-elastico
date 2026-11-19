@@ -5,6 +5,11 @@
    ===================================================================== */
 const VIDEO_ENLACES = 'https://www.youtube.com/watch?v=TylWJrfPxu0';
 const DOC_ENLACES = 'https://docs.google.com/document/d/14Df9jDecsFC6HnizipZ0nu1pBbVw2kOBzvydTMo3VOk/edit';
+/* Presentación para quienes tienen la llamada conmigo (link ?llamada). IDs de YouTube; vacío = no se muestra */
+const LLAMADA = {
+  bienvenida: '',
+  testimonios: [{ nombre: 'Iña', id: '' }, { nombre: 'Manu', id: '' }],
+};
 const WHATSAPP_ANDY = '5491130994020';   // número con código de país, sin + ni espacios (ej. 5491112345678)
 const AULA = 'https://hotmart.com/es/club/andras-martan-kligman';
 const DOC_CUELLO_1_GUIA = 'https://docs.google.com/document/d/1P4SVjJFGVKgoYTP-DZD1ZNpM0q-ObKuh/edit';
@@ -234,6 +239,16 @@ const PROGRAMA = {
           resp: 'Si el error ronda el 50%, hay que dar **un paso atrás**: apagá el metrónomo y repasá la posición que haga falta, tomate tu tiempo. También podés pasar a tempo primero las posiciones que más te cuestan, y después juntarlas con las demás.' },
       ],
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.7icmi6cvsqs0', 'Segundo paso: pasar a tempo'] }],
+    },
+    {
+      id: 'p3c', etapa: 'pre', opcional: true, sinVideo: true,
+      titulo: 'Cómo bajar de cuerdas y volver a juntarlas',
+      stop: 'cuerdas',
+      pregunta: '¿Se entiende?',
+      progreso: [
+        { id: 'listo', label: 'Sí, lo tengo claro', nivel: 'listo' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
+      ],
     },
     {
       id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
