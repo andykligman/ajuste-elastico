@@ -252,7 +252,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=4`; presAudio.playbackRate = 1.1;
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=5`; presAudio.playbackRate = 1.1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };

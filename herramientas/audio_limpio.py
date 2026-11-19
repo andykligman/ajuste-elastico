@@ -7,16 +7,19 @@
 import subprocess, sys, re, numpy as np
 def run(a): return subprocess.run(a, capture_output=True, text=True)
 inp, out = sys.argv[1], sys.argv[2]
+# opcional: --ajustado = corta respiraciones/ruido al final y deja menos aire (para presentaciones dinámicas)
+ajustado = '--ajustado' in sys.argv[3:]
 # fin de la voz
 raw = subprocess.run(['ffmpeg','-v','error','-i',inp,'-ac','1','-ar','16000','-f','s16le','-'],capture_output=True).stdout
 x = np.frombuffer(raw,np.int16).astype(float)/32768; w=160
 r = [20*np.log10(np.sqrt(np.mean(x[k:k+w]**2))+1e-9) for k in range(0,len(x)-w,w)]
-voz = [i for i,v in enumerate(r) if v > -60]
+umbral = max(-60, max(r) - 36) if ajustado else -60
+voz = [i for i,v in enumerate(r) if v > umbral]
 ini = max(0, voz[0]*w/16000 - 0.08); fin = min(len(x)/16000, (voz[-1]+1)*w/16000 + 0.12)
 dur = fin - ini
 base = f"aformat=sample_fmts=flt,atrim={ini:.3f}:{fin:.3f},asetpts=N/SR/TB,highpass=f=70,afade=t=in:d=0.03,afade=t=out:st={max(0,dur-0.2):.3f}:d=0.2"
 m = run(['ffmpeg','-i',inp,'-af',base+',ebur128','-f','null','-'])
 I = float(re.findall(r'I:\s+(-?[\d.]+) LUFS', m.stderr)[-1])
 g = -25 - I
-subprocess.run(['ffmpeg','-v','error','-y','-i',inp,'-af',base+f',volume={g:.2f}dB,apad=pad_dur=0.4','-ac','1','-ar','48000','-c:a','aac','-b:a','128k',out],check=True)
+subprocess.run(['ffmpeg','-v','error','-y','-i',inp,'-af',base+f',volume={g:.2f}dB,apad=pad_dur=' + ('0.12' if ajustado else '0.4'),'-ac','1','-ar','48000','-c:a','aac','-b:a','128k',out],check=True)
 print(out, f'{dur:.2f}s gain {g:+.1f}dB')
