@@ -684,6 +684,16 @@ body.con-mapa{overflow:hidden}
   .ver-video-cel svg{width:17px;height:17px}
 }
 
+/* Ya me lo mandaste: una línea chica, a la derecha */
+.envio.envio-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:4px 14px;width:max-content;max-width:100%;margin:14px 0 0 auto;padding:7px 12px;border-radius:999px;font-size:14px}
+.envio.envio-ok .envio-t svg{width:16px;height:16px}
+.envio.envio-ok .envio-t strong{font-weight:600}
+.envio.envio-ok .cambiar-op{margin:0;font-size:12.5px}
+.envio.envio-ok .vids,.envio.envio-ok .fila-botones{width:100%;margin-left:0}
+.pv-titulo:has(#pv-aviso:empty){padding-top:4px;padding-bottom:4px}
+.envio.envio-ok .fila-botones:empty,.envio.envio-ok .vids:empty{display:none}
+@media (max-width:640px){.envio.envio-ok{border-radius:12px;gap:0 12px;padding:6px 12px;font-size:13.5px}.envio.envio-ok .cambiar-op{font-size:12px}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2197,7 +2207,7 @@ function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  if (sel && !cambiando.has(p.id)) return `<div class="pregunta respondida">
+  if (sel && sel.nivel === 'listo' && !cambiando.has(p.id)) return `<div class="pregunta respondida">
     ${sel.resp || sel.nivel === 'listo' ? respuestaHTML(sel, p) : ''}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
@@ -2249,7 +2259,7 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   return `<div class="tarjeta">
-    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver el video</span></button>` : ''}
+    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver video</span></button>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -2611,9 +2621,7 @@ function cerrarPanel() {
   else if (simple && playerVid) { const f = $('#yt'); if (f && f.tagName === 'IFRAME') { marcarVisto(playerVid); f.src = f.src.replace('&autoplay=1', ''); } }
 }
 function decidirPanel() {
-  const v = PASO[abierto] && PASO[abierto].video;
-  const p = PASO[abierto] || {};
-  if (!v || vistos.has(v.id) || p.stop || p.ciclo || p.hojaDeRuta) cerrarPanel(); else abrirPanel();
+  cerrarPanel();   // el video se abre solo con «Ver video», así se puede leer tranquilo
 }
 /* Líneas naranjas de fondo: 3 trazos gruesos de un solo color que cruzan toda la pantalla
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
@@ -2676,7 +2684,6 @@ function asegurarYT(cb) {
 }
 function sinSubtitulos(pl) { try { pl.unloadModule('captions'); } catch (e) {} try { pl.unloadModule('cc'); } catch (e) {} }
 function ponerVideo(id, t = 0, play = false) {
-  const tit = $('#pv-titulo'); if (tit) tit.textContent = VIDEOS[id] || '';
   if (playerVid && playerVid !== id) marcarCambio(t ? `Desde ${mmss(t)}` : '');
   else if (playerVid && t) marcarCambio(`Desde ${mmss(t)}`);
   if (simple || !(window.YT && window.YT.Player)) {

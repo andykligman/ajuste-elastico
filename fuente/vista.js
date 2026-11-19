@@ -318,7 +318,7 @@ function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  if (sel && !cambiando.has(p.id)) return `<div class="pregunta respondida">
+  if (sel && sel.nivel === 'listo' && !cambiando.has(p.id)) return `<div class="pregunta respondida">
     ${sel.resp || sel.nivel === 'listo' ? respuestaHTML(sel, p) : ''}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
@@ -370,7 +370,7 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   return `<div class="tarjeta">
-    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver el video</span></button>` : ''}
+    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver video</span></button>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -732,9 +732,7 @@ function cerrarPanel() {
   else if (simple && playerVid) { const f = $('#yt'); if (f && f.tagName === 'IFRAME') { marcarVisto(playerVid); f.src = f.src.replace('&autoplay=1', ''); } }
 }
 function decidirPanel() {
-  const v = PASO[abierto] && PASO[abierto].video;
-  const p = PASO[abierto] || {};
-  if (!v || vistos.has(v.id) || p.stop || p.ciclo || p.hojaDeRuta) cerrarPanel(); else abrirPanel();
+  cerrarPanel();   // el video se abre solo con «Ver video», así se puede leer tranquilo
 }
 /* Líneas naranjas de fondo: 3 trazos gruesos de un solo color que cruzan toda la pantalla
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
@@ -797,7 +795,6 @@ function asegurarYT(cb) {
 }
 function sinSubtitulos(pl) { try { pl.unloadModule('captions'); } catch (e) {} try { pl.unloadModule('cc'); } catch (e) {} }
 function ponerVideo(id, t = 0, play = false) {
-  const tit = $('#pv-titulo'); if (tit) tit.textContent = VIDEOS[id] || '';
   if (playerVid && playerVid !== id) marcarCambio(t ? `Desde ${mmss(t)}` : '');
   else if (playerVid && t) marcarCambio(`Desde ${mmss(t)}`);
   if (simple || !(window.YT && window.YT.Player)) {
