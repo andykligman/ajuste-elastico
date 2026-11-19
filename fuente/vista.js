@@ -733,7 +733,8 @@ function cerrarPanel() {
 }
 function decidirPanel() {
   const v = PASO[abierto] && PASO[abierto].video;
-  if (esCel() && (!v || vistos.has(v.id))) cerrarPanel(); else abrirPanel();
+  const p = PASO[abierto] || {};
+  if (!v || vistos.has(v.id) || p.stop || p.ciclo || p.hojaDeRuta) cerrarPanel(); else abrirPanel();
 }
 /* Líneas naranjas de fondo: 3 trazos gruesos de un solo color que cruzan toda la pantalla
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
@@ -808,7 +809,7 @@ function ponerVideo(id, t = 0, play = false) {
     player = new YT.Player('yt', { videoId: id, playerVars: { start: t, rel: 0, cc_load_policy: 0, playsinline: 1, modestbranding: 1 },
       events: { onReady: ev => { sinSubtitulos(ev.target); if (play) ev.target.playVideo(); },
                 onApiChange: ev => sinSubtitulos(ev.target),
-                onStateChange: ev => { if (ev.data === 1) { sinSubtitulos(ev.target); marcarVisto(playerVid); } if (ev.data === 0 && esCel()) cerrarPanel(); } } });
+                onStateChange: ev => { if (ev.data === 1) { sinSubtitulos(ev.target); marcarVisto(playerVid); } if (ev.data === 0) cerrarPanel(); } } });
   } else if (playerVid !== id) {
     play ? player.loadVideoById({ videoId: id, startSeconds: t }) : player.cueVideoById({ videoId: id, startSeconds: t });
   } else { player.seekTo(t, true); if (play) player.playVideo(); }

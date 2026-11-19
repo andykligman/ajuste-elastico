@@ -364,7 +364,7 @@ body.con-grabador{overflow:hidden}
 .rp-flecha{color:var(--rc);font-weight:700}
 .rp-etapa{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--rc);color:#0d0e10;font:600 14.5px var(--display)}
 .rp-etapa small{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
-.ruta-meta{margin:0;padding:10px 14px;border-left:3px solid var(--rc);background:color-mix(in srgb,var(--rc) 6%,transparent);border-radius:0 10px 10px 0}
+.ruta-meta{margin:0;padding:10px 14px;border-left:3px solid var(--linea);background:var(--sup2);border-radius:0 10px 10px 0}
 .ruta-clave{padding:14px 16px;border-radius:14px;border:1.5px solid #E8834F;background:rgba(232,131,79,.08)}
 .ruta-clave h5{color:#E8834F;margin-bottom:6px}
 .ruta-clave p{margin:6px 0 0;line-height:1.55}
@@ -600,11 +600,13 @@ body.con-mapa{overflow:hidden}
 @media (max-width:999px){.consulta{transition:bottom .4s ease}body:has(.barra-clase) .consulta.con-texto{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 62px)}}
 
 /* Video en el celu: botón para abrirlo y ✕ para cerrarlo */
-.pv-cerrar{display:none}
 .ver-video-cel{display:none}
-@media (max-width:999px){
-  .layout.pv-cerrado .panel-video{display:none}
-  .pv-cerrar{display:block;margin-left:auto;background:none;border:0;color:var(--gris);font-size:17px;padding:2px 6px;cursor:pointer}
+.layout.pv-cerrado{grid-template-columns:minmax(0,1fr)}
+.layout.pv-cerrado .panel-video{display:none}
+.layout.pv-cerrado .alumno{max-width:1100px;width:100%;margin:0 auto}
+.pv-cerrar{display:block;margin-left:auto;background:none;border:0;color:var(--gris);font-size:17px;padding:2px 6px;cursor:pointer}
+.pv-cerrar:hover{color:var(--tinta)}
+@media all{
   .layout.pv-cerrado .ver-video-cel{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:var(--sup2);border:1px solid var(--linea);color:var(--tinta);font:600 14.5px var(--sans);cursor:pointer}
   .ver-video-cel svg{width:17px;height:17px}
 }
