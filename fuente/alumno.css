@@ -750,3 +750,13 @@ body.con-mapa{overflow:hidden}
 .rec-pie{display:flex;justify-content:flex-end;margin-top:10px}
 .rec-ok{position:static;padding:6px 18px}
 .resp-rec .resp-tit{padding-right:0}
+
+/* «Escribime para destrabar este paso» */
+.resp-wa{display:flex;align-items:center;gap:12px;margin-top:14px;padding:14px 18px;border-radius:12px;background:#12251C;border:1.5px solid #3FB37F;color:#5BD49A;font-weight:600;font-size:16px;text-decoration:none;animation:aparecerResp .35s ease}
+.resp-wa svg{width:24px;height:24px;flex:none}
+.resp-wa span{color:var(--tinta)}
+.resp-wa:hover{background:#163021}
+.pregunta.respondida .resp-wa{margin-top:0}
+.consulta{transition:opacity .5s ease}
+.consulta.apagado{opacity:0;pointer-events:none}
+.pv-cerrar{font-size:13.5px!important;font-weight:600;padding:4px 10px!important;border:1px solid var(--linea)!important;border-radius:999px}

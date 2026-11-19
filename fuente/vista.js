@@ -342,8 +342,9 @@ function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
-  if (sel && sel.nivel === 'listo' && !cambiando.has(p.id)) return `<div class="pregunta respondida">
-    ${sel.resp || sel.nivel === 'listo' ? respuestaHTML(sel, p) : ''}
+  // Elegida cualquier opción: se cierran las opciones y queda el mensaje (o la recomendación) con «Cambiar respuesta»
+  if (sel && !cambiando.has(p.id)) return `<div class="pregunta respondida">
+    ${respOMinimizada(sel, p)}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
     <button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button>
@@ -352,9 +353,7 @@ function preguntaHTML(st, p) {
     <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && (sel.resp || sel.nivel === 'listo') ? (sel.nivel !== 'listo' && recCerradas.has(p.id)
-      ? `<button class="rec-min" data-rec-abrir="${p.id}">${ICONO.idea}<span>Ver recomendación</span></button>`
-      : respuestaHTML(sel, p)) : ''}
+    ${sel ? respOMinimizada(sel, p) : ''}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
@@ -363,6 +362,19 @@ function preguntaHTML(st, p) {
 /* Respuesta según cómo le fue: verde con tilde si va bien, recuadro de recomendación si no */
 /* Cuando marca que le salió y el paso no trae respuesta propia, igual le llega un mensaje en verde */
 const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue'];
+/* «Escribime…» solo: en vez de recomendación, directo el cartel verde a WhatsApp */
+const soloEscribime = sel => !!(sel && sel.nivel === 'cuesta' && sel.resp && /escrib[ií]me/i.test(sel.resp) && sel.resp.length < 80);
+function respOMinimizada(sel, p) {
+  if (!(sel.resp || sel.nivel === 'listo')) return '';
+  if (soloEscribime(sel)) return waCartelHTML(p);
+  if (sel.nivel !== 'listo' && recCerradas.has(p.id)) return `<button class="rec-min" data-rec-abrir="${p.id}">${ICONO.idea}<span>Ver recomendación</span></button>`;
+  return respuestaHTML(sel, p);
+}
+function waCartelHTML(p) {
+  if (typeof WHATSAPP_ANDY === 'undefined' || !WHATSAPP_ANDY) return '';
+  const txt = `Andy, me trabé en "${p.titulo}": `;
+  return `<a class="resp-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>Escribime para destrabar este paso</span></a>`;
+}
 function respuestaHTML(sel, p) {
   const ok = sel.nivel === 'listo';
   if (ok && !sel.resp && p) {
@@ -411,7 +423,7 @@ function tarjetaHTML(st, e, p) {
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !(sel?.nivel === 'casi' && sel.resp && !recCerradas.has(p.id)) ? envioHTML(st, p) : ''}
-    ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
@@ -790,8 +802,8 @@ function escribimeHTML(p) {
 }
 function llamarConsulta() {
   const el = document.getElementById('consulta'); if (!el) return;
-  el.classList.add('llamando');   // solo late: el cartel tapaba la recomendación
-  clearTimeout(el._llamar); el._llamar = setTimeout(() => el.classList.remove('llamando'), 6000);
+  el.classList.add('apagado');   // se desvanece un momento: el botón para escribir está en el paso
+  clearTimeout(el._llamar); el._llamar = setTimeout(() => el.classList.remove('apagado'), 5000);
 }
 function consultaHTML() {
   let el = document.getElementById('consulta');
@@ -832,7 +844,7 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span><button class="pv-cerrar" data-pv-cerrar aria-label="Cerrar video">✕</button></p></aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span><button class="pv-cerrar" data-pv-cerrar>Cerrar video</button></p></aside>`;
 }
 /* En el celu el video ocupa media pantalla: se muestra si el video del paso no se vio,
    o cuando el alumno toca un botón de video; se cierra con la ✕, al terminar o al cambiar de paso */
@@ -957,7 +969,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && (modo === 'alumno' || modo === 'admin-prueba') && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
+  if (animar && modo === 'alumno' && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
