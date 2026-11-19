@@ -26,8 +26,8 @@ function requeridos(k, col) {
 const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2, ritmo: 3, curva: 4 };
 const MODULOS = [
   { n: 0, titulo: 'Módulo 0', sub: 'Antes de la primera clase', nombre: 'Antes de la primera clase', color: '#E883AE' },
-  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#E8834F' },
-  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#7DB4FF' },
+  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#5D7BB6' },
+  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#5BC8D9' },
   { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico', nombre: 'Entrenamiento rítmico', color: '#5BD49A' },
   { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo', nombre: 'Curva del Solo', color: '#C7A6F2' },
 ];

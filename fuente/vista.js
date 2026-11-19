@@ -246,6 +246,7 @@ function stopInner(id) {
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
+    <span class="stop-logo" aria-hidden="true">${LOGO}</span>
     ${!e.visto ? `<button class="stop-play-grande" data-stop-acc="play" data-stop-id="${id}" aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="spg-txt">Reproducir</span></button>` : ''}
     </div>
     ${e.visto ? `<div class="stop-ctrl">
@@ -256,7 +257,7 @@ function stopInner(id) {
 }
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
-const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.2; stopAudio.preservesPitch = true;
+const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.3; stopAudio.preservesPitch = true;
 const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=15` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
@@ -268,7 +269,7 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.2;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = src; stopAudio.playbackRate = 1.3;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
@@ -657,7 +658,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
-const audioIntro = new Audio(); audioIntro.preload = 'auto';
+const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.3; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
 const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
@@ -668,6 +669,7 @@ function mostrarIntro() {
   el.className = 'intro-aula'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cómo funciona el aula');
   const nodo = i => `<span class="in-nodo" data-n="${i}"><b>${i}</b><i>${ICONO.check}</i></span>`;
   el.innerHTML = `<div class="in-caja">
+    <div class="logo-ae">${LOGO}</div>
     <p class="in-sobre">Cómo funciona el aula</p>
     <p class="in-texto" aria-live="polite"></p>
     <div class="in-escena" data-s="1">
@@ -702,9 +704,9 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8';   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.3;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.3 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
@@ -724,7 +726,7 @@ function celebrarModulo(m, alCerrar) {
   const M = MODULOS[m];
   const el = document.createElement('div');
   el.className = 'pase-modulo'; el.style.setProperty('--mc', M.color); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Nuevo módulo');
-  el.innerHTML = `<div class="pm-in"><p class="pm-pre">${m === 0 ? 'Empezás' : 'Pasaste al'}</p><p class="pm-num">${esc(M.titulo)}</p><h2>${esc(M.nombre)}</h2>
+  el.innerHTML = `<div class="pm-in"><div class="logo-ae">${LOGO}</div><p class="pm-pre">${m === 0 ? 'Empezás' : 'Pasaste al'}</p><p class="pm-num">${esc(M.titulo)}</p><h2>${esc(M.nombre)}</h2>
     <button class="primario" data-pm>${m === 0 ? 'Empezar' : 'Arrancar'}</button></div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add('visible'));
@@ -982,10 +984,10 @@ function lineasHTML() {
   return `<svg class="lineas" viewBox="0 0 ${W} ${H}" aria-hidden="true">
     <defs>
       <linearGradient id="lg-cuerpo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
-        <stop offset="0" stop-color="#E8834F" stop-opacity=".45"/><stop offset=".55" stop-color="#E8834F" stop-opacity=".3"/><stop offset="1" stop-color="#E8834F" stop-opacity=".06"/>
+        <stop offset="0" stop-color="#5D7BB6" stop-opacity=".45"/><stop offset=".55" stop-color="#5D7BB6" stop-opacity=".3"/><stop offset="1" stop-color="#5D7BB6" stop-opacity=".06"/>
       </linearGradient>
       <linearGradient id="lg-filo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
-        <stop offset="0" stop-color="#F6B48D" stop-opacity=".9"/><stop offset="1" stop-color="#F6B48D" stop-opacity=".1"/>
+        <stop offset="0" stop-color="#A9BEE8" stop-opacity=".9"/><stop offset="1" stop-color="#A9BEE8" stop-opacity=".1"/>
       </linearGradient>
     </defs>
     ${LINEAS.map((l, i) => `<path class="l-cuerpo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}"/>`).join('')}
@@ -1171,7 +1173,7 @@ function confeti(origen) {
   const r = origen.getBoundingClientRect();
   const c = document.createElement('canvas'); c.className = 'confeti'; c.width = innerWidth; c.height = innerHeight;
   document.body.appendChild(c); const g = c.getContext('2d');
-  const colores = ['#E8834F', '#FFFFFF', '#5D7BB6', '#F2B591', '#C24A22'];
+  const colores = ['#5D7BB6', '#FFFFFF', '#5D7BB6', '#A9BEE8', '#C24A22'];
   const ps = Array.from({ length: 110 }, () => ({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 3,
     s: 4 + Math.random() * 5, a: Math.random() * 6, va: (Math.random() - .5) * .3, col: colores[Math.floor(Math.random() * colores.length)] }));
   let f = 0;

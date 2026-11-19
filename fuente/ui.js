@@ -181,7 +181,6 @@ function renderLlamada() {
   const tes = (LLAMADA.testimonios || []).filter(t => t.id);
   app().innerHTML = `${barra('')}
   <main class="llamada">
-    <p class="ll-sobre">Ajuste Elástico</p>
     <h1>Si te llegó este link es porque vamos a tener una llamada 🙌</h1>
     <p class="ll-texto">Te dejo un <strong>entrenamiento gratuito</strong> y una primera experiencia con el mapa de Ajuste Elástico.</p>
     <p class="ll-texto">No tenés que traer nada preparado para la llamada: es para que explores si tenés ganas 😉</p>

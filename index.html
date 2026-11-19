@@ -22,7 +22,7 @@
   --fondo:#111214; --sup:#1B1C20; --sup2:#24262B; --linea:#2E3036;
   --tinta:#EDEEF0; --gris:#9DA2AC; --blanco:#FFFFFF;
   --azul:#5D7BB6; --azul-txt:#A9BEE8; --azul-osc:#3A4F7A; --azul-claro:#22304A; --azul-velo:#1A2232;
-  --oxido:#E2643A; --oxido-txt:#F29A78; --oxido-claro:#3A2219; --naranja:#E8834F; --naranja-claro:#33241B;
+  --oxido:#E2643A; --oxido-txt:#F29A78; --oxido-claro:#3A2219; --naranja:#5D7BB6; --naranja-claro:#1A2232;
   --papel:var(--fondo);
   --radio-s:6px; --radio-m:12px;
   --sans:'Source Sans 3', system-ui, sans-serif; --display:'Poppins', system-ui, sans-serif;
@@ -45,7 +45,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 
 /* Barra */
 .barra{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 28px;background:var(--fondo);border-bottom:1px solid var(--linea)}
-.marca svg{height:56px;width:auto;display:block}
+.marca svg{height:64px;width:auto;display:block}
 .barra-der{display:flex;gap:14px;align-items:center;font-size:15px}
 .quien{font-weight:600}
 .firma{font-family:var(--display);font-weight:500;font-size:17px;letter-spacing:.02em;color:#3A4F7A;white-space:nowrap}
@@ -79,10 +79,10 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .pv-marco{position:relative;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--linea)}
 .pv-marco iframe,.pv-marco #yt{position:absolute;inset:0;width:100%;height:100%;border:0}
 .pv-titulo{margin:0;font-family:var(--display);font-weight:500;font-size:15px;color:var(--gris);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.pv-aviso{font-family:var(--sans);font-size:13px;font-weight:600;color:#1B1208;background:var(--naranja);padding:2px 10px;border-radius:999px;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+.pv-aviso{font-family:var(--sans);font-size:13px;font-weight:600;color:#0B1220;background:var(--naranja);padding:2px 10px;border-radius:999px;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
 .pv-aviso.ver{opacity:1;transform:none}
 .panel-video.cambio .pv-marco{animation:cambioVideo .7s ease}
-@keyframes cambioVideo{0%{box-shadow:0 0 0 0 rgba(232,131,79,.9)}40%{box-shadow:0 0 0 6px rgba(232,131,79,.55)}100%{box-shadow:0 0 0 0 rgba(232,131,79,0)}}
+@keyframes cambioVideo{0%{box-shadow:0 0 0 0 rgba(93,123,182,.9)}40%{box-shadow:0 0 0 6px rgba(93,123,182,.55)}100%{box-shadow:0 0 0 0 rgba(93,123,182,0)}}
 
 /* Encabezado */
 .hero{padding:28px 0 6px}
@@ -142,7 +142,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .nodo-tit small{font-size:14px;color:var(--gris)}
 .nodo-tit small.oxido{color:var(--oxido-txt);font-weight:600}
 .nodo.abierto{margin:14px 0 22px}
-.nodo.abierto .punto{width:58px;height:58px;font-size:18px;background:var(--naranja);border-color:var(--naranja);color:#1B1208;box-shadow:0 0 0 7px rgba(232,131,79,.18)}
+.nodo.abierto .punto{width:58px;height:58px;font-size:18px;background:var(--naranja);border-color:var(--naranja);color:#0B1220;box-shadow:0 0 0 7px rgba(93,123,182,.18)}
 .nodo.abierto.est-listo .punto,.nodo.abierto.est-casi .punto{background:var(--naranja);border-color:var(--naranja)}
 .nodo.abierto .nodo-tit span{font-family:var(--display);font-weight:600;font-size:22px;color:var(--tinta);line-height:1.2}
 .tarjeta{position:relative;z-index:1;margin:12px 0 0 0;background:var(--sup);border:1px solid var(--linea);border-radius:14px;padding:20px 22px 22px;animation:abrir .25s cubic-bezier(.2,.8,.3,1) both}
@@ -261,9 +261,9 @@ a.mat svg{color:var(--azul-txt)}
 .doc-nuevo>span:nth-child(2){min-width:0}
 .pv-aviso:empty{display:none}
 /* Envío obligatorio antes de seguir */
-.envio{margin-top:18px;padding:16px 18px;border-radius:12px;background:#2A1E16;border:1px solid #E8834F}
+.envio{margin-top:18px;padding:16px 18px;border-radius:12px;background:#1A2232;border:1px solid #5D7BB6}
 .envio-t{display:flex;gap:10px;align-items:center;margin:0}
-.envio-t svg{width:20px;height:20px;color:#E8834F;flex:none}
+.envio-t svg{width:20px;height:20px;color:#5D7BB6;flex:none}
 .envio-c{margin:6px 0 12px 30px;color:var(--tenue,#A4A7AE);font-size:15px}
 .envio .fila-botones{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-left:30px}
 .envio-check{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:var(--sup2);cursor:pointer;font-weight:600}
@@ -290,7 +290,7 @@ a.mat svg{color:var(--azul-txt)}
 .bc-puntos{display:flex;gap:5px;margin-top:4px}
 .bc-puntos i{width:9px;height:9px;border-radius:50%;background:var(--linea)}
 .bc-puntos i.ok{background:var(--tinta)}
-.bc-puntos i.ahora{background:var(--naranja);box-shadow:0 0 0 3px rgba(232,131,79,.25)}
+.bc-puntos i.ahora{background:var(--naranja);box-shadow:0 0 0 3px rgba(93,123,182,.25)}
 .bc-sig{display:grid;text-align:right;gap:1px;max-width:58%;padding:8px 12px;border-radius:10px;background:var(--sup2);border:1px solid var(--linea)}
 .bc-sig small{font-size:12.5px;color:var(--naranja);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .bc-sig span{font-size:14.5px;font-weight:600;line-height:1.25;color:var(--tinta);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -396,7 +396,7 @@ body.con-grabador{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.pase-modulo,.pm-in{transition:none}}
 
 /* Pregunta grande: «¿Ya tuviste la clase N?» cuando ya tiene todo lo esperado para esa clase */
-.pregunta-clase{margin:18px 0 4px;padding:18px 18px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(232,131,79,.16),rgba(232,131,79,.05));border:1px solid rgba(232,131,79,.45)}
+.pregunta-clase{margin:18px 0 4px;padding:18px 18px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(93,123,182,.16),rgba(93,123,182,.05));border:1px solid rgba(93,123,182,.45)}
 .pregunta-clase p{margin:0 0 14px;color:var(--gris);font-size:15.5px;line-height:1.45}
 .pregunta-clase strong{display:block;font-family:var(--display);font-weight:600;font-size:clamp(19px,4.4vw,22px);color:var(--tinta);margin-bottom:4px}
 .pregunta-clase .fila-botones{display:flex;gap:10px;flex-wrap:wrap}
@@ -438,8 +438,8 @@ body.con-grabador{overflow:hidden}
 .rp-etapa{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--rc);color:#0d0e10;font:600 14.5px var(--display)}
 .rp-etapa small{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.18);font-size:11px}
 .ruta-meta{margin:0;padding:10px 14px;border-left:3px solid var(--linea);background:var(--sup2);border-radius:0 10px 10px 0}
-.ruta-clave{padding:14px 16px;border-radius:14px;border:1.5px solid #E8834F;background:rgba(232,131,79,.08)}
-.ruta-clave h5{color:#E8834F;margin-bottom:6px}
+.ruta-clave{padding:14px 16px;border-radius:14px;border:1.5px solid #5D7BB6;background:rgba(93,123,182,.08)}
+.ruta-clave h5{color:#5D7BB6;margin-bottom:6px}
 .ruta-clave p{margin:6px 0 0;line-height:1.55}
 .ruta-cierre{margin:0;font:500 16.5px/1.5 var(--display);text-align:center;padding:4px 8px}
 @media (max-width:560px){.ruta-puente{flex-direction:column;gap:4px}.rp-flecha{transform:rotate(90deg)}}
@@ -705,13 +705,13 @@ body.con-mapa{overflow:hidden}
 
 /* ---------- Cómo funciona el aula (animación de bienvenida) ---------- */
 .boton-mapa2{margin-left:0}
-.intro-aula{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:radial-gradient(120% 80% at 50% 30%,#2A1C14,#0B0B0D 72%);opacity:0;transition:opacity .4s ease}
+.intro-aula{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:radial-gradient(120% 80% at 50% 30%,#17213A,#0B0B0D 72%);opacity:0;transition:opacity .4s ease}
 .intro-aula.visible{opacity:1}
 .in-caja{width:100%;max-width:560px;display:flex;flex-direction:column;gap:18px}
 .in-sobre{margin:0;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--naranja);text-align:center}
 .in-texto{margin:0;min-height:3.9em;text-align:center;font:500 clamp(19px,4.6vw,24px)/1.3 var(--display);color:var(--tinta);opacity:0;transform:translateY(6px)}
 .in-texto.ver{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
-.in-texto strong{color:#F6B48D;font-weight:600}
+.in-texto strong{color:#A9BEE8;font-weight:600}
 .in-escena{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
 .in-camino{position:relative;display:flex;flex-direction:column;align-items:center;gap:30px;padding-top:6px}
 .in-linea{position:absolute;inset:6px 0 6px 0;width:100%;height:calc(100% - 12px)}
@@ -721,7 +721,7 @@ body.con-mapa{overflow:hidden}
 .in-nodo i svg{width:16px;height:16px}
 .in-nodo.hecho{background:var(--tinta);color:#111;border-color:var(--tinta)}
 .in-nodo.hecho b{display:none}.in-nodo.hecho i{display:block}
-.in-nodo.ahora{background:var(--naranja);color:#1B1208;border-color:var(--naranja);transform:scale(1.18);box-shadow:0 0 0 6px rgba(232,131,79,.18)}
+.in-nodo.ahora{background:var(--naranja);color:#0B1220;border-color:var(--naranja);transform:scale(1.18);box-shadow:0 0 0 6px rgba(93,123,182,.18)}
 .in-escena[data-s="1"] .in-nodo{animation:inLate 1.2s ease both}
 .in-escena[data-s="1"] .in-nodo:nth-child(3){animation-delay:.6s}.in-escena[data-s="1"] .in-nodo:nth-child(4){animation-delay:1.2s}.in-escena[data-s="1"] .in-nodo:nth-child(5){animation-delay:1.8s}
 @keyframes inLate{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1}}
@@ -740,11 +740,11 @@ body.con-mapa{overflow:hidden}
 .in-vid.foco .in-play{animation:inLatido 1.4s ease infinite}
 @keyframes inLatido{50%{transform:scale(1.12)}}
 .in-doc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--naranja-claro);border:1.5px solid var(--naranja)}
-.in-doc-ico{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--naranja);color:#1B1208}
+.in-doc-ico{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--naranja);color:#0B1220}
 .in-doc-ico svg{width:20px;height:20px}
 .in-doc small{display:block;font:600 11.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--naranja)}
 .in-doc strong{font-size:15px;color:var(--tinta)}
-.in-doc.foco{transform:scale(1.04);box-shadow:0 0 0 6px rgba(232,131,79,.18),0 0 34px rgba(232,131,79,.35)}
+.in-doc.foco{transform:scale(1.04);box-shadow:0 0 0 6px rgba(93,123,182,.18),0 0 34px rgba(93,123,182,.35)}
 .in-aux{display:flex;gap:8px;flex-wrap:wrap}
 .in-aux span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--sup2);border:1px solid var(--linea);font-size:13.5px;color:var(--tinta)}
 .in-aux svg{width:13px;height:13px}
@@ -781,8 +781,8 @@ body.con-mapa{overflow:hidden}
 @media (max-width:560px){.stop-texto.grande{min-height:300px;font-size:22px}}
 
 /* Bienvenida: «Arrancar» se destaca al final */
-.in-ctrl .primario.in-final{background:var(--naranja);color:#1B1208;animation:inArrancar 1.6s ease infinite;box-shadow:0 0 0 0 rgba(232,131,79,.55)}
-@keyframes inArrancar{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,131,79,.55)}50%{transform:scale(1.07);box-shadow:0 0 0 12px rgba(232,131,79,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,131,79,0)}}
+.in-ctrl .primario.in-final{background:var(--naranja);color:#0B1220;animation:inArrancar 1.6s ease infinite;box-shadow:0 0 0 0 rgba(93,123,182,.55)}
+@keyframes inArrancar{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(93,123,182,.55)}50%{transform:scale(1.07);box-shadow:0 0 0 12px rgba(93,123,182,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(93,123,182,0)}}
 
 /* «Escribime» cuando algo cuesta */
 .escribime{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:9px 16px;border-radius:999px;background:#1F8A57;color:#fff;font-weight:600;font-size:15px;text-decoration:none}
@@ -816,9 +816,9 @@ body.con-mapa{overflow:hidden}
 .rec-ok:hover{opacity:1}
 .resp-rec .resp-tit{padding-right:56px}
 
-.rec-min{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(232,131,79,.5);background:rgba(232,131,79,.08);color:#F0A57C;font:600 13.5px var(--sans);cursor:pointer}
+.rec-min{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(93,123,182,.5);background:rgba(93,123,182,.08);color:#A9BEE8;font:600 13.5px var(--sans);cursor:pointer}
 .rec-min svg{width:15px;height:15px}
-.rec-min:hover{background:rgba(232,131,79,.16)}
+.rec-min:hover{background:rgba(93,123,182,.16)}
 .resp-rec>div{flex:1}
 .rec-pie{display:flex;justify-content:flex-end;margin-top:10px}
 .rec-ok{position:static;padding:6px 18px}
@@ -900,7 +900,7 @@ body.con-mapa{overflow:hidden}
 .doc-visor{position:fixed;inset:0;z-index:3000;background:#fff;display:flex;flex-direction:column}
 .dv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:#1B1C20;color:#fff}
 .dv-cerrar{background:none;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 16px;font:600 15px var(--sans);color:#fff;cursor:pointer}
-.dv-barra a{font-size:14px;color:#E8834F}
+.dv-barra a{font-size:14px;color:#5D7BB6}
 .dv-marco{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff}
 .dv-cargando{padding:40px 20px;text-align:center;color:#555;font:16px var(--sans)}
 body.dv-abierto{overflow:hidden}
@@ -946,6 +946,15 @@ body.dv-abierto{overflow:hidden}
 .stop-texto.grande strong{color:var(--azul-txt)}
 .stop-texto.grande.malo{color:#FFB8A8}
 .stop-texto.grande.malo strong{color:#FFD3C8}
+
+/* Logo de AE en más lugares */
+.logo-ae{display:flex;justify-content:center;margin:0 auto 14px}
+.logo-ae svg{height:58px;width:auto;display:block}
+.ll-logo{justify-content:flex-start}
+.ll-logo svg{height:76px}
+.stop-logo{position:absolute;right:10px;bottom:8px;z-index:1;opacity:.55;pointer-events:none}
+.stop-logo svg{height:30px;width:auto;display:block}
+@media (max-width:560px){.logo-ae svg{height:46px}.ll-logo svg{height:58px}.stop-logo svg{height:24px}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1084,7 +1093,7 @@ body.dv-abierto{overflow:hidden}
 @media (max-width:560px){
   body{font-size:16.5px}
   .barra{padding:12px 16px}
-  .marca svg{height:40px}
+  .marca svg{height:48px}
   .ajustes{grid-template-columns:1fr}
   .fila-extra{grid-template-columns:1fr}
 }
@@ -1109,7 +1118,7 @@ body.dv-abierto{overflow:hidden}
 <div id="app" aria-live="off"></div>
 <div id="aviso" role="status"></div>
 <script>
-const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" width="497" height="112" viewBox="0 0 497 112" role="img" aria-label="Ajuste Elástico"><path d="M27.7734375 19.14453125 20.81640625 38.009765625H34.755859375ZM24.87890625 14.091796875H30.693359375L45.140625 52.0H39.80859375L36.35546875 42.275390625H19.267578125L15.814453125 52.0H10.40625ZM52.17578125 14.091796875H57.3046875V49.359375Q57.3046875 56.21484375 54.7021484375 59.3125Q52.099609375 62.41015625 46.3359375 62.41015625H44.380859375V58.09375H45.98046875Q49.3828125 58.09375 50.779296875 56.189453125Q52.17578125 54.28515625 52.17578125 49.359375ZM68.427734375 14.091796875H73.58203125V37.12109375Q73.58203125 43.21484375 75.791015625 45.8935546875Q78.0 48.572265625 82.951171875 48.572265625Q87.876953125 48.572265625 90.0859375 45.8935546875Q92.294921875 43.21484375 92.294921875 37.12109375V14.091796875H97.44921875V37.755859375Q97.44921875 45.169921875 93.7802734375 48.953125Q90.111328125 52.736328125 82.951171875 52.736328125Q75.765625 52.736328125 72.0966796875 48.953125Q68.427734375 45.169921875 68.427734375 37.755859375ZM131.296875 15.3359375V20.337890625Q128.376953125 18.94140625 125.787109375 18.255859375Q123.197265625 17.5703125 120.78515625 17.5703125Q116.595703125 17.5703125 114.3232421875 19.1953125Q112.05078125 20.8203125 112.05078125 23.81640625Q112.05078125 26.330078125 113.5615234375 27.6123046875Q115.072265625 28.89453125 119.287109375 29.681640625L122.384765625 30.31640625Q128.123046875 31.408203125 130.8525390625 34.1630859375Q133.58203125 36.91796875 133.58203125 41.5390625Q133.58203125 47.048828125 129.8876953125 49.892578125Q126.193359375 52.736328125 119.05859375 52.736328125Q116.3671875 52.736328125 113.3330078125 52.126953125Q110.298828125 51.517578125 107.048828125 50.32421875V45.04296875Q110.171875 46.794921875 113.16796875 47.68359375Q116.1640625 48.572265625 119.05859375 48.572265625Q123.451171875 48.572265625 125.837890625 46.845703125Q128.224609375 45.119140625 128.224609375 41.919921875Q128.224609375 39.126953125 126.5107421875 37.552734375Q124.796875 35.978515625 120.88671875 35.19140625L117.763671875 34.58203125Q112.025390625 33.439453125 109.4609375 31.001953125Q106.896484375 28.564453125 106.896484375 24.22265625Q106.896484375 19.1953125 110.4384765625 16.30078125Q113.98046875 13.40625 120.201171875 13.40625Q122.8671875 13.40625 125.634765625 13.888671875Q128.40234375 14.37109375 131.296875 15.3359375ZM137.82421875 14.091796875H169.892578125V18.408203125H156.435546875V52.0H151.28125V18.408203125H137.82421875ZM176.34375 14.091796875H200.3125V18.408203125H181.47265625V29.630859375H199.525390625V33.947265625H181.47265625V47.68359375H200.76953125V52.0H176.34375Z" fill="#3A4F7A"/><path d="M227.228515625 14.091796875H251.197265625V18.408203125H232.357421875V29.630859375H250.41015625V33.947265625H232.357421875V47.68359375H251.654296875V52.0H227.228515625ZM261.583984375 14.091796875H266.712890625V47.68359375H285.171875V52.0H261.583984375ZM304.724609375 19.14453125 297.767578125 38.009765625H311.70703125ZM301.830078125 14.091796875H307.64453125L322.091796875 52.0H316.759765625L313.306640625 42.275390625H296.21875L292.765625 52.0H287.357421875ZM306.12109375 3.783203125H310.818359375L305.029296875 10.486328125H301.14453125ZM351.8515625 15.3359375V20.337890625Q348.931640625 18.94140625 346.341796875 18.255859375Q343.751953125 17.5703125 341.33984375 17.5703125Q337.150390625 17.5703125 334.8779296875 19.1953125Q332.60546875 20.8203125 332.60546875 23.81640625Q332.60546875 26.330078125 334.1162109375 27.6123046875Q335.626953125 28.89453125 339.841796875 29.681640625L342.939453125 30.31640625Q348.677734375 31.408203125 351.4072265625 34.1630859375Q354.13671875 36.91796875 354.13671875 41.5390625Q354.13671875 47.048828125 350.4423828125 49.892578125Q346.748046875 52.736328125 339.61328125 52.736328125Q336.921875 52.736328125 333.8876953125 52.126953125Q330.853515625 51.517578125 327.603515625 50.32421875V45.04296875Q330.7265625 46.794921875 333.72265625 47.68359375Q336.71875 48.572265625 339.61328125 48.572265625Q344.005859375 48.572265625 346.392578125 46.845703125Q348.779296875 45.119140625 348.779296875 41.919921875Q348.779296875 39.126953125 347.0654296875 37.552734375Q345.3515625 35.978515625 341.44140625 35.19140625L338.318359375 34.58203125Q332.580078125 33.439453125 330.015625 31.001953125Q327.451171875 28.564453125 327.451171875 24.22265625Q327.451171875 19.1953125 330.9931640625 16.30078125Q334.53515625 13.40625 340.755859375 13.40625Q343.421875 13.40625 346.189453125 13.888671875Q348.95703125 14.37109375 351.8515625 15.3359375ZM358.37890625 14.091796875H390.447265625V18.408203125H376.990234375V52.0H371.8359375V18.408203125H358.37890625ZM396.8984375 14.091796875H402.02734375V52.0H396.8984375ZM442.12109375 17.01171875V22.419921875Q439.53125 20.0078125 436.5986328125 18.814453125Q433.666015625 17.62109375 430.365234375 17.62109375Q423.865234375 17.62109375 420.412109375 21.5947265625Q416.958984375 25.568359375 416.958984375 33.083984375Q416.958984375 40.57421875 420.412109375 44.5478515625Q423.865234375 48.521484375 430.365234375 48.521484375Q433.666015625 48.521484375 436.5986328125 47.328125Q439.53125 46.134765625 442.12109375 43.72265625V49.080078125Q439.4296875 50.908203125 436.4208984375 51.822265625Q433.412109375 52.736328125 430.060546875 52.736328125Q421.453125 52.736328125 416.501953125 47.4677734375Q411.55078125 42.19921875 411.55078125 33.083984375Q411.55078125 23.943359375 416.501953125 18.6748046875Q421.453125 13.40625 430.060546875 13.40625Q433.462890625 13.40625 436.4716796875 14.3076171875Q439.48046875 15.208984375 442.12109375 17.01171875ZM466.9296875 17.5703125Q461.34375 17.5703125 458.0556640625 21.734375Q454.767578125 25.8984375 454.767578125 33.083984375Q454.767578125 40.244140625 458.0556640625 44.408203125Q461.34375 48.572265625 466.9296875 48.572265625Q472.515625 48.572265625 475.7783203125 44.408203125Q479.041015625 40.244140625 479.041015625 33.083984375Q479.041015625 25.8984375 475.7783203125 21.734375Q472.515625 17.5703125 466.9296875 17.5703125ZM466.9296875 13.40625Q474.90234375 13.40625 479.67578125 18.7509765625Q484.44921875 24.095703125 484.44921875 33.083984375Q484.44921875 42.046875 479.67578125 47.3916015625Q474.90234375 52.736328125 466.9296875 52.736328125Q458.931640625 52.736328125 454.1455078125 47.404296875Q449.359375 42.072265625 449.359375 33.083984375Q449.359375 24.095703125 454.1455078125 18.7509765625Q458.931640625 13.40625 466.9296875 13.40625Z" fill="#E8834F"/><path d="M 10.0,83.4 L 15.2,83.0 L 20.3,82.7 L 25.6,82.3 L 30.8,82.0 L 35.9,81.7 L 41.1,81.5 L 46.3,81.4 L 51.4,81.4 L 56.7,81.4 L 61.8,81.6 L 67.0,81.8 L 72.2,82.0 L 77.3,82.3 L 82.6,82.7 L 87.8,83.1 L 92.9,83.4 L 98.1,83.8 L 103.3,84.1 L 108.4,84.4 L 113.7,84.6 L 118.9,84.7 L 124.0,84.7 L 129.2,84.7 L 134.4,84.5 L 139.6,84.3 L 144.8,84.0 L 150.0,83.7 L 155.1,83.2 L 160.3,82.7 L 165.4,82.2 L 170.7,81.6 L 175.9,81.0 L 181.0,80.5 L 186.2,79.9 L 191.4,79.3 L 196.6,78.8 L 201.8,78.4 L 207.0,78.0 L 212.1,77.6 L 217.3,77.3 L 222.5,77.1 L 227.7,76.9 L 232.9,76.8 L 238.0,76.8 L 243.2,76.8 L 248.4,76.9 L 253.7,77.1 L 258.8,77.3 L 264.0,77.5 L 269.1,77.7 L 274.3,78.0 L 279.5,78.3 L 284.7,78.6 L 289.9,78.9 L 295.1,79.2 L 300.2,79.5 L 305.4,79.7 L 310.7,80.0 L 315.8,80.2 L 321.0,80.3 L 326.1,80.5 L 331.3,80.5 L 336.5,80.6 L 341.7,80.6 L 346.9,80.6 L 352.1,80.5 L 357.2,80.4 L 362.4,80.2 L 367.7,80.0 L 372.8,79.8 L 378.0,79.5 L 383.2,79.2 L 388.3,78.9 L 393.5,78.5 L 398.8,78.2 L 403.9,77.8 L 409.1,77.3 L 414.3,76.9 L 419.4,76.5 L 424.7,76.0 L 429.8,75.5 L 435.0,75.0 L 440.2,74.5 L 445.3,74.0 L 450.5,73.6 L 455.8,73.1 L 460.9,72.6 L 466.1,72.1 L 471.3,71.6 L 476.4,71.1 L 481.7,70.7 L 486.9,70.2 L 486.9,70.2" fill="none" stroke="#3A4F7A" stroke-width="3" stroke-linecap="round"/><path d="M 10.0,84.0 L 15.2,83.6 L 20.3,83.3 L 25.6,82.9 L 30.8,82.6 L 35.9,82.4 L 41.1,82.2 L 46.3,82.2 L 51.4,82.2 L 56.7,82.3 L 61.8,82.4 L 67.0,82.7 L 72.2,83.0 L 77.3,83.4 L 82.6,83.8 L 87.8,84.2 L 92.9,84.7 L 98.1,85.1 L 103.3,85.5 L 108.4,85.8 L 113.7,86.1 L 118.9,86.3 L 124.0,86.4 L 129.2,86.5 L 134.4,86.4 L 139.6,86.3 L 144.8,86.1 L 150.0,85.8 L 155.1,85.5 L 160.3,85.1 L 165.4,84.6 L 170.7,84.2 L 175.9,83.7 L 181.0,83.2 L 186.2,82.8 L 191.4,82.3 L 196.6,82.0 L 201.8,81.6 L 207.0,81.3 L 212.1,81.1 L 217.3,80.9 L 222.5,80.8 L 227.7,80.8 L 232.9,80.8 L 238.0,80.9 L 243.2,81.1 L 248.4,81.3 L 253.7,81.6 L 258.8,82.0 L 264.0,82.3 L 269.1,82.7 L 274.3,83.2 L 279.5,83.6 L 284.7,84.0 L 289.9,84.5 L 295.1,85.0 L 300.2,85.4 L 305.4,85.8 L 310.7,86.2 L 315.8,86.6 L 321.0,86.9 L 326.1,87.2 L 331.3,87.5 L 336.5,87.7 L 341.7,87.9 L 346.9,88.0 L 352.1,88.1 L 357.2,88.2 L 362.4,88.2 L 367.7,88.2 L 372.8,88.2 L 378.0,88.1 L 383.2,88.0 L 388.3,87.9 L 393.5,87.7 L 398.8,87.5 L 403.9,87.3 L 409.1,87.1 L 414.3,86.9 L 419.4,86.6 L 424.7,86.4 L 429.8,86.1 L 435.0,85.8 L 440.2,85.5 L 445.3,85.3 L 450.5,85.0 L 455.8,84.7 L 460.9,84.5 L 466.1,84.2 L 471.3,83.9 L 476.4,83.7 L 481.7,83.4 L 486.9,83.2 L 486.9,83.2" fill="none" stroke="#3A4F7A" stroke-width="3" stroke-linecap="round"/><path d="M 10.0,84.6 L 15.2,84.2 L 20.3,83.9 L 25.6,83.6 L 30.8,83.3 L 35.9,83.1 L 41.1,83.0 L 46.3,82.9 L 51.4,83.0 L 56.7,83.1 L 61.8,83.3 L 67.0,83.6 L 72.2,84.0 L 77.3,84.4 L 82.6,84.9 L 87.8,85.4 L 92.9,85.9 L 98.1,86.4 L 103.3,86.8 L 108.4,87.3 L 113.7,87.6 L 118.9,87.9 L 124.0,88.1 L 129.2,88.2 L 134.4,88.3 L 139.6,88.2 L 144.8,88.1 L 150.0,88.0 L 155.1,87.7 L 160.3,87.4 L 165.4,87.1 L 170.7,86.7 L 175.9,86.4 L 181.0,86.0 L 186.2,85.7 L 191.4,85.3 L 196.6,85.1 L 201.8,84.8 L 207.0,84.7 L 212.1,84.6 L 217.3,84.5 L 222.5,84.6 L 227.7,84.7 L 232.9,84.8 L 238.0,85.1 L 243.2,85.4 L 248.4,85.8 L 253.7,86.2 L 258.8,86.7 L 264.0,87.2 L 269.1,87.7 L 274.3,88.3 L 279.5,88.9 L 284.7,89.5 L 289.9,90.1 L 295.1,90.7 L 300.2,91.3 L 305.4,91.9 L 310.7,92.5 L 315.8,93.0 L 321.0,93.5 L 326.1,94.0 L 331.3,94.4 L 336.5,94.8 L 341.7,95.2 L 346.9,95.5 L 352.1,95.8 L 357.2,96.0 L 362.4,96.3 L 367.7,96.4 L 372.8,96.6 L 378.0,96.7 L 383.2,96.8 L 388.3,96.8 L 393.5,96.9 L 398.8,96.9 L 403.9,96.9 L 409.1,96.9 L 414.3,96.8 L 419.4,96.8 L 424.7,96.7 L 429.8,96.7 L 435.0,96.6 L 440.2,96.6 L 445.3,96.5 L 450.5,96.4 L 455.8,96.4 L 460.9,96.3 L 466.1,96.3 L 471.3,96.2 L 476.4,96.2 L 481.7,96.2 L 486.9,96.2 L 486.9,96.2" fill="none" stroke="#3A4F7A" stroke-width="3" stroke-linecap="round"/></svg>`;
+const LOGO = `<svg xmlns="http://www.w3.org/2000/svg" width="497" height="112" viewBox="0 0 497 112" role="img" aria-label="Ajuste Elástico"><path d="M27.7734375 19.14453125 20.81640625 38.009765625H34.755859375ZM24.87890625 14.091796875H30.693359375L45.140625 52.0H39.80859375L36.35546875 42.275390625H19.267578125L15.814453125 52.0H10.40625ZM52.17578125 14.091796875H57.3046875V49.359375Q57.3046875 56.21484375 54.7021484375 59.3125Q52.099609375 62.41015625 46.3359375 62.41015625H44.380859375V58.09375H45.98046875Q49.3828125 58.09375 50.779296875 56.189453125Q52.17578125 54.28515625 52.17578125 49.359375ZM68.427734375 14.091796875H73.58203125V37.12109375Q73.58203125 43.21484375 75.791015625 45.8935546875Q78.0 48.572265625 82.951171875 48.572265625Q87.876953125 48.572265625 90.0859375 45.8935546875Q92.294921875 43.21484375 92.294921875 37.12109375V14.091796875H97.44921875V37.755859375Q97.44921875 45.169921875 93.7802734375 48.953125Q90.111328125 52.736328125 82.951171875 52.736328125Q75.765625 52.736328125 72.0966796875 48.953125Q68.427734375 45.169921875 68.427734375 37.755859375ZM131.296875 15.3359375V20.337890625Q128.376953125 18.94140625 125.787109375 18.255859375Q123.197265625 17.5703125 120.78515625 17.5703125Q116.595703125 17.5703125 114.3232421875 19.1953125Q112.05078125 20.8203125 112.05078125 23.81640625Q112.05078125 26.330078125 113.5615234375 27.6123046875Q115.072265625 28.89453125 119.287109375 29.681640625L122.384765625 30.31640625Q128.123046875 31.408203125 130.8525390625 34.1630859375Q133.58203125 36.91796875 133.58203125 41.5390625Q133.58203125 47.048828125 129.8876953125 49.892578125Q126.193359375 52.736328125 119.05859375 52.736328125Q116.3671875 52.736328125 113.3330078125 52.126953125Q110.298828125 51.517578125 107.048828125 50.32421875V45.04296875Q110.171875 46.794921875 113.16796875 47.68359375Q116.1640625 48.572265625 119.05859375 48.572265625Q123.451171875 48.572265625 125.837890625 46.845703125Q128.224609375 45.119140625 128.224609375 41.919921875Q128.224609375 39.126953125 126.5107421875 37.552734375Q124.796875 35.978515625 120.88671875 35.19140625L117.763671875 34.58203125Q112.025390625 33.439453125 109.4609375 31.001953125Q106.896484375 28.564453125 106.896484375 24.22265625Q106.896484375 19.1953125 110.4384765625 16.30078125Q113.98046875 13.40625 120.201171875 13.40625Q122.8671875 13.40625 125.634765625 13.888671875Q128.40234375 14.37109375 131.296875 15.3359375ZM137.82421875 14.091796875H169.892578125V18.408203125H156.435546875V52.0H151.28125V18.408203125H137.82421875ZM176.34375 14.091796875H200.3125V18.408203125H181.47265625V29.630859375H199.525390625V33.947265625H181.47265625V47.68359375H200.76953125V52.0H176.34375Z" fill="#FFFFFF"/><path d="M227.228515625 14.091796875H251.197265625V18.408203125H232.357421875V29.630859375H250.41015625V33.947265625H232.357421875V47.68359375H251.654296875V52.0H227.228515625ZM261.583984375 14.091796875H266.712890625V47.68359375H285.171875V52.0H261.583984375ZM304.724609375 19.14453125 297.767578125 38.009765625H311.70703125ZM301.830078125 14.091796875H307.64453125L322.091796875 52.0H316.759765625L313.306640625 42.275390625H296.21875L292.765625 52.0H287.357421875ZM306.12109375 3.783203125H310.818359375L305.029296875 10.486328125H301.14453125ZM351.8515625 15.3359375V20.337890625Q348.931640625 18.94140625 346.341796875 18.255859375Q343.751953125 17.5703125 341.33984375 17.5703125Q337.150390625 17.5703125 334.8779296875 19.1953125Q332.60546875 20.8203125 332.60546875 23.81640625Q332.60546875 26.330078125 334.1162109375 27.6123046875Q335.626953125 28.89453125 339.841796875 29.681640625L342.939453125 30.31640625Q348.677734375 31.408203125 351.4072265625 34.1630859375Q354.13671875 36.91796875 354.13671875 41.5390625Q354.13671875 47.048828125 350.4423828125 49.892578125Q346.748046875 52.736328125 339.61328125 52.736328125Q336.921875 52.736328125 333.8876953125 52.126953125Q330.853515625 51.517578125 327.603515625 50.32421875V45.04296875Q330.7265625 46.794921875 333.72265625 47.68359375Q336.71875 48.572265625 339.61328125 48.572265625Q344.005859375 48.572265625 346.392578125 46.845703125Q348.779296875 45.119140625 348.779296875 41.919921875Q348.779296875 39.126953125 347.0654296875 37.552734375Q345.3515625 35.978515625 341.44140625 35.19140625L338.318359375 34.58203125Q332.580078125 33.439453125 330.015625 31.001953125Q327.451171875 28.564453125 327.451171875 24.22265625Q327.451171875 19.1953125 330.9931640625 16.30078125Q334.53515625 13.40625 340.755859375 13.40625Q343.421875 13.40625 346.189453125 13.888671875Q348.95703125 14.37109375 351.8515625 15.3359375ZM358.37890625 14.091796875H390.447265625V18.408203125H376.990234375V52.0H371.8359375V18.408203125H358.37890625ZM396.8984375 14.091796875H402.02734375V52.0H396.8984375ZM442.12109375 17.01171875V22.419921875Q439.53125 20.0078125 436.5986328125 18.814453125Q433.666015625 17.62109375 430.365234375 17.62109375Q423.865234375 17.62109375 420.412109375 21.5947265625Q416.958984375 25.568359375 416.958984375 33.083984375Q416.958984375 40.57421875 420.412109375 44.5478515625Q423.865234375 48.521484375 430.365234375 48.521484375Q433.666015625 48.521484375 436.5986328125 47.328125Q439.53125 46.134765625 442.12109375 43.72265625V49.080078125Q439.4296875 50.908203125 436.4208984375 51.822265625Q433.412109375 52.736328125 430.060546875 52.736328125Q421.453125 52.736328125 416.501953125 47.4677734375Q411.55078125 42.19921875 411.55078125 33.083984375Q411.55078125 23.943359375 416.501953125 18.6748046875Q421.453125 13.40625 430.060546875 13.40625Q433.462890625 13.40625 436.4716796875 14.3076171875Q439.48046875 15.208984375 442.12109375 17.01171875ZM466.9296875 17.5703125Q461.34375 17.5703125 458.0556640625 21.734375Q454.767578125 25.8984375 454.767578125 33.083984375Q454.767578125 40.244140625 458.0556640625 44.408203125Q461.34375 48.572265625 466.9296875 48.572265625Q472.515625 48.572265625 475.7783203125 44.408203125Q479.041015625 40.244140625 479.041015625 33.083984375Q479.041015625 25.8984375 475.7783203125 21.734375Q472.515625 17.5703125 466.9296875 17.5703125ZM466.9296875 13.40625Q474.90234375 13.40625 479.67578125 18.7509765625Q484.44921875 24.095703125 484.44921875 33.083984375Q484.44921875 42.046875 479.67578125 47.3916015625Q474.90234375 52.736328125 466.9296875 52.736328125Q458.931640625 52.736328125 454.1455078125 47.404296875Q449.359375 42.072265625 449.359375 33.083984375Q449.359375 24.095703125 454.1455078125 18.7509765625Q458.931640625 13.40625 466.9296875 13.40625Z" fill="#E8834F"/><path d="M 10.0,83.4 L 15.2,83.0 L 20.3,82.7 L 25.6,82.3 L 30.8,82.0 L 35.9,81.7 L 41.1,81.5 L 46.3,81.4 L 51.4,81.4 L 56.7,81.4 L 61.8,81.6 L 67.0,81.8 L 72.2,82.0 L 77.3,82.3 L 82.6,82.7 L 87.8,83.1 L 92.9,83.4 L 98.1,83.8 L 103.3,84.1 L 108.4,84.4 L 113.7,84.6 L 118.9,84.7 L 124.0,84.7 L 129.2,84.7 L 134.4,84.5 L 139.6,84.3 L 144.8,84.0 L 150.0,83.7 L 155.1,83.2 L 160.3,82.7 L 165.4,82.2 L 170.7,81.6 L 175.9,81.0 L 181.0,80.5 L 186.2,79.9 L 191.4,79.3 L 196.6,78.8 L 201.8,78.4 L 207.0,78.0 L 212.1,77.6 L 217.3,77.3 L 222.5,77.1 L 227.7,76.9 L 232.9,76.8 L 238.0,76.8 L 243.2,76.8 L 248.4,76.9 L 253.7,77.1 L 258.8,77.3 L 264.0,77.5 L 269.1,77.7 L 274.3,78.0 L 279.5,78.3 L 284.7,78.6 L 289.9,78.9 L 295.1,79.2 L 300.2,79.5 L 305.4,79.7 L 310.7,80.0 L 315.8,80.2 L 321.0,80.3 L 326.1,80.5 L 331.3,80.5 L 336.5,80.6 L 341.7,80.6 L 346.9,80.6 L 352.1,80.5 L 357.2,80.4 L 362.4,80.2 L 367.7,80.0 L 372.8,79.8 L 378.0,79.5 L 383.2,79.2 L 388.3,78.9 L 393.5,78.5 L 398.8,78.2 L 403.9,77.8 L 409.1,77.3 L 414.3,76.9 L 419.4,76.5 L 424.7,76.0 L 429.8,75.5 L 435.0,75.0 L 440.2,74.5 L 445.3,74.0 L 450.5,73.6 L 455.8,73.1 L 460.9,72.6 L 466.1,72.1 L 471.3,71.6 L 476.4,71.1 L 481.7,70.7 L 486.9,70.2 L 486.9,70.2" fill="none" stroke="#7C9BD6" stroke-width="3" stroke-linecap="round"/><path d="M 10.0,84.0 L 15.2,83.6 L 20.3,83.3 L 25.6,82.9 L 30.8,82.6 L 35.9,82.4 L 41.1,82.2 L 46.3,82.2 L 51.4,82.2 L 56.7,82.3 L 61.8,82.4 L 67.0,82.7 L 72.2,83.0 L 77.3,83.4 L 82.6,83.8 L 87.8,84.2 L 92.9,84.7 L 98.1,85.1 L 103.3,85.5 L 108.4,85.8 L 113.7,86.1 L 118.9,86.3 L 124.0,86.4 L 129.2,86.5 L 134.4,86.4 L 139.6,86.3 L 144.8,86.1 L 150.0,85.8 L 155.1,85.5 L 160.3,85.1 L 165.4,84.6 L 170.7,84.2 L 175.9,83.7 L 181.0,83.2 L 186.2,82.8 L 191.4,82.3 L 196.6,82.0 L 201.8,81.6 L 207.0,81.3 L 212.1,81.1 L 217.3,80.9 L 222.5,80.8 L 227.7,80.8 L 232.9,80.8 L 238.0,80.9 L 243.2,81.1 L 248.4,81.3 L 253.7,81.6 L 258.8,82.0 L 264.0,82.3 L 269.1,82.7 L 274.3,83.2 L 279.5,83.6 L 284.7,84.0 L 289.9,84.5 L 295.1,85.0 L 300.2,85.4 L 305.4,85.8 L 310.7,86.2 L 315.8,86.6 L 321.0,86.9 L 326.1,87.2 L 331.3,87.5 L 336.5,87.7 L 341.7,87.9 L 346.9,88.0 L 352.1,88.1 L 357.2,88.2 L 362.4,88.2 L 367.7,88.2 L 372.8,88.2 L 378.0,88.1 L 383.2,88.0 L 388.3,87.9 L 393.5,87.7 L 398.8,87.5 L 403.9,87.3 L 409.1,87.1 L 414.3,86.9 L 419.4,86.6 L 424.7,86.4 L 429.8,86.1 L 435.0,85.8 L 440.2,85.5 L 445.3,85.3 L 450.5,85.0 L 455.8,84.7 L 460.9,84.5 L 466.1,84.2 L 471.3,83.9 L 476.4,83.7 L 481.7,83.4 L 486.9,83.2 L 486.9,83.2" fill="none" stroke="#7C9BD6" stroke-width="3" stroke-linecap="round"/><path d="M 10.0,84.6 L 15.2,84.2 L 20.3,83.9 L 25.6,83.6 L 30.8,83.3 L 35.9,83.1 L 41.1,83.0 L 46.3,82.9 L 51.4,83.0 L 56.7,83.1 L 61.8,83.3 L 67.0,83.6 L 72.2,84.0 L 77.3,84.4 L 82.6,84.9 L 87.8,85.4 L 92.9,85.9 L 98.1,86.4 L 103.3,86.8 L 108.4,87.3 L 113.7,87.6 L 118.9,87.9 L 124.0,88.1 L 129.2,88.2 L 134.4,88.3 L 139.6,88.2 L 144.8,88.1 L 150.0,88.0 L 155.1,87.7 L 160.3,87.4 L 165.4,87.1 L 170.7,86.7 L 175.9,86.4 L 181.0,86.0 L 186.2,85.7 L 191.4,85.3 L 196.6,85.1 L 201.8,84.8 L 207.0,84.7 L 212.1,84.6 L 217.3,84.5 L 222.5,84.6 L 227.7,84.7 L 232.9,84.8 L 238.0,85.1 L 243.2,85.4 L 248.4,85.8 L 253.7,86.2 L 258.8,86.7 L 264.0,87.2 L 269.1,87.7 L 274.3,88.3 L 279.5,88.9 L 284.7,89.5 L 289.9,90.1 L 295.1,90.7 L 300.2,91.3 L 305.4,91.9 L 310.7,92.5 L 315.8,93.0 L 321.0,93.5 L 326.1,94.0 L 331.3,94.4 L 336.5,94.8 L 341.7,95.2 L 346.9,95.5 L 352.1,95.8 L 357.2,96.0 L 362.4,96.3 L 367.7,96.4 L 372.8,96.6 L 378.0,96.7 L 383.2,96.8 L 388.3,96.8 L 393.5,96.9 L 398.8,96.9 L 403.9,96.9 L 409.1,96.9 L 414.3,96.8 L 419.4,96.8 L 424.7,96.7 L 429.8,96.7 L 435.0,96.6 L 440.2,96.6 L 445.3,96.5 L 450.5,96.4 L 455.8,96.4 L 460.9,96.3 L 466.1,96.3 L 471.3,96.2 L 476.4,96.2 L 481.7,96.2 L 486.9,96.2 L 486.9,96.2" fill="none" stroke="#7C9BD6" stroke-width="3" stroke-linecap="round"/></svg>`;
 /* =====================================================================
    PROGRAMA — contenido del mapa (editable)
    Cada paso: id, etapa, titulo, detalle, entrega ('video'|'audio'|null),
@@ -1902,8 +1911,8 @@ function requeridos(k, col) {
 const MODULO_DE = { pre: 0, enlaces: 1, antic: 1, super: 1, m2: 2, ritmo: 3, curva: 4 };
 const MODULOS = [
   { n: 0, titulo: 'Módulo 0', sub: 'Antes de la primera clase', nombre: 'Antes de la primera clase', color: '#E883AE' },
-  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#E8834F' },
-  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#7DB4FF' },
+  { n: 1, titulo: 'Módulo 1', sub: 'Enlaces, anticipaciones y superposiciones', nombre: 'Cambios de acorde', color: '#5D7BB6' },
+  { n: 2, titulo: 'Módulo 2', sub: 'ADN del Jazz', nombre: 'ADN del Jazz', color: '#5BC8D9' },
   { n: 3, titulo: 'Módulo 3', sub: 'Entrenamiento rítmico', nombre: 'Entrenamiento rítmico', color: '#5BD49A' },
   { n: 4, titulo: 'Módulo 4', sub: 'Curva del Solo', nombre: 'Curva del Solo', color: '#C7A6F2' },
 ];
@@ -2489,6 +2498,7 @@ function stopInner(id) {
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
+    <span class="stop-logo" aria-hidden="true">${LOGO}</span>
     ${!e.visto ? `<button class="stop-play-grande" data-stop-acc="play" data-stop-id="${id}" aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="spg-txt">Reproducir</span></button>` : ''}
     </div>
     ${e.visto ? `<div class="stop-ctrl">
@@ -2499,7 +2509,7 @@ function stopInner(id) {
 }
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
-const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.2; stopAudio.preservesPitch = true;
+const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.3; stopAudio.preservesPitch = true;
 const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=15` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
@@ -2511,7 +2521,7 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.2;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = src; stopAudio.playbackRate = 1.3;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
@@ -2900,7 +2910,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
-const audioIntro = new Audio(); audioIntro.preload = 'auto';
+const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.3; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
 const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
@@ -2911,6 +2921,7 @@ function mostrarIntro() {
   el.className = 'intro-aula'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cómo funciona el aula');
   const nodo = i => `<span class="in-nodo" data-n="${i}"><b>${i}</b><i>${ICONO.check}</i></span>`;
   el.innerHTML = `<div class="in-caja">
+    <div class="logo-ae">${LOGO}</div>
     <p class="in-sobre">Cómo funciona el aula</p>
     <p class="in-texto" aria-live="polite"></p>
     <div class="in-escena" data-s="1">
@@ -2945,9 +2956,9 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8';   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.3;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.3 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
@@ -2967,7 +2978,7 @@ function celebrarModulo(m, alCerrar) {
   const M = MODULOS[m];
   const el = document.createElement('div');
   el.className = 'pase-modulo'; el.style.setProperty('--mc', M.color); el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Nuevo módulo');
-  el.innerHTML = `<div class="pm-in"><p class="pm-pre">${m === 0 ? 'Empezás' : 'Pasaste al'}</p><p class="pm-num">${esc(M.titulo)}</p><h2>${esc(M.nombre)}</h2>
+  el.innerHTML = `<div class="pm-in"><div class="logo-ae">${LOGO}</div><p class="pm-pre">${m === 0 ? 'Empezás' : 'Pasaste al'}</p><p class="pm-num">${esc(M.titulo)}</p><h2>${esc(M.nombre)}</h2>
     <button class="primario" data-pm>${m === 0 ? 'Empezar' : 'Arrancar'}</button></div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add('visible'));
@@ -3225,10 +3236,10 @@ function lineasHTML() {
   return `<svg class="lineas" viewBox="0 0 ${W} ${H}" aria-hidden="true">
     <defs>
       <linearGradient id="lg-cuerpo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
-        <stop offset="0" stop-color="#E8834F" stop-opacity=".45"/><stop offset=".55" stop-color="#E8834F" stop-opacity=".3"/><stop offset="1" stop-color="#E8834F" stop-opacity=".06"/>
+        <stop offset="0" stop-color="#5D7BB6" stop-opacity=".45"/><stop offset=".55" stop-color="#5D7BB6" stop-opacity=".3"/><stop offset="1" stop-color="#5D7BB6" stop-opacity=".06"/>
       </linearGradient>
       <linearGradient id="lg-filo" gradientUnits="userSpaceOnUse" x1="${W}" y1="0" x2="0" y2="${H}">
-        <stop offset="0" stop-color="#F6B48D" stop-opacity=".9"/><stop offset="1" stop-color="#F6B48D" stop-opacity=".1"/>
+        <stop offset="0" stop-color="#A9BEE8" stop-opacity=".9"/><stop offset="1" stop-color="#A9BEE8" stop-opacity=".1"/>
       </linearGradient>
     </defs>
     ${LINEAS.map((l, i) => `<path class="l-cuerpo" data-l="${i}" d="${trazoLinea(l, 0, W, H)}" stroke-width="${l.w}"/>`).join('')}
@@ -3414,7 +3425,7 @@ function confeti(origen) {
   const r = origen.getBoundingClientRect();
   const c = document.createElement('canvas'); c.className = 'confeti'; c.width = innerWidth; c.height = innerHeight;
   document.body.appendChild(c); const g = c.getContext('2d');
-  const colores = ['#E8834F', '#FFFFFF', '#5D7BB6', '#F2B591', '#C24A22'];
+  const colores = ['#5D7BB6', '#FFFFFF', '#5D7BB6', '#A9BEE8', '#C24A22'];
   const ps = Array.from({ length: 110 }, () => ({ x: r.left + r.width / 2, y: r.top + r.height / 2, vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 3,
     s: 4 + Math.random() * 5, a: Math.random() * 6, va: (Math.random() - .5) * .3, col: colores[Math.floor(Math.random() * colores.length)] }));
   let f = 0;
@@ -3737,7 +3748,6 @@ function renderLlamada() {
   const tes = (LLAMADA.testimonios || []).filter(t => t.id);
   app().innerHTML = `${barra('')}
   <main class="llamada">
-    <p class="ll-sobre">Ajuste Elástico</p>
     <h1>Si te llegó este link es porque vamos a tener una llamada 🙌</h1>
     <p class="ll-texto">Te dejo un <strong>entrenamiento gratuito</strong> y una primera experiencia con el mapa de Ajuste Elástico.</p>
     <p class="ll-texto">No tenés que traer nada preparado para la llamada: es para que explores si tenés ganas 😉</p>
