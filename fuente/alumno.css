@@ -1020,3 +1020,15 @@ body.dv-abierto{overflow:hidden}
 .ll-eti{color:#F0995F}
 .ll-mini b{background:#E8834F}
 .ll-tres div:nth-child(2) b{background:#E8834F}
+/* Presentación de la llamada a pantalla completa */
+.llamada-full{position:fixed;inset:0;display:flex;background:#16213A}
+.llamada-full .pl-pantalla{flex:1;border:0;border-radius:0;min-height:100dvh;padding:max(28px,env(safe-area-inset-top)) clamp(18px,5vw,80px) max(24px,env(safe-area-inset-bottom))}
+.llamada-full .pl-vis{width:min(680px,92vw);max-height:42vh}
+.llamada-full .pl-frase{font-size:clamp(24px,3.6vw,52px);max-width:1100px}
+.llamada-full .pl-escena{gap:clamp(18px,3vh,40px)}
+.llamada-full .pl-play span{width:clamp(104px,12vw,150px);height:clamp(104px,12vw,150px)}
+.llamada-full .pl-play svg{width:42%;height:42%}
+.llamada-full .pl-play b{font-size:clamp(19px,2vw,28px)}
+.llamada-full .pl-b{height:52px;min-width:52px;font-size:19px}
+.pl-entrenar{border:0;cursor:pointer;background:#E8834F;color:#16213A;font:700 clamp(18px,2vw,24px) var(--display);padding:18px 34px;border-radius:999px;animation:plEntra .5s ease,plLatidoBtn 1.8s 0.6s ease-in-out infinite}
+@keyframes plLatidoBtn{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.5)}50%{box-shadow:0 0 0 16px rgba(232,131,79,0)}}

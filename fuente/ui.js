@@ -227,7 +227,7 @@ function presVis(v, paso) {
   else if (v === 'video') s = '<rect class="pl-pantallita" x="80" y="36" width="200" height="120" rx="16"/><circle class="pl-disco" cx="180" cy="96" r="30"/><path fill="#fff" d="M172 82 v28 l24 -14z"/>';
   else if (v === 'reloj') s = '<circle class="pl-esfera" cx="120" cy="100" r="52"/><line class="pl-aguja-r" x1="120" y1="100" x2="120" y2="62"/><path class="pl-flecha-r" d="M190 100 H250 m-12 -10 l12 10 l-12 10"/><path class="pl-sube" d="M270 150 l20 -30 l16 14 l24 -50"/>';
   else if (v === 'relax') s = '<rect class="pl-mochila" x="140" y="60" width="80" height="90" rx="16"/><path class="pl-tacha" d="M120 160 L240 50"/><text class="pl-cap" x="180" y="190">nada que preparar</text>';
-  else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; s += '<text class="pl-chau" x="180" y="120">¡Nos vemos!</text>'; }
+  else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; }
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: 0, visto: false, timer: null };
@@ -239,10 +239,11 @@ function presHTML() {
       <p class="pl-frase">${sl.t.split('\n').map(l => esc(l).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')).join('<br>')}</p>
     </div>
     <div class="pl-progreso">${PRES_LLAMADA.map((_, k) => `<i class="${k < i ? 'hecho' : k === i ? 'ahora' : ''}"></i>`).join('')}</div>
-    ${presEst.visto ? `<div class="pl-ctrl">
+    ${presEst.visto && fin && !sonando ? `<div class="pl-ctrl"><button class="pl-entrenar" data-ll-entrar>Empezar con el entrenamiento →</button></div>`
+    : presEst.visto ? `<div class="pl-ctrl">
       <button class="pl-b" data-pl="ant" ${i === 0 ? 'disabled' : ''} aria-label="Anterior">‹</button>
-      <button class="pl-b grande" data-pl="play">${sonando ? 'Pausa' : fin ? 'Ver de nuevo' : 'Seguir'}</button>
-      <button class="pl-b" data-pl="sig" ${fin ? 'disabled' : ''} aria-label="Siguiente">›</button>
+      <button class="pl-b grande" data-pl="play">${sonando ? 'Pausa' : 'Seguir'}</button>
+      <button class="pl-b" data-pl="sig" aria-label="Siguiente">›</button>
     </div>` : `<button class="pl-play" data-pl="play" aria-label="Reproducir"><span><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><b>Reproducir</b></button>`}`;
 }
 function presAccion(acc) {
@@ -267,28 +268,7 @@ function renderLlamada() {
   const yt = (id, cls = '') => id ? `<div class="ll-video ${cls}"><iframe src="https://www.youtube-nocookie.com/embed/${esc(id)}?rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : '';
   const [t1, t2] = LLAMADA.testimonios || [];
   const testimonio = t => t && t.id ? `<section class="ll-bloque"><p class="ll-eti">Testimonio</p><h2>${esc(t.titulo || `La experiencia de ${t.nombre}`)}</h2>${yt(t.id)}</section>` : '';
-  app().innerHTML = `${barra('')}
-  <main class="llamada">
-    <section class="ll-hero">
-      <p class="ll-eti">Antes de nuestra llamada</p>
-      <div class="pl-pantalla">${presHTML()}</div>
-    </section>
-    ${testimonio(t1)}
-    <section class="ll-bloque ll-entrena">
-      <p class="ll-eti">Entrenamiento gratuito</p>
-      <h2>Probá el método en tu guitarra</h2>
-      <p class="ll-texto">Los primeros pasos del mapa de Ajuste Elástico: arpegios base, cómo bajar de cuerdas y el skipping. A tu ritmo, sin usuario ni contraseña.</p>
-      <div class="ll-mini">${['Arpegios base', 'Bajar de cuerdas', 'Skipping'].map((n, k) => `<span><b>${k + 1}</b>${n}</span>`).join('')}</div>
-      <button class="primario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>
-    </section>
-    ${LLAMADA.bienvenida ? `<section class="ll-bloque"><p class="ll-eti">Bienvenida</p><h2>Un mensaje antes de la llamada</h2>${yt(LLAMADA.bienvenida)}</section>` : ''}
-    ${testimonio(t2)}
-    <section class="ll-bloque ll-cierre">
-      <p class="ll-eti">En la llamada</p>
-      <div class="ll-tres">${[['Tu situación actual', 'Dónde estás hoy con la viola.'], ['Qué te traba', 'Lo que te frena al improvisar.'], ['El camino', 'Un plan concreto para destrabarlo.']].map(([a, b], k) => `<div><b>${k + 1}</b><h3>${a}</h3><p>${b}</p></div>`).join('')}</div>
-      <p class="ll-texto">No tenés que traer nada preparado. ¡Nos vemos! 🙌</p>
-    </section>
-  </main>`;
+  app().innerHTML = `<main class="llamada-full"><div class="pl-pantalla">${presHTML()}</div></main>`;
   app().onclick = ev => {
     const b = ev.target.closest('[data-pl]'); if (b) { presAccion(b.dataset.pl); return; }
     if (ev.target.closest('[data-ll-entrar]')) { presAudio.pause(); clearTimeout(presEst.timer); presEst.timer = null; DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); }
