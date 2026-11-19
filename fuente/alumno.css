@@ -821,3 +821,13 @@ body.con-mapa{overflow:hidden}
 .vg-flecha{fill:none;stroke:#4a4b51;stroke-width:3;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.vis-grande *{animation:none!important;opacity:1!important}}
 .stop-texto.grande{gap:2px}
+.vg-cuerda.suma-mal{stroke:#E2705A;opacity:0;animation:vgAparece 5.4s ease infinite;animation-delay:calc(var(--k)*.55s)}
+
+/* Visor de docs adentro del aula (celu) */
+.doc-visor{position:fixed;inset:0;z-index:3000;background:#fff;display:flex;flex-direction:column}
+.dv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:#1B1C20;color:#fff}
+.dv-cerrar{background:none;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 16px;font:600 15px var(--sans);color:#fff;cursor:pointer}
+.dv-barra a{font-size:14px;color:#E8834F}
+.dv-marco{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff}
+.dv-cargando{padding:40px 20px;text-align:center;color:#555;font:16px var(--sans)}
+body.dv-abierto{overflow:hidden}

@@ -128,13 +128,10 @@ const STOPS = {
     },
   },
   cuerdas: {
-    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas', audio: 'audio/cuerdas/',
+    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas', audio: 'audio/cuerdas/', audioNo: 'audio/cuerdas-no/', empiezaNo: true,
     sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
-    unidades: ['1ª', '2ª', '3ª'],
+    unidades: ['1ª', '2ª', '3ª', '4ª', '5ª', '6ª'],
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes para ajustar bien la práctica es **la cantidad de cuerdas** con las que trabajamos.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo que **bajando el tempo**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**, en vez de la velocidad a la que la practicamos.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo bajar de cuerdas y volver a juntarlas' },
       { sel: [0, 2], trabaAca: true, t: 'Si con 3 cuerdas la cosa se complica, bajás a 2.' },
       { sel: [0, 1], t: '**La 1 y la 2.**' },
@@ -148,6 +145,21 @@ const STOPS = {
       { sel: [0, 2], t: 'Y finalmente, **las 3 juntas**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Volvemos al mismo lugar donde empezaste, pero ahora con **muchísimo más control y seguridad**.' },
     ],
+    no: {
+      tandas: [
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes para ajustar bien la práctica es **la cantidad de cuerdas** con las que trabajamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo que **bajando el tempo**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**, en vez de la velocidad a la que la practicamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'no-cuerdas', t: 'Cómo **no** regular la cantidad de cuerdas' },
+        { sel: [0, 0], t: 'Lo que hace casi todo el mundo: arrancar con **la 1**.' },
+        { sel: [0, 1], t: 'Después **la 1 y la 2**.' },
+        { sel: [0, 2], t: '**La 1, la 2 y la 3.**' },
+        { sel: [0, 3], t: '**1, 2, 3 y 4.**' },
+        { sel: [0, 4], t: '**1, 2, 3, 4 y 5.**' },
+        { sel: [0, 5], t: 'Y así hasta **las 6**.' },
+        { sel: [0, 5], pausa: true, malo: true, t: '**Cada vez sumás más información y nunca volvés a separar.** Lo que te traba queda perdido en el medio.' },
+      ],
+    },
   },
   transcripcion: {
     tipo: 'ola', titulo: 'Cómo armar el solo por partes',

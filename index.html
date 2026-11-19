@@ -894,6 +894,16 @@ body.con-mapa{overflow:hidden}
 .vg-flecha{fill:none;stroke:#4a4b51;stroke-width:3;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.vis-grande *{animation:none!important;opacity:1!important}}
 .stop-texto.grande{gap:2px}
+.vg-cuerda.suma-mal{stroke:#E2705A;opacity:0;animation:vgAparece 5.4s ease infinite;animation-delay:calc(var(--k)*.55s)}
+
+/* Visor de docs adentro del aula (celu) */
+.doc-visor{position:fixed;inset:0;z-index:3000;background:#fff;display:flex;flex-direction:column}
+.dv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:#1B1C20;color:#fff}
+.dv-cerrar{background:none;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:8px 16px;font:600 15px var(--sans);color:#fff;cursor:pointer}
+.dv-barra a{font-size:14px;color:#E8834F}
+.dv-marco{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff}
+.dv-cargando{padding:40px 20px;text-align:center;color:#555;font:16px var(--sans)}
+body.dv-abierto{overflow:hidden}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1188,13 +1198,10 @@ const STOPS = {
     },
   },
   cuerdas: {
-    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas', audio: 'audio/cuerdas/',
+    tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas', audio: 'audio/cuerdas/', audioNo: 'audio/cuerdas-no/', empiezaNo: true,
     sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
-    unidades: ['1ª', '2ª', '3ª'],
+    unidades: ['1ª', '2ª', '3ª', '4ª', '5ª', '6ª'],
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes para ajustar bien la práctica es **la cantidad de cuerdas** con las que trabajamos.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo que **bajando el tempo**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**, en vez de la velocidad a la que la practicamos.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo bajar de cuerdas y volver a juntarlas' },
       { sel: [0, 2], trabaAca: true, t: 'Si con 3 cuerdas la cosa se complica, bajás a 2.' },
       { sel: [0, 1], t: '**La 1 y la 2.**' },
@@ -1208,6 +1215,21 @@ const STOPS = {
       { sel: [0, 2], t: 'Y finalmente, **las 3 juntas**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Volvemos al mismo lugar donde empezaste, pero ahora con **muchísimo más control y seguridad**.' },
     ],
+    no: {
+      tandas: [
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes para ajustar bien la práctica es **la cantidad de cuerdas** con las que trabajamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo que **bajando el tempo**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**, en vez de la velocidad a la que la practicamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'no-cuerdas', t: 'Cómo **no** regular la cantidad de cuerdas' },
+        { sel: [0, 0], t: 'Lo que hace casi todo el mundo: arrancar con **la 1**.' },
+        { sel: [0, 1], t: 'Después **la 1 y la 2**.' },
+        { sel: [0, 2], t: '**La 1, la 2 y la 3.**' },
+        { sel: [0, 3], t: '**1, 2, 3 y 4.**' },
+        { sel: [0, 4], t: '**1, 2, 3, 4 y 5.**' },
+        { sel: [0, 5], t: 'Y así hasta **las 6**.' },
+        { sel: [0, 5], pausa: true, malo: true, t: '**Cada vez sumás más información y nunca volvés a separar.** Lo que te traba queda perdido en el medio.' },
+      ],
+    },
   },
   transcripcion: {
     tipo: 'ola', titulo: 'Cómo armar el solo por partes',
@@ -2237,11 +2259,71 @@ function ayudaPara(p, sel) {
 function linkSeccion(url, h) {
   const base = url.replace(/#.*$/, '').replace(/\/(edit|view|preview|mobilebasic)[^/]*$/, '');
   const cel = window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
-  // En el iPhone, tocar un link de docs.google.com abre la app de Docs, que arranca al principio:
-  // pasamos por doc.html (nuestro dominio), que salta a la versión simple sin que se abra la app
-  return cel ? `doc.html#${encodeURIComponent(`${base}/mobilebasic#${h}`)}` : `${base}/edit#heading=${h}`;
+  return cel ? `${base}/mobilebasic#${h}` : `${base}/edit#heading=${h}`;
 }
+/* Celu: la parte del doc se muestra adentro del aula. Bajamos el doc (export html, es público)
+   y lo dibujamos nosotros, así saltamos al título sin depender de la app ni de Safari */
+const docsCache = {};
+async function docHTML(id) {
+  if (docsCache[id]) return docsCache[id];
+  const r = await fetch(`https://docs.google.com/document/d/${id}/export?format=html`, { credentials: 'omit' });
+  if (!r.ok) throw new Error('doc ' + r.status);
+  return (docsCache[id] = await r.text());
+}
+async function verDocEnAula(id, h) {
+  cerrarDocEnAula(true);
+  const full = `https://docs.google.com/document/d/${id}/edit`;
+  const d = document.createElement('div'); d.className = 'doc-visor';
+  d.innerHTML = `<div class="dv-barra"><button class="dv-cerrar" data-dv-cerrar>✕ Cerrar</button><a href="${full}" target="_blank" rel="noopener">Abrir en Docs</a></div>
+    <div class="dv-marco"><p class="dv-cargando">Cargando el documento…</p></div>`;
+  document.body.appendChild(d); document.body.classList.add('dv-abierto');
+  history.pushState({ dv: 1 }, '');
+  const marco = d.querySelector('.dv-marco');
+  try {
+    const html = await docHTML(id);
+    if (!d.isConnected) return;
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('script').forEach(x => x.remove());
+    doc.querySelectorAll('a[href]').forEach(a => {   // Google envuelve los links en google.com/url?q=…
+      try { const u = new URL(a.href); if (u.hostname.endsWith('google.com') && u.pathname === '/url' && u.searchParams.get('q')) a.href = u.searchParams.get('q'); } catch (_) {}
+      a.target = '_blank'; a.rel = 'noopener';
+    });
+    const css = [...doc.querySelectorAll('style')].map(x => x.textContent).join('\n');
+    const raiz = marco.attachShadow ? marco.attachShadow({ mode: 'open' }) : marco;
+    raiz.innerHTML = `<style>${css}
+      .dv-doc{max-width:100%!important;padding:18px 16px 60px!important;box-sizing:border-box;background:#fff;color:#222}
+      .dv-doc img{max-width:100%!important;height:auto!important}
+      .dv-doc span[style*="width"]{max-width:100%!important;height:auto!important}
+      .dv-doc table{max-width:100%!important;width:100%!important}
+      .dv-doc td{word-break:break-word}
+      .dv-doc *{max-width:100%}
+    </style><div class="dv-doc ${esc(doc.body.className)}">${doc.body.innerHTML}</div>`;
+    const cargando = marco.querySelector('.dv-cargando'); if (cargando) cargando.remove();
+    const destino = raiz.getElementById ? raiz.getElementById(h) : raiz.querySelector('#' + CSS.escape(h));
+    const ir = () => { if (destino) marco.scrollTop = destino.getBoundingClientRect().top - marco.getBoundingClientRect().top + marco.scrollTop - 8; };
+    ir(); requestAnimationFrame(ir);
+    // las imágenes de arriba cargan después y empujan el texto: volvemos a acomodar mientras no haya tocado nada
+    let tocado = false; marco.addEventListener('touchstart', () => { tocado = true; }, { once: true, passive: true }); marco.addEventListener('wheel', () => { tocado = true; }, { once: true, passive: true });
+    raiz.querySelectorAll('img').forEach(im => { if (!im.complete) im.addEventListener('load', () => { if (!tocado) ir(); }, { once: true }); });
+    [400, 1200, 2500].forEach(ms => setTimeout(() => { if (!tocado) ir(); }, ms));
+  } catch (e) {
+    marco.innerHTML = `<p class="dv-cargando">No pude cargar el documento acá. <a href="${full}" target="_blank" rel="noopener">Abrilo en Docs</a>.</p>`;
+  }
+}
+function cerrarDocEnAula(silencioso) {
+  const d = document.querySelector('.doc-visor'); if (!d) return;
+  d.remove(); document.body.classList.remove('dv-abierto');
+  if (!silencioso && history.state && history.state.dv) history.back();
+}
+window.addEventListener('popstate', () => cerrarDocEnAula(true));
+document.addEventListener('click', ev => {
+  if (ev.target.closest('[data-dv-cerrar]')) { ev.preventDefault(); cerrarDocEnAula(); return; }
+  const a = ev.target.closest('a[data-doc-sec]'); if (!a) return;
+  ev.preventDefault(); const [id, h] = a.dataset.docSec.split('|'); verDocEnAula(id, h);
+}, true);
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
+const esCelular = () => window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
+const attrSec = (url, h) => { const m = String(url).match(/\/document\/d\/([\w-]+)/); return m && esCelular() ? ` data-doc-sec="${m[1]}|${esc(h)}"` : ''; };
 const esDoc = r => r.url && !ytId(r.url);
 function docNuevo(p, r) {
   const i = ORDEN.indexOf(p.id);
@@ -2381,6 +2463,7 @@ function visGrande(v) {
   let s = '';
   if (v === 'cuerdas') s = cuerdas(() => 'vibra');
   else if (v === 'separar') s = cuerdas(k => `sep sep${k}`);
+  else if (v === 'no-cuerdas') s = [10, 26, 42, 58, 74, 90].map((y, k) => `<line class="vg-cuerda suma-mal" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k}"/>`).join('');
   else if (v === 'traba') s = cuerdas(k => k === 2 ? 'traba' : 'tenue', '<text class="vg-alerta" x="306" y="80">!</text>');
   else if (v === 'control') s = cuerdas(() => 'ok', '<path class="vg-check" d="M296 42 l10 10 l18 -22"/>');
   else if (v === 'tempo-cuerdas') {
@@ -2428,18 +2511,19 @@ function stopOla(S, enSel, est, partido) {
   return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="El solo como una onda, dividido en frases">${fondos}${barras}${marcas}</svg>`;
 }
 function stopCuerdas(S, enSel, est) {
-  const W = 640, H = 132, ys = [28, 66, 104], grosor = [1.6, 2.4, 3.4];
+  const n = S.unidades.length, W = 640, gap = 30, y0 = 22, H = y0 * 2 + gap * (n - 1);
+  const grosor = [1.4, 1.9, 2.5, 3.1, 3.7, 4.3];
   let t = '';
-  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * 95}" y1="14" x2="${70 + f * 95}" y2="118"/>`;
-  t += `<rect class="cejilla" x="64" y="12" width="6" height="108" rx="2"/>`;
-  ys.forEach((y, k) => {
-    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
+  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * 95}" y1="${y0 - 10}" x2="${70 + f * 95}" y2="${H - y0 + 10}"/>`;
+  t += `<rect class="cejilla" x="64" y="${y0 - 12}" width="6" height="${H - 2 * y0 + 24}" rx="2"/>`;
+  for (let k = 0; k < n; k++) {
+    const y = y0 + k * gap, on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
     t += `<text class="c-num ${on ? 'on' : ''}" x="28" y="${y + 5}">${esc(S.unidades[k])}</text>
       ${on ? `<line class="c-brillo ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k] + 9}"/>` : ''}
       <line class="cuerda ${on ? 'on' : ''} ${cl}" x1="70" y1="${y}" x2="${W - 14}" y2="${y}" stroke-width="${grosor[k]}"/>
       ${cl === 'traba' ? `<text class="ola-alerta" x="${W - 30}" y="${y - 8}">!</text>` : ''}`;
-  });
-  return `<svg viewBox="0 0 ${W} ${H}" class="svg-cuerdas" role="img" aria-label="Cuerdas 1, 2 y 3">${t}</svg>`;
+  }
+  return `<svg viewBox="0 0 ${W} ${H}" class="svg-cuerdas" role="img" aria-label="Cuerdas de la guitarra">${t}</svg>`;
 }
 function stopMelodia(S, enSel, est, partido) {
   const W = 640, H = 124, n = S.unidades.length, uw = W / n;
@@ -2482,7 +2566,7 @@ function materialHTML(p) {
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
+    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
@@ -2492,7 +2576,7 @@ function apoyoHTML(p, sel) {
   const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
   return `<div class="apoyo ${ok ? 'apoyo-ok' : ''}"><h4>${esc(p.apoyo.titulo)}</h4>${ok ? `<p>${enLinea(p.apoyo.textoListo)}</p>` : p.apoyo.texto ? `<p>${enLinea(p.apoyo.texto)}</p>` : ''}
     ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
-      ${(i.partes || [{ video: i.video, url: i.url, sec: i.sec }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.sec ? linkSeccion(pt.url, pt.sec) : pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
+      ${(i.partes || [{ video: i.video, url: i.url, sec: i.sec }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.sec ? linkSeccion(pt.url, pt.sec) : pt.url)}"${pt.sec ? attrSec(pt.url, pt.sec) : ''} target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
