@@ -867,3 +867,9 @@ body.dv-abierto{overflow:hidden}
 .vg-tacha{stroke:#E2705A;stroke-width:4;stroke-linecap:round;stroke-dasharray:160;stroke-dashoffset:160;animation:vgDibuja .7s .8s ease forwards}
 .vg-ruta{fill:none;stroke:#4a4b51;stroke-width:3;stroke-dasharray:6 7}
 .vg-viajero{fill:var(--naranja)}
+
+/* Cuadros de solo texto en el azul de Ajuste Elástico */
+.stop-texto.grande{color:var(--azul)}
+.stop-texto.grande strong{color:var(--azul-txt)}
+.stop-texto.grande.malo{color:#FFB8A8}
+.stop-texto.grande.malo strong{color:#FFD3C8}
