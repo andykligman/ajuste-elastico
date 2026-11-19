@@ -518,6 +518,7 @@ function tarjetaHTML(st, e, p) {
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
+    ${p.embed ? embedHTML(p.embed) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -533,6 +534,11 @@ function tarjetaHTML(st, e, p) {
   </div>`;
 }
 
+/* Videos sueltos dentro de un paso (testimonios del link de la llamada): Instagram vertical o YouTube */
+function embedHTML(e) {
+  const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
+  return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
+}
 function envioHTML(st, p) {
   const pr = st.prog[p.id] || {};
   const envia = opcionElegida(st, p)?.envia || p.envia;
@@ -1058,6 +1064,7 @@ function renderAlumno(animar) {
     abierto = (lista[0] && lista[0].id) || ORDEN[0];
     const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === MODULO_DE[PASO[abierto].etapa]);
     if (obj && !hecho(st, obj.id) && pasoHabilitado(st, obj.id)) abierto = obj.id;   // si no leyó los objetivos del módulo, arranca por ahí
+    if (esLlamada) abierto = PASOS_LLAMADA.find(id => PASO[id] && !hecho(st, id)) || PASOS_LLAMADA[PASOS_LLAMADA.length - 1];   // link de la llamada: en orden, empezando por el testimonio
   }
   if (!$('#vista') || animar) {
     player = null; playerVid = null;

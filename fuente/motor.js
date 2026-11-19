@@ -3,7 +3,8 @@
    ===================================================================== */
 const COLS = ['min', 'esp', 'ideal'];
 /* Link ?llamada: solo los primeros dos videos (arpegios base) y la animación de cuerdas, con el doc de Previa técnica */
-const PASOS_LLAMADA = ['p2', 'p3', 'p3c', 'p4'];
+const PASOS_LLAMADA = ['llt1', 'p2', 'p3', 'p3c', 'p4', 'llt2', 'llfin'];
+if (!new URLSearchParams(location.search).has('llamada')) PROGRAMA.pasos = PROGRAMA.pasos.filter(p => !p.soloLlamada);
 if (new URLSearchParams(location.search).has('llamada')) {
   PROGRAMA.pasos = PROGRAMA.pasos.filter(p => PASOS_LLAMADA.includes(p.id));
   for (const k in PROGRAMA.esperado) for (const c of COLS) if (PROGRAMA.esperado[k][c]) PROGRAMA.esperado[k][c] = PROGRAMA.esperado[k][c].filter(id => PASOS_LLAMADA.includes(id));

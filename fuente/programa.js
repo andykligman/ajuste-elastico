@@ -261,6 +261,14 @@ const PROGRAMA = {
       ],
     },
     {
+      id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'Antes de arrancar: un testimonio',
+      detalle: 'Mirá cómo le fue a un alumno que estaba en una situación parecida a la tuya.',
+      embed: { tipo: 'ig', id: 'DYS9tBKtOY2', eti: 'Testimonio' },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: '¡Dale, vamos al entrenamiento!', nivel: 'listo' }],
+    },
+    {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
@@ -315,6 +323,22 @@ const PROGRAMA = {
           resp: 'Mirá los intervalos de la posición en el orden normal una vez, y después con skipping, sobre cada tipo de acorde. **De a poquito, por sectores** y a tu ritmo. Cuando un sector esté cómodo, probalo a tempo.' },
       ],
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.mbggwpqnwk8v', 'Skipping'] }],
+    },
+    {
+      id: 'llt2', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'Otro testimonio',
+      detalle: 'Otro alumno que arrancó con las mismas dudas.',
+      embed: { tipo: 'yt', id: 'A6bIbYywz3I', eti: 'Testimonio' },
+      pregunta: '¿Seguimos?',
+      progreso: [{ id: 'listo', label: '¡Sigamos!', nivel: 'listo' }],
+    },
+    {
+      id: 'llfin', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'De qué se trata el método',
+      detalle: 'Para cerrar, un video corto que explica de qué se trata Ajuste Elástico.',
+      embed: { tipo: 'yt', id: '5nnkrbhQ4qI', eti: 'Bienvenida' },
+      pregunta: '¿Listo?',
+      progreso: [{ id: 'listo', label: '¡Listo! Nos vemos en la llamada', nivel: 'listo' }],
     },
     {
       id: 'p5', etapa: 'pre',

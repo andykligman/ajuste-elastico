@@ -1105,6 +1105,14 @@ body.dv-abierto{overflow:hidden}
 .llamada-full .pl-b{height:52px;min-width:52px;font-size:19px}
 .pl-entrenar{border:0;cursor:pointer;background:#E8834F;color:#16213A;font:700 clamp(18px,2vw,24px) var(--display);padding:18px 34px;border-radius:999px;animation:plEntra .5s ease,plLatidoBtn 1.8s 0.6s ease-in-out infinite}
 @keyframes plLatidoBtn{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.5)}50%{box-shadow:0 0 0 16px rgba(232,131,79,0)}}
+/* Testimonios y video de bienvenida dentro del entrenamiento */
+.emb{position:relative;margin:16px auto 6px;max-width:760px}
+.emb-eti{position:absolute;top:-11px;left:18px;z-index:2;background:#E8834F;color:#16213A;font:700 11.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.emb-marco{position:relative;border-radius:18px;overflow:hidden;background:#000;border:2px solid #5D7BB6;box-shadow:0 0 0 6px rgba(93,123,182,.15)}
+.emb-yt .emb-marco{aspect-ratio:16/9}
+.emb-ig{max-width:420px}
+.emb-ig .emb-marco{aspect-ratio:9/16.6;background:#fff}
+.emb-marco iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1532,6 +1540,14 @@ const PROGRAMA = {
       ],
     },
     {
+      id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'Antes de arrancar: un testimonio',
+      detalle: 'Mirá cómo le fue a un alumno que estaba en una situación parecida a la tuya.',
+      embed: { tipo: 'ig', id: 'DYS9tBKtOY2', eti: 'Testimonio' },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: '¡Dale, vamos al entrenamiento!', nivel: 'listo' }],
+    },
+    {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       titulo: 'Nombrar los intervalos en voz alta',
@@ -1586,6 +1602,22 @@ const PROGRAMA = {
           resp: 'Mirá los intervalos de la posición en el orden normal una vez, y después con skipping, sobre cada tipo de acorde. **De a poquito, por sectores** y a tu ritmo. Cuando un sector esté cómodo, probalo a tempo.' },
       ],
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.mbggwpqnwk8v', 'Skipping'] }],
+    },
+    {
+      id: 'llt2', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'Otro testimonio',
+      detalle: 'Otro alumno que arrancó con las mismas dudas.',
+      embed: { tipo: 'yt', id: 'A6bIbYywz3I', eti: 'Testimonio' },
+      pregunta: '¿Seguimos?',
+      progreso: [{ id: 'listo', label: '¡Sigamos!', nivel: 'listo' }],
+    },
+    {
+      id: 'llfin', etapa: 'pre', soloLlamada: true, sinVideo: true,
+      titulo: 'De qué se trata el método',
+      detalle: 'Para cerrar, un video corto que explica de qué se trata Ajuste Elástico.',
+      embed: { tipo: 'yt', id: '5nnkrbhQ4qI', eti: 'Bienvenida' },
+      pregunta: '¿Listo?',
+      progreso: [{ id: 'listo', label: '¡Listo! Nos vemos en la llamada', nivel: 'listo' }],
     },
     {
       id: 'p5', etapa: 'pre',
@@ -2038,7 +2070,8 @@ const PROGRAMA = {
    ===================================================================== */
 const COLS = ['min', 'esp', 'ideal'];
 /* Link ?llamada: solo los primeros dos videos (arpegios base) y la animación de cuerdas, con el doc de Previa técnica */
-const PASOS_LLAMADA = ['p2', 'p3', 'p3c', 'p4'];
+const PASOS_LLAMADA = ['llt1', 'p2', 'p3', 'p3c', 'p4', 'llt2', 'llfin'];
+if (!new URLSearchParams(location.search).has('llamada')) PROGRAMA.pasos = PROGRAMA.pasos.filter(p => !p.soloLlamada);
 if (new URLSearchParams(location.search).has('llamada')) {
   PROGRAMA.pasos = PROGRAMA.pasos.filter(p => PASOS_LLAMADA.includes(p.id));
   for (const k in PROGRAMA.esperado) for (const c of COLS) if (PROGRAMA.esperado[k][c]) PROGRAMA.esperado[k][c] = PROGRAMA.esperado[k][c].filter(id => PASOS_LLAMADA.includes(id));
@@ -2920,6 +2953,7 @@ function tarjetaHTML(st, e, p) {
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
+    ${p.embed ? embedHTML(p.embed) : ''}
     ${panelHTML(p)}
     ${materialHTML(p)}
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
@@ -2935,6 +2969,11 @@ function tarjetaHTML(st, e, p) {
   </div>`;
 }
 
+/* Videos sueltos dentro de un paso (testimonios del link de la llamada): Instagram vertical o YouTube */
+function embedHTML(e) {
+  const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
+  return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
+}
 function envioHTML(st, p) {
   const pr = st.prog[p.id] || {};
   const envia = opcionElegida(st, p)?.envia || p.envia;
@@ -3460,6 +3499,7 @@ function renderAlumno(animar) {
     abierto = (lista[0] && lista[0].id) || ORDEN[0];
     const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === MODULO_DE[PASO[abierto].etapa]);
     if (obj && !hecho(st, obj.id) && pasoHabilitado(st, obj.id)) abierto = obj.id;   // si no leyó los objetivos del módulo, arranca por ahí
+    if (esLlamada) abierto = PASOS_LLAMADA.find(id => PASO[id] && !hecho(st, id)) || PASOS_LLAMADA[PASOS_LLAMADA.length - 1];   // link de la llamada: en orden, empezando por el testimonio
   }
   if (!$('#vista') || animar) {
     player = null; playerVid = null;
@@ -3948,7 +3988,7 @@ function presVis(v, paso) {
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: 0, visto: false, timer: null };
-const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1.1; presAudio.preservesPitch = true;
+const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
   const i = presEst.i, sl = PRES_LLAMADA[i], sonando = !!presEst.timer, fin = i === PRES_LLAMADA.length - 1;
   return `<div class="pl-escena" key="${i}">
@@ -3970,7 +4010,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=5`; presAudio.playbackRate = 1.1;
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=5`; presAudio.playbackRate = 1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
