@@ -233,7 +233,7 @@ function stopInner(id) {
   const partido = !no && tramo.some(t => t.partir !== undefined);
   const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
   const max = Math.max(1, ...veces);
-  const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
+  const dibujo = S.tipo === 'texto' ? '' : S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
   const fin = i === seq.length - 1;
   const texto = tanda.t || (no ? (it.finNo ? S.no.fin : S.no.t) : '');
   const delModo = seq.filter(x => x.modo === it.modo && !x.t.pausa), nro = tramo.filter(t => !t.pausa).length;
@@ -266,9 +266,10 @@ function stopAccion(id, acc) {
   const espera = () => { const it = seq[e.i], txt = it.t.t || (it.finNo ? S.no.fin : S.no ? S.no.t : ''); return Math.min(7000, Math.max(2500, 1500 + String(txt).length * 50)); };
   const sonar = luego => {
     const src = audioDe(S, e);
-    if (!src) { if (luego) stopTimer.h = setTimeout(luego, espera()); return; }
+    const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
+    if (!src) { despues(espera()); return; }
     stopAudio.src = src;
-    if (luego) { stopAudio.onended = () => { stopTimer.h = setTimeout(luego, 250); }; stopAudio.onerror = () => { stopTimer.h = setTimeout(luego, espera()); }; }
+    if (luego) { stopAudio.onended = () => despues(250); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
   if (acc === 'seguir') { parar(); const c = document.querySelector(`[data-stop-caja="${id}"]`); const q = c && c.closest('.tarjeta')?.querySelector('.pregunta, .envio, .seguir'); if (q) q.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; }
@@ -295,6 +296,15 @@ function visGrande(v) {
   let s = '';
   if (v === 'cuerdas') s = cuerdas(() => 'vibra');
   else if (v === 'separar') s = cuerdas(k => `sep sep${k}`);
+  else if (v === 'chat') s = `<rect class="vg-burbuja" x="40" y="10" width="150" height="26" rx="13" style="--k:0"/><rect class="vg-burbuja yo" x="130" y="44" width="150" height="26" rx="13" style="--k:1"/><rect class="vg-burbuja" x="40" y="78" width="110" height="26" rx="13" style="--k:2"/><circle class="vg-tipeo" cx="62" cy="91" r="3" style="--k:0"/><circle class="vg-tipeo" cx="74" cy="91" r="3" style="--k:1"/><circle class="vg-tipeo" cx="86" cy="91" r="3" style="--k:2"/>`;
+  else if (v === 'registro') { s = '<line class="vg-pulso" x1="20" y1="56" x2="300" y2="56"/>'; ['ok', 'mal', 'ok', 'ok', 'mal', 'ok', 'ok'].forEach((m, k) => { const x = 40 + k * 40; s += m === 'ok' ? `<path class="vg-marca ok" d="M${x - 8} ${56} l6 6 l11 -13" style="--k:${k}"/>` : `<path class="vg-marca mal" d="M${x - 7} ${49} l14 14 M${x + 7} ${49} l-14 14" style="--k:${k}"/>`; }); }
+  else if (v === 'destrabar') s = cuerdas(k => k === 1 ? 'traba-ok' : 'tenue', '<path class="vg-check tarde" d="M296 36 l10 10 l18 -22"/>');
+  else if (v === 'avanzar') s = '<circle class="vg-ciclo chico" cx="80" cy="56" r="26"/><circle class="vg-viaja corto" cx="80" cy="30" r="6"/><path class="vg-flecha-larga" d="M120 56 H290 m-12 -10 l12 10 l-12 10"/>';
+  else if (v === 'duda') s = '<text class="vg-signo" x="160" y="78">?</text><circle class="vg-onda" cx="160" cy="56" r="30"/>';
+  else if (v === 'zona') s = '<rect class="vg-barra" x="30" y="44" width="260" height="22" rx="11"/><rect class="vg-justa" x="130" y="44" width="80" height="22" rx="11"/><text class="vg-cap" x="60" y="94">fácil</text><text class="vg-cap on" x="170" y="94">justo</text><text class="vg-cap" x="268" y="94">demasiado</text><circle class="vg-aguja" cx="30" cy="55" r="9"/>';
+  else if (v === 'video-no') s = '<rect class="vg-video" x="110" y="14" width="100" height="72" rx="10"/><path class="vg-play" d="M150 36 v28 l24 -14 z"/><path class="vg-tacha" d="M100 96 L220 6"/>';
+  else if (v === 'video-ok') s = '<rect class="vg-video on" x="60" y="20" width="90" height="64" rx="10"/><path class="vg-play on" d="M96 40 v24 l20 -12 z"/><path class="vg-flecha-larga" d="M162 52 H220 m-10 -9 l10 9 l-10 9"/><path class="vg-check" d="M236 52 l12 12 l24 -30"/>';
+  else if (v === 'camino') s = '<path class="vg-ruta" d="M20 90 C 80 90, 90 30, 160 40 S 250 20, 300 20"/><circle class="vg-viajero" r="7"><animateMotion dur="3.6s" repeatCount="indefinite" path="M20 90 C 80 90, 90 30, 160 40 S 250 20, 300 20"/></circle>';
   else if (v === 'no-cuerdas') s = [10, 26, 42, 58, 74, 90].map((y, k) => `<line class="vg-cuerda suma-mal" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k}"/>`).join('');
   else if (v === 'traba') s = cuerdas(k => k === 2 ? 'traba' : 'tenue', '<text class="vg-alerta" x="306" y="80">!</text>');
   else if (v === 'control') s = cuerdas(() => 'ok', '<path class="vg-check" d="M296 42 l10 10 l18 -22"/>');

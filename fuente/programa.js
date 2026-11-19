@@ -127,6 +127,26 @@ const STOPS = {
       ],
     },
   },
+  whatsapp: {
+    tipo: 'texto', titulo: 'Cómo usar el acompañamiento por WhatsApp', audio: 'audio/whatsapp/',
+    sub: 'Cuándo mandarme una consulta o un video, y por qué conviene hacerlo antes de que esté listo.',
+    unidades: [],
+    tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'chat', t: 'Cómo usar el acompañamiento por WhatsApp' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'chat', t: 'En este programa, el acompañamiento por WhatsApp\ntiene más efecto sobre tu avance **que las clases**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'registro', t: 'Es la manera de tener un registro, momento a momento,\nde **los errores y los aciertos** de tu práctica.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'destrabar', t: 'Así entendemos **qué corregir**\npara destrabar la práctica…' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: '…y **cuándo dejar de dar vueltas** sobre lo mismo\ny avanzar a lo siguiente, sin perder tiempo ni energía.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'chat', t: 'Muchos alumnos tardan en entender\ncuál es el mejor momento para mandar una consulta o un video.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'duda', t: 'Es justo **cuando no entendés una consigna**,\no cuando te resulta **demasiado difícil**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'zona', t: 'En este proceso las consignas nunca tienen que ser tan difíciles.\nSiempre requieren algo de trabajo, **pero todo tiene que funcionar**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'video-no', t: 'Muchas veces no querés mandar un video\nporque **todavía no está listo**.' },
+      { sel: [-1, -1], pausa: true, grande: true, malo: true, t: 'No hay nada más equivocado que eso.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'video-ok', t: 'Para destrabar un ejercicio, lo más efectivo es mandar el video **haciéndolo, aunque no esté bien**:\nasí corregimos las sutilezas que traban el progreso.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'chat', t: 'Así que te invito a usar el acompañamiento por WhatsApp\n**desde el primer momento**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Para avanzar de la manera más fluida posible,\nsin frustraciones, sobreesfuerzos ni estancamientos innecesarios.' },
+    ],
+  },
   cuerdas: {
     tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas', audio: 'audio/cuerdas/', audioNo: 'audio/cuerdas-no/', empiezaNo: true,
     sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
@@ -228,6 +248,16 @@ const PROGRAMA = {
       },
       pregunta: '¿Arrancamos?',
       progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
+    },
+    {
+      id: 'p0w', etapa: 'pre', opcional: true, sinVideo: true,
+      titulo: 'Cómo usar el acompañamiento por WhatsApp',
+      stop: 'whatsapp',
+      pregunta: '¿Se entiende?',
+      progreso: [
+        { id: 'listo', label: 'Sí, dale', nivel: 'listo' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
+      ],
     },
     {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',

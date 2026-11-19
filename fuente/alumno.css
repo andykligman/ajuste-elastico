@@ -842,3 +842,28 @@ body.dv-abierto{overflow:hidden}
 @keyframes spgLatido{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 14px rgba(255,255,255,0)}}
 .vg-cuerda.se-apaga{stroke:var(--naranja);animation:vgApaga 4s ease-in-out infinite}
 @keyframes vgApaga{0%,20%{stroke:var(--naranja);opacity:1}45%,85%{stroke:#45464c;opacity:.6}100%{stroke:var(--naranja);opacity:1}}
+
+/* Dibujitos del acompañamiento por WhatsApp */
+.vg-burbuja{fill:#2b2c31;opacity:0;animation:vgAparece 5.4s ease infinite;animation-delay:calc(var(--k)*.8s)}
+.vg-burbuja.yo{fill:#1f6b4a}
+.vg-tipeo{fill:#9a9ba0;animation:vgParpadeo 1s ease-in-out infinite;animation-delay:calc(var(--k)*.2s)}
+.vg-marca{fill:none;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:vgAparece 6s ease infinite;animation-delay:calc(var(--k)*.45s)}
+.vg-marca.ok{stroke:#3FA56B}.vg-marca.mal{stroke:#E2705A}
+.vg-cuerda.traba-ok{animation:vgTrabaOk 3s ease infinite;stroke-width:3}
+@keyframes vgTrabaOk{0%,40%{stroke:#E2705A}60%,100%{stroke:#3FA56B}}
+.vg-check.tarde{animation:vgDibuja .6s 1.6s ease forwards}
+.vg-ciclo.chico{fill:none;stroke:#4a4b51;stroke-width:3}
+.vg-viaja.corto{transform-origin:80px 56px;animation:vgGira 1.4s linear 2,vgSale 4.2s linear infinite}
+@keyframes vgSale{0%,66%{opacity:1}67%,100%{opacity:0}}
+.vg-flecha-larga{fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:260;stroke-dashoffset:260;animation:vgDibuja 1s 1s ease forwards}
+.vg-signo{fill:var(--naranja);font:800 54px var(--display);text-anchor:middle;animation:vgParpadeo 2s ease-in-out infinite}
+.vg-onda{fill:none;stroke:var(--naranja);stroke-width:2;transform-origin:160px 56px;animation:vgOnda 2s ease-out infinite}
+@keyframes vgOnda{from{transform:scale(.6);opacity:.8}to{transform:scale(1.5);opacity:0}}
+.vg-barra{fill:#2b2c31}.vg-justa{fill:rgba(63,165,107,.45);stroke:#3FA56B;stroke-width:1.5}
+.vg-aguja{fill:#fff;animation:vgAguja 4s ease-in-out infinite}
+@keyframes vgAguja{0%,10%{transform:translateX(0)}35%,60%{transform:translateX(140px)}75%{transform:translateX(250px);fill:#E2705A}100%{transform:translateX(140px)}}
+.vg-video{fill:#2b2c31;stroke:#5a5b61;stroke-width:2}.vg-video.on{stroke:var(--naranja)}
+.vg-play{fill:#77787d}.vg-play.on{fill:var(--naranja)}
+.vg-tacha{stroke:#E2705A;stroke-width:4;stroke-linecap:round;stroke-dasharray:160;stroke-dashoffset:160;animation:vgDibuja .7s .8s ease forwards}
+.vg-ruta{fill:none;stroke:#4a4b51;stroke-width:3;stroke-dasharray:6 7}
+.vg-viajero{fill:var(--naranja)}
