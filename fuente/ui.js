@@ -41,11 +41,14 @@ let ediciones = 0;   // cambios del alumno hechos antes de que llegue la respues
 const ETIQUETA_COMO = { cuesta: 'Me cuesta', casi: 'Casi', listo: 'Ya está' };
 const NOMBRE_ESTACION = ['Inicio', 'Clase 1', 'Clase 2', 'Clase 3', 'Clase 4', 'Módulo 2'];
 
-function nav(url) { try { history.replaceState(null, '', url); } catch (e) {} }
+function nav(url) { try { history.replaceState(null, '', url); if (/^\?admin/.test(url)) localStorage.setItem('mapaAE_ultimoAdmin', url); } catch (e) {} }
+// Los links que se mandan a los alumnos siempre van a la dirección nueva, aunque el panel se abra desde otra
+const AULA_URL = 'https://aula.ajuste-elastico.com/';
+const baseLinks = () => /ajuste-elastico\.com$/.test(location.hostname) || location.protocol === 'file:' || location.hostname === 'localhost' ? location.href : AULA_URL;
 function linkInvitacion(token) {
-  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
+  const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
 }
-function linkRegistro(c) { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('registro', c); return u.toString(); }
+function linkRegistro(c) { const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('registro', c); return u.toString(); }
 function linkMapa() { const u = new URL(location.href); u.search = ''; u.hash = ''; return u.toString(); }
 let TOKEN = '';
 try { TOKEN = localStorage.getItem('mapaAE_token') || ''; } catch (e) {}
@@ -664,6 +667,8 @@ window.addEventListener('resize', () => {
 });
 
 (function inicio() {
+  // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
+  if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
   if (params.get('registro')) { renderRegistro(params.get('registro')); return; }

@@ -833,6 +833,7 @@ body.con-mapa{overflow:hidden}
 .consulta{transition:opacity .5s ease}
 .consulta.apagado{opacity:0;pointer-events:none}
 .pv-cerrar{font-size:13.5px!important;font-weight:600;padding:4px 10px!important;border:1px solid var(--linea)!important;border-radius:999px}
+.seguir [data-rec-ok]{padding:12px 34px;font-size:17px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1972,11 +1973,14 @@ let ediciones = 0;   // cambios del alumno hechos antes de que llegue la respues
 const ETIQUETA_COMO = { cuesta: 'Me cuesta', casi: 'Casi', listo: 'Ya está' };
 const NOMBRE_ESTACION = ['Inicio', 'Clase 1', 'Clase 2', 'Clase 3', 'Clase 4', 'Módulo 2'];
 
-function nav(url) { try { history.replaceState(null, '', url); } catch (e) {} }
+function nav(url) { try { history.replaceState(null, '', url); if (/^\?admin/.test(url)) localStorage.setItem('mapaAE_ultimoAdmin', url); } catch (e) {} }
+// Los links que se mandan a los alumnos siempre van a la dirección nueva, aunque el panel se abra desde otra
+const AULA_URL = 'https://aula.ajuste-elastico.com/';
+const baseLinks = () => /ajuste-elastico\.com$/.test(location.hostname) || location.protocol === 'file:' || location.hostname === 'localhost' ? location.href : AULA_URL;
 function linkInvitacion(token) {
-  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
+  const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('invitacion', token); return u.toString();
 }
-function linkRegistro(c) { const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set('registro', c); return u.toString(); }
+function linkRegistro(c) { const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('registro', c); return u.toString(); }
 function linkMapa() { const u = new URL(location.href); u.search = ''; u.hash = ''; return u.toString(); }
 let TOKEN = '';
 try { TOKEN = localStorage.getItem('mapaAE_token') || ''; } catch (e) {}
@@ -2427,7 +2431,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}${ok || !p ? '' : `<div class="rec-pie"><button class="rec-ok" data-rec-ok="${p.id}">Ok</button></div>`}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -2454,6 +2458,8 @@ function tarjetaHTML(st, e, p) {
   // Si ya dijo que le salió y no hay video para mandar, «Seguir» va al lado del mensaje
   // Si ya le salió y no hay video para mandar: el mensaje verde, del tamaño de su texto, y «Seguir» al lado
   const seguirAlLado = !!(sig && sel && sel.nivel === 'listo' && p.tipo !== 'standard' && !cambiando.has(p.id) && (!p.entrega || sel.saltea));
+  // Con recomendación: primero «Ok» (blanco, donde va «Seguir»); recién después el video y «Seguir»
+  const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     <div class="consigna">${textoHTML(p.detalle)}</div>
@@ -2466,8 +2472,9 @@ function tarjetaHTML(st, e, p) {
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
-    ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !(sel?.nivel === 'casi' && sel.resp && !recCerradas.has(p.id)) ? envioHTML(st, p) : ''}
-    ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
+    ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
+    ${recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
@@ -3922,6 +3929,8 @@ window.addEventListener('resize', () => {
 });
 
 (function inicio() {
+  // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
+  if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
   if (params.get('registro')) { renderRegistro(params.get('registro')); return; }

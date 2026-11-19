@@ -383,7 +383,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}${ok || !p ? '' : `<div class="rec-pie"><button class="rec-ok" data-rec-ok="${p.id}">Ok</button></div>`}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -410,6 +410,8 @@ function tarjetaHTML(st, e, p) {
   // Si ya dijo que le salió y no hay video para mandar, «Seguir» va al lado del mensaje
   // Si ya le salió y no hay video para mandar: el mensaje verde, del tamaño de su texto, y «Seguir» al lado
   const seguirAlLado = !!(sig && sel && sel.nivel === 'listo' && p.tipo !== 'standard' && !cambiando.has(p.id) && (!p.entrega || sel.saltea));
+  // Con recomendación: primero «Ok» (blanco, donde va «Seguir»); recién después el video y «Seguir»
+  const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     <div class="consigna">${textoHTML(p.detalle)}</div>
@@ -422,8 +424,9 @@ function tarjetaHTML(st, e, p) {
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
-    ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !(sel?.nivel === 'casi' && sel.resp && !recCerradas.has(p.id)) ? envioHTML(st, p) : ''}
-    ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
+    ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
+    ${recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
