@@ -104,12 +104,19 @@ function aviso(t, error) {
   el.onclick = () => el.classList.remove('visible');
 }
 
+/* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
+function reiniciarPrueba() {
+  ['mapaAE_intro___prueba', 'mapaAE_modVistos___prueba'].forEach(k => guardarLocal(k, null));
+  try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {}
+  ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba';
+  modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0);
+}
 /*VISTA_ALUMNO*/
 function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="https://andykligman.github.io/ajuste-elastico/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
-      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span>` : ''}
+      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
@@ -558,7 +565,7 @@ function enlazarAdmin() {
     if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
-    if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {} modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
+    if (d.adm === 'prueba') { reiniciarPrueba(); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }

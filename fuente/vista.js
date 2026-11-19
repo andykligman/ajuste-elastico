@@ -500,6 +500,9 @@ function caminoHTML(st, e) {
 
 function bannerModulo(m, et, sub) {
   const M = MODULOS[m];
+  // Ya leyó los objetivos del módulo: queda solo «Módulo N»
+  const obj = !sub && PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === m);
+  if (obj && ST && hecho(ST, obj.id)) return `<div class="mod-banner mod-banner-chico"><h2>${esc(M.titulo)}</h2></div>`;
   return `<div class="mod-banner"><small>${esc(M.titulo)}</small><h2>${esc(M.nombre)}</h2>${sub || etapasUnica(m) ? `<p>${esc(sub || et.sub)}</p>` : ''}</div>`;
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
@@ -576,7 +579,7 @@ function celebrarModulo(m, alCerrar) {
   el.querySelector('[data-pm]').focus();
 }
 function quizasCelebrar() {
-  if (modo !== 'alumno' || !ST || !abierto || !PASO[abierto]) return;
+  if ((modo !== 'alumno' && modo !== 'admin-prueba') || !ST || !abierto || !PASO[abierto]) return;
   const m = MODULO_DE[PASO[abierto].etapa];
   if (m > 0 && !moduloVisto(m)) celebrarModulo(m);
   else if (m === 0) marcarModuloVisto(0);
@@ -905,7 +908,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && modo === 'alumno' && !introVista()) setTimeout(mostrarIntro, 300);
+  if (animar && (modo === 'alumno' || modo === 'admin-prueba') && !introVista()) setTimeout(mostrarIntro, 300);
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
@@ -972,6 +975,7 @@ function enlazarAlumno() {
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
+    else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }

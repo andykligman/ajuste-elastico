@@ -772,6 +772,7 @@ body.con-mapa{overflow:hidden}
 .hero-botones{margin-left:auto;display:flex;gap:8px}
 .hero-botones .boton-mapa{margin-left:0}
 @media (max-width:560px){.hero-botones .boton-mapa{padding:6px 11px;font-size:13px}.hero-botones .boton-mapa span{display:none}.hero-botones .boton-mapa:last-child::after{content:'Mapa'}}
+.mod-banner-chico{padding-top:14px;padding-bottom:2px}.mod-banner-chico h2{font-size:17px;color:var(--mc)}.mod-banner-chico::before{top:19px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1966,6 +1967,13 @@ function aviso(t, error) {
   el.onclick = () => el.classList.remove('visible');
 }
 
+/* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
+function reiniciarPrueba() {
+  ['mapaAE_intro___prueba', 'mapaAE_modVistos___prueba'].forEach(k => guardarLocal(k, null));
+  try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {}
+  ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba';
+  modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0);
+}
 /* ---------------- Vista del alumno: el camino ----------------
    Un camino dibujado de punta a punta. El paso actual está abierto en el camino:
    consigna, material y "¿Cómo te fue?". Al responder, aparece "Seguir" y el camino avanza.
@@ -2468,6 +2476,9 @@ function caminoHTML(st, e) {
 
 function bannerModulo(m, et, sub) {
   const M = MODULOS[m];
+  // Ya leyó los objetivos del módulo: queda solo «Módulo N»
+  const obj = !sub && PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === m);
+  if (obj && ST && hecho(ST, obj.id)) return `<div class="mod-banner mod-banner-chico"><h2>${esc(M.titulo)}</h2></div>`;
   return `<div class="mod-banner"><small>${esc(M.titulo)}</small><h2>${esc(M.nombre)}</h2>${sub || etapasUnica(m) ? `<p>${esc(sub || et.sub)}</p>` : ''}</div>`;
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
@@ -2544,7 +2555,7 @@ function celebrarModulo(m, alCerrar) {
   el.querySelector('[data-pm]').focus();
 }
 function quizasCelebrar() {
-  if (modo !== 'alumno' || !ST || !abierto || !PASO[abierto]) return;
+  if ((modo !== 'alumno' && modo !== 'admin-prueba') || !ST || !abierto || !PASO[abierto]) return;
   const m = MODULO_DE[PASO[abierto].etapa];
   if (m > 0 && !moduloVisto(m)) celebrarModulo(m);
   else if (m === 0) marcarModuloVisto(0);
@@ -2873,7 +2884,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && modo === 'alumno' && !introVista()) setTimeout(mostrarIntro, 300);
+  if (animar && (modo === 'alumno' || modo === 'admin-prueba') && !introVista()) setTimeout(mostrarIntro, 300);
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
@@ -2940,6 +2951,7 @@ function enlazarAlumno() {
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
+    else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
@@ -3229,7 +3241,7 @@ function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="https://andykligman.github.io/ajuste-elastico/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
-      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span>` : ''}
+      ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
@@ -3678,7 +3690,7 @@ function enlazarAdmin() {
     if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
-    if (d.adm === 'prueba') { ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba'; try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {} modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0); return; }
+    if (d.adm === 'prueba') { reiniciarPrueba(); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }

@@ -699,3 +699,4 @@ body.con-mapa{overflow:hidden}
 .hero-botones{margin-left:auto;display:flex;gap:8px}
 .hero-botones .boton-mapa{margin-left:0}
 @media (max-width:560px){.hero-botones .boton-mapa{padding:6px 11px;font-size:13px}.hero-botones .boton-mapa span{display:none}.hero-botones .boton-mapa:last-child::after{content:'Mapa'}}
+.mod-banner-chico{padding-top:14px;padding-bottom:2px}.mod-banner-chico h2{font-size:17px;color:var(--mc)}.mod-banner-chico::before{top:19px}
