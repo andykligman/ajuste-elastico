@@ -975,15 +975,10 @@ body.dv-abierto{overflow:hidden}
 .pl-cuerda:nth-child(2){stroke:#5D7BB6}
 .pl-mini b,.ll-mini b{background:#5D7BB6;color:#fff}
 .ll-eti{color:#9DB8F2}
-/* Logo original de AE (azul y naranja) sobre fondo claro, para que se lea en el tema oscuro */
-.marca{display:inline-flex;background:#F7F5F1;border-radius:12px;padding:6px 14px}
-.marca svg{height:48px}
-.logo-ae svg,.stop-logo svg{background:#F7F5F1;border-radius:10px;padding:5px 12px;box-sizing:content-box}
-.stop-logo{opacity:.9}
-@media (max-width:560px){.marca{padding:5px 10px}.marca svg{height:36px}}
+
 .pl-saber rect{fill:#1F2C4A;stroke:#5D7BB6;stroke-width:1.5}.pl-saber text{fill:#DCE5F6;font:600 14px var(--sans);text-anchor:middle}
 .pl-saber{opacity:0;animation:plSube 5s ease infinite;animation-delay:calc(var(--k)*.35s)}
-.pl-logo svg{background:#F7F5F1;border-radius:12px}
+
 .pl-logo{animation:plPop .6s ease}
 .pl-cuerda.fina{stroke-width:2}
 .pl-cana{stroke:#A9BEE8;stroke-width:6;stroke-linecap:round}
@@ -1010,3 +1005,18 @@ body.dv-abierto{overflow:hidden}
 .pl-aguja-r{stroke:#E8834F;stroke-width:4;stroke-linecap:round;transform-origin:120px 100px;animation:vgGira 3s linear infinite}
 .pl-flecha-r{fill:none;stroke:#A9BEE8;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
 .pl-sube{fill:none;stroke:#E8834F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:140;stroke-dashoffset:140;animation:vgDibuja 1.2s .4s ease forwards}
+
+/* Presentación: azul y naranja más parejos */
+.pl-frase strong{color:#F0995F}
+.pl-disco{fill:#E8834F}
+.pl-onda{stroke:#E8834F}
+.pl-progreso i.hecho{background:#5D7BB6}
+.pl-cuerda:nth-child(2){stroke:#E8834F}
+.pl-saber:nth-child(odd) rect{stroke:#E8834F}
+.pl-paso.on circle{fill:#5D7BB6}
+.pl-hito{stroke:#E8834F}
+.pl-avatar:nth-child(2) circle{stroke:#E8834F}
+.pl-pantallita{stroke:#E8834F}
+.ll-eti{color:#F0995F}
+.ll-mini b{background:#E8834F}
+.ll-tres div:nth-child(2) b{background:#E8834F}

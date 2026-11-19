@@ -121,9 +121,17 @@ function reiniciarPrueba() {
   modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0);
 }
 /*VISTA_ALUMNO*/
+// El logo vuelve al inicio de donde estás: la presentación en el link de la llamada, la demo en la demo,
+// el panel solo si sos admin, y si sos alumno tu propia aula (nunca la vista de prueba del admin)
+function inicioMarca() {
+  if (esLlamada) return '?llamada';
+  if (esDemo) return '?demo';
+  if (modo === 'admin' || modo.startsWith('admin-')) return '?admin';
+  return location.pathname + location.search.replace(/[?&]paso=[^&]*/, '').replace(/^&/, '?');
+}
 function barra(nombre) {
   return `<header class="barra">
-    <a class="marca" href="https://aula.ajuste-elastico.com/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
+    <a class="marca" href="${esc(inicioMarca())}" aria-label="Ajuste Elástico, ir al inicio">${LOGO}</a>
     <div class="barra-der">
       ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
@@ -212,7 +220,7 @@ function presVis(v, paso) {
   else if (v === 'pasos') { const nom = ['Tu situación', 'Qué te traba', 'El camino']; nom.forEach((n, k) => { const x = 60 + k * 120, on = paso > k, ahora = paso === k + 1; s += `${k ? `<line class="pl-une ${on ? 'on' : ''}" x1="${x - 90}" y1="90" x2="${x - 30}" y2="90"/>` : ''}<g class="pl-paso ${on ? 'on' : ''} ${ahora ? 'ahora' : ''}"><circle cx="${x}" cy="90" r="30"/><text class="pl-num" x="${x}" y="100">${k + 1}</text><text class="pl-cap" x="${x}" y="150">${n}</text></g>`; }); }
   else if (v === 'mapa') { s = '<path class="pl-ruta" d="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/>'; [[30, 160], [150, 100], [240, 62], [330, 40]].forEach(([x, y], k) => { s += `<circle class="pl-hito" cx="${x}" cy="${y}" r="10" style="--k:${k}"/>`; }); s += '<circle class="pl-viajero" r="7"><animateMotion dur="4s" repeatCount="indefinite" path="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/></circle>'; }
   else if (v === 'saberes') { [['Escalas', 40, 120], ['Arpegios', 130, 90], ['Armonía', 220, 120], ['Teoría', 85, 40], ['Técnica', 190, 40]].forEach(([n, x, y], k) => { s += `<g class="pl-saber" style="--k:${k}"><rect x="${x}" y="${y}" width="100" height="40" rx="12"/><text x="${x + 50}" y="${y + 26}">${n}</text></g>`; }); }
-  else if (v === 'logo') s = `<g class="pl-logo"><rect x="28" y="54" width="304" height="80" rx="16" fill="#F7F5F1"/>${LOGO.replace('<svg ', '<svg x="40" y="62" width="280" height="64" ')}</g>` + [150, 160, 170].map((y, k) => `<path class="pl-cuerda fina" style="--k:${k}" d="M40 ${y} Q180 ${y} 320 ${y}"><animate attributeName="d" dur="${1.8 + k * .3}s" repeatCount="indefinite" values="M40 ${y} Q180 ${y} 320 ${y};M40 ${y} Q180 ${y + 8} 320 ${y};M40 ${y} Q180 ${y} 320 ${y}"/></path>`).join('');
+  else if (v === 'logo') s = `<g class="pl-logo">${LOGO.replace('<svg ', '<svg x="40" y="62" width="280" height="64" ')}</g>` + [150, 160, 170].map((y, k) => `<path class="pl-cuerda fina" style="--k:${k}" d="M40 ${y} Q180 ${y} 320 ${y}"><animate attributeName="d" dur="${1.8 + k * .3}s" repeatCount="indefinite" values="M40 ${y} Q180 ${y} 320 ${y};M40 ${y} Q180 ${y + 8} 320 ${y};M40 ${y} Q180 ${y} 320 ${y}"/></path>`).join('');
   else if (v === 'cana') s = '<path class="pl-cana" d="M60 170 L230 40"/><path class="pl-sedal" d="M230 40 Q 262 60 262 120"/><g class="pl-pez"><path d="M262 132 q20 -14 40 0 q-20 14 -40 0z"/><path d="M302 132 l12 -9 v18z"/><circle cx="270" cy="129" r="2.5"/></g><circle class="pl-reel" cx="88" cy="150" r="10"/>';
   else if (v === 'regalo') s = '<g class="pl-regalo"><rect x="130" y="90" width="100" height="80" rx="10"/><rect class="tapa" x="122" y="72" width="116" height="26" rx="8"/><rect class="cinta" x="174" y="72" width="12" height="98"/><path class="moño" d="M180 72 c-20 -26 -40 -6 -14 0 M180 72 c20 -26 40 -6 14 0"/></g>' + [0, 1, 2, 3, 4].map(k => `<circle class="pl-brillo" cx="${120 + k * 30}" cy="40" r="3" style="--k:${k}"/>`).join('');
   else if (v === 'testimonios') { [[90, 'I'], [180, 'M'], [270, '+']].forEach(([x, l], k) => { s += `<g class="pl-avatar" style="--k:${k}"><circle cx="${x}" cy="90" r="36"/><text x="${x}" y="102">${l}</text></g>`; }); s += '<text class="pl-cap" x="180" y="170">en tu misma situación</text>'; }
@@ -244,7 +252,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=3`; presAudio.playbackRate = 1.1;
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=4`; presAudio.playbackRate = 1.1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
