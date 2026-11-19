@@ -681,8 +681,8 @@ body.con-mapa{overflow:hidden}
 .in-grabar i{width:11px;height:11px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.25)}
 .in-mandado{opacity:0;color:#5BD49A;padding-left:2px!important}
 .in-mandado svg{width:16px;height:16px}
-.in-env.foco .in-grabar{animation:inBoton 5s ease forwards}
-.in-env.foco .in-mandado{animation:inMandado 5s ease forwards}
+.in-env.foco .in-grabar{animation:inBoton 3.6s ease forwards}
+.in-env.foco .in-mandado{animation:inMandado 3.6s ease forwards}
 .in-escena[data-s="7"] .in-grabar{opacity:0}.in-escena[data-s="7"] .in-mandado{opacity:1}
 @keyframes inBoton{0%,35%{opacity:1;transform:none}42%{transform:scale(.95)}50%,100%{opacity:0}}
 @keyframes inMandado{0%,50%{opacity:0}62%,100%{opacity:1}}

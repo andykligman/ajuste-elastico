@@ -754,8 +754,8 @@ body.con-mapa{overflow:hidden}
 .in-grabar i{width:11px;height:11px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.25)}
 .in-mandado{opacity:0;color:#5BD49A;padding-left:2px!important}
 .in-mandado svg{width:16px;height:16px}
-.in-env.foco .in-grabar{animation:inBoton 5s ease forwards}
-.in-env.foco .in-mandado{animation:inMandado 5s ease forwards}
+.in-env.foco .in-grabar{animation:inBoton 3.6s ease forwards}
+.in-env.foco .in-mandado{animation:inMandado 3.6s ease forwards}
 .in-escena[data-s="7"] .in-grabar{opacity:0}.in-escena[data-s="7"] .in-mandado{opacity:1}
 @keyframes inBoton{0%,35%{opacity:1;transform:none}42%{transform:scale(.95)}50%,100%{opacity:0}}
 @keyframes inMandado{0%,50%{opacity:0}62%,100%{opacity:1}}
@@ -2262,7 +2262,13 @@ function panelHTML(p) {
   return `<div class="panel-vids">${p.panel.map(v => `<button class="panel-vid" data-seek="${v.video}:0"><img src="https://i.ytimg.com/vi/${esc(v.video)}/mqdefault.jpg" alt="" loading="lazy"><span>${ICONO.video}${esc(v.t)}</span></button>`).join('')}</div>`;
 }
 function materialHTML(p) {
-  const rs = (p.recursos || []).filter(r => r.url);
+  // El video de la consigna va primero como «Ver video»; los recursos que abren ese mismo video en el mismo minuto no se repiten
+  const v = p.video;
+  const igual = r => v && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
+  const dup = (p.recursos || []).find(r => r.url && igual(r) && /ejemplo/i.test(r.t));   // «Ver ejemplo…» conserva su nombre
+  const rs = (p.recursos || []).filter(r => r.url && !igual(r));
+  const verVideo = v ? { t: dup ? dup.t : 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
+  if (verVideo) rs.unshift(verVideo);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
   /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
@@ -2271,7 +2277,7 @@ function materialHTML(p) {
   ${resto.length ? `<div class="material">${resto.map(r => {
     if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
@@ -2355,7 +2361,6 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   return `<div class="tarjeta">
-    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver video</span></button>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -2490,14 +2495,14 @@ function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] =
    Sale sola la primera vez que el alumno entra; después, con «Cómo funciona» arriba. */
 const INTRO_AUDIO = 'audio/intro/';   // 01.m4a, 02.m4a… una por frase; si falta, avanza con el tiempo de lectura
 const INTRO = [
-  { t: '¡Bienvenido al aula de **Ajuste Elástico**!', ms: 3500 },
-  { t: 'El aula es un camino: vas **paso a paso**.', ms: 4200 },
-  { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 4500 },
-  { t: 'Siempre podés ver **el video de la consigna**.', ms: 4200 },
-  { t: 'Y están **los documentos**: ahí está todo explicado en detalle. Leelos sí o sí, son tan importantes como los videos.', ms: 7000 },
-  { t: 'A veces hay **videos extra** que te ayudan a destrabar.', ms: 4200 },
-  { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 5000 },
-  { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 5000 },
+  { t: '¡Bienvenido al aula de **Ajuste Elástico**!', ms: 2600 },
+  { t: 'El aula es un camino: vas **paso a paso**.', ms: 3000 },
+  { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 3200 },
+  { t: 'Siempre podés ver **el video de la consigna**.', ms: 3000 },
+  { t: 'Y están **los documentos**: ahí está todo explicado en detalle. Leelos sí o sí, son tan importantes como los videos.', ms: 5500 },
+  { t: 'A veces hay **videos extra** que te ayudan a destrabar.', ms: 3000 },
+  { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
+  { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
 const audioIntro = new Audio(); audioIntro.preload = 'auto';
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
@@ -2545,7 +2550,7 @@ function mostrarIntro() {
     if (reduceMotion) return;
     audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a';
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(900, INTRO[yo - 1].ms - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
