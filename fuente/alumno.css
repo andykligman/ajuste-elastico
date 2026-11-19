@@ -620,3 +620,12 @@ body.con-mapa{overflow:hidden}
 .pv-titulo:has(#pv-aviso:empty){padding-top:4px;padding-bottom:4px}
 .envio.envio-ok .fila-botones:empty,.envio.envio-ok .vids:empty{display:none}
 @media (max-width:640px){.envio.envio-ok{border-radius:12px;gap:0 12px;padding:6px 12px;font-size:13.5px}.envio.envio-ok .cambiar-op{font-size:12px}}
+
+/* «Ya me lo mandaste»: solo una línea de texto, sin recuadro */
+.envio.envio-ok{flex-wrap:nowrap;gap:12px;padding:0;margin-top:10px;background:none;border:0;border-radius:0;font-size:13.5px;color:var(--gris)}
+.envio.envio-ok .envio-t{gap:6px;white-space:nowrap}
+.envio.envio-ok .envio-t svg{width:15px;height:15px}
+.envio.envio-ok .envio-t strong{font-weight:500;color:#5BD49A}
+.envio.envio-ok .cambiar-op{white-space:nowrap}
+.envio.envio-ok:has(.vids:not(:empty)){flex-wrap:wrap}
+@media (max-width:640px){.envio.envio-ok{padding:0;font-size:13px;gap:10px}.envio.envio-ok .cambiar-op{font-size:12px}}

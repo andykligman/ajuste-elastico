@@ -82,6 +82,13 @@ function ayudaPara(p, sel) {
   return { apoyo: false, difs: sel.nivel === 'cuesta' ? probs : [] };
 }
 
+/* En el celu el doc se abre en la versión simple (mobilebasic), que sí respeta el salto al título;
+   la app y el editor móvil de Docs ignoran #heading */
+function linkSeccion(url, h) {
+  const base = url.replace(/#.*$/, '').replace(/\/(edit|view|preview|mobilebasic)[^/]*$/, '');
+  const cel = window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
+  return cel ? `${base}/mobilebasic#${h}` : `${base}/edit#heading=${h}`;
+}
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
 const esDoc = r => r.url && !ytId(r.url);
 function docNuevo(p, r) {
@@ -284,7 +291,7 @@ function materialHTML(p) {
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(r.url.replace(/#.*$/, '') + '#heading=' + r.sec[0])}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
+    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;

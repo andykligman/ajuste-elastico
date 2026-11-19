@@ -694,6 +694,15 @@ body.con-mapa{overflow:hidden}
 .envio.envio-ok .fila-botones:empty,.envio.envio-ok .vids:empty{display:none}
 @media (max-width:640px){.envio.envio-ok{border-radius:12px;gap:0 12px;padding:6px 12px;font-size:13.5px}.envio.envio-ok .cambiar-op{font-size:12px}}
 
+/* «Ya me lo mandaste»: solo una línea de texto, sin recuadro */
+.envio.envio-ok{flex-wrap:nowrap;gap:12px;padding:0;margin-top:10px;background:none;border:0;border-radius:0;font-size:13.5px;color:var(--gris)}
+.envio.envio-ok .envio-t{gap:6px;white-space:nowrap}
+.envio.envio-ok .envio-t svg{width:15px;height:15px}
+.envio.envio-ok .envio-t strong{font-weight:500;color:#5BD49A}
+.envio.envio-ok .cambiar-op{white-space:nowrap}
+.envio.envio-ok:has(.vids:not(:empty)){flex-wrap:wrap}
+@media (max-width:640px){.envio.envio-ok{padding:0;font-size:13px;gap:10px}.envio.envio-ok .cambiar-op{font-size:12px}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -1971,6 +1980,13 @@ function ayudaPara(p, sel) {
   return { apoyo: false, difs: sel.nivel === 'cuesta' ? probs : [] };
 }
 
+/* En el celu el doc se abre en la versión simple (mobilebasic), que sí respeta el salto al título;
+   la app y el editor móvil de Docs ignoran #heading */
+function linkSeccion(url, h) {
+  const base = url.replace(/#.*$/, '').replace(/\/(edit|view|preview|mobilebasic)[^/]*$/, '');
+  const cel = window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
+  return cel ? `${base}/mobilebasic#${h}` : `${base}/edit#heading=${h}`;
+}
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
 const esDoc = r => r.url && !ytId(r.url);
 function docNuevo(p, r) {
@@ -2173,7 +2189,7 @@ function materialHTML(p) {
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(r.url.replace(/#.*$/, '') + '#heading=' + r.sec[0])}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
+    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
