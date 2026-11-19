@@ -388,7 +388,7 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   // Si ya dijo que le salió y no hay video para mandar, «Seguir» va al lado del mensaje
-  const seguirAlLado = !!(sig && sel && sel.nivel === 'listo' && p.tipo !== 'standard' && !cambiando.has(p.id) && (!p.entrega || sel.saltea));
+  const seguirAlLado = false;   // probado con «Seguir» al lado del mensaje: quedaba peor, vuelve abajo
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     <div class="consigna">${textoHTML(p.detalle)}</div>
