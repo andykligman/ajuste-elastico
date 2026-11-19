@@ -1040,7 +1040,7 @@ const STOPS = {
       { sel: [5, 6], zoom: true, t: '6 y 7…' },
       { sel: [6, 7], zoom: true, t: '…o 7 y 8, depende de qué te convenga más.' },
       { sel: [4, 7], arregla: 6, t: 'Y de nuevo, del 5 al 8.' },
-      { sel: [4, 7], pausa: true, t: 'No siempre es necesario hacer todos estos pasos, pero muchas veces es lo más inteligente si podemos pasar estas etapas rápido. Y tenemos como objetivo el final.' },
+      { sel: [4, 7], pausa: true, t: 'No siempre es necesario hacer todos estos pasos, pero muchas veces es lo más inteligente si podemos pasar estas etapas rápido y tenemos claro el objetivo final, que es tocar sobre toda la forma del tema con el mismo control.' },
       { sel: [0, 7], t: 'Ahora sí: ya practicaste del 1 al 4 y del 5 al 8. Ahora podés hacer **del 1 al 8**.' },
       { sel: [8, 11], t: 'Del 9 al 12.' },
       { sel: [12, 15], t: 'Del 13 al 16.' },
@@ -2165,7 +2165,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=5` : ''; };
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=6` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
@@ -2556,7 +2556,7 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=3';   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=4';   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
     audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };

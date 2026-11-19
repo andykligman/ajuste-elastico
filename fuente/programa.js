@@ -97,7 +97,7 @@ const STOPS = {
       { sel: [5, 6], zoom: true, t: '6 y 7…' },
       { sel: [6, 7], zoom: true, t: '…o 7 y 8, depende de qué te convenga más.' },
       { sel: [4, 7], arregla: 6, t: 'Y de nuevo, del 5 al 8.' },
-      { sel: [4, 7], pausa: true, t: 'No siempre es necesario hacer todos estos pasos, pero muchas veces es lo más inteligente si podemos pasar estas etapas rápido. Y tenemos como objetivo el final.' },
+      { sel: [4, 7], pausa: true, t: 'No siempre es necesario hacer todos estos pasos, pero muchas veces es lo más inteligente si podemos pasar estas etapas rápido y tenemos claro el objetivo final, que es tocar sobre toda la forma del tema con el mismo control.' },
       { sel: [0, 7], t: 'Ahora sí: ya practicaste del 1 al 4 y del 5 al 8. Ahora podés hacer **del 1 al 8**.' },
       { sel: [8, 11], t: 'Del 9 al 12.' },
       { sel: [12, 15], t: 'Del 13 al 16.' },
