@@ -975,3 +975,26 @@ body.dv-abierto{overflow:hidden}
 .pl-cuerda:nth-child(2){stroke:#5D7BB6}
 .pl-mini b,.ll-mini b{background:#5D7BB6;color:#fff}
 .ll-eti{color:#9DB8F2}
+/* Logo original de AE (azul y naranja) sobre fondo claro, para que se lea en el tema oscuro */
+.marca{display:inline-flex;background:#F7F5F1;border-radius:12px;padding:6px 14px}
+.marca svg{height:48px}
+.logo-ae svg,.stop-logo svg{background:#F7F5F1;border-radius:10px;padding:5px 12px;box-sizing:content-box}
+.stop-logo{opacity:.9}
+@media (max-width:560px){.marca{padding:5px 10px}.marca svg{height:36px}}
+.pl-saber rect{fill:#1F2C4A;stroke:#5D7BB6;stroke-width:1.5}.pl-saber text{fill:#DCE5F6;font:600 14px var(--sans);text-anchor:middle}
+.pl-saber{opacity:0;animation:plSube 5s ease infinite;animation-delay:calc(var(--k)*.35s)}
+.pl-logo svg{background:#F7F5F1;border-radius:12px}
+.pl-logo{animation:plPop .6s ease}
+.pl-cuerda.fina{stroke-width:2}
+.pl-cana{stroke:#A9BEE8;stroke-width:6;stroke-linecap:round}
+.pl-sedal{fill:none;stroke:#DCE5F6;stroke-width:1.5}
+.pl-reel{fill:#5D7BB6}
+.pl-pez{fill:#E8834F;animation:plPez 2.4s ease-in-out infinite}.pl-pez circle{fill:#0D1220}
+@keyframes plPez{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.pl-regalo rect{fill:#5D7BB6}.pl-regalo .tapa{fill:#7C9BD6}.pl-regalo .cinta{fill:#E8834F}.pl-regalo .moño{fill:none;stroke:#E8834F;stroke-width:5;stroke-linecap:round}
+.pl-regalo{transform-origin:180px 130px;animation:plSalto 1.6s ease-in-out infinite}
+@keyframes plSalto{0%,100%{transform:none}50%{transform:translateY(-8px) rotate(-3deg)}}
+.pl-brillo{fill:#fff;animation:vgParpadeo 1.2s ease-in-out infinite;animation-delay:calc(var(--k)*.2s)}
+.pl-avatar circle{fill:#24324F;stroke:#5D7BB6;stroke-width:3}.pl-avatar text{fill:#fff;font:700 28px var(--display);text-anchor:middle}
+.pl-avatar{opacity:0;animation:plSube 5s ease infinite;animation-delay:calc(var(--k)*.5s)}
+.pl-pantallita{fill:#1F2C4A;stroke:#5D7BB6;stroke-width:3}
