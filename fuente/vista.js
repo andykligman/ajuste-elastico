@@ -117,12 +117,13 @@ function hojaDeRutaHTML(p) {
 }
 /* Animaciones que arrancan solas cuando entran en pantalla, una sola vez por sesión */
 const animVistas = new Set();
+let introPendiente = false;   // la bienvenida está por abrirse o abierta: las animaciones esperan a que se cierre
 const animClase = key => animVistas.has(key) ? '' : 'anim';
 let animObs = null;
 function activarAnimaciones() {
   if (!('IntersectionObserver' in window)) { document.querySelectorAll('.anim').forEach(el => { el.classList.add('go'); animVistas.add(el.dataset.anim); }); return; }
   animObs = animObs || new IntersectionObserver(ents => ents.forEach(en => {
-    if (!en.isIntersecting) return;
+    if (!en.isIntersecting || document.querySelector('.intro-aula') || introPendiente) return;
     en.target.classList.add('go'); animVistas.add(en.target.dataset.anim); animObs.unobserve(en.target);
   }), { threshold: 0.35 });
   document.querySelectorAll('.anim:not(.go)').forEach(el => animObs.observe(el));
@@ -386,6 +387,9 @@ function tarjetaHTML(st, e, p) {
   const sel = opcionElegida(st, p);
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
+  // Si ya dijo que le salió y no hay video para mandar, «Seguir» va al lado del mensaje
+  const seguirAlLado = !!(sig && sel && sel.nivel === 'listo' && p.tipo !== 'standard' && !cambiando.has(p.id) && (!p.entrega || sel.saltea));
+  const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
@@ -396,9 +400,9 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${preguntaHTML(st, p)}
+    ${seguirAlLado ? `<div class="fila-resp">${preguntaHTML(st, p)}${botonSeguir}</div>` : preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
-    ${respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+    ${!seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>`}
@@ -571,6 +575,7 @@ function mostrarIntro() {
     el.querySelectorAll('.in-puntos i').forEach(x => x.classList.toggle('on', +x.dataset.p <= s));
     txt.classList.remove('ver'); void txt.offsetWidth; txt.innerHTML = enLinea(INTRO[s - 1].t); txt.classList.add('ver');
     sig.textContent = s === INTRO.length ? 'Arrancar' : 'Siguiente';
+    sig.classList.toggle('in-final', s === INTRO.length);
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
@@ -580,7 +585,10 @@ function mostrarIntro() {
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
-  const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause(); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
+  const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
+    introPendiente = false;
+    // las animaciones que quedaron tapadas arrancan ahora
+    setTimeout(() => { if (animObs) { animObs.disconnect(); document.querySelectorAll('.anim:not(.go)').forEach(x => animObs.observe(x)); } else activarAnimaciones(); }, 450); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
   el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
   requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
 }
@@ -930,7 +938,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && (modo === 'alumno' || modo === 'admin-prueba') && !introVista()) setTimeout(mostrarIntro, 300);
+  if (animar && (modo === 'alumno' || modo === 'admin-prueba') && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
