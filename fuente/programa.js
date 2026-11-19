@@ -673,7 +673,7 @@ const PROGRAMA = {
       detalle: 'Mirá el video con el doc al lado y practicá con el **entrenador rítmico**: elegís las unidades y te arma improvisaciones para leer y cantar.',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: 'https://docs.google.com/document/d/1pKRZwbhdszAGjsV4x-b9d-kb7dDPlss7xGHkU_yEdxo/edit' },
-        { t: 'Entrenador rítmico', url: 'https://andykligman.github.io/entrenador-ritmico/' },
+        { t: 'Entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/' },
       ],
     },
   ],

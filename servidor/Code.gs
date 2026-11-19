@@ -20,7 +20,7 @@ const JSON_COLS = ['extras', 'prog', 'probs'];
 const PRIVADAS = ['hash', 'sal', 'invitacion'];      // nunca salen de la planilla
 const DIAS_SESION = 180;
 const CARPETA_VIDEOS = 'Aula AE - Videos';            // en tu Drive, una subcarpeta por alumno
-const ORIGEN = 'https://andykligman.github.io';        // la página que sube los videos
+const ORIGENES = ['https://aula.ajuste-elastico.com', 'https://andykligman.github.io'];   // páginas que suben videos (la primera es la principal)
 const DIAS_VIDEOS = 90;                                // después van a la papelera de Drive
 const MB_MAX = 400;
 
@@ -126,7 +126,7 @@ function manejar(d) {
         const r = UrlFetchApp.fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
           method: 'post', contentType: 'application/json', muteHttpExceptions: true,
           payload: JSON.stringify({ name: nombre, mimeType: mime, parents: [carpetaAlumno(a.datos).getId()] }),
-          headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(tam), Origin: ORIGEN }
+          headers: { Authorization: 'Bearer ' + ScriptApp.getOAuthToken(), 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(tam), Origin: ORIGENES.includes(d.origen) ? d.origen : ORIGENES[0] }
         });
         const url = r.getHeaders().Location || r.getHeaders().location;
         if (!url) throw new Error('No se pudo empezar a subir el video. Probá de nuevo en un rato.');

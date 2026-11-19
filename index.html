@@ -1618,7 +1618,7 @@ const PROGRAMA = {
       detalle: 'Mirá el video con el doc al lado y practicá con el **entrenador rítmico**: elegís las unidades y te arma improvisaciones para leer y cantar.',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: 'https://docs.google.com/document/d/1pKRZwbhdszAGjsV4x-b9d-kb7dDPlss7xGHkU_yEdxo/edit' },
-        { t: 'Entrenador rítmico', url: 'https://andykligman.github.io/entrenador-ritmico/' },
+        { t: 'Entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/' },
       ],
     },
   ],
@@ -3178,7 +3178,7 @@ async function procesarCola() {
     let id;
     if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 250)); subiendo.p = k / 10; pintarSubida(); } id = 'demo-' + Date.now(); }
     else {
-      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size });
+      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size, origen: location.origin });
       id = await subirPorPartes(url, item.blob, p => { subiendo.p = p; pintarSubida(); });
     }
     const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
@@ -3275,7 +3275,7 @@ function videosNuevos(al) { return Object.values(al.prog || {}).reduce((n, x) =>
 
 function barra(nombre) {
   return `<header class="barra">
-    <a class="marca" href="https://andykligman.github.io/ajuste-elastico/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
+    <a class="marca" href="https://aula.ajuste-elastico.com/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
       ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}

@@ -114,7 +114,7 @@ function reiniciarPrueba() {
 /*VISTA_ALUMNO*/
 function barra(nombre) {
   return `<header class="barra">
-    <a class="marca" href="https://andykligman.github.io/ajuste-elastico/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
+    <a class="marca" href="https://aula.ajuste-elastico.com/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
       ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}

@@ -1188,7 +1188,7 @@ async function procesarCola() {
     let id;
     if (!API_URL) { for (let k = 1; k <= 10; k++) { await new Promise(r => setTimeout(r, 250)); subiendo.p = k / 10; pintarSubida(); } id = 'demo-' + Date.now(); }
     else {
-      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size });
+      const { url } = await llamar('video.iniciar', { token: TOKEN, paso: item.pasoId, mime: item.mime, tam: item.blob.size, origen: location.origin });
       id = await subirPorPartes(url, item.blob, p => { subiendo.p = p; pintarSubida(); });
     }
     const pr = ST.prog[item.pasoId] || (ST.prog[item.pasoId] = {});
