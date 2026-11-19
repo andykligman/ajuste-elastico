@@ -179,7 +179,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.m4a` : '';
+const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.m4a?v=2` : '';
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
@@ -570,7 +570,7 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a';
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=2';   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
     audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
