@@ -223,7 +223,7 @@ function presVis(v, paso) {
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: 0, visto: false, timer: null };
-const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1.25; presAudio.preservesPitch = true;
+const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1.1; presAudio.preservesPitch = true;
 function presHTML() {
   const i = presEst.i, sl = PRES_LLAMADA[i], sonando = !!presEst.timer, fin = i === PRES_LLAMADA.length - 1;
   return `<div class="pl-escena" key="${i}">
@@ -244,7 +244,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=2`; presAudio.playbackRate = 1.25;
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=3`; presAudio.playbackRate = 1.1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
