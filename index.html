@@ -3255,6 +3255,8 @@ function abrirPaso(id) {
   videoParaAbierto(cambio);
   requestAnimationFrame(() => irA(id));
   quizasCelebrar();
+  // en el celu, dejamos bajando el doc del paso así «Ir a…» abre al toque
+  setTimeout(() => document.querySelectorAll('a[data-doc-sec]').forEach(x => docHTML(x.dataset.docSec.split('|')[0]).catch(() => {})), 1500);
 }
 
 function enlazarAlumno() {
