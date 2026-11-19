@@ -726,3 +726,7 @@ body.con-mapa{overflow:hidden}
 .escribime:hover{background:#25A065}
 .consulta.llamando{animation:llamaWA 1.4s ease 4;border-color:#5BD49A}
 @keyframes llamaWA{0%{box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 0 rgba(91,212,154,.55)}70%{box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 16px rgba(91,212,154,0)}100%{box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 0 rgba(91,212,154,0)}}
+
+.seguir-cuesta{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.seguir-cuesta .escribime{margin-top:0;padding:12px 20px;font-size:16px}
+.seguir-cuesta .secundario{padding:12px 18px}

@@ -363,7 +363,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}${sel.nivel === 'cuesta' ? escribimeHTML(p) : ''}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -402,10 +402,9 @@ function tarjetaHTML(st, e, p) {
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp">${preguntaHTML(st, p)}${botonSeguir}</div>` : preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
-    ${!seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea || sel?.nivel === 'cuesta') ? `<div class="seguir">
-        ${sel && sel.nivel === 'cuesta'
-          ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
-          : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>`}
+    ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+      : !seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+        <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
   </div>`;
 }
@@ -782,8 +781,8 @@ function escribimeHTML(p) {
 }
 function llamarConsulta() {
   const el = document.getElementById('consulta'); if (!el) return;
-  el.classList.add('con-texto', 'llamando');
-  clearTimeout(el._llamar); el._llamar = setTimeout(() => el.classList.remove('con-texto', 'llamando'), 7000);
+  el.classList.add('llamando');   // solo late: el cartel tapaba la recomendación
+  clearTimeout(el._llamar); el._llamar = setTimeout(() => el.classList.remove('llamando'), 6000);
 }
 function consultaHTML() {
   let el = document.getElementById('consulta');
