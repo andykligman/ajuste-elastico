@@ -563,7 +563,8 @@ function mostrarIntro() {
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
     audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a';
-    audioIntro.onended = () => { h = setTimeout(sigue, 900); };
+    const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(900, INTRO[yo - 1].ms - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
