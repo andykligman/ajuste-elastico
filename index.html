@@ -2500,9 +2500,12 @@ const INTRO = [
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 5000 },
 ];
 const audioIntro = new Audio(); audioIntro.preload = 'auto';
-const introVista = () => !!leerLocal('mapaAE_intro_' + (ST?.codigo || ''));
+/* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
+   y también la ven los alumnos que ya venían usando el aula */
+const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
 function mostrarIntro() {
   guardarLocal('mapaAE_intro_' + (ST?.codigo || ''), 1);
+  if (modo === 'alumno' && ST && !ST.prog.intro) { ST.prog.intro = { t: hoyISO() }; guardarAlumno(); }
   const el = document.createElement('div');
   el.className = 'intro-aula'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cómo funciona el aula');
   const nodo = i => `<span class="in-nodo" data-n="${i}"><b>${i}</b><i>${ICONO.check}</i></span>`;
