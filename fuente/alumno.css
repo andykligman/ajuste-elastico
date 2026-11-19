@@ -998,3 +998,15 @@ body.dv-abierto{overflow:hidden}
 .pl-avatar circle{fill:#24324F;stroke:#5D7BB6;stroke-width:3}.pl-avatar text{fill:#fff;font:700 28px var(--display);text-anchor:middle}
 .pl-avatar{opacity:0;animation:plSube 5s ease infinite;animation-delay:calc(var(--k)*.5s)}
 .pl-pantallita{fill:#1F2C4A;stroke:#5D7BB6;stroke-width:3}
+/* Presentación más simple: un solo color, sin difuminados */
+.pl-pantalla{background:#16213A;box-shadow:none;border:1px solid #24324F}
+.pl-pantalla::before{display:none}
+.pl-play{background:rgba(22,33,58,.82);backdrop-filter:none;-webkit-backdrop-filter:none}
+.pl-play span{animation:none}
+.pl-sol,.pl-viajero,.pl-paso.ahora{filter:none}
+.ll-entrena{background:#16213A;border-color:#24324F}
+.ll-video{box-shadow:none}
+.pl-esfera{fill:none;stroke:#5D7BB6;stroke-width:4}
+.pl-aguja-r{stroke:#E8834F;stroke-width:4;stroke-linecap:round;transform-origin:120px 100px;animation:vgGira 3s linear infinite}
+.pl-flecha-r{fill:none;stroke:#A9BEE8;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.pl-sube{fill:none;stroke:#E8834F;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:140;stroke-dashoffset:140;animation:vgDibuja 1.2s .4s ease forwards}

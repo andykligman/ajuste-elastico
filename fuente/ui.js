@@ -180,21 +180,21 @@ const PRES_LLAMADA = [
   { v: 'llamada', t: '¡Hola! Si te llegó este link,\nes porque **vamos a tener una llamada**.' },
   { v: 'chispa', t: 'Y quiero darte material\npara que podamos **aprovecharla al 100**.' },
   { v: 'mensajes', t: 'Te cuento algo: a casi todos los guitarristas con los que hablo\nles pasa **lo mismo**.' },
-  { v: 'saberes', t: 'Manejan el instrumento, conocen recursos,\ny algunos hasta **estudiaron, y mucho**.' },
+  { v: 'saberes', t: 'Manejan el instrumento, conocen recursos,\ny algunos hasta **estudiaron un montón**.' },
   { v: 'dispersas', t: 'Pero cuando llega el momento de improvisar,\nmuchas cosas **no aparecen** con el control o la fluidez que quisieran.' },
   { v: 'puente', t: 'Esa distancia entre **entender cómo funcionan las cosas**\ny **realmente poder usarlas** al improvisar…' },
   { v: 'logo', t: '…es justo lo que trabajamos en **Ajuste Elástico**.' },
   { v: 'elastico', t: 'No con más información, sino con un método\nque **adapta la práctica a vos**, momento a momento.' },
   { v: 'mapa', t: 'Un **mapa** que ordena tu camino\npara que puedas avanzar sin trabas.' },
-  { v: 'cana', t: 'No es más información: es **una caña de pescar**,\npara que aprendas a absorber lo que estudiás\ny toques con la fluidez que querés.' },
-  { v: 'pasos', paso: 0, t: 'En la llamada vamos a charlar sobre tu situación con la guitarra\ny ver si te puedo ayudar con lo que buscás:' },
-  { v: 'pasos', paso: 1, t: '**Dónde estás hoy** con la viola…' },
-  { v: 'pasos', paso: 2, t: '…**qué es lo que te está trabando**…' },
+  { v: 'cana', t: 'No son más pescados:\nes **una caña de pescar**.' },
+  { v: 'reloj', t: 'Para que el tiempo y la energía que le dedicás a estudiar\nte den **los resultados que merecés**.' },
+  { v: 'pasos', paso: 1, t: 'En la llamada vamos a charlar sobre **tu situación actual** con la guitarra\ny ver si te puedo ayudar con lo que buscás:' },
+  { v: 'pasos', paso: 2, t: 'Entender **qué es lo que te está trabando**…' },
   { v: 'pasos', paso: 3, t: '…y **el camino concreto** para destrabarlo.' },
   { v: 'regalo', t: 'Mientras tanto, te dejo un **entrenamiento gratuito**\npara que explores, si querés.' },
-  { v: 'relax', t: 'No hace falta que traigas nada para la sesión.' },
+  { v: 'relax', t: 'Pero no hace falta que traigas nada para la sesión.\nAsí que **no te preocupes por hacer la tarea** 😛' },
   { v: 'testimonios', t: 'También te dejo **testimonios de alumnos**\nque estaban en tu misma situación cuando empezaron…' },
-  { v: 'video', t: '…y un **video de bienvenida**\nque explica de qué se trata el método.' },
+  { v: 'video', t: '…y un **video** que explica un poquito\nde qué se trata el método.' },
   { v: 'final', t: '¡Nos vemos en la llamada! 🙌' },
 ];
 function presVis(v, paso) {
@@ -206,10 +206,10 @@ function presVis(v, paso) {
   else if (v === 'mensajes') [[40, 30, 170], [150, 76, 170], [60, 122, 150]].forEach(([x, y, w], k) => { s += `<g class="pl-msj" style="--k:${k}"><rect x="${x}" y="${y}" width="${w}" height="34" rx="17"/><circle cx="${x + 22}" cy="${y + 17}" r="4"/><circle cx="${x + 36}" cy="${y + 17}" r="4"/><circle cx="${x + 50}" cy="${y + 17}" r="4"/></g>`; });
   else if (v === 'dispersas') { const p = [[60, 60], [110, 140], [150, 50], [200, 120], [250, 70], [300, 150], [90, 100], [230, 40]]; p.forEach(([x, y], k) => { s += `<g class="pl-nota" style="--k:${k};--dx:${(k % 2 ? 1 : -1) * (8 + k * 3)}px;--dy:${(k % 3 - 1) * 14}px"><ellipse cx="${x}" cy="${y}" rx="9" ry="7"/><line x1="${x + 8}" y1="${y}" x2="${x + 8}" y2="${y - 30}"/></g>`; }); s += '<text class="pl-cuenta" x="180" y="188">1 · 2 · 3…</text>'; }
   else if (v === 'puente') s = `<rect class="pl-orilla" x="20" y="110" width="100" height="60" rx="8"/><rect class="pl-orilla b" x="240" y="110" width="100" height="60" rx="8"/>
-      <text class="pl-cap" x="70" y="190">interpretar</text><text class="pl-cap b" x="290" y="190">improvisar</text>
+      <text class="pl-cap" x="70" y="190">entender</text><text class="pl-cap b" x="290" y="190">usarlo al improvisar</text>
       <path class="pl-puente" d="M120 112 Q180 40 240 112"/><circle class="pl-viajero" r="7"><animateMotion dur="3s" repeatCount="indefinite" path="M120 112 Q180 40 240 112"/></circle>`;
   else if (v === 'elastico') s = [60, 100, 140].map((y, k) => `<path class="pl-cuerda" style="--k:${k}" d="M30 ${y} Q180 ${y} 330 ${y}"><animate attributeName="d" dur="${2 + k * .4}s" repeatCount="indefinite" values="M30 ${y} Q180 ${y} 330 ${y};M30 ${y} Q180 ${y + (k - 1 || 1) * 26} 330 ${y};M30 ${y} Q180 ${y} 330 ${y}"/></path>`).join('') + '<circle class="pl-punto-o" cx="30" cy="100" r="6"/><circle class="pl-punto-o" cx="330" cy="100" r="6"/>';
-  else if (v === 'pasos') { const nom = ['Dónde estás', 'Qué te traba', 'El camino']; nom.forEach((n, k) => { const x = 60 + k * 120, on = paso > k, ahora = paso === k + 1; s += `${k ? `<line class="pl-une ${on ? 'on' : ''}" x1="${x - 90}" y1="90" x2="${x - 30}" y2="90"/>` : ''}<g class="pl-paso ${on ? 'on' : ''} ${ahora ? 'ahora' : ''}"><circle cx="${x}" cy="90" r="30"/><text class="pl-num" x="${x}" y="100">${k + 1}</text><text class="pl-cap" x="${x}" y="150">${n}</text></g>`; }); }
+  else if (v === 'pasos') { const nom = ['Tu situación', 'Qué te traba', 'El camino']; nom.forEach((n, k) => { const x = 60 + k * 120, on = paso > k, ahora = paso === k + 1; s += `${k ? `<line class="pl-une ${on ? 'on' : ''}" x1="${x - 90}" y1="90" x2="${x - 30}" y2="90"/>` : ''}<g class="pl-paso ${on ? 'on' : ''} ${ahora ? 'ahora' : ''}"><circle cx="${x}" cy="90" r="30"/><text class="pl-num" x="${x}" y="100">${k + 1}</text><text class="pl-cap" x="${x}" y="150">${n}</text></g>`; }); }
   else if (v === 'mapa') { s = '<path class="pl-ruta" d="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/>'; [[30, 160], [150, 100], [240, 62], [330, 40]].forEach(([x, y], k) => { s += `<circle class="pl-hito" cx="${x}" cy="${y}" r="10" style="--k:${k}"/>`; }); s += '<circle class="pl-viajero" r="7"><animateMotion dur="4s" repeatCount="indefinite" path="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/></circle>'; }
   else if (v === 'saberes') { [['Escalas', 40, 120], ['Arpegios', 130, 90], ['Armonía', 220, 120], ['Teoría', 85, 40], ['Técnica', 190, 40]].forEach(([n, x, y], k) => { s += `<g class="pl-saber" style="--k:${k}"><rect x="${x}" y="${y}" width="100" height="40" rx="12"/><text x="${x + 50}" y="${y + 26}">${n}</text></g>`; }); }
   else if (v === 'logo') s = `<g class="pl-logo"><rect x="28" y="54" width="304" height="80" rx="16" fill="#F7F5F1"/>${LOGO.replace('<svg ', '<svg x="40" y="62" width="280" height="64" ')}</g>` + [150, 160, 170].map((y, k) => `<path class="pl-cuerda fina" style="--k:${k}" d="M40 ${y} Q180 ${y} 320 ${y}"><animate attributeName="d" dur="${1.8 + k * .3}s" repeatCount="indefinite" values="M40 ${y} Q180 ${y} 320 ${y};M40 ${y} Q180 ${y + 8} 320 ${y};M40 ${y} Q180 ${y} 320 ${y}"/></path>`).join('');
@@ -217,6 +217,7 @@ function presVis(v, paso) {
   else if (v === 'regalo') s = '<g class="pl-regalo"><rect x="130" y="90" width="100" height="80" rx="10"/><rect class="tapa" x="122" y="72" width="116" height="26" rx="8"/><rect class="cinta" x="174" y="72" width="12" height="98"/><path class="moño" d="M180 72 c-20 -26 -40 -6 -14 0 M180 72 c20 -26 40 -6 14 0"/></g>' + [0, 1, 2, 3, 4].map(k => `<circle class="pl-brillo" cx="${120 + k * 30}" cy="40" r="3" style="--k:${k}"/>`).join('');
   else if (v === 'testimonios') { [[90, 'I'], [180, 'M'], [270, '+']].forEach(([x, l], k) => { s += `<g class="pl-avatar" style="--k:${k}"><circle cx="${x}" cy="90" r="36"/><text x="${x}" y="102">${l}</text></g>`; }); s += '<text class="pl-cap" x="180" y="170">en tu misma situación</text>'; }
   else if (v === 'video') s = '<rect class="pl-pantallita" x="80" y="36" width="200" height="120" rx="16"/><circle class="pl-disco" cx="180" cy="96" r="30"/><path fill="#fff" d="M172 82 v28 l24 -14z"/>';
+  else if (v === 'reloj') s = '<circle class="pl-esfera" cx="120" cy="100" r="52"/><line class="pl-aguja-r" x1="120" y1="100" x2="120" y2="62"/><path class="pl-flecha-r" d="M190 100 H250 m-12 -10 l12 10 l-12 10"/><path class="pl-sube" d="M270 150 l20 -30 l16 14 l24 -50"/>';
   else if (v === 'relax') s = '<rect class="pl-mochila" x="140" y="60" width="80" height="90" rx="16"/><path class="pl-tacha" d="M120 160 L240 50"/><text class="pl-cap" x="180" y="190">nada que preparar</text>';
   else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; s += '<text class="pl-chau" x="180" y="120">¡Nos vemos!</text>'; }
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
@@ -243,7 +244,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=1`; presAudio.playbackRate = 1.25;
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=2`; presAudio.playbackRate = 1.25;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
@@ -276,7 +277,7 @@ function renderLlamada() {
     ${testimonio(t2)}
     <section class="ll-bloque ll-cierre">
       <p class="ll-eti">En la llamada</p>
-      <div class="ll-tres">${[['Dónde estás hoy', 'Con la viola, sin vueltas.'], ['Qué te traba', 'Lo que te frena al improvisar.'], ['El camino', 'Un plan concreto para destrabarlo.']].map(([a, b], k) => `<div><b>${k + 1}</b><h3>${a}</h3><p>${b}</p></div>`).join('')}</div>
+      <div class="ll-tres">${[['Tu situación actual', 'Dónde estás hoy con la viola.'], ['Qué te traba', 'Lo que te frena al improvisar.'], ['El camino', 'Un plan concreto para destrabarlo.']].map(([a, b], k) => `<div><b>${k + 1}</b><h3>${a}</h3><p>${b}</p></div>`).join('')}</div>
       <p class="ll-texto">No tenés que traer nada preparado. ¡Nos vemos! 🙌</p>
     </section>
   </main>`;
