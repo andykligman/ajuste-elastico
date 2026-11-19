@@ -404,7 +404,7 @@ function tarjetaHTML(st, e, p) {
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
     ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
-      : !seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+      : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
   </div>`;
