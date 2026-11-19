@@ -510,7 +510,9 @@ function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] =
 
 /* ================= Cómo funciona el aula: animación de bienvenida =================
    Sale sola la primera vez que el alumno entra; después, con «Cómo funciona» arriba. */
+const INTRO_AUDIO = 'audio/intro/';   // 01.m4a, 02.m4a… una por frase; si falta, avanza con el tiempo de lectura
 const INTRO = [
+  { t: '¡Bienvenido al aula de **Ajuste Elástico**!', ms: 3500 },
   { t: 'El aula es un camino: vas **paso a paso**.', ms: 4200 },
   { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 4500 },
   { t: 'Siempre podés ver **el video de la consigna**.', ms: 4200 },
@@ -519,6 +521,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 5000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 5000 },
 ];
+const audioIntro = new Audio(); audioIntro.preload = 'auto';
 const introVista = () => !!leerLocal('mapaAE_intro_' + (ST?.codigo || ''));
 function mostrarIntro() {
   guardarLocal('mapaAE_intro_' + (ST?.codigo || ''), 1);
@@ -549,15 +552,22 @@ function mostrarIntro() {
   let s = 0, h = null;
   const ir = n => {
     s = n; clearTimeout(h);
-    esc_.dataset.s = s;
-    el.querySelectorAll('.in-el').forEach(x => { const d = +x.dataset.desde; x.classList.toggle('on', d <= s); x.classList.toggle('foco', d === s); });
-    el.querySelectorAll('.in-nodo').forEach(x => { const k = +x.dataset.n, ahora = s < 7 ? 2 : 3; x.classList.toggle('hecho', k < ahora); x.classList.toggle('ahora', k === ahora); });
+    const sc = s - 1;   // la frase 1 es la bienvenida; la escena arranca en la 2
+    esc_.dataset.s = sc;
+    el.querySelectorAll('.in-el').forEach(x => { const d = +x.dataset.desde; x.classList.toggle('on', d <= sc); x.classList.toggle('foco', d === sc); });
+    el.querySelectorAll('.in-nodo').forEach(x => { const k = +x.dataset.n, ahora = sc < 7 ? 2 : 3; x.classList.toggle('hecho', k < ahora); x.classList.toggle('ahora', k === ahora); });
     el.querySelectorAll('.in-puntos i').forEach(x => x.classList.toggle('on', +x.dataset.p <= s));
     txt.classList.remove('ver'); void txt.offsetWidth; txt.innerHTML = enLinea(INTRO[s - 1].t); txt.classList.add('ver');
     sig.textContent = s === INTRO.length ? 'Arrancar' : 'Siguiente';
-    if (s < INTRO.length && !reduceMotion) h = setTimeout(() => ir(s + 1), INTRO[s - 1].ms);
+    const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
+    audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
+    if (reduceMotion) return;
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a';
+    audioIntro.onended = () => { h = setTimeout(sigue, 900); };
+    audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
+    audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
-  const cerrar = () => { clearTimeout(h); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
+  const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause(); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
   el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
   requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
 }
@@ -643,7 +653,6 @@ function mapaHTML(st, e) {
           ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
           ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
-          ${h ? `<details class="mz-det"><summary>Objetivos</summary><ol>${h.objetivos.map(o => `<li>${enLinea(o)}</li>`).join('')}</ol></details>` : ''}
           ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
             return `<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
