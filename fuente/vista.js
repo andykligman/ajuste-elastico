@@ -160,6 +160,7 @@ function stopInner(id) {
   const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { if (t.pausa) return; for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
   const estadoU = Array(n).fill('');
   if (!no) tandas.slice(0, i + 1).forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
+  if (!no && tanda.trabaAca) for (let k = tanda.sel[0]; k <= tanda.sel[1]; k++) estadoU[k] = 'traba';   // traba solo en esta tanda
   const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
   const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
   const max = Math.max(1, ...veces);
