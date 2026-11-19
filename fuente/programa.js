@@ -104,6 +104,7 @@ const STOPS = {
     ],
     no: {
       tandas: [
+        { sel: [-1, -1], pausa: true, grande: true, t: 'Ahora la idea es que sumes compases del standard repitiendo el mismo proceso que ya venís haciendo.' },
         { sel: [-1, -1], pausa: true, grande: true, t: 'Cómo **no** sumar compases' },
         { sel: [0, 3], t: 'Lo que hace casi todo el mundo: siempre desde el principio. Del 1 al 4.' },
         { sel: [0, 7], t: 'Del 1 al 8.' },
