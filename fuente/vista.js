@@ -318,7 +318,7 @@ function apoyoHTML(p, sel) {
   const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
   return `<div class="apoyo ${ok ? 'apoyo-ok' : ''}"><h4>${esc(p.apoyo.titulo)}</h4>${ok ? `<p>${enLinea(p.apoyo.textoListo)}</p>` : p.apoyo.texto ? `<p>${enLinea(p.apoyo.texto)}</p>` : ''}
     ${p.apoyo.items.map(i => `<div class="apoyo-item"><p class="apoyo-t">${esc(i.t)}</p><p class="apoyo-c">${esc(i.cuando)}</p>
-      ${(i.partes || [{ video: i.video, url: i.url }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
+      ${(i.partes || [{ video: i.video, url: i.url, sec: i.sec }]).map(pt => `${pt.titulo ? `<p class="apoyo-parte">${esc(pt.titulo)}</p>` : ''}<div class="apoyo-links">${pt.video ? `<button class="mat" data-seek="${ytId(pt.video)}:0">${ICONO.video}<span>${esc(pt.tv || 'Ver el video')}</span></button>` : ''}${pt.url ? `<a class="mat" href="${esc(pt.sec ? linkSeccion(pt.url, pt.sec) : pt.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(pt.td || 'Leer el documento')}</span></a>` : ''}</div>`).join('')}</div>`).join('')}</div>`;
 }
 function dificultadesHTML(difs) {
   if (!difs.length) return '';
