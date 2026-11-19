@@ -856,6 +856,7 @@ function panelVideoHTML() {
 const esCel = () => innerWidth < 1000;
 const vistos = new Set(String(leerLS('ae-vistos', '')).split(',').filter(Boolean));
 function marcarVisto(id) { if (id && !vistos.has(id)) { vistos.add(id); guardarLS('ae-vistos', [...vistos].join(',')); } }
+const panelCerrado = () => { const l = $('.layout'); return !l || l.classList.contains('pv-cerrado'); };
 function abrirPanel() { const l = $('.layout'); if (l) l.classList.remove('pv-cerrado'); }
 function cerrarPanel() {
   const l = $('.layout'); if (l) l.classList.add('pv-cerrado');
@@ -937,10 +938,11 @@ function ponerVideo(id, t = 0, play = false) {
     player = new YT.Player('yt', { videoId: id, playerVars: { start: t, rel: 0, cc_load_policy: 0, playsinline: 1, modestbranding: 1 },
       events: { onReady: ev => { sinSubtitulos(ev.target); if (play) ev.target.playVideo(); },
                 onApiChange: ev => sinSubtitulos(ev.target),
-                onStateChange: ev => { if (ev.data === 1) { sinSubtitulos(ev.target); marcarVisto(playerVid); } if (ev.data === 0) cerrarPanel(); } } });
+                onStateChange: ev => { if (ev.data === 1 && panelCerrado()) { ev.target.pauseVideo(); return; } if (ev.data === 1) { sinSubtitulos(ev.target); marcarVisto(playerVid); } if (ev.data === 0) cerrarPanel(); } } });
   } else if (playerVid !== id) {
     play ? player.loadVideoById({ videoId: id, startSeconds: t }) : player.cueVideoById({ videoId: id, startSeconds: t });
-  } else { player.seekTo(t, true); if (play) player.playVideo(); }
+  } else if (play) { player.seekTo(t, true); player.playVideo(); }
+  else player.cueVideoById({ videoId: id, startSeconds: t });   // seekTo sobre un video sin arrancar lo pone a sonar: solo dejarlo listo
   playerVid = id;
 }
 function videoParaAbierto(cambioDePaso) {
