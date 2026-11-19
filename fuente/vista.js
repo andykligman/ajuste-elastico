@@ -537,6 +537,7 @@ function caminoHTML(st, e) {
 
 function bannerModulo(m, et, sub) {
   const M = MODULOS[m];
+  if (esLlamada) return `<div class="mod-banner"><small>Entrenamiento gratuito</small><h2>Arpegios base</h2></div>`;
   // Ya leyó los objetivos del módulo: queda solo «Módulo N»
   const obj = !sub && PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === m);
   if (obj && ST && hecho(ST, obj.id)) return `<div class="mod-banner mod-banner-chico"><h2>${esc(M.titulo)}</h2></div>`;
@@ -643,11 +644,11 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones"><button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button><button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
       <h1>${esLlamada ? 'Hola!' : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
-      <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
-      ${tiraClases(st, e, animar)}
-      ${e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
+      ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
+      ${tiraClases(st, e, animar)}`}
+      ${esLlamada ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
@@ -656,9 +657,9 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<p class="ll-fin">Listo! Lo vemos en la llamada 😉</p>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
-    ${barraClaseHTML(st, e)}`;
+    ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
 
 // Alumnos de antes (sin módulos asignados): del módulo 2 en adelante se abre después de la clase 4
@@ -973,7 +974,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && (modo === 'alumno' || esDemo) && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
+  if (animar && (modo === 'alumno' || (esDemo && !esLlamada)) && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }

@@ -774,3 +774,4 @@ body.con-mapa{overflow:hidden}
 .ll-testimonios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
 .ll-testimonios figure{margin:0}.ll-testimonios .ll-video{margin-top:0}
 .ll-testimonios figcaption{margin-top:8px;font-weight:600;color:var(--gris)}
+.ll-fin{text-align:center;font-size:20px;font-weight:600;margin:30px 0 10px}
