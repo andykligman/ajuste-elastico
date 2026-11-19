@@ -336,7 +336,8 @@ function standardHTML(st) {
   </div>`;
 }
 
-const cambiando = new Set();   // pasos donde el alumno tocó «Cambiar respuesta»
+const cambiando = new Set();
+const recCerradas = new Set();   // recomendaciones que el alumno cerró con «Ok»   // pasos donde el alumno tocó «Cambiar respuesta»
 function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
@@ -351,7 +352,7 @@ function preguntaHTML(st, p) {
     <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && (sel.resp || sel.nivel === 'listo') ? respuestaHTML(sel, p) : ''}
+    ${sel && (sel.resp || sel.nivel === 'listo') && !(sel.nivel !== 'listo' && recCerradas.has(p.id)) ? respuestaHTML(sel, p) : ''}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
@@ -368,6 +369,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
+    ${ok || !p ? '' : `<button class="rec-ok" data-rec-ok="${p.id}" aria-label="Cerrar la recomendación">Ok</button>`}
     <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
@@ -993,9 +995,10 @@ function enlazarAlumno() {
       guardarAlumno(); renderAlumno();
     } else if (d.desenvio) { const pr = ST.prog[d.desenvio]; if (pr) { delete pr.envio; guardarAlumno(); renderAlumno(); } }
     else if (d.pvCerrar !== undefined) cerrarPanel();
+    else if (d.recOk) { recCerradas.add(d.recOk); renderAlumno(); }
     else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
     else if (d.op) {
-      const [id, opId] = d.op.split(':'); cambiando.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
+      const [id, opId] = d.op.split(':'); cambiando.delete(id); recCerradas.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
       else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}), ...(vids ? { videos: vids } : {}) };
