@@ -703,6 +703,76 @@ body.con-mapa{overflow:hidden}
 .envio.envio-ok:has(.vids:not(:empty)){flex-wrap:wrap}
 @media (max-width:640px){.envio.envio-ok{padding:0;font-size:13px;gap:10px}.envio.envio-ok .cambiar-op{font-size:12px}}
 
+/* ---------- Cómo funciona el aula (animación de bienvenida) ---------- */
+.boton-mapa2{margin-left:0}
+.intro-aula{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:radial-gradient(120% 80% at 50% 30%,#2A1C14,#0B0B0D 72%);opacity:0;transition:opacity .4s ease}
+.intro-aula.visible{opacity:1}
+.in-caja{width:100%;max-width:560px;display:flex;flex-direction:column;gap:18px}
+.in-sobre{margin:0;font:600 13px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--naranja);text-align:center}
+.in-texto{margin:0;min-height:3.9em;text-align:center;font:500 clamp(19px,4.6vw,24px)/1.3 var(--display);color:var(--tinta);opacity:0;transform:translateY(6px)}
+.in-texto.ver{opacity:1;transform:none;transition:opacity .6s ease,transform .6s ease}
+.in-texto strong{color:#F6B48D;font-weight:600}
+.in-escena{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.in-camino{position:relative;display:flex;flex-direction:column;align-items:center;gap:30px;padding-top:6px}
+.in-linea{position:absolute;inset:6px 0 6px 0;width:100%;height:calc(100% - 12px)}
+.in-linea line{stroke:var(--linea);stroke-width:2;stroke-dasharray:4 5}
+.in-nodo{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--sup2);border:1px solid var(--linea);color:var(--gris);font:600 14px var(--sans);transition:all .6s cubic-bezier(.3,1.4,.6,1)}
+.in-nodo i{display:none;width:16px;height:16px}
+.in-nodo i svg{width:16px;height:16px}
+.in-nodo.hecho{background:var(--tinta);color:#111;border-color:var(--tinta)}
+.in-nodo.hecho b{display:none}.in-nodo.hecho i{display:block}
+.in-nodo.ahora{background:var(--naranja);color:#1B1208;border-color:var(--naranja);transform:scale(1.18);box-shadow:0 0 0 6px rgba(232,131,79,.18)}
+.in-escena[data-s="1"] .in-nodo{animation:inLate 1.2s ease both}
+.in-escena[data-s="1"] .in-nodo:nth-child(3){animation-delay:.6s}.in-escena[data-s="1"] .in-nodo:nth-child(4){animation-delay:1.2s}.in-escena[data-s="1"] .in-nodo:nth-child(5){animation-delay:1.8s}
+@keyframes inLate{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1}}
+.in-tarjeta{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;background:var(--sup);border:1px solid var(--linea);opacity:0;transform:translateX(-10px);transition:opacity .6s ease,transform .6s ease}
+.in-escena:not([data-s="1"]) .in-tarjeta{opacity:1;transform:none}
+.in-el{opacity:0;transform:translateY(8px);transition:opacity .7s ease,transform .7s ease,box-shadow .6s ease,filter .6s ease}
+.in-el.on{opacity:.45;transform:none}
+.in-el.on.foco{opacity:1}
+.in-escena[data-s="7"] .in-el.on{opacity:.45}.in-escena[data-s="7"] .in-el.foco{opacity:1}
+.in-tit{margin:0 0 8px;font:600 15px var(--display);color:var(--tinta)}
+.in-renglon{display:block;height:8px;margin:6px 0;border-radius:4px;background:#3A3D44}
+.in-vid{position:relative;aspect-ratio:16/6;border-radius:10px;background:#000;border:1px solid var(--linea);display:grid;place-items:center}
+.in-vid small{position:absolute;left:10px;bottom:6px;color:var(--gris);font-size:12px}
+.in-play{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#E5484D;color:#fff}
+.in-play svg{width:18px;height:18px;margin-left:2px}
+.in-vid.foco .in-play{animation:inLatido 1.4s ease infinite}
+@keyframes inLatido{50%{transform:scale(1.12)}}
+.in-doc{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--naranja-claro);border:1.5px solid var(--naranja)}
+.in-doc-ico{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:8px;background:var(--naranja);color:#1B1208}
+.in-doc-ico svg{width:20px;height:20px}
+.in-doc small{display:block;font:600 11.5px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--naranja)}
+.in-doc strong{font-size:15px;color:var(--tinta)}
+.in-doc.foco{transform:scale(1.04);box-shadow:0 0 0 6px rgba(232,131,79,.18),0 0 34px rgba(232,131,79,.35)}
+.in-aux{display:flex;gap:8px;flex-wrap:wrap}
+.in-aux span{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--sup2);border:1px solid var(--linea);font-size:13.5px;color:var(--tinta)}
+.in-aux svg{width:13px;height:13px}
+.in-env{position:relative;height:38px}
+.in-env>span{position:absolute;inset:0 auto 0 0;display:inline-flex;align-items:center;gap:9px;padding:0 16px;border-radius:10px;font:600 14.5px var(--sans);transition:opacity .5s ease}
+.in-grabar{background:var(--blanco);color:#111}
+.in-grabar i{width:11px;height:11px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 3px rgba(229,72,77,.25)}
+.in-mandado{opacity:0;color:#5BD49A;padding-left:2px!important}
+.in-mandado svg{width:16px;height:16px}
+.in-env.foco .in-grabar{animation:inBoton 5s ease forwards}
+.in-env.foco .in-mandado{animation:inMandado 5s ease forwards}
+.in-escena[data-s="7"] .in-grabar{opacity:0}.in-escena[data-s="7"] .in-mandado{opacity:1}
+@keyframes inBoton{0%,35%{opacity:1;transform:none}42%{transform:scale(.95)}50%,100%{opacity:0}}
+@keyframes inMandado{0%,50%{opacity:0}62%,100%{opacity:1}}
+.in-seg{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;background:var(--blanco);color:#111;font:600 14.5px var(--sans)}
+.in-seg svg{width:16px;height:16px}
+.in-ctrl{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.in-puntos{display:flex;gap:6px}
+.in-puntos i{width:7px;height:7px;border-radius:50%;background:var(--linea);transition:background .3s}
+.in-puntos i.on{background:var(--naranja)}
+.in-ctrl .primario{min-width:118px}
+@media (max-width:560px){.in-caja{gap:14px}.in-escena{grid-template-columns:38px 1fr;gap:10px}.in-nodo{width:30px;height:30px}.in-camino{gap:26px}.in-tarjeta{padding:12px;gap:9px}}
+@media (prefers-reduced-motion:reduce){.intro-aula *{animation:none!important;transition:none!important}}
+.in-doc.on{opacity:.85}.in-doc.on.foco{opacity:1}.in-escena[data-s="7"] .in-doc.on{opacity:.85}
+.hero-botones{margin-left:auto;display:flex;gap:8px}
+.hero-botones .boton-mapa{margin-left:0}
+@media (max-width:560px){.hero-botones .boton-mapa{padding:6px 11px;font-size:13px}.hero-botones .boton-mapa span{display:none}.hero-botones .boton-mapa:last-child::after{content:'Mapa'}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2402,6 +2472,61 @@ function bannerModulo(m, et, sub) {
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
 
+
+/* ================= Cómo funciona el aula: animación de bienvenida =================
+   Sale sola la primera vez que el alumno entra; después, con «Cómo funciona» arriba. */
+const INTRO = [
+  { t: 'El aula es un camino: vas **paso a paso**.', ms: 4200 },
+  { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 4500 },
+  { t: 'Siempre podés ver **el video de la consigna**.', ms: 4200 },
+  { t: 'Y están **los documentos**: ahí está todo explicado en detalle. Leelos sí o sí, son tan importantes como los videos.', ms: 7000 },
+  { t: 'A veces hay **videos extra** que te ayudan a destrabar.', ms: 4200 },
+  { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 5000 },
+  { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 5000 },
+];
+const introVista = () => !!leerLocal('mapaAE_intro_' + (ST?.codigo || ''));
+function mostrarIntro() {
+  guardarLocal('mapaAE_intro_' + (ST?.codigo || ''), 1);
+  const el = document.createElement('div');
+  el.className = 'intro-aula'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cómo funciona el aula');
+  const nodo = i => `<span class="in-nodo" data-n="${i}"><b>${i}</b><i>${ICONO.check}</i></span>`;
+  el.innerHTML = `<div class="in-caja">
+    <p class="in-sobre">Cómo funciona el aula</p>
+    <p class="in-texto" aria-live="polite"></p>
+    <div class="in-escena" data-s="1">
+      <div class="in-camino"><svg class="in-linea" aria-hidden="true"><line x1="50%" y1="0" x2="50%" y2="100%"/></svg>${[1, 2, 3, 4].map(nodo).join('')}</div>
+      <div class="in-tarjeta">
+        <div class="in-el" data-desde="2"><p class="in-tit">Nombrar los intervalos</p><span class="in-renglon" style="width:92%"></span><span class="in-renglon" style="width:74%"></span></div>
+        <div class="in-el in-vid" data-desde="3"><span class="in-play">${ICONO.video}</span><small>Video de la consigna</small></div>
+        <div class="in-el in-doc" data-desde="4"><span class="in-doc-ico">${ICONO.doc}</span><span><small>Documento</small><strong>Leelo antes de practicar</strong></span></div>
+        <div class="in-el in-aux" data-desde="5"><span>${ICONO.video}Ejemplo</span><span>${ICONO.video}Video extra</span></div>
+        <div class="in-el in-env" data-desde="6"><span class="in-grabar"><i></i>Grabar video</span><span class="in-mandado">${ICONO.check}Listo, ya me lo mandaste</span></div>
+        <div class="in-el in-seg" data-desde="7"><span>Seguir</span>${ICONO.abajo}</div>
+      </div>
+    </div>
+    <div class="in-ctrl">
+      <button class="link suave" data-in="saltear">Saltear</button>
+      <span class="in-puntos">${INTRO.map((_, i) => `<i data-p="${i + 1}"></i>`).join('')}</span>
+      <button class="primario" data-in="sig">Siguiente</button>
+    </div></div>`;
+  document.body.appendChild(el);
+  const esc_ = el.querySelector('.in-escena'), txt = el.querySelector('.in-texto'), sig = el.querySelector('[data-in="sig"]');
+  let s = 0, h = null;
+  const ir = n => {
+    s = n; clearTimeout(h);
+    esc_.dataset.s = s;
+    el.querySelectorAll('.in-el').forEach(x => { const d = +x.dataset.desde; x.classList.toggle('on', d <= s); x.classList.toggle('foco', d === s); });
+    el.querySelectorAll('.in-nodo').forEach(x => { const k = +x.dataset.n, ahora = s < 7 ? 2 : 3; x.classList.toggle('hecho', k < ahora); x.classList.toggle('ahora', k === ahora); });
+    el.querySelectorAll('.in-puntos i').forEach(x => x.classList.toggle('on', +x.dataset.p <= s));
+    txt.classList.remove('ver'); void txt.offsetWidth; txt.innerHTML = enLinea(INTRO[s - 1].t); txt.classList.add('ver');
+    sig.textContent = s === INTRO.length ? 'Arrancar' : 'Siguiente';
+    if (s < INTRO.length && !reduceMotion) h = setTimeout(() => ir(s + 1), INTRO[s - 1].ms);
+  };
+  const cerrar = () => { clearTimeout(h); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
+  el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
+  requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
+}
+
 /* Al entrar por primera vez a un módulo nuevo: pantalla de «Pasaste al módulo N» */
 function moduloVisto(m) { const l = leerLocal('mapaAE_modVistos_' + (ST?.codigo || '')) || []; return l.includes(m); }
 function marcarModuloVisto(m) { const k = 'mapaAE_modVistos_' + (ST?.codigo || ''); const l = leerLocal(k) || []; if (!l.includes(m)) { l.push(m); guardarLocal(k, l); } }
@@ -2428,7 +2553,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}Ver el mapa</button></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones"><button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button><button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
       <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
@@ -2748,6 +2873,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
+  if (animar && modo === 'alumno' && !introVista()) setTimeout(mostrarIntro, 300);
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
@@ -2813,6 +2939,7 @@ function enlazarAlumno() {
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
+    else if (d.accion === 'intro') mostrarIntro();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }

@@ -504,6 +504,61 @@ function bannerModulo(m, et, sub) {
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
 
+
+/* ================= Cómo funciona el aula: animación de bienvenida =================
+   Sale sola la primera vez que el alumno entra; después, con «Cómo funciona» arriba. */
+const INTRO = [
+  { t: 'El aula es un camino: vas **paso a paso**.', ms: 4200 },
+  { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 4500 },
+  { t: 'Siempre podés ver **el video de la consigna**.', ms: 4200 },
+  { t: 'Y están **los documentos**: ahí está todo explicado en detalle. Leelos sí o sí, son tan importantes como los videos.', ms: 7000 },
+  { t: 'A veces hay **videos extra** que te ayudan a destrabar.', ms: 4200 },
+  { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 5000 },
+  { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 5000 },
+];
+const introVista = () => !!leerLocal('mapaAE_intro_' + (ST?.codigo || ''));
+function mostrarIntro() {
+  guardarLocal('mapaAE_intro_' + (ST?.codigo || ''), 1);
+  const el = document.createElement('div');
+  el.className = 'intro-aula'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cómo funciona el aula');
+  const nodo = i => `<span class="in-nodo" data-n="${i}"><b>${i}</b><i>${ICONO.check}</i></span>`;
+  el.innerHTML = `<div class="in-caja">
+    <p class="in-sobre">Cómo funciona el aula</p>
+    <p class="in-texto" aria-live="polite"></p>
+    <div class="in-escena" data-s="1">
+      <div class="in-camino"><svg class="in-linea" aria-hidden="true"><line x1="50%" y1="0" x2="50%" y2="100%"/></svg>${[1, 2, 3, 4].map(nodo).join('')}</div>
+      <div class="in-tarjeta">
+        <div class="in-el" data-desde="2"><p class="in-tit">Nombrar los intervalos</p><span class="in-renglon" style="width:92%"></span><span class="in-renglon" style="width:74%"></span></div>
+        <div class="in-el in-vid" data-desde="3"><span class="in-play">${ICONO.video}</span><small>Video de la consigna</small></div>
+        <div class="in-el in-doc" data-desde="4"><span class="in-doc-ico">${ICONO.doc}</span><span><small>Documento</small><strong>Leelo antes de practicar</strong></span></div>
+        <div class="in-el in-aux" data-desde="5"><span>${ICONO.video}Ejemplo</span><span>${ICONO.video}Video extra</span></div>
+        <div class="in-el in-env" data-desde="6"><span class="in-grabar"><i></i>Grabar video</span><span class="in-mandado">${ICONO.check}Listo, ya me lo mandaste</span></div>
+        <div class="in-el in-seg" data-desde="7"><span>Seguir</span>${ICONO.abajo}</div>
+      </div>
+    </div>
+    <div class="in-ctrl">
+      <button class="link suave" data-in="saltear">Saltear</button>
+      <span class="in-puntos">${INTRO.map((_, i) => `<i data-p="${i + 1}"></i>`).join('')}</span>
+      <button class="primario" data-in="sig">Siguiente</button>
+    </div></div>`;
+  document.body.appendChild(el);
+  const esc_ = el.querySelector('.in-escena'), txt = el.querySelector('.in-texto'), sig = el.querySelector('[data-in="sig"]');
+  let s = 0, h = null;
+  const ir = n => {
+    s = n; clearTimeout(h);
+    esc_.dataset.s = s;
+    el.querySelectorAll('.in-el').forEach(x => { const d = +x.dataset.desde; x.classList.toggle('on', d <= s); x.classList.toggle('foco', d === s); });
+    el.querySelectorAll('.in-nodo').forEach(x => { const k = +x.dataset.n, ahora = s < 7 ? 2 : 3; x.classList.toggle('hecho', k < ahora); x.classList.toggle('ahora', k === ahora); });
+    el.querySelectorAll('.in-puntos i').forEach(x => x.classList.toggle('on', +x.dataset.p <= s));
+    txt.classList.remove('ver'); void txt.offsetWidth; txt.innerHTML = enLinea(INTRO[s - 1].t); txt.classList.add('ver');
+    sig.textContent = s === INTRO.length ? 'Arrancar' : 'Siguiente';
+    if (s < INTRO.length && !reduceMotion) h = setTimeout(() => ir(s + 1), INTRO[s - 1].ms);
+  };
+  const cerrar = () => { clearTimeout(h); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
+  el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
+  requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
+}
+
 /* Al entrar por primera vez a un módulo nuevo: pantalla de «Pasaste al módulo N» */
 function moduloVisto(m) { const l = leerLocal('mapaAE_modVistos_' + (ST?.codigo || '')) || []; return l.includes(m); }
 function marcarModuloVisto(m) { const k = 'mapaAE_modVistos_' + (ST?.codigo || ''); const l = leerLocal(k) || []; if (!l.includes(m)) { l.push(m); guardarLocal(k, l); } }
@@ -530,7 +585,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}Ver el mapa</button></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones"><button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button><button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
       <h1>Hola, ${esc(st.nombre.split(' ')[0])}</h1>
       <div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}
@@ -850,6 +905,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
+  if (animar && modo === 'alumno' && !introVista()) setTimeout(mostrarIntro, 300);
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
@@ -915,6 +971,7 @@ function enlazarAlumno() {
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
+    else if (d.accion === 'intro') mostrarIntro();
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
