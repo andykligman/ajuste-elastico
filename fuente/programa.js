@@ -223,7 +223,7 @@ const PROGRAMA = {
       id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
-      detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.\n# Si aparece un error, corregilo al vuelo: no hace falta arrancar de nuevo!\nO frená el metrónomo, corregí en la pausa y retomá desde ahí.',
+      detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
       progreso: [
         { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
         { id: 'poco', label: 'Me equivoco un poco', nivel: 'casi',
@@ -237,7 +237,7 @@ const PROGRAMA = {
       id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Aplicar el skipping',
-      detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad, no solo para arriba y para abajo en pelota parada.',
+      detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad.',
       progreso: [
         { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante' },
         { id: 'sintempo', label: 'Me sale sin tempo, a tempo todavía no', nivel: 'casi',
@@ -262,7 +262,7 @@ const PROGRAMA = {
       ],
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       titulo: 'Ver el video de Enlaces de Arpegios y leer el PDF',
-      detalle: 'Mirá **el video completo** antes de empezar y leé el documento: ahí está el paso a paso del ejercicio que vas a hacer sobre tu standard.',
+      detalle: 'Mirá **el video completo** antes de empezar y leé el documento.',
       recursos: [
         { t: 'Video completo: Enlaces de Arpegios', url: VIDEO_ENLACES },
         { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES },
@@ -278,7 +278,7 @@ const PROGRAMA = {
         { id: 'listo', label: 'Sí, se entendió', nivel: 'listo' },
         { id: 'duda', label: 'No del todo', nivel: 'cuesta', resp: 'Volvé a verlo con la viola en la mano. Si sigue sin cerrar, mandame igual tus posiciones y contame qué parte no entendiste.' },
       ],
-      recursos: [{ t: 'Video: cómo ordenar las posiciones para que funcione el ejercicio', url: 'https://www.youtube.com/watch?v=PqJhew7HiLs' }],
+      recursos: [{ t: 'Video: Ver video', url: 'https://www.youtube.com/watch?v=PqJhew7HiLs' }],
       problemas: [
         { id: 'zonas', q: 'Las posiciones me quedan en distintas zonas del diapasón',
           fix: 'Elegí **una sola posición por acorde** y que queden todas en la misma zona, lo más cerca posible entre sí. Si dudás, usá las del PDF del entrenamiento.' },

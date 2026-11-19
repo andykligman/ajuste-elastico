@@ -284,7 +284,7 @@ function materialHTML(p) {
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
   ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(r.url.replace(/#.*$/, '') + '#heading=' + r.sec[0])}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a esta parte del doc: <b>${esc(r.sec[1])}</b><small>${esc(r.t.replace(/^Doc:\s*/, ''))}</small></span></a>`;
+    if (r.sec) return `<a class="mat mat-sec" href="${esc(r.url.replace(/#.*$/, '') + '#heading=' + r.sec[0])}" target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, ''))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
@@ -313,10 +313,17 @@ function standardHTML(st) {
   </div>`;
 }
 
+const cambiando = new Set();   // pasos donde el alumno tocó «Cambiar respuesta»
 function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
+  if (sel && !cambiando.has(p.id)) return `<div class="pregunta respondida">
+    ${sel.resp || sel.nivel === 'listo' ? respuestaHTML(sel, p) : ''}
+    ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
+    ${dificultadesHTML(ayuda.difs)}
+    <button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button>
+  </div>`;
   return `<div class="pregunta"><h4>${esc(p.pregunta || '¿Cómo te fue?')}</h4>
     <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
@@ -338,7 +345,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div><p class="resp-tit">${ok ? 'Muy bien' : 'Recomendación'}</p>${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -362,9 +369,7 @@ function tarjetaHTML(st, e, p) {
   const sel = opcionElegida(st, p);
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
-  const necesario = e.faltan.includes(p.id);
   return `<div class="tarjeta">
-    <div class="chips">${p.entrega ? `<span class="chip">${ICONO.enviar}${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} un ${esc(p.entrega)}</span>` : ''}${necesario ? `<span class="chip ${e.tipo === 'meterle' ? 'chip-oxido' : ''}">Para la clase ${Math.min(e.k, 4)}</span>` : ''}</div>
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -379,7 +384,7 @@ function tarjetaHTML(st, e, p) {
     ${respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
-          : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span><small>${esc(sig.titulo)}</small>${ICONO.abajo}</button>`}
+          : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>`}
       </div>` : ''}
   </div>`;
 }
@@ -399,10 +404,10 @@ function envioHTML(st, p) {
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
     <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
-    ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te devuelvo lo que haga falta. El paso siguiente se abre cuando lo mandes.</p>`}
+    ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te doy una devolución.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
-    ${vids.length || pend.length ? '' : `<div class="fila-botones">${ok ? '' : wa}<label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
+    ${vids.length || pend.length ? '' : `<div class="fila-botones"><label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
   </div>`;
 }
 // La explicación de cómo funciona el envío va solo en las primeras entregas del recorrido
@@ -418,9 +423,7 @@ function nodoHTML(st, e, p, n, total) {
   const est = pr.hecho ? (pr.como || 'listo') : 'pendiente';
   const abiertoEste = p.id === abierto;
   const sel = opcionElegida(st, p);
-  const sub = p.tipo === 'standard' && st.standard ? st.standard
-    : pr.hecho && sel && pr.como !== 'listo' ? sel.label
-    : !pr.hecho && e.faltan.includes(p.id) ? `Para la clase ${Math.min(e.k, 4)}` : '';
+  const sub = p.tipo === 'standard' && st.standard ? st.standard : '';
   return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
     <div class="nodo-fila">
       <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
@@ -852,8 +855,9 @@ function enlazarAlumno() {
       const [id, opId] = d.seg.split(':'); const k = id + '_seg';
       if (ST.prog[k]?.op === opId) delete ST.prog[k]; else ST.prog[k] = { op: opId, t: hoyISO() };
       guardarAlumno(); renderAlumno();
-    } else if (d.op) {
-      const [id, opId] = d.op.split(':'); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
+    } else if (d.cambiar) { cambiando.add(d.cambiar); renderAlumno(); }
+    else if (d.op) {
+      const [id, opId] = d.op.split(':'); cambiando.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
       else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}), ...(vids ? { videos: vids } : {}) };
