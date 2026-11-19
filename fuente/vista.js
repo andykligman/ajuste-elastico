@@ -363,7 +363,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}${sel.nivel === 'cuesta' ? escribimeHTML(p) : ''}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -401,8 +401,8 @@ function tarjetaHTML(st, e, p) {
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp">${preguntaHTML(st, p)}${botonSeguir}</div>` : preguntaHTML(st, p)}
-    ${respondido && p.entrega && !sel?.saltea ? envioHTML(st, p) : ''}
-    ${!seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
+    ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
+    ${!seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea || sel?.nivel === 'cuesta') ? `<div class="seguir">
         ${sel && sel.nivel === 'cuesta'
           ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual con lo que viene</button>`
           : `<button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>`}
@@ -774,6 +774,17 @@ function barraClaseHTML(st, e) {
 
 /* Botón sutil de consulta por WhatsApp: la primera vez muestra el cartelito, después queda solo el ícono */
 const ICONO_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3z"/></svg>';
+/* Cuando algo le cuesta: botón «Escribime» al WhatsApp con el paso ya puesto, y el botón flotante se ilumina */
+function escribimeHTML(p) {
+  if (typeof WHATSAPP_ANDY === 'undefined' || !WHATSAPP_ANDY) return '';
+  const txt = `Andy, me está costando${p ? ` "${p.titulo}"` : ''}: `;
+  return `<a class="escribime" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>Escribime</span></a>`;
+}
+function llamarConsulta() {
+  const el = document.getElementById('consulta'); if (!el) return;
+  el.classList.add('con-texto', 'llamando');
+  clearTimeout(el._llamar); el._llamar = setTimeout(() => el.classList.remove('con-texto', 'llamando'), 7000);
+}
 function consultaHTML() {
   let el = document.getElementById('consulta');
   if (typeof WHATSAPP_ANDY === 'undefined' || !WHATSAPP_ANDY || modo === 'admin') { if (el) el.remove(); return; }
@@ -976,13 +987,14 @@ function enlazarAlumno() {
       guardarAlumno(); renderAlumno();
     } else if (d.desenvio) { const pr = ST.prog[d.desenvio]; if (pr) { delete pr.envio; guardarAlumno(); renderAlumno(); } }
     else if (d.pvCerrar !== undefined) cerrarPanel();
-    else if (d.cambiar) { cambiando.add(d.cambiar); renderAlumno(); }
+    else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
     else if (d.op) {
       const [id, opId] = d.op.split(':'); cambiando.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
       else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}), ...(vids ? { videos: vids } : {}) };
       guardarAlumno(); renderAlumno();
+      if (o.nivel === 'cuesta' && ST.prog[id]?.op === o.id) llamarConsulta();
     } else if (d.standard) {
       const primera = !ST.standard;
       ST.standard = d.standard; ST.prog.p5 = { hecho: true, como: 'listo', t: hoyISO() };
