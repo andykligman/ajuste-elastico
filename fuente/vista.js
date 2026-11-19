@@ -180,7 +180,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=8` : ''; };
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=9` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;

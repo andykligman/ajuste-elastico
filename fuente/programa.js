@@ -88,10 +88,6 @@ const STOPS = {
     tandas: [
       { sel: [-1, -1], pausa: true, grande: true, t: 'Cómo sumar compases sin perder la profundidad y el control que venís construyendo hasta ahora' },
       { sel: [0, 3], t: 'Arrancás por los primeros 4 compases.' },
-      { sel: [2, 2], traba: 2, t: 'Por ahí te trabaste en el **3**. Ahí conviene frenar y fijarte bien las notas de la posición.' },
-      { sel: [2, 3], zoom: true, t: 'Ahora solamente el 3 con el 4.' },
-      { sel: [1, 2], zoom: true, t: 'Después el 2 con el 3.' },
-      { sel: [0, 3], arregla: 2, t: 'Volvés a los 4. El 3 ya sale.' },
       { sel: [4, 7], t: 'Pasamos a lo siguiente, del 5 al 8.' },
       { sel: [6, 6], traba: 6, t: 'Se complica el **7**. Lo mismo: el 7 solo, en pelota parada.' },
       { sel: [5, 6], zoom: true, t: '6 y 7…' },
