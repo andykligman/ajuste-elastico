@@ -972,7 +972,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar && modo === 'alumno' && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
+  if (animar && (modo === 'alumno' || esDemo) && !introVista()) { introPendiente = true; setTimeout(mostrarIntro, 300); }
   if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }

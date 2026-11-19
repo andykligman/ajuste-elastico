@@ -20,7 +20,7 @@ function aplicarDestino() {
   if (d.ver) { const a = LISTA.find(x => x.codigo === d.ver); if (a) { ST = clonar(a); modo = 'admin-vista'; abierto = d.paso; renderAlumno(true); return true; } }
   if (d.prueba) {
     let guardado = null; try { guardado = JSON.parse(localStorage.getItem(clavePrueba()) || 'null'); } catch (e) {}
-    ST = guardado || Object.assign(alumnoVacio('Alumno de prueba', 2, hoyISO()), { codigo: '__prueba' });
+    ST = guardado || Object.assign(alumnoVacio('Alumno de prueba', 2, hoyISO()), { codigo: esDemo ? '__demo' : '__prueba' });
     modo = 'admin-prueba'; abierto = d.paso; renderAlumno(true); return true;
   }
   if (d.alumno && LISTA.some(x => x.codigo === d.alumno)) elegido = d.alumno;
@@ -112,9 +112,10 @@ function aviso(t, error) {
 
 /* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
 function reiniciarPrueba() {
-  ['mapaAE_intro___prueba', 'mapaAE_modVistos___prueba'].forEach(k => guardarLocal(k, null));
+  const cod = esDemo ? '__demo' : '__prueba';
+  ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
   try { localStorage.removeItem(clavePrueba()); } catch (e) {}
-  ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba';
+  ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = cod;
   modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0);
 }
 /*VISTA_ALUMNO*/
