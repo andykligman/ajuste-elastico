@@ -776,11 +776,48 @@ body.con-mapa{overflow:hidden}
 .ll-testimonios figcaption{margin-top:8px;font-weight:600;color:var(--gris)}
 .ll-fin{text-align:center;font-size:20px;font-weight:600;margin:30px 0 10px}
 
-/* Visor de una parte del doc adentro del aula (celu) */
-.doc-visor{position:fixed;inset:0;z-index:2000;background:#fff;display:flex;flex-direction:column}
-.dv-barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));border-bottom:1px solid var(--linea);background:#fff}
-.dv-cerrar{background:none;border:1px solid var(--linea);border-radius:999px;padding:8px 14px;font:600 15px var(--sans);color:var(--tinta);cursor:pointer}
-.dv-barra a{font-size:14px;color:var(--gris)}
-.dv-marco{flex:1;position:relative;overflow:auto;-webkit-overflow-scrolling:touch}
-.dv-marco iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-body.dv-abierto{overflow:hidden}
+
+/* Dibujitos de los cuadros de solo texto */
+.vis-grande{display:block;width:min(360px,86%);height:auto;margin:14px auto 0;overflow:visible}
+.vg-cuerda{stroke:#cfc7bd;stroke-width:2.4;stroke-linecap:round;transition:stroke .4s}
+.vg-cuerda.on{stroke:var(--naranja)}
+.vg-cuerda.tenue{stroke:#45464c}
+.vg-cuerda.vibra{stroke:var(--naranja);animation:vgVibra 1.6s ease-in-out infinite;animation-delay:calc(var(--k)*.35s);transform-box:fill-box;transform-origin:center}
+@keyframes vgVibra{0%,60%,100%{transform:scaleY(1)}10%{transform:translateY(-2.5px)}20%{transform:translateY(2px)}30%{transform:translateY(-1px)}}
+.vg-cuerda.sep{stroke:var(--naranja);animation:vgSep 3.2s ease-in-out infinite}
+.vg-cuerda.sep0{--d:-12px}.vg-cuerda.sep1{--d:0px;animation-name:vgSep1}.vg-cuerda.sep2{--d:12px}
+@keyframes vgSep{0%,15%,85%,100%{transform:translateY(0)}35%,65%{transform:translateY(var(--d))}}
+@keyframes vgSep1{0%,15%,85%,100%{opacity:1}35%,65%{opacity:.35}}
+.vg-cuerda.traba{stroke:#E2705A;animation:vgVibra 1.2s ease-in-out infinite}
+.vg-alerta{fill:#E2705A;font:800 22px var(--display);animation:vgParpadeo 1.2s ease-in-out infinite}
+@keyframes vgParpadeo{50%{opacity:.25}}
+.vg-cuerda.ok{stroke:#3FA56B;animation:vgOk .6s ease both;animation-delay:calc(var(--k)*.25s)}
+@keyframes vgOk{from{stroke:#cfc7bd}}
+.vg-check{fill:none;stroke:#3FA56B;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:44;animation:vgDibuja .6s .9s ease forwards}
+@keyframes vgDibuja{to{stroke-dashoffset:0}}
+.vg-metro{fill:none;stroke:#8a8b90;stroke-width:2}
+.vg-pendulo{stroke:var(--tinta);stroke-width:2.5;stroke-linecap:round;transform-box:fill-box;transform-origin:50% 100%;animation:vgPend .55s ease-in-out infinite alternate}
+.vg-pendulo.lento{animation-duration:1.6s}
+@keyframes vgPend{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+.vg-cap{font:600 12px var(--sans);fill:var(--gris);text-anchor:middle}
+.vg-cap.on{fill:var(--naranja)}
+.vg-mal{opacity:.55}
+.vg-punto{fill:var(--naranja)}
+.vg-punto.se-va{animation:vgSeVa 3.6s ease-in-out infinite}
+@keyframes vgSeVa{0%,20%{opacity:1;transform:scale(1)}45%,85%{opacity:.08;transform:scale(.6)}100%{opacity:1}}
+.vg-punto{transform-box:fill-box;transform-origin:center}
+.vg-pulso{stroke:#4a4b51;stroke-width:2}
+.vg-beat{fill:var(--tinta);animation:vgBeat 2.4s linear infinite}
+@keyframes vgBeat{from{transform:translateX(0)}to{transform:translateX(280px)}}
+.vg-caja{fill:none;stroke:#5a5b61;stroke-width:2}
+.vg-caja.base{fill:var(--naranja);stroke:var(--naranja);opacity:.85}
+.vg-caja.suma{stroke:var(--naranja);animation:vgAparece 4.8s ease infinite;animation-delay:calc((var(--k) - 4)*.6s);opacity:0}
+@keyframes vgAparece{0%{opacity:0;transform:translateY(6px)}12%,80%{opacity:1;transform:none}100%{opacity:0}}
+.vg-caja.todo{stroke:#E2705A;fill:rgba(226,112,90,.15);animation:vgTiembla .5s ease-in-out infinite;animation-delay:calc(var(--k)*.05s)}
+@keyframes vgTiembla{25%{transform:translateX(-1.5px)}75%{transform:translateX(1.5px)}}
+.vg-ciclo{fill:none;stroke:#4a4b51;stroke-width:3}
+.vg-viaja{fill:var(--naranja);transform-origin:160px 48px;animation:vgGira 2.8s linear infinite}
+@keyframes vgGira{to{transform:rotate(360deg)}}
+.vg-flecha{fill:none;stroke:#4a4b51;stroke-width:3;stroke-linecap:round}
+@media (prefers-reduced-motion:reduce){.vis-grande *{animation:none!important;opacity:1!important}}
+.stop-texto.grande{gap:2px}

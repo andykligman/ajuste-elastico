@@ -87,30 +87,10 @@ function ayudaPara(p, sel) {
 function linkSeccion(url, h) {
   const base = url.replace(/#.*$/, '').replace(/\/(edit|view|preview|mobilebasic)[^/]*$/, '');
   const cel = window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
-  return cel ? `${base}/mobilebasic#${h}` : `${base}/edit#heading=${h}`;
+  // En el iPhone, tocar un link de docs.google.com abre la app de Docs, que arranca al principio:
+  // pasamos por doc.html (nuestro dominio), que salta a la versión simple sin que se abra la app
+  return cel ? `doc.html#${encodeURIComponent(`${base}/mobilebasic#${h}`)}` : `${base}/edit#heading=${h}`;
 }
-/* En el iPhone, un link a docs.google.com abre la app de Docs, que arranca al principio del doc.
-   Así que en el celu la parte del doc se muestra adentro del aula (la versión simple sí salta al título) */
-function verDocEnAula(url) {
-  cerrarDocEnAula();
-  const full = url.replace(/\/mobilebasic#.*$/, '/edit');
-  const d = document.createElement('div'); d.className = 'doc-visor';
-  d.innerHTML = `<div class="dv-barra"><button class="dv-cerrar" data-dv-cerrar>✕ Cerrar</button><a href="${esc(full)}" target="_blank" rel="noopener">Abrir el doc completo</a></div>
-    <div class="dv-marco"><iframe src="${esc(url)}" title="Documento"></iframe></div>`;
-  document.body.appendChild(d); document.body.classList.add('dv-abierto');
-  history.pushState({ dv: 1 }, '');
-}
-function cerrarDocEnAula(desdeAtras) {
-  const d = document.querySelector('.doc-visor'); if (!d) return;
-  d.remove(); document.body.classList.remove('dv-abierto');
-  if (!desdeAtras && history.state && history.state.dv) history.back();
-}
-window.addEventListener('popstate', () => cerrarDocEnAula(true));
-document.addEventListener('click', ev => {
-  if (ev.target.closest('[data-dv-cerrar]')) { cerrarDocEnAula(); return; }
-  const a = ev.target.closest('a[href*="/mobilebasic#"]'); if (!a) return;
-  ev.preventDefault(); verDocEnAula(a.href);
-}, true);
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
 const esDoc = r => r.url && !ytId(r.url);
 function docNuevo(p, r) {
@@ -195,7 +175,7 @@ function stopInner(id) {
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>`}</div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${S.contar && !tanda.grande ? `<p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -209,7 +189,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=12` : ''; };
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=13` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
@@ -243,6 +223,28 @@ function stopAccion(id, acc) {
     }
   }
   pintar();
+}
+/* Dibujitos animados para los cuadros de solo texto, mientras hablo */
+function visGrande(v) {
+  const cuerdas = (cls = k => '', extra = '') => [22, 48, 74].map((y, k) => `<line class="vg-cuerda ${cls(k)}" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k};stroke-width:${[1.6, 2.4, 3.4][k]}"/>`).join('') + extra;
+  const caja = (x, cl, k) => `<rect class="vg-caja ${cl}" x="${x}" y="30" width="30" height="34" rx="5" style="--k:${k}"/>`;
+  let s = '';
+  if (v === 'cuerdas') s = cuerdas(() => 'vibra');
+  else if (v === 'separar') s = cuerdas(k => `sep sep${k}`);
+  else if (v === 'traba') s = cuerdas(k => k === 2 ? 'traba' : 'tenue', '<text class="vg-alerta" x="306" y="80">!</text>');
+  else if (v === 'control') s = cuerdas(() => 'ok', '<path class="vg-check" d="M296 42 l10 10 l18 -22"/>');
+  else if (v === 'tempo-cuerdas') {
+    const metro = (x, lento) => `<g transform="translate(${x} 0)"><path class="vg-metro" d="M-14 86 L-6 18 H6 L14 86 Z"/><line class="vg-pendulo ${lento ? 'lento' : ''}" x1="0" y1="80" x2="0" y2="26"/></g>`;
+    const tres = (x0, on) => [0, 1, 2].map(k => `<line class="vg-cuerda ${on.includes(k) ? 'on' : 'tenue'}" x1="${x0}" y1="${30 + k * 22}" x2="${x0 + 90}" y2="${30 + k * 22}"/>`).join('');
+    s = `<g class="vg-mal">${metro(30, true)}${tres(56, [0, 1, 2])}<text class="vg-cap" x="80" y="104">Bajar el tempo</text></g>
+      <g class="vg-bien">${metro(200, false)}${tres(226, [1])}<text class="vg-cap on" x="250" y="104">Bajar cuerdas</text></g>`;
+  } else if (v === 'info') {
+    let pts = ''; for (let k = 0; k < 12; k++) pts += `<circle class="vg-punto ${k % 3 ? 'se-va' : ''}" cx="${40 + k * 22}" cy="46" r="7" style="--k:${k}"/>`;
+    s = pts + '<line class="vg-pulso" x1="20" y1="80" x2="300" y2="80"/><circle class="vg-beat" cx="20" cy="80" r="5"/>';
+  } else if (v === 'sumar') { for (let k = 0; k < 8; k++) s += caja(16 + k * 37, k < 4 ? 'base' : 'suma', k); }
+  else if (v === 'no-sumar') { for (let k = 0; k < 8; k++) s += caja(16 + k * 37, 'todo', k); }
+  else if (v === 'ciclo') s = '<circle class="vg-ciclo" cx="160" cy="48" r="32"/><circle class="vg-viaja" cx="160" cy="16" r="6"/><path class="vg-flecha" d="M186 30 l8 -2 l-1 8"/>';
+  return s ? `<svg class="vis-grande vg-${v}" viewBox="0 0 320 112" aria-hidden="true">${s}</svg>` : '';
 }
 function stopCifrado(S, enSel, est) {
   return `<div class="cifrado">${S.acordes.map((ac, k) => {
