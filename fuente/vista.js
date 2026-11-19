@@ -235,9 +235,9 @@ function stopInner(id) {
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>`}</div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
-    ${S.contar && !tanda.grande ? `<p class="stop-cap">${esc(S.contar)}</p>
+    ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
     <div class="stop-ctrl">${!e.visto ? `
       <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
@@ -249,7 +249,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=13` : ''; };
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=14` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;

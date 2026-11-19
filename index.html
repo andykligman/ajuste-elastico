@@ -1169,7 +1169,7 @@ const STOPS = {
     acordes: ['F-7', 'Bb-7', 'Eb7', 'Abmaj7', 'Dbmaj7', 'D-7', 'G7', 'Cmaj7', 'C-7', 'F-7', 'Bb7', 'Ebmaj7', 'Abmaj7', 'A-7b5', 'D7', 'Gmaj7'],
     contar: 'Veces que practicaste cada compás',
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'sumar', t: 'Cómo sumar compases sin perder la profundidad y el control que venís construyendo hasta ahora' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'sumar', t: 'Cómo sumar compases\nsin perder la profundidad y el control\nque venís construyendo hasta ahora' },
       { sel: [0, 3], t: 'Arrancás por los primeros 4 compases.' },
       { sel: [4, 7], t: 'Pasamos a lo siguiente, del 5 al 8.' },
       { sel: [6, 6], traba: 6, t: 'Uy, se complicó el **7**. Frenamos el metrónomo y lo repasamos en pelota parada.' },
@@ -1187,7 +1187,7 @@ const STOPS = {
     ],
     no: {
       tandas: [
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'ciclo', t: 'Ahora la idea es que sumes compases del standard repitiendo el mismo proceso que ya venís haciendo.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'ciclo', t: 'Ahora la idea es que sumes compases del standard\nrepitiendo el mismo proceso que ya venís haciendo.' },
         { sel: [-1, -1], pausa: true, grande: true, vis: 'no-sumar', t: 'Cómo **no** sumar compases' },
         { sel: [0, 3], t: 'Lo que hace casi todo el mundo: siempre desde el principio. Del 1 al 4.' },
         { sel: [0, 7], t: 'Del 1 al 8.' },
@@ -1207,27 +1207,25 @@ const STOPS = {
       { sel: [0, 1], t: '**La 1 y la 2.**' },
       { sel: [1, 2], t: 'Después **la 2 y la 3**.' },
       { sel: [0, 2], t: 'Y recién ahí **las 3 juntas**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'traba', t: 'Si con alguno de los grupos te seguís trabando, o sentís que no ves las cosas con suficiente claridad…' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'traba', t: 'Si con alguno de los grupos te seguís trabando,\no sentís que no ves las cosas con suficiente claridad…' },
       { sel: [1, 2], traba: 2, t: 'Bajá a **una sola cuerda**.' },
       { sel: [1, 1], zoom: true, t: 'Primero, **la 2 sola**.' },
       { sel: [2, 2], zoom: true, t: 'Después, **la 3 sola**.' },
       { sel: [1, 2], arregla: 2, t: 'Otra vez **la 2 y la 3**.' },
       { sel: [0, 2], t: 'Y finalmente, **las 3 juntas**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Volvemos al mismo lugar donde empezaste, pero ahora con **muchísimo más control y seguridad**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Volvemos al mismo lugar donde empezaste,\npero ahora con **muchísimo más control y seguridad**.' },
     ],
     no: {
       tandas: [
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes para ajustar bien la práctica es **la cantidad de cuerdas** con las que trabajamos.' },
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo que **bajando el tempo**.' },
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**, en vez de la velocidad a la que la practicamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'cuerdas', t: 'Uno de los parámetros más importantes\npara ajustar bien la práctica\nes **la cantidad de cuerdas** con las que trabajamos.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'tempo-cuerdas', t: 'Es mucho mejor bajar la exigencia de ese modo\nque **bajando el tempo**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Así reducimos **la cantidad de información total**,\nen vez de la velocidad a la que la practicamos.' },
         { sel: [-1, -1], pausa: true, grande: true, vis: 'no-cuerdas', t: 'Cómo **no** regular la cantidad de cuerdas' },
         { sel: [0, 0], t: 'Lo que hace casi todo el mundo: arrancar con **la 1**.' },
         { sel: [0, 1], t: 'Después **la 1 y la 2**.' },
         { sel: [0, 2], t: '**La 1, la 2 y la 3.**' },
-        { sel: [0, 3], t: '**1, 2, 3 y 4.**' },
-        { sel: [0, 4], t: '**1, 2, 3, 4 y 5.**' },
         { sel: [0, 5], t: 'Y así hasta **las 6**.' },
-        { sel: [0, 5], pausa: true, malo: true, t: '**Cada vez sumás más información y nunca volvés a separar.** Lo que te traba queda perdido en el medio.' },
+        { sel: [0, 5], pausa: true, malo: true, veces: true, t: 'Así terminás practicando algunas cuerdas **muchísimo más que otras**,\ny arrastrás errores que no te concentrás en corregir.' },
       ],
     },
   },
@@ -2407,9 +2405,9 @@ function stopInner(id) {
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>`}</div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
-    ${S.contar && !tanda.grande ? `<p class="stop-cap">${esc(S.contar)}</p>
+    ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
     <div class="stop-ctrl">${!e.visto ? `
       <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
@@ -2421,7 +2419,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=13` : ''; };
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=14` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
