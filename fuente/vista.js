@@ -159,13 +159,13 @@ function stopInner(id) {
   const max = Math.max(1, ...veces);
   const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
   const fin = i === tandas.length - 1;
-  const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
+  const texto = tanda.t || (no ? (fin ? S.no.fin : S.no.t) : '');
   return `<div class="stop-top">${S.no ? `<div class="stop-modos" role="tablist">
       <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
       <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button></div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
     ${S.contar ? `<p class="stop-cap">${esc(S.contar)}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -179,13 +179,13 @@ function stopInner(id) {
 /* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => S.audio && e.modo === 'si' && stopSonido ? `${S.audio}${String(e.i + 1).padStart(2, '0')}.m4a?v=2` : '';
+const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=3` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
   const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } stopAudio.onended = stopAudio.onerror = null; stopAudio.pause(); };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
-  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = e.modo === 'no' ? (e.i === total() - 1 ? S.no.fin : S.no.t) : tt.t; return Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)); };
+  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = tt.t || (e.i === total() - 1 ? S.no.fin : S.no.t); return Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)); };
   /* Suena la tanda actual; si "luego" viene, se llama al terminar (o con el tiempo de lectura si no hay audio) */
   const sonar = luego => {
     const src = audioDe(S, e);

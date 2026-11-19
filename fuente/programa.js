@@ -80,12 +80,13 @@ const PROGRESO_BASE = [
    traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
 const STOPS = {
   compases: {
-    tipo: 'cifrado', titulo: 'Cómo sumar compases sin que se desarme', audio: 'audio/compases/',
+    tipo: 'cifrado', titulo: 'Cómo sumar compases sin perder profundidad ni control', audio: 'audio/compases/', audioNo: 'audio/compases-no/',
     sub: 'Los primeros 16 compases de un standard. Cada tanda es un rato de práctica.',
     unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
-    acordes: ['C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6', 'C-7', 'F7', 'Bbmaj7', 'Ebmaj7', 'A-7b5', 'D7', 'G-6', 'G-6'],
+    acordes: ['F-7', 'Bb-7', 'Eb7', 'Abmaj7', 'Dbmaj7', 'D-7', 'G7', 'Cmaj7', 'C-7', 'F-7', 'Bb7', 'Ebmaj7', 'Abmaj7', 'A-7b5', 'D7', 'Gmaj7'],
     contar: 'Veces que practicaste cada compás',
     tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, t: 'Cómo sumar compases sin perder la profundidad y el control que venís construyendo hasta ahora' },
       { sel: [0, 3], t: 'Arrancás por los primeros 4 compases.' },
       { sel: [2, 2], traba: 2, t: 'Por ahí te trabaste en el **3**. Ahí conviene frenar y fijarte bien las notas de la posición.' },
       { sel: [2, 3], zoom: true, t: 'Ahora solamente el 3 con el 4.' },
@@ -105,9 +106,14 @@ const STOPS = {
       { sel: [0, 15], t: 'Y juntás todo. Si el tema tiene 32, hacés lo mismo con los 16 que siguen.' },
     ],
     no: {
-      tandas: [{ sel: [0, 3] }, { sel: [0, 7] }, { sel: [0, 11] }, { sel: [0, 15] }],
-      t: 'Siempre desde el principio: 1 al 4, 1 al 8, 1 al 12, 1 al 16.',
-      fin: '**El compás 1 lo practicaste 4 veces y el 16 una sola.** Y justo lo nuevo, que es lo que más cuesta, es lo que menos atención recibe.',
+      tandas: [
+        { sel: [-1, -1], pausa: true, grande: true, t: 'Cómo **no** sumar compases' },
+        { sel: [0, 3], t: 'Lo que hace casi todo el mundo: siempre desde el principio. Del 1 al 4.' },
+        { sel: [0, 7], t: 'Del 1 al 8.' },
+        { sel: [0, 11], t: 'Del 1 al 12.' },
+        { sel: [0, 15], t: 'Del 1 al 16.' },
+        { sel: [0, 15], pausa: true, malo: true, t: '**El compás 1 lo practicaste 4 veces y el 16 una sola.** Y justo lo nuevo, que es lo que más cuesta, es lo que menos atención recibe.' },
+      ],
     },
   },
   cuerdas: {
