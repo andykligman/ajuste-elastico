@@ -6,17 +6,20 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 const app = () => $('#app');
 const params = new URLSearchParams(location.search);
 /* En el panel la dirección dice dónde estás (alumno, vista de alumno, paso), así recargar te deja en el mismo lugar */
+// ?demo: la vista de alumno de prueba sin clave (se guarda en este aparato, con «Reiniciar»)
+const esDemo = params.has('demo');
+const clavePrueba = () => esDemo ? 'mapaAE_demo' : 'mapaAE_prueba';
 let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.get('ver'), prueba: params.has('prueba'), paso: params.get('paso') } : null;
 function urlAdmin() {
   if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
   else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
-  else if (modo === 'admin-prueba') { nav(`?admin&prueba${abierto ? '&paso=' + abierto : ''}`); try { sessionStorage.setItem('mapaAE_prueba', JSON.stringify(ST)); } catch (e) {} }
+  else if (modo === 'admin-prueba') { nav(`${esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); } catch (e) {} }
 }
 function aplicarDestino() {
   const d = DESTINO; if (!d) return false; DESTINO = null;
   if (d.ver) { const a = LISTA.find(x => x.codigo === d.ver); if (a) { ST = clonar(a); modo = 'admin-vista'; abierto = d.paso; renderAlumno(true); return true; } }
   if (d.prueba) {
-    let guardado = null; try { guardado = JSON.parse(sessionStorage.getItem('mapaAE_prueba') || 'null'); } catch (e) {}
+    let guardado = null; try { guardado = JSON.parse(localStorage.getItem(clavePrueba()) || 'null'); } catch (e) {}
     ST = guardado || Object.assign(alumnoVacio('Alumno de prueba', 2, hoyISO()), { codigo: '__prueba' });
     modo = 'admin-prueba'; abierto = d.paso; renderAlumno(true); return true;
   }
@@ -79,7 +82,7 @@ function difAlumno(base, cur) {
 
 let stIntacto = true;   // en la vista de alumno del panel: todavía no se tocó nada (se puede refrescar con lo del servidor)
 function guardarAlumno() {
-  if (modo === 'admin-prueba') { urlAdmin(); aviso('Vista de prueba: no se guarda nada'); return; }
+  if (modo === 'admin-prueba') { urlAdmin(); return; }   // la vista de prueba se guarda solo en este aparato
   stIntacto = false;
   if (modo === 'alumno') { ediciones++; guardarLocal('mapaAE_alumno', { token: TOKEN, alumno: ST, base: BASE }); }
   aviso('Guardando…');
@@ -110,7 +113,7 @@ function aviso(t, error) {
 /* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
 function reiniciarPrueba() {
   ['mapaAE_intro___prueba', 'mapaAE_modVistos___prueba'].forEach(k => guardarLocal(k, null));
-  try { sessionStorage.removeItem('mapaAE_prueba'); } catch (e) {}
+  try { localStorage.removeItem(clavePrueba()); } catch (e) {}
   ST = alumnoVacio('Alumno de prueba', 2, hoyISO()); ST.codigo = '__prueba';
   modo = 'admin-prueba'; abierto = null; renderAlumno(true); window.scrollTo(0, 0);
 }
@@ -120,7 +123,7 @@ function barra(nombre) {
     <a class="marca" href="https://aula.ajuste-elastico.com/" aria-label="Ajuste Elástico, ir al aula">${LOGO}</a>
     <div class="barra-der">
       ${modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
-      ${modo.startsWith('admin-') ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
+      ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
     </div>
@@ -668,6 +671,7 @@ window.addEventListener('resize', () => {
 
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
+  if (esDemo) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); return; }
   if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
