@@ -215,48 +215,55 @@ function stopHTML(p) {
   return `<details class="stop stop-${S.tipo}" ${p.stopCerrado ? '' : 'open'}><summary><span>${esc(S.titulo)}</span><small>${enLinea(S.sub)}</small></summary>
     <div class="stop-cuerpo" data-stop-caja="${id}">${stopInner(id)}</div></details>`;
 }
+/* «Así no» y «Así sí» van en una sola secuencia: primero cómo no, después cómo sí */
+function stopSeq(S) {
+  if (S._seq) return S._seq;
+  const no = S.no ? S.no.tandas.map((t, k, arr) => ({ t, modo: 'no', k, finNo: k === arr.length - 1 })) : [];
+  const si = S.tandas.map((t, k) => ({ t, modo: 'si', k }));
+  return (S._seq = S.empiezaNo ? no.concat(si) : si.concat(no));
+}
 function stopInner(id) {
-  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
-  const no = e.modo === 'no', tandas = no ? S.no.tandas : S.tandas, n = S.unidades.length;
-  const i = Math.min(e.i, tandas.length - 1), tanda = tandas[i];
-  const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { if (t.pausa) return; for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S), n = S.unidades.length;
+  const i = Math.min(e.i, seq.length - 1), it = seq[i], tanda = it.t, no = it.modo === 'no';
+  const tramo = seq.slice(0, i + 1).filter(x => x.modo === it.modo).map(x => x.t);   // lo de este modo hasta acá
+  const veces = Array(n).fill(0); tramo.forEach(t => { if (t.pausa) return; for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
   const estadoU = Array(n).fill('');
-  if (!no) tandas.slice(0, i + 1).forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
-  if (!no && tanda.trabaAca) for (let k = tanda.sel[0]; k <= tanda.sel[1]; k++) estadoU[k] = 'traba';   // traba solo en esta tanda
-  const partido = !no && tandas.slice(0, i + 1).some(t => t.partir !== undefined);
+  if (!no) tramo.forEach(t => { if (t.traba !== undefined) estadoU[t.traba] = 'traba'; if (t.arregla !== undefined) estadoU[t.arregla] = 'ok'; });
+  if (!no && tanda.trabaAca) for (let k = tanda.sel[0]; k <= tanda.sel[1]; k++) estadoU[k] = 'traba';
+  const partido = !no && tramo.some(t => t.partir !== undefined);
   const enSel = k => k >= tanda.sel[0] && k <= tanda.sel[1];
   const max = Math.max(1, ...veces);
   const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
-  const fin = i === tandas.length - 1;
-  const texto = tanda.t || (no ? (fin ? S.no.fin : S.no.t) : '');
-  return `<div class="stop-top">${S.no ? `<div class="stop-modos" role="tablist">
-      ${S.empiezaNo ? `<button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
-      <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>` : `<button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
-      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>`}</div>` : '<span></span>'}
+  const fin = i === seq.length - 1;
+  const texto = tanda.t || (no ? (it.finNo ? S.no.fin : S.no.t) : '');
+  const delModo = seq.filter(x => x.modo === it.modo && !x.t.pausa), nro = tramo.filter(t => !t.pausa).length;
+  const sonando = stopTimer && stopTimer.id === id;
+  return `<div class="stop-top"><span></span>
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
+    <div class="stop-pantalla">
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
-    <div class="stop-ctrl">${!e.visto ? `
-      <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
-      <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
-      <button class="${fin && !(stopTimer && stopTimer.id === id) ? 'primario' : 'secundario'}" data-stop-acc="play" data-stop-id="${id}">${stopTimer && stopTimer.id === id ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
-      ${fin && (!no || !S.empiezaNo) ? `<button class="primario" data-stop-acc="seguir" data-stop-id="${id}">Seguir ↓</button>` : `<button class="${fin ? 'secundario' : 'primario'}" data-stop-acc="sig" data-stop-id="${id}" ${fin ? 'disabled' : ''}>Siguiente ›</button>`}`}
-    </div>`;
+    ${!e.visto ? `<button class="stop-play-grande" data-stop-acc="play" data-stop-id="${id}" aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="spg-txt">Reproducir</span></button>` : ''}
+    </div>
+    ${e.visto ? `<div class="stop-ctrl">
+      <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Anterior">‹</button>
+      <button class="${fin && !sonando ? 'primario' : 'secundario'}" data-stop-acc="play" data-stop-id="${id}">${sonando ? 'Pausa' : fin ? 'Ver de nuevo' : 'Reproducir'}</button>
+      ${fin ? `<button class="primario" data-stop-acc="seguir" data-stop-id="${id}">Seguir ↓</button>` : `<button class="primario" data-stop-acc="sig" data-stop-id="${id}">Siguiente ›</button>`}
+    </div>` : ''}`;
 }
-/* Audio de Andy por tanda (solo en "Así sí"): audio/<stop>/01.mp3, 02.mp3… */
+/* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
-const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=14` : ''; };
+const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=14` : ''; };
 function stopAccion(id, acc) {
-  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
-  const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
+  const total = () => seq.length;
   const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } stopAudio.onended = stopAudio.onerror = null; stopAudio.pause(); };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
-  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = tt.t || (e.i === total() - 1 ? S.no.fin : S.no.t); return Math.min(7000, Math.max(2500, 1500 + String(txt).length * 50)); };
-  /* Suena la tanda actual; si "luego" viene, se llama al terminar (o con el tiempo de lectura si no hay audio) */
+  const espera = () => { const it = seq[e.i], txt = it.t.t || (it.finNo ? S.no.fin : S.no ? S.no.t : ''); return Math.min(7000, Math.max(2500, 1500 + String(txt).length * 50)); };
   const sonar = luego => {
     const src = audioDe(S, e);
     if (!src) { if (luego) stopTimer.h = setTimeout(luego, espera()); return; }
@@ -267,15 +274,12 @@ function stopAccion(id, acc) {
   if (acc === 'seguir') { parar(); const c = document.querySelector(`[data-stop-caja="${id}"]`); const q = c && c.closest('.tarjeta')?.querySelector('.pregunta, .envio, .seguir'); if (q) q.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; }
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
   if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
-  if (acc === 'modo-si' || acc === 'modo-no') { parar(); e.modo = acc === 'modo-no' ? 'no' : 'si'; e.i = 0; e.visto = false; }
-  else if (acc === 'sonido') { stopSonido = !stopSonido; if (!stopSonido) stopAudio.pause(); }
+  if (acc === 'sonido') { stopSonido = !stopSonido; if (!stopSonido) stopAudio.pause(); }
   else if (acc === 'play') {
     if (stopTimer && stopTimer.id === id) parar();
     else {
       parar(); e.visto = true; if (e.i >= total() - 1) e.i = 0;
       const paso = () => {
-        // Si arranca por «Así no», al terminar sigue directo con «Así sí»
-        if (e.i >= total() - 1 && e.modo === 'no' && S.empiezaNo) { e.modo = 'si'; e.i = 0; pintar(); sonar(paso); return; }
         if (e.i >= total() - 1) { parar(); pintar(); return; }
         e.i++; pintar(); sonar(paso);
       };
@@ -295,10 +299,8 @@ function visGrande(v) {
   else if (v === 'traba') s = cuerdas(k => k === 2 ? 'traba' : 'tenue', '<text class="vg-alerta" x="306" y="80">!</text>');
   else if (v === 'control') s = cuerdas(() => 'ok', '<path class="vg-check" d="M296 42 l10 10 l18 -22"/>');
   else if (v === 'tempo-cuerdas') {
-    const metro = (x, lento) => `<g transform="translate(${x} 0)"><path class="vg-metro" d="M-14 86 L-6 18 H6 L14 86 Z"/><line class="vg-pendulo ${lento ? 'lento' : ''}" x1="0" y1="80" x2="0" y2="26"/></g>`;
-    const tres = (x0, on) => [0, 1, 2].map(k => `<line class="vg-cuerda ${on.includes(k) ? 'on' : 'tenue'}" x1="${x0}" y1="${30 + k * 22}" x2="${x0 + 90}" y2="${30 + k * 22}"/>`).join('');
-    s = `<g class="vg-mal">${metro(30, true)}${tres(56, [0, 1, 2])}<text class="vg-cap" x="80" y="104">Bajar el tempo</text></g>
-      <g class="vg-bien">${metro(200, false)}${tres(226, [1])}<text class="vg-cap on" x="250" y="104">Bajar cuerdas</text></g>`;
+    s = [22, 46, 70].map((y, k) => `<line class="vg-cuerda ${k === 1 ? 'on' : 'se-apaga'}" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k}"/>`).join('')
+      + '<line class="vg-pulso" x1="20" y1="94" x2="300" y2="94"/><circle class="vg-beat" cx="20" cy="94" r="5"/>';
   } else if (v === 'info') {
     let pts = ''; for (let k = 0; k < 12; k++) pts += `<circle class="vg-punto ${k % 3 ? 'se-va' : ''}" cx="${40 + k * 22}" cy="46" r="7" style="--k:${k}"/>`;
     s = pts + '<line class="vg-pulso" x1="20" y1="80" x2="300" y2="80"/><circle class="vg-beat" cx="20" cy="80" r="5"/>';

@@ -831,3 +831,14 @@ body.con-mapa{overflow:hidden}
 .dv-marco{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;background:#fff}
 .dv-cargando{padding:40px 20px;text-align:center;color:#555;font:16px var(--sans)}
 body.dv-abierto{overflow:hidden}
+
+/* Stop: primer «Reproducir» grande, encima de la animación */
+.stop-pantalla{position:relative}
+.stop-play-grande{position:absolute;inset:-4px;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border:0;border-radius:14px;background:rgba(18,19,23,.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);cursor:pointer;color:#fff}
+.spg-boton{width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 28px rgba(0,0,0,.45);animation:spgLatido 1.8s ease-in-out infinite;transition:transform .2s}
+.spg-boton svg{width:38px;height:38px;fill:#1B1C20;margin-left:5px}
+.spg-txt{font:700 17px var(--sans);letter-spacing:.02em}
+.stop-play-grande:hover .spg-boton{transform:scale(1.06)}
+@keyframes spgLatido{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 14px rgba(255,255,255,0)}}
+.vg-cuerda.se-apaga{stroke:var(--naranja);animation:vgApaga 4s ease-in-out infinite}
+@keyframes vgApaga{0%,20%{stroke:var(--naranja);opacity:1}45%,85%{stroke:#45464c;opacity:.6}100%{stroke:var(--naranja);opacity:1}}
