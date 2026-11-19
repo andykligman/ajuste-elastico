@@ -956,6 +956,99 @@ body.dv-abierto{overflow:hidden}
 .stop-logo svg{height:30px;width:auto;display:block}
 @media (max-width:560px){.logo-ae svg{height:46px}.ll-logo svg{height:58px}.stop-logo svg{height:24px}}
 
+/* ===== Link de la llamada: presentación animada y bloques ===== */
+.llamada{max-width:860px;margin:0 auto;padding:28px 20px 90px}
+.ll-eti{margin:0 0 10px;font:700 12.5px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:#E8834F}
+.ll-hero{margin-top:10px}
+.pl-pantalla{position:relative;overflow:hidden;border-radius:26px;padding:34px 28px 26px;min-height:520px;display:flex;flex-direction:column;justify-content:space-between;
+  background:radial-gradient(120% 90% at 15% 0%,#2B3E66 0%,rgba(43,62,102,0) 55%),radial-gradient(90% 70% at 100% 100%,rgba(232,131,79,.22) 0%,rgba(232,131,79,0) 60%),linear-gradient(160deg,#16213A,#0D1220 70%);
+  box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 1px rgba(169,190,232,.14)}
+.pl-pantalla::before{content:"";position:absolute;inset:auto -10% -30% -10%;height:60%;background:repeating-linear-gradient(176deg,rgba(169,190,232,.07) 0 2px,transparent 2px 26px);pointer-events:none}
+.pl-escena{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;animation:plEntra .55s cubic-bezier(.2,.8,.2,1)}
+@keyframes plEntra{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.pl-vis{width:min(420px,100%);height:auto;overflow:visible}
+.pl-frase{margin:0;text-align:center;font:600 clamp(22px,3.6vw,32px)/1.28 var(--display);color:#EAF0FB;letter-spacing:-.01em;max-width:720px}
+.pl-frase strong{color:#E8834F;font-weight:700}
+.pl-progreso{position:relative;z-index:1;display:flex;gap:6px;justify-content:center;margin-top:22px}
+.pl-progreso i{width:22px;height:4px;border-radius:4px;background:rgba(169,190,232,.22);transition:background .3s,width .3s}
+.pl-progreso i.hecho{background:#5D7BB6}.pl-progreso i.ahora{background:#E8834F;width:38px}
+.pl-ctrl{position:relative;z-index:1;display:flex;gap:10px;justify-content:center;margin-top:16px}
+.pl-b{border:1px solid rgba(169,190,232,.3);background:rgba(13,18,32,.5);color:#EAF0FB;border-radius:999px;min-width:46px;height:46px;font:600 17px var(--sans);cursor:pointer}
+.pl-b.grande{padding:0 26px;background:#fff;color:#0D1220;border-color:#fff}
+.pl-b[disabled]{opacity:.35}
+.pl-play{position:absolute;inset:0;z-index:3;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff;background:rgba(9,13,24,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.pl-play span{width:104px;height:104px;border-radius:50%;background:#fff;display:grid;place-items:center;animation:plLatido 1.8s ease-in-out infinite}
+.pl-play svg{width:46px;height:46px;fill:#0D1220;margin-left:6px}
+.pl-play b{font:700 19px var(--display)}
+@keyframes plLatido{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.55)}50%{box-shadow:0 0 0 20px rgba(232,131,79,0)}}
+/* dibujos */
+.pl-onda{fill:none;stroke:#5D7BB6;stroke-width:2;transform-origin:180px 100px;animation:plOnda 2.4s ease-out infinite;animation-delay:calc(var(--k)*.8s)}
+@keyframes plOnda{from{transform:scale(1);opacity:.9}to{transform:scale(2.3);opacity:0}}
+.pl-disco{fill:#E8834F}.pl-tel{fill:#fff;transform-origin:180px 100px;animation:plSuena .9s ease-in-out infinite}
+@keyframes plSuena{0%,60%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(-9deg)}20%,40%{transform:rotate(9deg)}}
+.pl-rayo{stroke:#E8834F;stroke-width:4;stroke-linecap:round;animation:plRayo 1.6s ease-in-out infinite;animation-delay:calc(var(--k)*.2s);transform-origin:180px 100px}
+@keyframes plRayo{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.05)}}
+.pl-sol{fill:#fff;filter:drop-shadow(0 0 14px rgba(232,131,79,.9))}
+.pl-msj rect{fill:#24324F}.pl-msj circle{fill:#A9BEE8;animation:vgParpadeo 1s infinite}
+.pl-msj{opacity:0;animation:plSube 4.5s ease infinite;animation-delay:calc(var(--k)*.6s)}
+@keyframes plSube{0%{opacity:0;transform:translateY(10px)}12%,80%{opacity:1;transform:none}100%{opacity:0}}
+.pl-nota ellipse{fill:#A9BEE8}.pl-nota line{stroke:#A9BEE8;stroke-width:2.5}
+.pl-nota{animation:plDispersa 3s ease-in-out infinite alternate;animation-delay:calc(var(--k)*.15s)}
+@keyframes plDispersa{from{transform:none;opacity:1}to{transform:translate(var(--dx),var(--dy));opacity:.35}}
+.pl-cuenta{fill:#E8834F;font:700 22px var(--display);text-anchor:middle}
+.pl-orilla{fill:#24324F}.pl-orilla.b{fill:rgba(232,131,79,.35)}
+.pl-cap{fill:#A9BEE8;font:600 14px var(--sans);text-anchor:middle}.pl-cap.b{fill:#F4B48F}
+.pl-puente{fill:none;stroke:#E8834F;stroke-width:5;stroke-linecap:round;stroke-dasharray:200;stroke-dashoffset:200;animation:vgDibuja 1.2s .3s ease forwards}
+.pl-viajero{fill:#fff;filter:drop-shadow(0 0 8px #E8834F)}
+.pl-cuerda{fill:none;stroke:#A9BEE8;stroke-width:3;stroke-linecap:round}
+.pl-cuerda:nth-child(2){stroke:#E8834F;stroke-width:4}
+.pl-punto-o{fill:#fff}
+.pl-paso circle{fill:#1A2540;stroke:#3A4F7A;stroke-width:2;transition:all .4s}
+.pl-paso .pl-num{fill:#7C8FB8;font:700 24px var(--display);text-anchor:middle}
+.pl-paso .pl-cap{font-size:15px}
+.pl-paso.on circle{fill:#5D7BB6;stroke:#A9BEE8}.pl-paso.on .pl-num{fill:#fff}
+.pl-paso.ahora circle{fill:#E8834F;stroke:#FFD3B8;animation:plPop .5s ease}
+.pl-paso.ahora{filter:drop-shadow(0 0 16px rgba(232,131,79,.7))}
+@keyframes plPop{from{transform:scale(.7)}to{transform:none}}
+.pl-paso{transform-box:fill-box;transform-origin:center}
+.pl-une{stroke:#3A4F7A;stroke-width:3;stroke-dasharray:6 6}.pl-une.on{stroke:#5D7BB6;stroke-dasharray:none}
+.pl-ruta{fill:none;stroke:#3A4F7A;stroke-width:4;stroke-dasharray:8 8}
+.pl-hito{fill:#1A2540;stroke:#5D7BB6;stroke-width:3;animation:plHito 4s ease infinite;animation-delay:calc(var(--k)*1s)}
+@keyframes plHito{0%,20%{fill:#1A2540}30%,100%{fill:#E8834F}}
+.pl-mochila{fill:#24324F;stroke:#5D7BB6;stroke-width:3}
+.pl-tacha{stroke:#E8834F;stroke-width:6;stroke-linecap:round;stroke-dasharray:170;stroke-dashoffset:170;animation:vgDibuja .7s .5s ease forwards}
+.pl-confeti{fill:#E8834F;animation:plCae 2.8s linear infinite;animation-delay:calc(var(--k)*-.17s)}
+.pl-confeti:nth-child(3n){fill:#5D7BB6}.pl-confeti:nth-child(4n){fill:#fff}
+@keyframes plCae{from{transform:translateY(0) rotate(0)}to{transform:translateY(220px) rotate(var(--r))}}
+.pl-chau{fill:#fff;font:800 38px var(--display);text-anchor:middle}
+/* bloques */
+.ll-bloque{margin-top:56px}
+.ll-bloque h2{margin:0 0 16px;font:700 clamp(24px,3.4vw,32px)/1.2 var(--display);color:#fff}
+.ll-video{border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.45);border:1px solid rgba(169,190,232,.18)}
+.ll-entrena{padding:28px;border-radius:24px;background:linear-gradient(150deg,#1A2540,#111826);border:1px solid rgba(93,123,182,.35)}
+.ll-mini{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 6px}
+.ll-mini span{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:rgba(93,123,182,.18);color:#DCE5F6;font-weight:600}
+.ll-mini b{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#E8834F;color:#0D1220;font-size:13px}
+.ll-entrena .ll-boton{margin-top:18px;padding:15px 30px;font-size:17px}
+.ll-tres{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 18px}
+.ll-tres div{padding:20px;border-radius:18px;background:#141B2C;border:1px solid rgba(93,123,182,.3)}
+.ll-tres b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#5D7BB6;color:#fff;font:700 16px var(--display)}
+.ll-tres h3{margin:12px 0 4px;font:700 18px var(--display);color:#fff}
+.ll-tres p{margin:0;color:var(--gris)}
+@media (max-width:640px){.pl-pantalla{min-height:540px;padding:26px 18px 20px;border-radius:22px}.pl-frase{font-size:22px}.ll-tres{grid-template-columns:1fr}.ll-entrena{padding:22px}}
+@media (prefers-reduced-motion:reduce){.pl-pantalla *{animation:none!important}}
+/* que predomine el azul; el naranja queda de acento */
+.pl-escena{flex:1;justify-content:center}
+.pl-frase strong{color:#9DB8F2}
+.pl-disco{fill:#5D7BB6}
+.pl-onda{stroke:#A9BEE8}
+.pl-rayo{stroke:#5D7BB6}
+.pl-sol{filter:drop-shadow(0 0 14px rgba(93,123,182,.9))}
+.pl-cuenta{fill:#9DB8F2}
+.pl-cuerda:nth-child(2){stroke:#5D7BB6}
+.pl-mini b,.ll-mini b{background:#5D7BB6;color:#fff}
+.ll-eti{color:#9DB8F2}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2509,7 +2602,7 @@ function stopInner(id) {
 }
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
-const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.3; stopAudio.preservesPitch = true;
+const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.25; stopAudio.preservesPitch = true;
 const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=15` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
@@ -2521,7 +2614,7 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.3;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = src; stopAudio.playbackRate = 1.25;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
@@ -2910,7 +3003,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
-const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.3; audioIntro.preservesPitch = true;
+const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.25; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
 const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
@@ -2956,9 +3049,9 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.3;   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.25;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.3 - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.25 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
@@ -3741,22 +3834,104 @@ function renderEntrada(error) {
   };
 }
 
-/* Presentación para quienes van a tener la llamada conmigo: no explica el aula, invita a explorar */
+/* Presentación para quienes van a tener la llamada conmigo: animada, con mi voz, y después testimonios,
+   entrenamiento gratuito y video de bienvenida. Audios en audio/llamada/NN.m4a (si falta uno, pasa en silencio). */
+const PRES_LLAMADA = [
+  { v: 'llamada', t: '¡Hola! Si te llegó este link,\nes porque **vamos a tener una llamada**.' },
+  { v: 'chispa', t: 'Y quiero que llegues **con todo**.' },
+  { v: 'mensajes', t: 'Te cuento algo: a casi todos los que me escriben\nles pasa **lo mismo**.' },
+  { v: 'dispersas', t: 'Conocen los recursos…\npero cuando cuentan **1, 2, 3** y hay que salir a improvisar,\n**no aparecen**.' },
+  { v: 'puente', t: 'Esa distancia entre **interpretar** e **improvisar**\nes justo lo que trabajamos en Ajuste Elástico.' },
+  { v: 'elastico', t: 'No con más información:\ncon un método que **ajusta la práctica a vos**, momento a momento.' },
+  { v: 'pasos', paso: 0, t: 'En la llamada vamos a ver **tres cosas**:' },
+  { v: 'pasos', paso: 1, t: '**Dónde estás hoy** con la viola…' },
+  { v: 'pasos', paso: 2, t: '…**qué es lo que te está trabando**…' },
+  { v: 'pasos', paso: 3, t: '…y **el camino concreto** para destrabarlo.' },
+  { v: 'mapa', t: 'Mientras tanto, te dejé un **entrenamiento gratuito**\npara que pruebes el método en tu guitarra.' },
+  { v: 'relax', t: 'No hace falta que traigas nada preparado:\nes para que **explores**, si tenés ganas.' },
+  { v: 'final', t: '¡Nos vemos en la llamada! 🙌' },
+];
+function presVis(v, paso) {
+  const W = 360, H = 200;
+  let s = '';
+  if (v === 'llamada') s = `<circle class="pl-onda" cx="180" cy="100" r="40" style="--k:0"/><circle class="pl-onda" cx="180" cy="100" r="40" style="--k:1"/><circle class="pl-onda" cx="180" cy="100" r="40" style="--k:2"/>
+      <circle class="pl-disco" cx="180" cy="100" r="42"/><path class="pl-tel" d="M164 86c2-4 6-6 9-4l6 6c2 2 2 5 0 7l-3 3c3 6 8 11 14 14l3-3c2-2 5-2 7 0l6 6c2 3 0 7-4 9-12 4-40-24-38-38z"/>`;
+  else if (v === 'chispa') { for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6; s += `<line class="pl-rayo" x1="${180 + Math.cos(a) * 34}" y1="${100 + Math.sin(a) * 34}" x2="${180 + Math.cos(a) * 78}" y2="${100 + Math.sin(a) * 78}" style="--k:${k % 3}"/>`; } s += '<circle class="pl-sol" cx="180" cy="100" r="24"/>'; }
+  else if (v === 'mensajes') [[40, 30, 170], [150, 76, 170], [60, 122, 150]].forEach(([x, y, w], k) => { s += `<g class="pl-msj" style="--k:${k}"><rect x="${x}" y="${y}" width="${w}" height="34" rx="17"/><circle cx="${x + 22}" cy="${y + 17}" r="4"/><circle cx="${x + 36}" cy="${y + 17}" r="4"/><circle cx="${x + 50}" cy="${y + 17}" r="4"/></g>`; });
+  else if (v === 'dispersas') { const p = [[60, 60], [110, 140], [150, 50], [200, 120], [250, 70], [300, 150], [90, 100], [230, 40]]; p.forEach(([x, y], k) => { s += `<g class="pl-nota" style="--k:${k};--dx:${(k % 2 ? 1 : -1) * (8 + k * 3)}px;--dy:${(k % 3 - 1) * 14}px"><ellipse cx="${x}" cy="${y}" rx="9" ry="7"/><line x1="${x + 8}" y1="${y}" x2="${x + 8}" y2="${y - 30}"/></g>`; }); s += '<text class="pl-cuenta" x="180" y="188">1 · 2 · 3…</text>'; }
+  else if (v === 'puente') s = `<rect class="pl-orilla" x="20" y="110" width="100" height="60" rx="8"/><rect class="pl-orilla b" x="240" y="110" width="100" height="60" rx="8"/>
+      <text class="pl-cap" x="70" y="190">interpretar</text><text class="pl-cap b" x="290" y="190">improvisar</text>
+      <path class="pl-puente" d="M120 112 Q180 40 240 112"/><circle class="pl-viajero" r="7"><animateMotion dur="3s" repeatCount="indefinite" path="M120 112 Q180 40 240 112"/></circle>`;
+  else if (v === 'elastico') s = [60, 100, 140].map((y, k) => `<path class="pl-cuerda" style="--k:${k}" d="M30 ${y} Q180 ${y} 330 ${y}"><animate attributeName="d" dur="${2 + k * .4}s" repeatCount="indefinite" values="M30 ${y} Q180 ${y} 330 ${y};M30 ${y} Q180 ${y + (k - 1 || 1) * 26} 330 ${y};M30 ${y} Q180 ${y} 330 ${y}"/></path>`).join('') + '<circle class="pl-punto-o" cx="30" cy="100" r="6"/><circle class="pl-punto-o" cx="330" cy="100" r="6"/>';
+  else if (v === 'pasos') { const nom = ['Dónde estás', 'Qué te traba', 'El camino']; nom.forEach((n, k) => { const x = 60 + k * 120, on = paso > k, ahora = paso === k + 1; s += `${k ? `<line class="pl-une ${on ? 'on' : ''}" x1="${x - 90}" y1="90" x2="${x - 30}" y2="90"/>` : ''}<g class="pl-paso ${on ? 'on' : ''} ${ahora ? 'ahora' : ''}"><circle cx="${x}" cy="90" r="30"/><text class="pl-num" x="${x}" y="100">${k + 1}</text><text class="pl-cap" x="${x}" y="150">${n}</text></g>`; }); }
+  else if (v === 'mapa') { s = '<path class="pl-ruta" d="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/>'; [[30, 160], [150, 100], [240, 62], [330, 40]].forEach(([x, y], k) => { s += `<circle class="pl-hito" cx="${x}" cy="${y}" r="10" style="--k:${k}"/>`; }); s += '<circle class="pl-viajero" r="7"><animateMotion dur="4s" repeatCount="indefinite" path="M30 160 C 90 160, 90 90, 150 100 S 230 40, 330 40"/></circle>'; }
+  else if (v === 'relax') s = '<rect class="pl-mochila" x="140" y="60" width="80" height="90" rx="16"/><path class="pl-tacha" d="M120 160 L240 50"/><text class="pl-cap" x="180" y="190">nada que preparar</text>';
+  else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; s += '<text class="pl-chau" x="180" y="120">¡Nos vemos!</text>'; }
+  return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
+}
+const presEst = { i: 0, visto: false, timer: null };
+const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1.25; presAudio.preservesPitch = true;
+function presHTML() {
+  const i = presEst.i, sl = PRES_LLAMADA[i], sonando = !!presEst.timer, fin = i === PRES_LLAMADA.length - 1;
+  return `<div class="pl-escena" key="${i}">
+      ${presVis(sl.v, sl.paso)}
+      <p class="pl-frase">${sl.t.split('\n').map(l => esc(l).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')).join('<br>')}</p>
+    </div>
+    <div class="pl-progreso">${PRES_LLAMADA.map((_, k) => `<i class="${k < i ? 'hecho' : k === i ? 'ahora' : ''}"></i>`).join('')}</div>
+    ${presEst.visto ? `<div class="pl-ctrl">
+      <button class="pl-b" data-pl="ant" ${i === 0 ? 'disabled' : ''} aria-label="Anterior">‹</button>
+      <button class="pl-b grande" data-pl="play">${sonando ? 'Pausa' : fin ? 'Ver de nuevo' : 'Seguir'}</button>
+      <button class="pl-b" data-pl="sig" ${fin ? 'disabled' : ''} aria-label="Siguiente">›</button>
+    </div>` : `<button class="pl-play" data-pl="play" aria-label="Reproducir"><span><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><b>Reproducir</b></button>`}`;
+}
+function presAccion(acc) {
+  const caja = document.querySelector('.pl-pantalla'); if (!caja) return;
+  const pintar = () => { caja.innerHTML = presHTML(); };
+  const parar = () => { clearTimeout(presEst.timer); presEst.timer = null; presAudio.onended = presAudio.onerror = null; presAudio.pause(); };
+  const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
+  const sonar = luego => {
+    const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
+    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=1`; presAudio.playbackRate = 1.25;
+    if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
+    presAudio.play().catch(() => despues(espera()));
+  };
+  if (acc === 'sig' || acc === 'ant') { parar(); presEst.i = Math.max(0, Math.min(PRES_LLAMADA.length - 1, presEst.i + (acc === 'sig' ? 1 : -1))); pintar(); sonar(); return; }
+  if (presEst.timer) { parar(); pintar(); return; }
+  presEst.visto = true; if (presEst.i >= PRES_LLAMADA.length - 1) presEst.i = 0;
+  const paso = () => { if (presEst.i >= PRES_LLAMADA.length - 1) { parar(); pintar(); return; } presEst.i++; pintar(); sonar(paso); };
+  presEst.timer = -1; pintar(); sonar(paso);
+}
 function renderLlamada() {
   modo = 'llamada'; nav('?llamada');
-  const yt = id => `<div class="ll-video"><iframe src="https://www.youtube-nocookie.com/embed/${esc(id)}?rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>`;
-  const tes = (LLAMADA.testimonios || []).filter(t => t.id);
+  const yt = (id, cls = '') => id ? `<div class="ll-video ${cls}"><iframe src="https://www.youtube-nocookie.com/embed/${esc(id)}?rel=0&playsinline=1" title="Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe></div>` : '';
+  const [t1, t2] = LLAMADA.testimonios || [];
+  const testimonio = t => t && t.id ? `<section class="ll-bloque"><p class="ll-eti">Testimonio</p><h2>${esc(t.titulo || `La experiencia de ${t.nombre}`)}</h2>${yt(t.id)}</section>` : '';
   app().innerHTML = `${barra('')}
   <main class="llamada">
-    <h1>Si te llegó este link es porque vamos a tener una llamada 🙌</h1>
-    <p class="ll-texto">Te dejo un <strong>entrenamiento gratuito</strong> y una primera experiencia con el mapa de Ajuste Elástico.</p>
-    <p class="ll-texto">No tenés que traer nada preparado para la llamada: es para que explores si tenés ganas 😉</p>
-    ${LLAMADA.bienvenida ? yt(LLAMADA.bienvenida) : ''}
-    <button class="primario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>
-    ${tes.length ? `<h2>Algunos alumnos</h2><div class="ll-testimonios">${tes.map(t => `<figure>${yt(t.id)}<figcaption>${esc(t.nombre)}</figcaption></figure>`).join('')}</div>
-    <button class="secundario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>` : ''}
+    <section class="ll-hero">
+      <p class="ll-eti">Antes de nuestra llamada</p>
+      <div class="pl-pantalla">${presHTML()}</div>
+    </section>
+    ${testimonio(t1)}
+    <section class="ll-bloque ll-entrena">
+      <p class="ll-eti">Entrenamiento gratuito</p>
+      <h2>Probá el método en tu guitarra</h2>
+      <p class="ll-texto">Los primeros pasos del mapa de Ajuste Elástico: arpegios base, cómo bajar de cuerdas y el skipping. A tu ritmo, sin usuario ni contraseña.</p>
+      <div class="ll-mini">${['Arpegios base', 'Bajar de cuerdas', 'Skipping'].map((n, k) => `<span><b>${k + 1}</b>${n}</span>`).join('')}</div>
+      <button class="primario ll-boton" data-ll-entrar>Arrancar el entrenamiento</button>
+    </section>
+    ${LLAMADA.bienvenida ? `<section class="ll-bloque"><p class="ll-eti">Bienvenida</p><h2>Un mensaje antes de la llamada</h2>${yt(LLAMADA.bienvenida)}</section>` : ''}
+    ${testimonio(t2)}
+    <section class="ll-bloque ll-cierre">
+      <p class="ll-eti">En la llamada</p>
+      <div class="ll-tres">${[['Dónde estás hoy', 'Con la viola, sin vueltas.'], ['Qué te traba', 'Lo que te frena al improvisar.'], ['El camino', 'Un plan concreto para destrabarlo.']].map(([a, b], k) => `<div><b>${k + 1}</b><h3>${a}</h3><p>${b}</p></div>`).join('')}</div>
+      <p class="ll-texto">No tenés que traer nada preparado. ¡Nos vemos! 🙌</p>
+    </section>
   </main>`;
-  app().onclick = ev => { if (ev.target.closest('[data-ll-entrar]')) { DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); } };
+  app().onclick = ev => {
+    const b = ev.target.closest('[data-pl]'); if (b) { presAccion(b.dataset.pl); return; }
+    if (ev.target.closest('[data-ll-entrar]')) { presAudio.pause(); clearTimeout(presEst.timer); presEst.timer = null; DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); }
+  };
   window.scrollTo(0, 0);
 }
 
