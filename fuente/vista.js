@@ -118,12 +118,17 @@ function hojaDeRutaHTML(p) {
 /* Animaciones que arrancan solas cuando entran en pantalla, una sola vez por sesión */
 const animVistas = new Set();
 let introPendiente = false;   // la bienvenida está por abrirse o abierta: las animaciones esperan a que se cierre
+// Bienvenida o «Pasaste al módulo» encima: las animaciones esperan a que se cierren
+const hayPantallaEncima = () => introPendiente || !!document.querySelector('.intro-aula, .pase-modulo');
+function reanudarAnimaciones() {
+  setTimeout(() => { if (animObs) { animObs.disconnect(); document.querySelectorAll('.anim:not(.go)').forEach(x => animObs.observe(x)); } else activarAnimaciones(); }, 450);
+}
 const animClase = key => animVistas.has(key) ? '' : 'anim';
 let animObs = null;
 function activarAnimaciones() {
   if (!('IntersectionObserver' in window)) { document.querySelectorAll('.anim').forEach(el => { el.classList.add('go'); animVistas.add(el.dataset.anim); }); return; }
   animObs = animObs || new IntersectionObserver(ents => ents.forEach(en => {
-    if (!en.isIntersecting || document.querySelector('.intro-aula') || introPendiente) return;
+    if (!en.isIntersecting || hayPantallaEncima()) return;
     en.target.classList.add('go'); animVistas.add(en.target.dataset.anim); animObs.unobserve(en.target);
   }), { threshold: 0.35 });
   document.querySelectorAll('.anim:not(.go)').forEach(el => animObs.observe(el));
@@ -588,7 +593,7 @@ function mostrarIntro() {
   const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     introPendiente = false;
     // las animaciones que quedaron tapadas arrancan ahora
-    setTimeout(() => { if (animObs) { animObs.disconnect(); document.querySelectorAll('.anim:not(.go)').forEach(x => animObs.observe(x)); } else activarAnimaciones(); }, 450); el.classList.remove('visible'); setTimeout(() => el.remove(), 400); };
+    el.classList.remove('visible'); setTimeout(reanudarAnimaciones, 0); setTimeout(() => el.remove(), 400); };
   el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
   requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
 }
@@ -605,7 +610,7 @@ function celebrarModulo(m, alCerrar) {
     <button class="primario" data-pm>${m === 0 ? 'Empezar' : 'Arrancar'}</button></div>`;
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add('visible'));
-  const cerrar = () => { el.classList.remove('visible'); setTimeout(() => el.remove(), 400); alCerrar && alCerrar(); };
+  const cerrar = () => { el.classList.remove('visible'); setTimeout(() => { el.remove(); reanudarAnimaciones(); }, 400); alCerrar && alCerrar(); };
   el.querySelector('[data-pm]').onclick = cerrar;
   el.querySelector('[data-pm]').focus();
 }
@@ -964,6 +969,7 @@ function irA(id, suave = true) {
 function abrirPaso(id) {
   const cambio = id !== abierto;
   verTodo = false;
+  if (cambio) { animVistas.delete(id); animVistas.delete(id + '-ciclo'); }   // la animación del paso se repite cada vez que se entra
   abierto = id; renderAlumno();
   if (cambio) decidirPanel();
   videoParaAbierto(cambio);
