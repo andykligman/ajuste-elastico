@@ -551,13 +551,13 @@ body.con-mapa{overflow:hidden}
 
 /* Animaciones de objetivos, puente y ciclo (paso = 0,55 s) */
 .anim .ruta-obj li,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
-.anim .ruta-obj li{opacity:0;animation:aeSube .5s ease forwards;animation-delay:calc(var(--k) * .35s)}
-.anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
-.anim .rp-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
-.anim .rp-meta{animation:aePop .45s cubic-bezier(.3,1.5,.6,1) forwards,aeBrilla 1.4s ease 2;animation-delay:calc(.4s + var(--k) * .55s),calc(.9s + var(--k) * .55s)}
-.anim .rc-paso{opacity:0;animation:aePopC .45s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.4s + var(--k) * .55s)}
-.anim .rc-flecha{opacity:0;animation:aeFade .3s ease forwards;animation-delay:calc(.4s + var(--k) * .55s)}
-.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .55s);animation-delay:calc(.4s + var(--k0) * .55s)}
+.anim .ruta-obj li{opacity:0;animation:aeSube .8s ease forwards;animation-delay:calc(var(--k) * .6s)}
+.anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
+.anim .rp-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
+.anim .rp-meta{animation:aePop .7s cubic-bezier(.3,1.5,.6,1) forwards,aeBrilla 1.4s ease 2;animation-delay:calc(.8s + var(--k) * .85s),calc(1.5s + var(--k) * .85s)}
+.anim .rc-paso{opacity:0;animation:aePopC .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
+.anim .rc-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
+.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .85s);animation-delay:calc(.8s + var(--k0) * .85s)}
 .anim.go .ruta-obj li,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
 @keyframes aeSube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes aePop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
@@ -597,4 +597,14 @@ body.con-mapa{overflow:hidden}
   .envio .fila-botones{margin-left:0}
   .envio .fila-botones>.boton-grabar,.envio .fila-botones>.subir-galeria{flex:1 1 0;justify-content:center;text-align:center;padding:11px 10px;font-size:15px;white-space:nowrap}
 }
-@media (max-width:999px){body:has(.barra-clase:not(.plegada)) .consulta.con-texto span{max-width:0;margin-left:0}}
+@media (max-width:999px){.consulta{transition:bottom .4s ease}body:has(.barra-clase) .consulta.con-texto{bottom:calc(max(12px,env(safe-area-inset-bottom)) + 62px)}}
+
+/* Video en el celu: botón para abrirlo y ✕ para cerrarlo */
+.pv-cerrar{display:none}
+.ver-video-cel{display:none}
+@media (max-width:999px){
+  .layout.pv-cerrado .panel-video{display:none}
+  .pv-cerrar{display:block;margin-left:auto;background:none;border:0;color:var(--gris);font-size:17px;padding:2px 6px;cursor:pointer}
+  .layout.pv-cerrado .ver-video-cel{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 14px;border-radius:999px;background:var(--sup2);border:1px solid var(--linea);color:var(--tinta);font:600 14.5px var(--sans);cursor:pointer}
+  .ver-video-cel svg{width:17px;height:17px}
+}

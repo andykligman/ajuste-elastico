@@ -153,15 +153,15 @@ function stopInner(id) {
   const dibujo = S.tipo === 'ola' ? stopOla(S, enSel, estadoU, partido) : S.tipo === 'cuerdas' ? stopCuerdas(S, enSel, estadoU) : S.tipo === 'cifrado' ? stopCifrado(S, enSel, estadoU) : stopMelodia(S, enSel, estadoU, partido);
   const fin = i === tandas.length - 1;
   const texto = no ? (fin ? S.no.fin : S.no.t) : tanda.t;
-  return `<div class="stop-top"><div class="stop-modos" role="tablist">
+  return `<div class="stop-top">${S.no ? `<div class="stop-modos" role="tablist">
       <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
-      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button></div>
+      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button></div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${no && fin ? 'malo' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
     <div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>
-    <p class="stop-cap">${esc(S.contar)}</p>
-    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>
+    ${S.contar ? `<p class="stop-cap">${esc(S.contar)}</p>
+    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
     <div class="stop-ctrl">${!e.visto ? `
       <button class="primario stop-play1" data-stop-acc="play" data-stop-id="${id}">▶ Reproducir</button>` : `
       <button class="secundario" data-stop-acc="ant" data-stop-id="${id}" ${i === 0 ? 'disabled' : ''} aria-label="Tanda anterior">‹</button>
@@ -370,6 +370,7 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   return `<div class="tarjeta">
+    ${p.video ? `<button class="ver-video-cel" data-seek="${esc(p.video.id)}:${p.video.t || 0}">${ICONO.video}<span>Ver el video</span></button>` : ''}
     <div class="consigna">${textoHTML(p.detalle)}</div>
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -400,14 +401,14 @@ function envioHTML(st, p) {
   const listaPend = pend.length ? `<p class="vid-pend"><span class="sp-anillo"></span>${pend.length === 1 ? 'Se está mandando tu video.' : 'Se están mandando tus videos.'} Podés seguir usando el aula; si la cerrás, se termina de mandar cuando la vuelvas a abrir.</p>` : '';
   const lista = vids.length ? `<ul class="vids">${vids.map((v, i) => `<li>${ICONO.check}<span>Video del ${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}</span>
       ${modo === 'admin-vista' ? `<button class="link" data-ver-video="${p.id}:${i}">${v.visto ? 'Ver' : 'Ver (nuevo)'}</button>` : ''}</li>`).join('')}</ul>` : '';
-  const botonesVideo = conVideo && modo !== 'admin-vista' ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
+  const botonesVideo = conVideo && modo !== 'admin-vista' && !(ok && !vids.length) ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
     <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te doy una devolución.</p>`}
     ${lista}${listaPend}
     <div class="fila-botones">${botonesVideo}</div>
-    ${vids.length || pend.length ? '' : `<div class="fila-botones"><label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
+    ${vids.length || pend.length ? '' : ok ? (modo === 'admin-vista' ? '' : `<button class="link cambiar-op" data-desenvio="${p.id}">No, todavía no lo mandé</button>`) : `<div class="fila-botones"><label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
   </div>`;
 }
 // La explicación de cómo funciona el envío va solo en las primeras entregas del recorrido
@@ -646,6 +647,13 @@ function selectorModulosHTML(st, e) {
 const leerLS = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (_) { return d; } };
 const guardarLS = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
 let barraPlegada = leerLS('ae-barra', 'plegada') === 'plegada';
+/* Con la barra abierta, tocar en cualquier lado (menos el botón de lo que sigue) la pliega */
+document.addEventListener('click', ev => {
+  if (barraPlegada || !document.querySelector('.barra-clase:not(.plegada)')) return;
+  if (ev.target.closest('.bc-sig, [data-plegar]')) return;
+  barraPlegada = true; guardarLS('ae-barra', 'plegada');
+  const b = document.querySelector('.barra-clase'); if (b && ST) { const { e } = recomendaciones(ST, 3); b.outerHTML = barraClaseHTML(ST, e) || ''; }
+});
 function barraClaseHTML(st, e) {
   if (e.tipo === 'm2' || e.k > PROGRAMA.clases) return '';
   const prev = new Set(requeridos(e.k - 1, e.col));
@@ -678,14 +686,15 @@ function consultaHTML() {
   const txt = `Andy, tengo una consulta${paso ? ` sobre "${paso.titulo}"` : ''}: `;
   const href = `https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(txt)}`;
   if (!el) {
-    const primera = leerLS('ae-consulta', '') !== 'visto';
+    const primera = !(Date.now() - (+leerLS('ae-consulta', 0) || 0) < 4 * 864e5);   // el cartelito vuelve a salir cada 4 días
     el = document.createElement('a'); el.id = 'consulta'; el.className = 'consulta' + (primera ? ' con-texto' : '');
     el.target = '_blank'; el.rel = 'noopener'; el.setAttribute('aria-label', 'Consultas por WhatsApp');
     el.innerHTML = `${ICONO_WA}<span>¿Una consulta? Escribime</span>`;
     document.body.appendChild(el);
-    if (primera) setTimeout(() => { el.classList.remove('con-texto'); guardarLS('ae-consulta', 'visto'); }, 7000);
-    el.addEventListener('mouseenter', () => el.classList.add('con-texto'));
-    el.addEventListener('mouseleave', () => el.classList.remove('con-texto'));
+    if (primera) { guardarLS('ae-consulta', String(Date.now())); setTimeout(() => el.classList.remove('con-texto'), 6000); }
+    // solo con mouse: en el celu el toque dejaba el cartel abierto para siempre
+    el.addEventListener('pointerenter', ev => { if (ev.pointerType === 'mouse') el.classList.add('con-texto'); });
+    el.addEventListener('pointerleave', ev => { if (ev.pointerType === 'mouse') el.classList.remove('con-texto'); });
   }
   el.href = href;
 }
@@ -709,7 +718,22 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p></aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span><button class="pv-cerrar" data-pv-cerrar aria-label="Cerrar video">✕</button></p></aside>`;
+}
+/* En el celu el video ocupa media pantalla: se muestra si el video del paso no se vio,
+   o cuando el alumno toca un botón de video; se cierra con la ✕, al terminar o al cambiar de paso */
+const esCel = () => innerWidth < 1000;
+const vistos = new Set(String(leerLS('ae-vistos', '')).split(',').filter(Boolean));
+function marcarVisto(id) { if (id && !vistos.has(id)) { vistos.add(id); guardarLS('ae-vistos', [...vistos].join(',')); } }
+function abrirPanel() { const l = $('.layout'); if (l) l.classList.remove('pv-cerrado'); }
+function cerrarPanel() {
+  const l = $('.layout'); if (l) l.classList.add('pv-cerrado');
+  if (player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
+  else if (simple && playerVid) { const f = $('#yt'); if (f && f.tagName === 'IFRAME') { marcarVisto(playerVid); f.src = f.src.replace('&autoplay=1', ''); } }
+}
+function decidirPanel() {
+  const v = PASO[abierto] && PASO[abierto].video;
+  if (esCel() && (!v || vistos.has(v.id))) cerrarPanel(); else abrirPanel();
 }
 /* Líneas naranjas de fondo: 3 trazos gruesos de un solo color que cruzan toda la pantalla
    en diagonal, desde la esquina de arriba a la derecha. Van detrás del camino y del video;
@@ -784,7 +808,7 @@ function ponerVideo(id, t = 0, play = false) {
     player = new YT.Player('yt', { videoId: id, playerVars: { start: t, rel: 0, cc_load_policy: 0, playsinline: 1, modestbranding: 1 },
       events: { onReady: ev => { sinSubtitulos(ev.target); if (play) ev.target.playVideo(); },
                 onApiChange: ev => sinSubtitulos(ev.target),
-                onStateChange: ev => { if (ev.data === 1) sinSubtitulos(ev.target); } } });
+                onStateChange: ev => { if (ev.data === 1) { sinSubtitulos(ev.target); marcarVisto(playerVid); } if (ev.data === 0 && esCel()) cerrarPanel(); } } });
   } else if (playerVid !== id) {
     play ? player.loadVideoById({ videoId: id, startSeconds: t }) : player.cueVideoById({ videoId: id, startSeconds: t });
   } else { player.seekTo(t, true); if (play) player.playVideo(); }
@@ -809,7 +833,7 @@ function renderAlumno(animar) {
     app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
-  const sinVid = !!(PASO[abierto] && PASO[abierto].sinVideo);   // pasos sin video: el contenido ocupa toda la pantalla
+  const sinVid = !!(PASO[abierto] && (PASO[abierto].sinVideo || PASO[abierto].hojaDeRuta));   // en los objetivos del módulo no va video, así se ve la animación   // pasos sin video: el contenido ocupa toda la pantalla
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
@@ -821,7 +845,7 @@ function renderAlumno(animar) {
   }
   enlazarAlumno();
   enlazarFormStandard();
-  if (animar) setTimeout(() => irA(abierto, false), 80);
+  if (animar) { decidirPanel(); setTimeout(() => irA(abierto, false), 80); }
   if (modo.startsWith('admin-')) urlAdmin();
 }
 
@@ -836,6 +860,7 @@ function abrirPaso(id) {
   const cambio = id !== abierto;
   verTodo = false;
   abierto = id; renderAlumno();
+  if (cambio) decidirPanel();
   videoParaAbierto(cambio);
   requestAnimationFrame(() => irA(id));
   quizasCelebrar();
@@ -850,12 +875,14 @@ function enlazarAlumno() {
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
-    else if (d.seek) { const [id, t] = d.seek.split(':'); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
+    else if (d.seek) { const [id, t] = d.seek.split(':'); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {
       const [id, opId] = d.seg.split(':'); const k = id + '_seg';
       if (ST.prog[k]?.op === opId) delete ST.prog[k]; else ST.prog[k] = { op: opId, t: hoyISO() };
       guardarAlumno(); renderAlumno();
-    } else if (d.cambiar) { cambiando.add(d.cambiar); renderAlumno(); }
+    } else if (d.desenvio) { const pr = ST.prog[d.desenvio]; if (pr) { delete pr.envio; guardarAlumno(); renderAlumno(); } }
+    else if (d.pvCerrar !== undefined) cerrarPanel();
+    else if (d.cambiar) { cambiando.add(d.cambiar); renderAlumno(); }
     else if (d.op) {
       const [id, opId] = d.op.split(':'); cambiando.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;

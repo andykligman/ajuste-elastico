@@ -114,7 +114,6 @@ const STOPS = {
     tipo: 'cuerdas', titulo: 'Cómo bajar de cuerdas y volver a juntarlas',
     sub: 'Cuando 3 cuerdas se complican, bajá a 2. Y si 2 también, a 1.',
     unidades: ['1ª', '2ª', '3ª'],
-    contar: 'Veces que practicaste cada cuerda',
     tandas: [
       { sel: [0, 1], t: 'Bajás a 2 cuerdas: **la 1 y la 2**.' },
       { sel: [1, 2], t: 'Después **la 2 y la 3**.' },
@@ -125,11 +124,6 @@ const STOPS = {
       { sel: [1, 2], arregla: 2, t: '…otra vez la 2 y la 3…' },
       { sel: [0, 2], t: '…y las 3 juntas.' },
     ],
-    no: {
-      tandas: [{ sel: [0, 1] }, { sel: [0, 2] }],
-      t: 'La 1 y la 2, y de ahí directo a las 3.',
-      fin: '**El paso de la 2 a la 3 nunca lo trabajaste**, y es justo donde se va a trabar.',
-    },
   },
   transcripcion: {
     tipo: 'ola', titulo: 'Cómo armar el solo por partes',
@@ -353,11 +347,11 @@ const PROGRAMA = {
       progreso: [ { id: 'nuevos', label: 'Encuentro caminos nuevos', nivel: 'listo' }, { id: 'conocido', label: 'Me sale, pero vuelvo a lo que ya sabía', nivel: 'casi', muestra: ['esconder'] }, { id: 'fijo', label: 'Me cuesta salir del recorrido fijo', nivel: 'cuesta', muestra: ['esconder'] } ],
       stop: 'cuerdas', stopCerrado: true,
       titulo: 'Dirección melódica libre',
-      detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora **elegís cómo enlazar**: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear…\n# Buscá caminos sorpresivos, no lo automático\nConviene empezar en 2 cuerdas (o hasta en 1) y después juntar las 3.',
-      recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Cuellos de botella #3 - Direccion Melódica Libre', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.q2948mi1lvc6', 'Paso 3 · Soltar la dirección melódica'] }],
+      detalle: 'Mismo ritmo de blancas, mismas posiciones y compases, pero ahora **elegís cómo enlazar**: quedarte en una nota común, repetir una nota y cambiar las de alrededor, cambiar de dirección cuando quieras, saltear…\n# Buscá caminos sorpresivos, no lo automático',
+      recursos: [{ t: 'Video: ver ejemplo con dirección melódica libre', url: VIDEO_ENLACES + '&t=1516s' }, { t: 'Video: Recomendado: Cuello de botella #3', url: 'https://www.youtube.com/watch?v=we8Wgy3SmF8' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.q2948mi1lvc6', 'Paso 3 · Soltar la dirección melódica'] }],
       problemas: [
         { id: 'esconder', q: 'Termino tocando los enlaces que ya sabía',
-          fix: 'Es fácil esconderse en lo conocido! Bajá a dos cuerdas y **agotá todas las combinaciones** ahí, después las otras dos, y recién ahí volvé a las tres. Buscá a propósito lo que no te sale. Si te ayuda, mirate [este video](https://www.youtube.com/watch?v=we8Wgy3SmF8), que te explica cómo hacerlo.' },
+          fix: 'Es fácil esconderse en lo conocido! Mirate este video para destrabar nuevos caminos: [Cuello de botella #3](https://www.youtube.com/watch?v=we8Wgy3SmF8)' },
       ],
     },
     {
