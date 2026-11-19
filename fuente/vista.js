@@ -148,7 +148,7 @@ function stopHTML(p) {
     <div class="stop-cuerpo" data-stop-caja="${id}">${stopInner(id)}</div></details>`;
 }
 function stopInner(id) {
-  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const no = e.modo === 'no', tandas = no ? S.no.tandas : S.tandas, n = S.unidades.length;
   const i = Math.min(e.i, tandas.length - 1), tanda = tandas[i];
   const veces = Array(n).fill(0); tandas.slice(0, i + 1).forEach(t => { if (t.pausa) return; for (let k = t.sel[0]; k <= t.sel[1]; k++) veces[k]++; });
@@ -161,8 +161,9 @@ function stopInner(id) {
   const fin = i === tandas.length - 1;
   const texto = tanda.t || (no ? (fin ? S.no.fin : S.no.t) : '');
   return `<div class="stop-top">${S.no ? `<div class="stop-modos" role="tablist">
-      <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
-      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button></div>` : '<span></span>'}
+      ${S.empiezaNo ? `<button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>
+      <button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>` : `<button role="tab" aria-selected="${!no}" class="${!no ? 'on' : ''}" data-stop-acc="modo-si" data-stop-id="${id}">Así sí</button>
+      <button role="tab" aria-selected="${no}" class="${no ? 'on no' : ''}" data-stop-acc="modo-no" data-stop-id="${id}">Así no</button>`}</div>` : '<span></span>'}
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && fin && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${tandas.slice(0, i + 1).filter(t => !t.pausa).length} de ${tandas.filter(t => !t.pausa).length}`}</span><span class="stop-frase" key="${i}">${enLinea(texto)}</span></p>
@@ -181,17 +182,17 @@ let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto';
 const audioDe = (S, e) => { const dir = e.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(e.i + 1).padStart(2, '0')}.m4a?v=7` : ''; };
 function stopAccion(id, acc) {
-  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: 'si' });
+  const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0, modo: S.empiezaNo ? 'no' : 'si' });
   const total = () => (e.modo === 'no' ? S.no.tandas : S.tandas).length;
   const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } stopAudio.onended = stopAudio.onerror = null; stopAudio.pause(); };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
-  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = tt.t || (e.i === total() - 1 ? S.no.fin : S.no.t); return Math.min(8000, Math.max(3500, 2200 + String(txt).length * 55)); };
+  const espera = () => { const tt = (e.modo === 'no' ? S.no.tandas : S.tandas)[e.i], txt = tt.t || (e.i === total() - 1 ? S.no.fin : S.no.t); return Math.min(7000, Math.max(2500, 1500 + String(txt).length * 50)); };
   /* Suena la tanda actual; si "luego" viene, se llama al terminar (o con el tiempo de lectura si no hay audio) */
   const sonar = luego => {
     const src = audioDe(S, e);
     if (!src) { if (luego) stopTimer.h = setTimeout(luego, espera()); return; }
     stopAudio.src = src;
-    if (luego) { stopAudio.onended = () => { stopTimer.h = setTimeout(luego, 700); }; stopAudio.onerror = () => { stopTimer.h = setTimeout(luego, espera()); }; }
+    if (luego) { stopAudio.onended = () => { stopTimer.h = setTimeout(luego, 250); }; stopAudio.onerror = () => { stopTimer.h = setTimeout(luego, espera()); }; }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
@@ -203,6 +204,8 @@ function stopAccion(id, acc) {
     else {
       parar(); e.visto = true; if (e.i >= total() - 1) e.i = 0;
       const paso = () => {
+        // Si arranca por «Así no», al terminar sigue directo con «Así sí»
+        if (e.i >= total() - 1 && e.modo === 'no' && S.empiezaNo) { e.modo = 'si'; e.i = 0; pintar(); sonar(paso); return; }
         if (e.i >= total() - 1) { parar(); pintar(); return; }
         e.i++; pintar(); sonar(paso);
       };
