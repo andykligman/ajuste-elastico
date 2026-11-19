@@ -742,3 +742,11 @@ body.con-mapa{overflow:hidden}
 .rec-ok{position:absolute;top:10px;right:10px;padding:5px 14px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font:600 13px var(--sans);opacity:.8;cursor:pointer}
 .rec-ok:hover{opacity:1}
 .resp-rec .resp-tit{padding-right:56px}
+
+.rec-min{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(232,131,79,.5);background:rgba(232,131,79,.08);color:#F0A57C;font:600 13.5px var(--sans);cursor:pointer}
+.rec-min svg{width:15px;height:15px}
+.rec-min:hover{background:rgba(232,131,79,.16)}
+.resp-rec>div{flex:1}
+.rec-pie{display:flex;justify-content:flex-end;margin-top:10px}
+.rec-ok{position:static;padding:6px 18px}
+.resp-rec .resp-tit{padding-right:0}

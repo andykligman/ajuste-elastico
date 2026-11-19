@@ -816,6 +816,14 @@ body.con-mapa{overflow:hidden}
 .rec-ok:hover{opacity:1}
 .resp-rec .resp-tit{padding-right:56px}
 
+.rec-min{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:6px 14px;border-radius:999px;border:1px solid rgba(232,131,79,.5);background:rgba(232,131,79,.08);color:#F0A57C;font:600 13.5px var(--sans);cursor:pointer}
+.rec-min svg{width:15px;height:15px}
+.rec-min:hover{background:rgba(232,131,79,.16)}
+.resp-rec>div{flex:1}
+.rec-pie{display:flex;justify-content:flex-end;margin-top:10px}
+.rec-ok{position:static;padding:6px 18px}
+.resp-rec .resp-tit{padding-right:0}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2378,7 +2386,9 @@ function preguntaHTML(st, p) {
     <div class="ops" role="radiogroup" aria-label="${esc(p.pregunta || 'Cómo te fue')}">
       ${opcionesProgreso(p).map(o => `<button role="radio" aria-checked="${sel === o}" class="op nivel-${o.nivel} ${sel === o ? 'sel' : ''}" data-op="${p.id}:${o.id}"><span class="op-punto"></span>${esc(o.label)}</button>`).join('')}
     </div>
-    ${sel && (sel.resp || sel.nivel === 'listo') && !(sel.nivel !== 'listo' && recCerradas.has(p.id)) ? respuestaHTML(sel, p) : ''}
+    ${sel && (sel.resp || sel.nivel === 'listo') ? (sel.nivel !== 'listo' && recCerradas.has(p.id)
+      ? `<button class="rec-min" data-rec-abrir="${p.id}">${ICONO.idea}<span>Ver recomendación</span></button>`
+      : respuestaHTML(sel, p)) : ''}
     ${ayuda.apoyo ? apoyoHTML(p, sel) : ''}
     ${dificultadesHTML(ayuda.difs)}
   </div>`;
@@ -2395,8 +2405,7 @@ function respuestaHTML(sel, p) {
   }
   return `<div class="respuesta ${ok ? 'resp-ok' : 'resp-rec nivel-' + sel.nivel}" role="status">
     <span class="resp-ico">${ok ? ICONO.ok : ICONO.idea}</span>
-    ${ok || !p ? '' : `<button class="rec-ok" data-rec-ok="${p.id}" aria-label="Cerrar la recomendación">Ok</button>`}
-    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}</div>
+    <div>${ok ? '' : '<p class="resp-tit">Recomendación</p>'}${textoHTML(sel.resp)}${sel.url ? linkHTML('Volver a ver el ejemplo', esc(sel.url)) : ''}${ok || !p ? '' : `<div class="rec-pie"><button class="rec-ok" data-rec-ok="${p.id}">Ok</button></div>`}</div>
   </div>`;
 }
 /* Segunda pregunta de un paso, que depende de lo que contestó en otro (p. ej. cómo viene la transcripción) */
@@ -2435,7 +2444,7 @@ function tarjetaHTML(st, e, p) {
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
     ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
-    ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
+    ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !(sel?.nivel === 'casi' && sel.resp && !recCerradas.has(p.id)) ? envioHTML(st, p) : ''}
     ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
@@ -3022,6 +3031,7 @@ function enlazarAlumno() {
     } else if (d.desenvio) { const pr = ST.prog[d.desenvio]; if (pr) { delete pr.envio; guardarAlumno(); renderAlumno(); } }
     else if (d.pvCerrar !== undefined) cerrarPanel();
     else if (d.recOk) { recCerradas.add(d.recOk); renderAlumno(); }
+    else if (d.recAbrir) { recCerradas.delete(d.recAbrir); renderAlumno(); }
     else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
     else if (d.op) {
       const [id, opId] = d.op.split(':'); cambiando.delete(id); recCerradas.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
