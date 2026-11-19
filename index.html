@@ -780,18 +780,9 @@ body.con-mapa{overflow:hidden}
 .stop-texto.grande{min-height:260px;font-size:clamp(22px,3.8vw,30px)}
 @media (max-width:560px){.stop-texto.grande{min-height:300px;font-size:22px}}
 
-/* «Seguir» al lado del mensaje cuando ya le salió */
-.fila-resp{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:14px}
-.fila-resp .pregunta{flex:1 1 260px;margin:0}
-.fila-resp .respuesta{margin-top:0}
-.fila-resp .seguir{margin-top:0;flex:none}
 /* Bienvenida: «Arrancar» se destaca al final */
 .in-ctrl .primario.in-final{background:var(--naranja);color:#1B1208;animation:inArrancar 1.6s ease infinite;box-shadow:0 0 0 0 rgba(232,131,79,.55)}
 @keyframes inArrancar{0%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,131,79,.55)}50%{transform:scale(1.07);box-shadow:0 0 0 12px rgba(232,131,79,0)}100%{transform:scale(1);box-shadow:0 0 0 0 rgba(232,131,79,0)}}
-.fila-resp{flex-wrap:nowrap;align-items:flex-start}
-.fila-resp .pregunta{flex:1 1 0;min-width:0}
-.fila-resp .seguir .primario{padding:12px 16px;min-height:52px}
-@media (max-width:560px){.fila-resp{gap:10px}.fila-resp .respuesta{padding:12px}.fila-resp .seguir .primario span{font-size:16px}}
 
 /* «Escribime» cuando algo cuesta */
 .escribime{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:9px 16px;border-radius:999px;background:#1F8A57;color:#fff;font-weight:600;font-size:15px;text-decoration:none}
@@ -803,6 +794,21 @@ body.con-mapa{overflow:hidden}
 .seguir-cuesta{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .seguir-cuesta .escribime{margin-top:0;padding:12px 20px;font-size:16px}
 .seguir-cuesta .secundario{padding:12px 18px}
+
+/* Ya le salió: mensaje verde del ancho de su texto y «Seguir» al lado, misma altura */
+.fila-resp{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px 12px;margin-top:16px}
+.fila-resp .pregunta{flex:0 1 auto;margin:0;min-width:0}
+.fila-resp .respuesta{margin-top:0;display:inline-flex;align-items:center;min-height:52px;padding:10px 18px 10px 14px;box-sizing:border-box}
+.fila-resp .respuesta p{margin:0}
+.fila-resp .seguir{margin-top:0;flex:none}
+.fila-resp .seguir .primario{min-height:52px;padding:0 20px}
+.fila-resp{flex-wrap:nowrap}.fila-resp .pregunta{display:flex;flex-direction:column;align-items:flex-start;padding:0;border:0;background:none}.fila-resp .cambiar-op{margin-top:6px}@media (max-width:400px){.fila-resp .respuesta{padding:10px 14px 10px 12px}.fila-resp .seguir .primario{padding:0 16px}}
+
+.fila-resp{display:block}
+.fila-fila{display:flex;align-items:stretch;gap:10px}
+.fila-fila .respuesta{flex:0 1 auto;margin:0}
+.fila-fila .seguir{display:flex}
+.fila-fila .seguir .primario{min-height:52px;height:100%}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -2402,7 +2408,8 @@ function tarjetaHTML(st, e, p) {
   const sig = siguienteDe(p.id);
   const respondido = p.tipo === 'standard' ? !!st.standard : !!sel;
   // Si ya dijo que le salió y no hay video para mandar, «Seguir» va al lado del mensaje
-  const seguirAlLado = false;   // probado con «Seguir» al lado del mensaje: quedaba peor, vuelve abajo
+  // Si ya le salió y no hay video para mandar: el mensaje verde, del tamaño de su texto, y «Seguir» al lado
+  const seguirAlLado = !!(sig && sel && sel.nivel === 'listo' && p.tipo !== 'standard' && !cambiando.has(p.id) && (!p.entrega || sel.saltea));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     <div class="consigna">${textoHTML(p.detalle)}</div>
@@ -2414,7 +2421,7 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${seguirAlLado ? `<div class="fila-resp">${preguntaHTML(st, p)}${botonSeguir}</div>` : preguntaHTML(st, p)}
+    ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${respondido && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' ? envioHTML(st, p) : ''}
     ${sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig && (!p.entrega || p.entregaOpcional || st.prog[p.id]?.envio || sel?.saltea) ? `<div class="seguir">
