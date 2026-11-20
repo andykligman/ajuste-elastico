@@ -184,7 +184,12 @@ function hojaDeRutaHTML(p) {
 const animVistas = new Set();
 let introPendiente = false;   // la bienvenida está por abrirse o abierta: las animaciones esperan a que se cierre
 // Bienvenida o «Pasaste al módulo» encima: las animaciones esperan a que se cierren
-const hayPantallaEncima = () => introPendiente || !!document.querySelector('.intro-aula, .pase-modulo');
+// (también si la pantalla de «Pasaste al módulo» todavía no salió pero va a salir: al cargar la página aparece un poco después)
+const celebracionPendiente = () => {
+  if ((modo !== 'alumno' && modo !== 'admin-prueba') || !ST || !abierto || !PASO[abierto]) return false;
+  const m = MODULO_DE[PASO[abierto].etapa]; return m > 0 && !moduloVisto(m);
+};
+const hayPantallaEncima = () => introPendiente || celebracionPendiente() || !!document.querySelector('.intro-aula, .pase-modulo');
 function reanudarAnimaciones() {
   setTimeout(() => { if (animObs) { animObs.disconnect(); document.querySelectorAll('.anim:not(.go)').forEach(x => animObs.observe(x)); } else activarAnimaciones(); }, 450);
 }
@@ -526,6 +531,7 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
@@ -787,7 +793,7 @@ function mostrarIntro() {
   const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     introPendiente = false;
     // las animaciones que quedaron tapadas arrancan ahora
-    el.classList.remove('visible'); setTimeout(reanudarAnimaciones, 0); setTimeout(() => el.remove(), 400); };
+    el.classList.remove('visible'); setTimeout(reanudarAnimaciones, 0); setTimeout(() => { el.remove(); if (celebracionPendiente()) quizasCelebrar(); }, 400); };
   el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
   requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
 }
@@ -1155,6 +1161,8 @@ function renderAlumno(animar) {
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
+  // si toca «Pasaste al módulo», que salga ya, antes de que arranquen las animaciones de abajo
+  if (!introPendiente && !document.querySelector('.pase-modulo') && celebracionPendiente()) quizasCelebrar();
   requestAnimationFrame(activarAnimaciones);
   consultaHTML();
   if (!playerVid) {

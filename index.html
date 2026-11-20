@@ -624,7 +624,7 @@ body.con-mapa{overflow:hidden}
 .stop-top .stop-son.off{color:var(--gris)}
 
 /* Animaciones de objetivos, puente y ciclo (paso = 0,55 s) */
-.anim .ruta-obj li,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
+.anim .ruta-obj li,.anim .rp-meta,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
 .anim .ruta-obj li{opacity:0;animation:aeSube .8s ease forwards;animation-delay:calc(var(--k) * .6s)}
 .anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim .rp-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
@@ -632,7 +632,7 @@ body.con-mapa{overflow:hidden}
 .anim .rc-paso{opacity:0;animation:aePopC .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim .rc-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .85s);animation-delay:calc(.8s + var(--k0) * .85s)}
-.anim.go .ruta-obj li,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
+.anim.go .ruta-obj li,.anim.go .rp-meta,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
 @keyframes aeSube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes aePop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
 @keyframes aePopC{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -1121,10 +1121,10 @@ body.dv-abierto{overflow:hidden}
 /* Ver video ⇄ Cerrar video en el mismo botón */
 [data-seek].seek-activo{border-color:var(--naranja)!important;color:var(--naranja)!important}
 /* «Ver video» del paso: más naranja que gris; abierto («Cerrar video») al revés */
-.mat.mat-vid{background:var(--naranja);border-color:var(--naranja);color:#1A1209!important}
-.mat.mat-vid svg{color:#1A1209}
-.mat.mat-vid small{color:rgba(26,18,9,.75)}
-.mat.mat-vid:hover{background:#F0935F;border-color:#F0935F}
+.mat.mat-vid{background:rgba(232,131,79,.24);border-color:rgba(232,131,79,.6);color:#FFE3D3!important}
+.mat.mat-vid svg{color:var(--naranja)}
+.mat.mat-vid small{color:#F2B08E}
+.mat.mat-vid:hover{background:rgba(232,131,79,.34);border-color:var(--naranja)}
 .mat.mat-vid.seek-activo{background:var(--sup2)!important;border-color:var(--naranja)!important;color:var(--naranja)!important}
 /* Recurso recomendado (p. ej. Cuello de botella #3): que se vea */
 .mat.mat-dest{background:var(--azul-osc);border-color:var(--azul);color:#fff!important;box-shadow:0 0 0 3px rgba(93,123,182,.25)}
@@ -1184,13 +1184,16 @@ body.sin-scroll{overflow:hidden}
 /* En la compu, el link de la llamada se ve más grande */
 /* En la compu todo un poco más grande (la llamada y el aula) */
 @media (min-width:1000px){
-  #vista{zoom:1.25}
+  #vista{zoom:1.125}
   /* el video de la derecha (sin zoom) aprovecha el espacio */
   .layout:not(.pv-cerrado):not(.sin-video){grid-template-columns:minmax(0,1fr) minmax(380px,51%)}
   .layout:not(.pv-cerrado):not(.sin-video) .alumno{padding-right:20px}
   .layout .panel-video{padding:24px 24px 24px 4px}
 }
 .respuesta + .resp-wa,.rec-min + .resp-wa{margin-top:10px}
+
+/* Botón a WhatsApp con mensaje armado (p. ej. elegir el standard) */
+.paso-wa{margin:4px 0 8px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1639,7 +1642,7 @@ const PROGRAMA = {
       id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
-      detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
+      detalle: 'Poné un **tempo cómodo** y hacé **el mismo ejercicio en tiempo real**.\nAcá **acortamos los nombres**: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
       progreso: [
         { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
         { id: 'poco', label: 'Me equivoco un poco', nivel: 'casi',
@@ -1701,6 +1704,7 @@ const PROGRAMA = {
       id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
       detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar',
+      wa: { label: 'Escribime para elegir el standard', txt: 'Hola Andy! Escribo para que elijamos juntos el standard con el que voy a trabajar' },
       pregunta: '¿Ya lo eligieron?',
       progreso: [{ id: 'listo', label: 'Ya lo elegimos juntos', nivel: 'listo' }],
     },
@@ -1746,32 +1750,15 @@ const PROGRAMA = {
       ],
     },
 
-    /* ---------- Enlaces ---------- */
     {
-      id: 'obj1', etapa: 'enlaces', opcional: true,
-      titulo: 'Los objetivos de este módulo',
-      hojaDeRuta: {
-        objetivos: [
-          'Enlaces con dirección y ritmo **fijos**, a tiempo real.',
-          'Soltar primero la **dirección** y después el **ritmo**.',
-          '**Anticipaciones**: tocar notas del acorde que viene antes de que llegue.',
-          '**Superposiciones**: una por acorde, y el mismo proceso otra vez.',
-        ],
-        puente: { ciclo: true, pasos: ['Acomodar posiciones de los arpegios', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
-        meta: 'Llegar al **Módulo 2** con todo esto andando.',
-      },
-      pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
-    },
-    {
-      id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
+      id: 'e1', etapa: 'pre', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
       detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
-        { t: 'Doc: Módulo 1 - Cambios de acorde', url: DOC_M1, sec: ['h.u80juzhmtbbk', 'Paso 2 · Tocar a tempo, manteniendo dirección y ritmo fijos'] },
+        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.u80juzhmtbbk', 'Paso 2 · Tocar a tempo, manteniendo dirección y ritmo fijos'] },
       ],
       nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
@@ -1796,6 +1783,24 @@ const PROGRAMA = {
         { id: 'complica', q: 'Que se complique demasiado',
           fix: 'Antes de bajar el tempo, **achicá**: menos compases (2 en vez de 4) o menos cuerdas (primero 1 y 2, después 2 y 3, y finalmente las 3). Vas a ver qué rápido se destraba!' },
       ],
+    },
+
+    /* ---------- Enlaces ---------- */
+    {
+      id: 'obj1', etapa: 'enlaces', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      hojaDeRuta: {
+        objetivos: [
+          'Enlaces con dirección y ritmo **fijos**, a tiempo real.',
+          'Soltar primero la **dirección** y después el **ritmo**.',
+          '**Anticipaciones**: tocar notas del acorde que viene antes de que llegue.',
+          '**Superposiciones**: una por acorde, y el mismo proceso otra vez.',
+        ],
+        puente: { ciclo: true, pasos: ['Acomodar posiciones de los arpegios', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
+        meta: 'Llegar al **Módulo 2** con todo esto andando.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
@@ -2689,7 +2694,12 @@ function hojaDeRutaHTML(p) {
 const animVistas = new Set();
 let introPendiente = false;   // la bienvenida está por abrirse o abierta: las animaciones esperan a que se cierre
 // Bienvenida o «Pasaste al módulo» encima: las animaciones esperan a que se cierren
-const hayPantallaEncima = () => introPendiente || !!document.querySelector('.intro-aula, .pase-modulo');
+// (también si la pantalla de «Pasaste al módulo» todavía no salió pero va a salir: al cargar la página aparece un poco después)
+const celebracionPendiente = () => {
+  if ((modo !== 'alumno' && modo !== 'admin-prueba') || !ST || !abierto || !PASO[abierto]) return false;
+  const m = MODULO_DE[PASO[abierto].etapa]; return m > 0 && !moduloVisto(m);
+};
+const hayPantallaEncima = () => introPendiente || celebracionPendiente() || !!document.querySelector('.intro-aula, .pase-modulo');
 function reanudarAnimaciones() {
   setTimeout(() => { if (animObs) { animObs.disconnect(); document.querySelectorAll('.anim:not(.go)').forEach(x => animObs.observe(x)); } else activarAnimaciones(); }, 450);
 }
@@ -3031,6 +3041,7 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
@@ -3292,7 +3303,7 @@ function mostrarIntro() {
   const cerrar = () => { clearTimeout(h); audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     introPendiente = false;
     // las animaciones que quedaron tapadas arrancan ahora
-    el.classList.remove('visible'); setTimeout(reanudarAnimaciones, 0); setTimeout(() => el.remove(), 400); };
+    el.classList.remove('visible'); setTimeout(reanudarAnimaciones, 0); setTimeout(() => { el.remove(); if (celebracionPendiente()) quizasCelebrar(); }, 400); };
   el.onclick = ev => { const b = ev.target.closest('[data-in]'); if (!b) return; if (b.dataset.in === 'saltear' || s === INTRO.length) cerrar(); else ir(s + 1); };
   requestAnimationFrame(() => { el.classList.add('visible'); ir(1); sig.focus(); });
 }
@@ -3660,6 +3671,8 @@ function renderAlumno(animar) {
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   requestAnimationFrame(dibujarCamino);
+  // si toca «Pasaste al módulo», que salga ya, antes de que arranquen las animaciones de abajo
+  if (!introPendiente && !document.querySelector('.pase-modulo') && celebracionPendiente()) quizasCelebrar();
   requestAnimationFrame(activarAnimaciones);
   consultaHTML();
   if (!playerVid) {

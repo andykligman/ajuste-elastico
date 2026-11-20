@@ -551,7 +551,7 @@ body.con-mapa{overflow:hidden}
 .stop-top .stop-son.off{color:var(--gris)}
 
 /* Animaciones de objetivos, puente y ciclo (paso = 0,55 s) */
-.anim .ruta-obj li,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
+.anim .ruta-obj li,.anim .rp-meta,.anim .rp-etapa,.anim .rp-flecha,.anim .rp-extremo,.anim .rc-paso,.anim .rc-flecha,.anim.ruta-ciclo circle,.anim .ruta-ciclo circle{animation-play-state:paused}
 .anim .ruta-obj li{opacity:0;animation:aeSube .8s ease forwards;animation-delay:calc(var(--k) * .6s)}
 .anim .rp-etapa,.anim .rp-extremo{opacity:0;animation:aePop .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim .rp-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
@@ -559,7 +559,7 @@ body.con-mapa{overflow:hidden}
 .anim .rc-paso{opacity:0;animation:aePopC .7s cubic-bezier(.3,1.5,.6,1) forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim .rc-flecha{opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.8s + var(--k) * .85s)}
 .anim.ruta-ciclo circle,.anim .ruta-ciclo circle{stroke-dasharray:100;stroke-dashoffset:100;animation:aeTrazo linear forwards;animation-duration:calc(var(--n) * .85s);animation-delay:calc(.8s + var(--k0) * .85s)}
-.anim.go .ruta-obj li,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
+.anim.go .ruta-obj li,.anim.go .rp-meta,.anim.go .rp-etapa,.anim.go .rp-flecha,.anim.go .rp-extremo,.anim.go .rc-paso,.anim.go .rc-flecha,.anim.go.ruta-ciclo circle,.anim.go .ruta-ciclo circle{animation-play-state:running}
 @keyframes aeSube{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes aePop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
 @keyframes aePopC{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}to{opacity:1;transform:translate(-50%,-50%)}}
@@ -1048,10 +1048,10 @@ body.dv-abierto{overflow:hidden}
 /* Ver video ⇄ Cerrar video en el mismo botón */
 [data-seek].seek-activo{border-color:var(--naranja)!important;color:var(--naranja)!important}
 /* «Ver video» del paso: más naranja que gris; abierto («Cerrar video») al revés */
-.mat.mat-vid{background:var(--naranja);border-color:var(--naranja);color:#1A1209!important}
-.mat.mat-vid svg{color:#1A1209}
-.mat.mat-vid small{color:rgba(26,18,9,.75)}
-.mat.mat-vid:hover{background:#F0935F;border-color:#F0935F}
+.mat.mat-vid{background:rgba(232,131,79,.24);border-color:rgba(232,131,79,.6);color:#FFE3D3!important}
+.mat.mat-vid svg{color:var(--naranja)}
+.mat.mat-vid small{color:#F2B08E}
+.mat.mat-vid:hover{background:rgba(232,131,79,.34);border-color:var(--naranja)}
 .mat.mat-vid.seek-activo{background:var(--sup2)!important;border-color:var(--naranja)!important;color:var(--naranja)!important}
 /* Recurso recomendado (p. ej. Cuello de botella #3): que se vea */
 .mat.mat-dest{background:var(--azul-osc);border-color:var(--azul);color:#fff!important;box-shadow:0 0 0 3px rgba(93,123,182,.25)}
@@ -1111,10 +1111,13 @@ body.sin-scroll{overflow:hidden}
 /* En la compu, el link de la llamada se ve más grande */
 /* En la compu todo un poco más grande (la llamada y el aula) */
 @media (min-width:1000px){
-  #vista{zoom:1.25}
+  #vista{zoom:1.125}
   /* el video de la derecha (sin zoom) aprovecha el espacio */
   .layout:not(.pv-cerrado):not(.sin-video){grid-template-columns:minmax(0,1fr) minmax(380px,51%)}
   .layout:not(.pv-cerrado):not(.sin-video) .alumno{padding-right:20px}
   .layout .panel-video{padding:24px 24px 24px 4px}
 }
 .respuesta + .resp-wa,.rec-min + .resp-wa{margin-top:10px}
+
+/* Botón a WhatsApp con mensaje armado (p. ej. elegir el standard) */
+.paso-wa{margin:4px 0 8px}

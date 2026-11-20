@@ -282,7 +282,7 @@ const PROGRAMA = {
       id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
-      detalle: 'Poné un tempo cómodo y hacé el mismo ejercicio en tiempo real. Acá acortamos los nombres: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
+      detalle: 'Poné un **tempo cómodo** y hacé **el mismo ejercicio en tiempo real**.\nAcá **acortamos los nombres**: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
       progreso: [
         { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
         { id: 'poco', label: 'Me equivoco un poco', nivel: 'casi',
@@ -344,6 +344,7 @@ const PROGRAMA = {
       id: 'p5', etapa: 'pre',
       titulo: 'Elegir el standard',
       detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar',
+      wa: { label: 'Escribime para elegir el standard', txt: 'Hola Andy! Escribo para que elijamos juntos el standard con el que voy a trabajar' },
       pregunta: '¿Ya lo eligieron?',
       progreso: [{ id: 'listo', label: 'Ya lo elegimos juntos', nivel: 'listo' }],
     },
@@ -389,32 +390,15 @@ const PROGRAMA = {
       ],
     },
 
-    /* ---------- Enlaces ---------- */
     {
-      id: 'obj1', etapa: 'enlaces', opcional: true,
-      titulo: 'Los objetivos de este módulo',
-      hojaDeRuta: {
-        objetivos: [
-          'Enlaces con dirección y ritmo **fijos**, a tiempo real.',
-          'Soltar primero la **dirección** y después el **ritmo**.',
-          '**Anticipaciones**: tocar notas del acorde que viene antes de que llegue.',
-          '**Superposiciones**: una por acorde, y el mismo proceso otra vez.',
-        ],
-        puente: { ciclo: true, pasos: ['Acomodar posiciones de los arpegios', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
-        meta: 'Llegar al **Módulo 2** con todo esto andando.',
-      },
-      pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
-    },
-    {
-      id: 'e1', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
+      id: 'e1', etapa: 'pre', entrega: 'video', envia: 'un video de los enlaces con dirección y ritmo fijos (en blancas) sobre los mismos compases, con metrónomo o iReal.',
       video: { id: 'TylWJrfPxu0', t: 898 }, hotmart: 'PeAgJn18OW',
       titulo: 'Enlaces con dirección y ritmo fijos, a tempo',
       detalle: 'Las mismas reglas, ahora con metrónomo o iReal. Con los días, **subí un poquito el tempo**.\n# La idea es encontrar enlaces nuevos, no repetir siempre los mismos\nArrancá desde notas distintas, o desde notas que ya usaste pero en la otra dirección.',
       recursos: [
         { t: 'Ver ejemplo de enlaces a tempo', url: 'https://youtu.be/TylWJrfPxu0?t=898' },
         { t: 'Herramienta iReal: contrabajo acompañante', url: 'https://www.youtube.com/watch?v=-M5xF9Crru8' },
-        { t: 'Doc: Módulo 1 - Cambios de acorde', url: DOC_M1, sec: ['h.u80juzhmtbbk', 'Paso 2 · Tocar a tempo, manteniendo dirección y ritmo fijos'] },
+        { t: 'Doc: Enlaces de Arpegios', url: DOC_ENLACES, sec: ['h.u80juzhmtbbk', 'Paso 2 · Tocar a tempo, manteniendo dirección y ritmo fijos'] },
       ],
       nota: 'Si tenés Android, pedime el .apk de iReal gratis por WhatsApp.',
       progreso: [
@@ -439,6 +423,24 @@ const PROGRAMA = {
         { id: 'complica', q: 'Que se complique demasiado',
           fix: 'Antes de bajar el tempo, **achicá**: menos compases (2 en vez de 4) o menos cuerdas (primero 1 y 2, después 2 y 3, y finalmente las 3). Vas a ver qué rápido se destraba!' },
       ],
+    },
+
+    /* ---------- Enlaces ---------- */
+    {
+      id: 'obj1', etapa: 'enlaces', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      hojaDeRuta: {
+        objetivos: [
+          'Enlaces con dirección y ritmo **fijos**, a tiempo real.',
+          'Soltar primero la **dirección** y después el **ritmo**.',
+          '**Anticipaciones**: tocar notas del acorde que viene antes de que llegue.',
+          '**Superposiciones**: una por acorde, y el mismo proceso otra vez.',
+        ],
+        puente: { ciclo: true, pasos: ['Acomodar posiciones de los arpegios', 'Ritmo fijo, dirección fija', 'Ritmo fijo, dirección libre', 'Ritmo libre, dirección libre', 'Anticipaciones', 'Superposiciones'] },
+        meta: 'Llegar al **Módulo 2** con todo esto andando.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
       id: 'e2', etapa: 'enlaces', entrega: 'video', envia: 'un video de los enlaces con dirección melódica libre, en blancas, sobre los mismos compases.',
