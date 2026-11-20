@@ -3,11 +3,28 @@
 # acorta las pausas largas en el medio (> 0,35 s quedan en 0,22 s, con cruce de 10 ms) para que sea ágil,
 # volumen a -25 LUFS y 0,12 s de aire al final. AAC 128k mono 48 kHz.
 # Uso: python3 herramientas/audio_fino.py original.m4a audio/carpeta/NN.m4a
+# Además corta el "trrrr": a veces el "Mejorar grabación" del iPhone repite en loop un pedacito de ~85 ms en la cola
+# de la última sílaba. Se detecta como un tramo que se repite casi idéntico (similitud > 0,944) y se corta ahí.
 import subprocess, sys, re, numpy as np
 inp, out = sys.argv[1], sys.argv[2]
 SR = 48000
 raw = subprocess.run(['ffmpeg','-v','error','-i',inp,'-ac','1','-ar',str(SR),'-f','f32le','-'],capture_output=True).stdout
 x = np.frombuffer(raw, np.float32).astype(np.float64)
+def loop_iphone(x):
+    sr = 16000; y = np.frombuffer(subprocess.run(['ffmpeg','-v','error','-i',inp,'-ac','1','-ar','16000','-f','f32le','-'],capture_output=True).stdout, np.float32).astype(np.float64); n, h = 256, 80; fr = sr / h
+    S = np.array([np.log(np.abs(np.fft.rfft(y[k:k+n]*np.hanning(n)))[3:80]+1e-6) for k in range(0, len(y)-n, h)])
+    e = np.array([np.sqrt(np.mean(y[k:k+n]**2)) for k in range(0, len(y)-n, h)])
+    on = 20*np.log10(e/e.max()+1e-9) > -30
+    S = S - S.mean(1, keepdims=True); S /= np.linalg.norm(S, axis=1, keepdims=True) + 1e-9
+    cand = None
+    for lag in range(int(.06*fr), int(.16*fr)):
+        sim = np.sum(S[:-lag]*S[lag:], 1) * (on[:-lag] & on[lag:]); L = int(1.6*lag)
+        for k in range(int(len(sim)*0.3), len(sim)-L):
+            if sim[k:k+L].mean() > 0.944 and (cand is None or k < cand[0]): cand = (k, lag); break
+    if not cand: return None
+    return int((cand[0] + cand[1]) * h * 3)   # muestra donde cortar: dejo un solo período
+corte = loop_iphone(x)
+if corte: print('  loop del iPhone en %.2fs: corto ahí' % (corte/SR)); x = x[:corte].copy(); x[-int(.05*SR):] *= np.linspace(1, 0, int(.05*SR))
 w = SR // 100   # ventanas de 10 ms
 r = np.array([20*np.log10(np.sqrt(np.mean(x[k:k+w]**2))+1e-9) for k in range(0, len(x)-w, w)])
 umbral = max(-62, r.max() - 42)
