@@ -1091,8 +1091,8 @@ body.sin-scroll{overflow:hidden}
 .emb-vert{max-width:none;display:flex;flex-direction:column;align-items:center}
 .emb-vert .emb-marco{aspect-ratio:var(--rec);width:min(100%,calc(74vh * var(--rec)));background:#000}
 .emb-vert.ev-simple .emb-marco{aspect-ratio:16/9;width:100%}
-.ev-yt{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--k) * 100%);transform:translateX(-50%);pointer-events:none}
-.ev-simple .ev-yt{left:0;width:100%;transform:none;pointer-events:auto}
+.ev-yt{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--k) * 100%);margin-left:calc(var(--k) * -50%);pointer-events:none}   /* sin transform: en el iPhone un iframe con transform se ve borroso */
+.ev-simple .ev-yt{left:0;width:100%;margin-left:0;transform:none;pointer-events:auto}
 .ev-yt iframe,.ev-yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
 .ev-capa{position:absolute;inset:0;z-index:2;border:0;background:transparent;cursor:pointer;display:none}
 .ev-sonando .ev-capa{display:block}
@@ -1167,3 +1167,8 @@ body.sin-scroll{overflow:hidden}
 .llp-cerrar{margin-top:6px;border:0;background:transparent;color:#A9BEE8;font:600 16px var(--sans);text-decoration:underline;cursor:pointer;padding:10px}
 .ll-fin-wa{align-self:center;margin-top:10px}
 [data-accion="reiniciar-llamada"].seguro{color:#E8834F;font-weight:700}
+
+/* Mientras un video está en grande, los contenedores de arriba no pueden tener transform ni quedar abajo de otras cosas
+   (si no, en el iPhone el video y la cruz quedan corridos y se ven tildes de los pasos por encima) */
+.ev-sube{transform:none!important;animation:none!important;filter:none!important;z-index:400!important}
+body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{visibility:hidden}

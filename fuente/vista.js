@@ -644,14 +644,14 @@ function montarVerticales() {
             m.classList.toggle('ev-fin', ev.data === S.ENDED);
             if (ev.data === S.PLAYING || ev.data === S.BUFFERING) sinSubtitulos(pl);
             clearTimeout(m._ver);
-            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 500);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
+            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 300);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
             else if (ev.data !== S.BUFFERING) m.classList.remove('ev-ver');
             if (ev.data === S.PLAYING) {
               m.classList.add('ev-arranco');
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
               evPlayers.forEach((o, el) => { if (el !== m && el.isConnected) try { o.pauseVideo(); } catch (_) {} });
               clearInterval(timer);
-              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
+              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
             } else clearInterval(timer);
             if (ev.data === S.ENDED) barra.style.width = '100%';
           },
@@ -670,6 +670,8 @@ function sinSubtitulos(pl) {
 function evGrande(emb, prender) {
   emb.classList.toggle('ev-grande', prender);
   document.body.classList.toggle('sin-scroll', prender);
+  document.body.classList.toggle('hay-grande', prender);
+  for (let e = emb.parentElement; e && e !== document.body; e = e.parentElement) e.classList.toggle('ev-sube', prender);
   if (prender) {
     const q = emb.querySelector('.emb-marco'), z = emb.currentCSSZoom || 1;
     const W = innerWidth / z, H = innerHeight / z, rec = parseFloat(emb.style.getPropertyValue('--rec')) || 0.5625;

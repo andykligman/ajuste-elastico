@@ -1164,8 +1164,8 @@ body.sin-scroll{overflow:hidden}
 .emb-vert{max-width:none;display:flex;flex-direction:column;align-items:center}
 .emb-vert .emb-marco{aspect-ratio:var(--rec);width:min(100%,calc(74vh * var(--rec)));background:#000}
 .emb-vert.ev-simple .emb-marco{aspect-ratio:16/9;width:100%}
-.ev-yt{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--k) * 100%);transform:translateX(-50%);pointer-events:none}
-.ev-simple .ev-yt{left:0;width:100%;transform:none;pointer-events:auto}
+.ev-yt{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--k) * 100%);margin-left:calc(var(--k) * -50%);pointer-events:none}   /* sin transform: en el iPhone un iframe con transform se ve borroso */
+.ev-simple .ev-yt{left:0;width:100%;margin-left:0;transform:none;pointer-events:auto}
 .ev-yt iframe,.ev-yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
 .ev-capa{position:absolute;inset:0;z-index:2;border:0;background:transparent;cursor:pointer;display:none}
 .ev-sonando .ev-capa{display:block}
@@ -1240,6 +1240,11 @@ body.sin-scroll{overflow:hidden}
 .llp-cerrar{margin-top:6px;border:0;background:transparent;color:#A9BEE8;font:600 16px var(--sans);text-decoration:underline;cursor:pointer;padding:10px}
 .ll-fin-wa{align-self:center;margin-top:10px}
 [data-accion="reiniciar-llamada"].seguro{color:#E8834F;font-weight:700}
+
+/* Mientras un video está en grande, los contenedores de arriba no pueden tener transform ni quedar abajo de otras cosas
+   (si no, en el iPhone el video y la cruz quedan corridos y se ven tildes de los pasos por encima) */
+.ev-sube{transform:none!important;animation:none!important;filter:none!important;z-index:400!important}
+body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{visibility:hidden}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -3327,14 +3332,14 @@ function montarVerticales() {
             m.classList.toggle('ev-fin', ev.data === S.ENDED);
             if (ev.data === S.PLAYING || ev.data === S.BUFFERING) sinSubtitulos(pl);
             clearTimeout(m._ver);
-            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 500);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
+            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 300);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
             else if (ev.data !== S.BUFFERING) m.classList.remove('ev-ver');
             if (ev.data === S.PLAYING) {
               m.classList.add('ev-arranco');
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
               evPlayers.forEach((o, el) => { if (el !== m && el.isConnected) try { o.pauseVideo(); } catch (_) {} });
               clearInterval(timer);
-              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
+              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
             } else clearInterval(timer);
             if (ev.data === S.ENDED) barra.style.width = '100%';
           },
@@ -3353,6 +3358,8 @@ function sinSubtitulos(pl) {
 function evGrande(emb, prender) {
   emb.classList.toggle('ev-grande', prender);
   document.body.classList.toggle('sin-scroll', prender);
+  document.body.classList.toggle('hay-grande', prender);
+  for (let e = emb.parentElement; e && e !== document.body; e = e.parentElement) e.classList.toggle('ev-sube', prender);
   if (prender) {
     const q = emb.querySelector('.emb-marco'), z = emb.currentCSSZoom || 1;
     const W = innerWidth / z, H = innerHeight / z, rec = parseFloat(emb.style.getPropertyValue('--rec')) || 0.5625;
