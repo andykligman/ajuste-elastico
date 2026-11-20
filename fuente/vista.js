@@ -593,9 +593,13 @@ function embedHTML(e) {
     // Los testimonios son verticales subidos a YouTube con bandas a los costados: muestro solo la franja del medio, sin los controles de YouTube
     const n = x => { const [a, b] = String(x).split('/').map(Number); return b ? a / b : a; };
     const rec = n(e.recorte), fte = n(e.fuente || '16/9');
-    return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
+    // tapa con la miniatura del video (la de YouTube es 4:3: si el video es 16:9, viene con franjas negras arriba y abajo)
+    const poster = `url(https://i.ytimg.com/vi/${esc(e.id)}/hqdefault.jpg)`, alto = (100 * Math.max(1, fte / (4 / 3))).toFixed(1) + '%';
+    return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)};--poster:${poster};--poster-alto:${alto}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
       <button class="ev-capa" data-ev-capa aria-label="Pausar"></button>
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
+      <button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button>
+      <button class="ev-achicar" data-ev-grande aria-label="Achicar">✕</button>
       <div class="ev-barra" data-ev-barra><i></i></div></div></div>`;
   }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
@@ -619,12 +623,16 @@ function montarVerticales() {
         videoId: id, host: 'https://www.youtube-nocookie.com',
         playerVars: { controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, cc_load_policy: 0 },
         events: {
-          onReady: () => m.classList.add('ev-listo'),
+          onReady: () => { m.classList.add('ev-listo'); sinSubtitulos(pl); },
           onStateChange: ev => {
             const S = YT.PlayerState;
             m.classList.toggle('ev-sonando', ev.data === S.PLAYING || ev.data === S.BUFFERING);
             m.classList.toggle('ev-pausa', ev.data === S.PAUSED);
             m.classList.toggle('ev-fin', ev.data === S.ENDED);
+            if (ev.data === S.PLAYING || ev.data === S.BUFFERING) sinSubtitulos(pl);
+            clearTimeout(m._ver);
+            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 500);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
+            else if (ev.data !== S.BUFFERING) m.classList.remove('ev-ver');
             if (ev.data === S.PLAYING) {
               m.classList.add('ev-arranco');
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
@@ -641,7 +649,30 @@ function montarVerticales() {
   });
   evPlayers.forEach((_, el) => { if (!el.isConnected) evPlayers.delete(el); });
 }
+// YouTube a veces prende los subtítulos automáticos aunque se le pida que no: los apago a mano
+function sinSubtitulos(pl) {
+  try { pl.unloadModule('captions'); pl.unloadModule('cc'); pl.setOption('captions', 'track', {}); } catch (_) {}
+}
+// "Ver en grande": el video ocupa toda la pantalla, recortado igual (sin mover el iframe, que si no se recarga)
+function evGrande(emb, prender) {
+  emb.classList.toggle('ev-grande', prender);
+  document.body.classList.toggle('sin-scroll', prender);
+  if (prender) {
+    const q = emb.querySelector('.emb-marco'), z = emb.currentCSSZoom || 1;
+    const W = innerWidth / z, H = innerHeight / z, rec = parseFloat(emb.style.getPropertyValue('--rec')) || 0.5625;
+    const w = Math.min(W - 16 / z, (H - 16 / z) * rec);
+    q.style.width = w.toFixed(1) + 'px';
+    if (emb.requestFullscreen && !document.fullscreenElement) emb.requestFullscreen().catch(() => {});
+  } else {
+    emb.querySelector('.emb-marco').style.width = '';
+    if (document.fullscreenElement === emb) document.exitFullscreen().catch(() => {});
+  }
+}
+window.addEventListener('resize', () => { const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, true); });
+document.addEventListener('fullscreenchange', () => { const g = document.querySelector('.emb.ev-grande'); if (g && !document.fullscreenElement) evGrande(g, false); });
+document.addEventListener('keydown', ev => { const g = document.querySelector('.emb.ev-grande'); if (g && ev.key === 'Escape') evGrande(g, false); });
 function evAccion(b, d) {
+  if (d.evGrande !== undefined) { const emb = b.closest('.emb'); evGrande(emb, !emb.classList.contains('ev-grande')); return; }
   const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
   try {
     if (d.evCapa !== undefined) pl.pauseVideo();
@@ -872,7 +903,7 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Buenísimo!</b><span>Ya estás listo para aprovechar tu llamada al 100%. ¡Nos vemos ahí!</span></div>` : '') : selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Buenísimo!</b><span>Ya estás listo para tu llamada conmigo.</span><span>Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</span>${waLlamada('resp-wa ll-fin-wa')}</div>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
@@ -1219,11 +1250,11 @@ function irA(id, suave = true) {
   window.scrollTo({ top: Math.max(0, y), behavior: suave && !reduceMotion ? 'smooth' : 'auto' });
 }
 /* Link de la llamada: pantallas grandes, como la presentación */
-function pantallaLlamada(html, boton, alSalir) {
+function pantallaLlamada(html, boton, alSalir, botonSuave) {
   if ($('.ll-puente')) return;
   const d = document.createElement('div');
   d.className = 'll-puente'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
-  d.innerHTML = `<div class="llp-caja">${html}<button class="pl-entrenar llp-ir" data-llp-ir>${boton}</button></div>`;
+  d.innerHTML = `<div class="llp-caja">${html}<button class="${botonSuave ? 'llp-cerrar' : 'pl-entrenar llp-ir'}" data-llp-ir>${boton}</button></div>`;
   document.body.appendChild(d);
   document.body.classList.add('sin-scroll');
   d.querySelector('[data-llp-ir]').onclick = () => { d.classList.add('sale'); document.body.classList.remove('sin-scroll'); setTimeout(() => d.remove(), 350); alSalir && alSalir(); };
@@ -1241,12 +1272,15 @@ function puenteTestimonio() {
     <p class="llp-txt">Ahora te quiero mostrar a <b>Igna</b>. Tiene 64 años y llevaba décadas buscando cómo improvisar en jazz: probó métodos, libros, YouTube, profesores… y siempre terminaba saturado o frustrado.</p>
     <p class="llp-txt">Hoy toca con otros y tiene que <b>controlar el impulso</b>, porque se le ocurren un montón de recursos que antes no tenía.</p>`, 'Ver el testimonio de Igna →');
 }
+const WA_LLAMADA = 'Hola Andy! Ya vi todo lo de antes de la llamada. Te cuento qué me pareció: ';
+const waLlamada = cls => typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="${cls}" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(WA_LLAMADA)}" target="_blank" rel="noopener">${ICONO_WA}<span>Escribime por WhatsApp</span></a>` : '';
 function finLlamada() {
   pantallaLlamada(`<div class="ll-logo llp-logo">${LOGO}</div>
     <svg class="llp-vis chico" viewBox="0 0 360 110" aria-hidden="true">${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${30 + k * 26} H340"/>`).join('')}${papelitos()}</svg>
     <h2 class="llp-tit">¡Buenísimo!</h2>
-    <p class="llp-txt grande">Ya estás listo para aprovechar <b>tu llamada al 100%</b>.</p>
-    <p class="llp-txt grande">¡Nos vemos ahí!</p>`, 'Listo 👋');
+    <p class="llp-txt grande">Ya estás listo para <b>tu llamada conmigo</b>.</p>
+    <p class="llp-txt">Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</p>
+    ${waLlamada('pl-entrenar llp-ir llp-wa')}`, 'Listo 👋', null, true);
 }
 function abrirPaso(id) {
   const cambio = id !== abierto;
@@ -1269,7 +1303,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
-    if (d.evCapa !== undefined || d.evPlay !== undefined) { evAccion(b, d); return; }
+    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
@@ -1321,6 +1355,7 @@ function enlazarAlumno() {
     else if (d.accion === 'intro') mostrarIntro();
     else if (d.accion === 'presentacion') renderLlamada();
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
+    else if (d.accion === 'reiniciar-llamada') reiniciarLlamada(b);
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }

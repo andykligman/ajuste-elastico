@@ -113,6 +113,20 @@ function aviso(t, error) {
 }
 
 /* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
+// Link de la llamada: borra el avance guardado en este celu/compu y vuelve a la presentación (pide un segundo toque)
+function reiniciarLlamada(b) {
+  if (!b.classList.contains('seguro')) {
+    b.classList.add('seguro'); b.textContent = '¿Seguro?';
+    setTimeout(() => { if (b.isConnected) { b.classList.remove('seguro'); b.textContent = 'Reiniciar'; } }, 4000);
+    return;
+  }
+  const cod = codPrueba();
+  ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
+  try { localStorage.removeItem(clavePrueba()); } catch (e) {}
+  ST = Object.assign(alumnoVacio('Invitado', 2, hoyISO()), { codigo: cod, modulos: '0' });
+  abierto = null; document.querySelectorAll('.ll-puente').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
+  renderLlamada(); window.scrollTo(0, 0);
+}
 function reiniciarPrueba() {
   const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
@@ -133,7 +147,7 @@ function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="${esc(inicioMarca())}" aria-label="Ajuste Elástico, ir al inicio">${LOGO}</a>
     <div class="barra-der">
-      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
+      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button><button class="link" data-accion="reiniciar-llamada" title="Borrar el avance y empezar de cero, con la presentación">Reiniciar</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}

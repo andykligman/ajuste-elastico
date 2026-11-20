@@ -1140,3 +1140,30 @@ body.sin-scroll{overflow:hidden}
 .vg-num{fill:var(--tinta);font:700 16px var(--display);text-anchor:middle}
 .vg-grado{fill:var(--azul);opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.35s)}
 .vg-motivo{fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.6s)}
+
+/* Testimonios: tapa opaca con la miniatura mientras no suena (tapa el título, "Ver más tarde" y "Compartir" de YouTube) */
+.ev-play{background:var(--poster) center/auto var(--poster-alto) no-repeat,#0D1220}
+.ev-play::before{content:"";position:absolute;inset:0;background:rgba(9,13,24,.45);z-index:-1}
+.ev-play{isolation:isolate}
+.ev-arranco:not(.ev-sonando) .ev-play{background:var(--poster) center/auto var(--poster-alto) no-repeat,#0D1220}
+.ev-sonando .ev-play{display:flex;opacity:1;pointer-events:none;transition:opacity .35s ease}
+.ev-sonando .ev-play>*{visibility:hidden}
+.ev-sonando.ev-ver .ev-play{opacity:0}
+/* Ver en grande */
+.ev-agrandar{position:absolute;right:10px;bottom:14px;z-index:5;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
+.ev-agrandar svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ev-sonando .ev-agrandar span{display:none}
+.ev-achicar{display:none}
+.ev-simple .ev-agrandar{display:none}
+.emb.ev-grande{position:fixed;inset:0;z-index:300;background:#000;display:grid;place-items:center;margin:0;max-width:none;width:auto}
+.emb.ev-grande:fullscreen{width:100%;height:100%}
+.emb.ev-grande .emb-eti{display:none}
+.emb.ev-grande .emb-marco{border-radius:10px;border:0;box-shadow:none;max-width:none}
+.emb.ev-grande .ev-agrandar{display:none}
+.emb.ev-grande .ev-achicar{display:grid;place-items:center;position:fixed;top:max(12px,env(safe-area-inset-top));right:12px;z-index:6;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font:700 20px var(--sans);cursor:pointer}
+/* Final de la llamada: WhatsApp */
+.llp-wa{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.llp-wa svg{width:26px;height:26px}
+.llp-cerrar{margin-top:6px;border:0;background:transparent;color:#A9BEE8;font:600 16px var(--sans);text-decoration:underline;cursor:pointer;padding:10px}
+.ll-fin-wa{align-self:center;margin-top:10px}
+[data-accion="reiniciar-llamada"].seguro{color:#E8834F;font-weight:700}

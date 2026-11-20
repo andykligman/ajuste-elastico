@@ -1214,6 +1214,33 @@ body.sin-scroll{overflow:hidden}
 .vg-grado{fill:var(--azul);opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.35s)}
 .vg-motivo{fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.6s)}
 
+/* Testimonios: tapa opaca con la miniatura mientras no suena (tapa el título, "Ver más tarde" y "Compartir" de YouTube) */
+.ev-play{background:var(--poster) center/auto var(--poster-alto) no-repeat,#0D1220}
+.ev-play::before{content:"";position:absolute;inset:0;background:rgba(9,13,24,.45);z-index:-1}
+.ev-play{isolation:isolate}
+.ev-arranco:not(.ev-sonando) .ev-play{background:var(--poster) center/auto var(--poster-alto) no-repeat,#0D1220}
+.ev-sonando .ev-play{display:flex;opacity:1;pointer-events:none;transition:opacity .35s ease}
+.ev-sonando .ev-play>*{visibility:hidden}
+.ev-sonando.ev-ver .ev-play{opacity:0}
+/* Ver en grande */
+.ev-agrandar{position:absolute;right:10px;bottom:14px;z-index:5;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
+.ev-agrandar svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ev-sonando .ev-agrandar span{display:none}
+.ev-achicar{display:none}
+.ev-simple .ev-agrandar{display:none}
+.emb.ev-grande{position:fixed;inset:0;z-index:300;background:#000;display:grid;place-items:center;margin:0;max-width:none;width:auto}
+.emb.ev-grande:fullscreen{width:100%;height:100%}
+.emb.ev-grande .emb-eti{display:none}
+.emb.ev-grande .emb-marco{border-radius:10px;border:0;box-shadow:none;max-width:none}
+.emb.ev-grande .ev-agrandar{display:none}
+.emb.ev-grande .ev-achicar{display:grid;place-items:center;position:fixed;top:max(12px,env(safe-area-inset-top));right:12px;z-index:6;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:#fff;font:700 20px var(--sans);cursor:pointer}
+/* Final de la llamada: WhatsApp */
+.llp-wa{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+.llp-wa svg{width:26px;height:26px}
+.llp-cerrar{margin-top:6px;border:0;background:transparent;color:#A9BEE8;font:600 16px var(--sans);text-decoration:underline;cursor:pointer;padding:10px}
+.ll-fin-wa{align-self:center;margin-top:10px}
+[data-accion="reiniciar-llamada"].seguro{color:#E8834F;font-weight:700}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -1560,7 +1587,7 @@ const STOPS = {
     },
   },
   transcripcion: {
-    tipo: 'ola', titulo: 'Cómo armar el solo por partes', empiezaNo: true,
+    tipo: 'ola', titulo: 'Cómo armar el solo por partes', audio: 'audio/transcripcion/', audioNo: 'audio/transcripcion-no/', empiezaNo: true,
     sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
     unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
@@ -1568,13 +1595,13 @@ const STOPS = {
     tandas: [
       { sel: [-1, -1], pausa: true, grande: true, vis: 'partir', t: 'Cómo armar el solo **por partes**' },
       { sel: [0, 0], t: 'Frase A.' },
-      { sel: [1, 3], traba: 1, t: 'Frase B… y se complica.' },
+      { sel: [1, 3], traba: 1, t: 'Frase B… y se complicó.' },
       { sel: [1, 1], zoom: true, partir: 1, t: 'Partís la B en las partes que necesites: **B1**…' },
       { sel: [2, 2], zoom: true, t: '…B2…' },
       { sel: [3, 3], zoom: true, t: '…B3.' },
       { sel: [1, 2], zoom: true, t: 'B1 con B2…' },
       { sel: [2, 3], zoom: true, t: '…B2 con B3…' },
-      { sel: [1, 3], arregla: 1, t: '…y la B entera. Ya sale.' },
+      { sel: [1, 3], arregla: 1, t: '…y la B completa. Ya sale.' },
       { sel: [0, 3], t: 'A con B.' },
       { sel: [4, 4], t: 'C.' },
       { sel: [5, 5], t: 'D.' },
@@ -1588,20 +1615,27 @@ const STOPS = {
       { sel: [9, 9], t: 'H.' },
       { sel: [6, 9], t: 'De la E a la H.' },
       { sel: [0, 5], t: 'Un repaso de la A a la D.' },
-      { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'directo', t: 'Si en algún momento vuelve a aparecer una traba,\nen la B1 o donde sea, **vas directo ahí**.' },
+      { sel: [0, 9], t: 'Y el solo entero: **los 30 segundos**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'directo', t: 'Si en algún momento vuelve a aparecer una traba como en la B,\npartís ese fragmento en **los pedazos que necesites**.' },
+      { sel: [-1, -1], pausa: true, grande: true, t: 'O hasta podés pasar el dedo por la pantalla en la app\npara ir **nota x nota**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Así, **no podés fallar**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: 'Otra cosa que sirve mucho es\n**contar los pulsos con los dedos**…' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: '…para recordar las entradas\nde las frases más inesperadas.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: 'Ahora sí, no hay excusas. **¡A trabajar!**' },
     ],
     no: {
       tandas: [
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'cantar', t: 'Para transcribir, cantás el solo\nencima de la grabación, **frase por frase**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'cantar', t: 'Ya viste el método para transcribir eficientemente.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'partir', t: 'Ahora quiero hacer hincapié\nen **el reparto de los fragmentos**…' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'traba', t: '…porque esto suele ser una traba,\ny no quiero que te estanques.' },
         { sel: [-1, -1], pausa: true, grande: true, vis: 'no-transcribir', t: 'Cómo **no** armar el solo' },
-        { sel: [0, 0], t: 'Lo que hace casi todo el mundo: siempre desde el principio. La A.' },
+        { sel: [0, 0], t: 'Lo que harías normalmente es ir desde el principio.\nUn fragmento A, digamos.' },
         { sel: [0, 3], t: 'A y B.' },
         { sel: [0, 4], t: 'A, B y C.' },
         { sel: [0, 5], t: 'Hasta la D.' },
         { sel: [0, 7], t: 'Hasta la F.' },
-        { sel: [0, 9], t: 'Hasta la H.' },
-        { sel: [0, 9], pausa: true, malo: true, veces: true, t: '**La A la cantaste 6 veces y la H una sola.**\nY las partes difíciles nunca las trabajaste solas.' },
+        { sel: [0, 7], pausa: true, malo: true, veces: true, t: '**La A la cantaste 5 veces y la F una sola.**\nSe genera un obvio desbalance entre las partes.' },
+        { sel: [0, 7], pausa: true, malo: true, veces: true, t: 'Unas cuestan más que otras,\ny eso solo se perpetúa con el tiempo si acumulamos así los fragmentos.' },
       ],
     },
   },
@@ -2624,6 +2658,20 @@ function aviso(t, error) {
 }
 
 /* Vista de prueba del panel: un alumno nuevo de cero (aula virgen, con bienvenida y pantallas de módulo) */
+// Link de la llamada: borra el avance guardado en este celu/compu y vuelve a la presentación (pide un segundo toque)
+function reiniciarLlamada(b) {
+  if (!b.classList.contains('seguro')) {
+    b.classList.add('seguro'); b.textContent = '¿Seguro?';
+    setTimeout(() => { if (b.isConnected) { b.classList.remove('seguro'); b.textContent = 'Reiniciar'; } }, 4000);
+    return;
+  }
+  const cod = codPrueba();
+  ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
+  try { localStorage.removeItem(clavePrueba()); } catch (e) {}
+  ST = Object.assign(alumnoVacio('Invitado', 2, hoyISO()), { codigo: cod, modulos: '0' });
+  abierto = null; document.querySelectorAll('.ll-puente').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
+  renderLlamada(); window.scrollTo(0, 0);
+}
 function reiniciarPrueba() {
   const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
@@ -3226,9 +3274,13 @@ function embedHTML(e) {
     // Los testimonios son verticales subidos a YouTube con bandas a los costados: muestro solo la franja del medio, sin los controles de YouTube
     const n = x => { const [a, b] = String(x).split('/').map(Number); return b ? a / b : a; };
     const rec = n(e.recorte), fte = n(e.fuente || '16/9');
-    return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
+    // tapa con la miniatura del video (la de YouTube es 4:3: si el video es 16:9, viene con franjas negras arriba y abajo)
+    const poster = `url(https://i.ytimg.com/vi/${esc(e.id)}/hqdefault.jpg)`, alto = (100 * Math.max(1, fte / (4 / 3))).toFixed(1) + '%';
+    return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)};--poster:${poster};--poster-alto:${alto}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
       <button class="ev-capa" data-ev-capa aria-label="Pausar"></button>
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
+      <button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button>
+      <button class="ev-achicar" data-ev-grande aria-label="Achicar">✕</button>
       <div class="ev-barra" data-ev-barra><i></i></div></div></div>`;
   }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
@@ -3252,12 +3304,16 @@ function montarVerticales() {
         videoId: id, host: 'https://www.youtube-nocookie.com',
         playerVars: { controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, cc_load_policy: 0 },
         events: {
-          onReady: () => m.classList.add('ev-listo'),
+          onReady: () => { m.classList.add('ev-listo'); sinSubtitulos(pl); },
           onStateChange: ev => {
             const S = YT.PlayerState;
             m.classList.toggle('ev-sonando', ev.data === S.PLAYING || ev.data === S.BUFFERING);
             m.classList.toggle('ev-pausa', ev.data === S.PAUSED);
             m.classList.toggle('ev-fin', ev.data === S.ENDED);
+            if (ev.data === S.PLAYING || ev.data === S.BUFFERING) sinSubtitulos(pl);
+            clearTimeout(m._ver);
+            if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 500);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
+            else if (ev.data !== S.BUFFERING) m.classList.remove('ev-ver');
             if (ev.data === S.PLAYING) {
               m.classList.add('ev-arranco');
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
@@ -3274,7 +3330,30 @@ function montarVerticales() {
   });
   evPlayers.forEach((_, el) => { if (!el.isConnected) evPlayers.delete(el); });
 }
+// YouTube a veces prende los subtítulos automáticos aunque se le pida que no: los apago a mano
+function sinSubtitulos(pl) {
+  try { pl.unloadModule('captions'); pl.unloadModule('cc'); pl.setOption('captions', 'track', {}); } catch (_) {}
+}
+// "Ver en grande": el video ocupa toda la pantalla, recortado igual (sin mover el iframe, que si no se recarga)
+function evGrande(emb, prender) {
+  emb.classList.toggle('ev-grande', prender);
+  document.body.classList.toggle('sin-scroll', prender);
+  if (prender) {
+    const q = emb.querySelector('.emb-marco'), z = emb.currentCSSZoom || 1;
+    const W = innerWidth / z, H = innerHeight / z, rec = parseFloat(emb.style.getPropertyValue('--rec')) || 0.5625;
+    const w = Math.min(W - 16 / z, (H - 16 / z) * rec);
+    q.style.width = w.toFixed(1) + 'px';
+    if (emb.requestFullscreen && !document.fullscreenElement) emb.requestFullscreen().catch(() => {});
+  } else {
+    emb.querySelector('.emb-marco').style.width = '';
+    if (document.fullscreenElement === emb) document.exitFullscreen().catch(() => {});
+  }
+}
+window.addEventListener('resize', () => { const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, true); });
+document.addEventListener('fullscreenchange', () => { const g = document.querySelector('.emb.ev-grande'); if (g && !document.fullscreenElement) evGrande(g, false); });
+document.addEventListener('keydown', ev => { const g = document.querySelector('.emb.ev-grande'); if (g && ev.key === 'Escape') evGrande(g, false); });
 function evAccion(b, d) {
+  if (d.evGrande !== undefined) { const emb = b.closest('.emb'); evGrande(emb, !emb.classList.contains('ev-grande')); return; }
   const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
   try {
     if (d.evCapa !== undefined) pl.pauseVideo();
@@ -3505,7 +3584,7 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Buenísimo!</b><span>Ya estás listo para aprovechar tu llamada al 100%. ¡Nos vemos ahí!</span></div>` : '') : selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Buenísimo!</b><span>Ya estás listo para tu llamada conmigo.</span><span>Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</span>${waLlamada('resp-wa ll-fin-wa')}</div>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
@@ -3852,11 +3931,11 @@ function irA(id, suave = true) {
   window.scrollTo({ top: Math.max(0, y), behavior: suave && !reduceMotion ? 'smooth' : 'auto' });
 }
 /* Link de la llamada: pantallas grandes, como la presentación */
-function pantallaLlamada(html, boton, alSalir) {
+function pantallaLlamada(html, boton, alSalir, botonSuave) {
   if ($('.ll-puente')) return;
   const d = document.createElement('div');
   d.className = 'll-puente'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
-  d.innerHTML = `<div class="llp-caja">${html}<button class="pl-entrenar llp-ir" data-llp-ir>${boton}</button></div>`;
+  d.innerHTML = `<div class="llp-caja">${html}<button class="${botonSuave ? 'llp-cerrar' : 'pl-entrenar llp-ir'}" data-llp-ir>${boton}</button></div>`;
   document.body.appendChild(d);
   document.body.classList.add('sin-scroll');
   d.querySelector('[data-llp-ir]').onclick = () => { d.classList.add('sale'); document.body.classList.remove('sin-scroll'); setTimeout(() => d.remove(), 350); alSalir && alSalir(); };
@@ -3874,12 +3953,15 @@ function puenteTestimonio() {
     <p class="llp-txt">Ahora te quiero mostrar a <b>Igna</b>. Tiene 64 años y llevaba décadas buscando cómo improvisar en jazz: probó métodos, libros, YouTube, profesores… y siempre terminaba saturado o frustrado.</p>
     <p class="llp-txt">Hoy toca con otros y tiene que <b>controlar el impulso</b>, porque se le ocurren un montón de recursos que antes no tenía.</p>`, 'Ver el testimonio de Igna →');
 }
+const WA_LLAMADA = 'Hola Andy! Ya vi todo lo de antes de la llamada. Te cuento qué me pareció: ';
+const waLlamada = cls => typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="${cls}" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(WA_LLAMADA)}" target="_blank" rel="noopener">${ICONO_WA}<span>Escribime por WhatsApp</span></a>` : '';
 function finLlamada() {
   pantallaLlamada(`<div class="ll-logo llp-logo">${LOGO}</div>
     <svg class="llp-vis chico" viewBox="0 0 360 110" aria-hidden="true">${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${30 + k * 26} H340"/>`).join('')}${papelitos()}</svg>
     <h2 class="llp-tit">¡Buenísimo!</h2>
-    <p class="llp-txt grande">Ya estás listo para aprovechar <b>tu llamada al 100%</b>.</p>
-    <p class="llp-txt grande">¡Nos vemos ahí!</p>`, 'Listo 👋');
+    <p class="llp-txt grande">Ya estás listo para <b>tu llamada conmigo</b>.</p>
+    <p class="llp-txt">Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</p>
+    ${waLlamada('pl-entrenar llp-ir llp-wa')}`, 'Listo 👋', null, true);
 }
 function abrirPaso(id) {
   const cambio = id !== abierto;
@@ -3902,7 +3984,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
-    if (d.evCapa !== undefined || d.evPlay !== undefined) { evAccion(b, d); return; }
+    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
@@ -3954,6 +4036,7 @@ function enlazarAlumno() {
     else if (d.accion === 'intro') mostrarIntro();
     else if (d.accion === 'presentacion') renderLlamada();
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
+    else if (d.accion === 'reiniciar-llamada') reiniciarLlamada(b);
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
     else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
@@ -4251,7 +4334,7 @@ function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="${esc(inicioMarca())}" aria-label="Ajuste Elástico, ir al inicio">${LOGO}</a>
     <div class="barra-der">
-      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
+      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button><button class="link" data-accion="reiniciar-llamada" title="Borrar el avance y empezar de cero, con la presentación">Reiniciar</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
