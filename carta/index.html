@@ -240,6 +240,41 @@ b,strong{font-weight:700}
 .trio{display:flex;align-items:center;gap:34px;margin-top:40px;font-family:var(--tit);font-weight:400;font-size:40px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .trio i{width:12px;height:12px;border-radius:50%;background:var(--naranja)}
 .ilu svg{display:block;width:110px;height:110px;margin-left:10px;fill:none;stroke:var(--naranja);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.solo-tarde{opacity:0;transform:translateY(24px);transition:opacity .9s var(--suave-in),transform .9s var(--suave-in)}
+.d.activa .solo-tarde{opacity:1;transform:none;transition-delay:4.5s}
+/* ciclo: se vuelve fácil, reajustamos, de nuevo al punto medio */
+.ciclo{position:relative;width:1500px;margin:70px auto 0;height:250px}
+.ciclo .pista{top:110px}
+.ciclo .zona{top:86px}
+.ciclo.ok .zona{border-color:var(--verde);box-shadow:0 0 60px rgba(91,212,154,.45),inset 0 0 40px rgba(91,212,154,.18)}
+.ciclo .marcador{transition:none;top:56px}
+.ciclo .etq{top:186px}
+.ciclo.facil .etq.izq{color:var(--ink)}.ciclo.ok .etq.med{color:var(--verde)}
+.ciclo.ok .marcador i{background:var(--verde)}
+.ajuste{position:absolute;left:50%;top:-6px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;font-family:var(--tit);font-weight:600;font-size:26px;color:var(--naranja);opacity:0;transition:opacity .3s}
+.ajuste.ver{opacity:1}
+.ajuste svg{width:34px;height:34px;fill:none;stroke:var(--naranja);stroke-width:2.4;stroke-linecap:round}
+.niveles{position:relative;display:flex;align-items:flex-end;justify-content:center;gap:0;height:130px;margin:20px auto 0;width:420px}
+.niveles i{width:0;margin:0;border-radius:8px 8px 3px 3px;background:var(--naranja);opacity:0;transform:scaleY(.2);transform-origin:bottom;transition:opacity .5s,transform .7s var(--resorte),width .5s,margin .5s}
+.niveles i.ver{opacity:1;transform:none;width:50px;margin:0 8px}
+.niveles span{position:absolute;right:-150px;bottom:0;font-family:var(--tit);font-weight:600;font-size:28px;color:var(--suave);white-space:nowrap}
+.frases-ciclo{position:relative;height:150px;margin-top:40px}
+.frases-ciclo p{position:absolute;left:0;right:0;margin:0;text-align:center}
+/* módulos: panel con lo que suelo contar */
+.pilar{cursor:pointer}
+.pilar .mas{position:absolute;top:22px;right:22px;width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.25);display:grid;place-items:center;font:600 26px var(--tit);color:var(--suave);line-height:1}
+#panel-mod{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(10,14,26,.72);opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+#panel-mod.ver{opacity:1;visibility:visible;transition:opacity .4s}
+.pm-caja{position:relative;width:1240px;max-height:900px;padding:64px 76px;border-radius:34px;background:var(--bg2);border:2px solid rgba(255,255,255,.08);box-shadow:0 60px 120px rgba(0,0,0,.5);transform:scale(.94);transition:transform .5s var(--resorte)}
+#panel-mod.ver .pm-caja{transform:none}
+.pm-caja .mod{font-family:var(--tit);font-weight:700;font-size:24px;letter-spacing:.14em;text-transform:uppercase;color:var(--suave)}
+.pm-caja h3{font-size:64px;text-transform:uppercase;color:var(--naranja);margin:10px 0 36px}
+.pm-caja ul{margin:0;padding:0;list-style:none;display:grid;gap:22px}
+.pm-caja li{position:relative;display:block;padding-left:40px;font-size:38px;line-height:1.3;opacity:0;transform:translateX(-16px);transition:all .5s var(--suave-in)}
+#panel-mod.ver li{opacity:1;transform:none}
+.pm-caja li::before{content:"";position:absolute;left:0;top:.48em;width:16px;height:16px;border-radius:50%;background:var(--naranja)}
+.pm-caja li b{color:var(--ink)}
+.pm-cerrar{position:absolute;top:26px;right:30px;width:56px;height:56px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font:600 26px var(--tit);cursor:pointer}
 /* ---------- Controles ---------- */
 #progreso{position:fixed;left:0;bottom:0;height:5px;background:var(--naranja);transition:width .5s var(--suave-in);z-index:5}
 #ctrl{position:fixed;right:22px;bottom:20px;display:flex;align-items:center;gap:10px;z-index:6;opacity:0;transition:opacity .4s}
@@ -328,7 +363,26 @@ body.pausa #marca-pausa{opacity:1}
   <div class="centro" style="height:auto">
     <p class="grande en" style="margin:0;font-size:56px">Practicás con información que <span class="nar">ya entendés</span>,<br>pero potenciándola: la <span class="nar" style="white-space:nowrap">conectás de nuevas maneras</span><br>en cada paso que das.</p>
     <div class="red en r1"><svg viewBox="0 0 1500 520" id="red"></svg></div>
-    <p class="medio" data-paso="1" style="margin:0">Desarrollando tus capacidades como improvisador.</p>
+    <p class="medio solo-tarde" style="margin:0">Desarrollando tus capacidades como improvisador.</p>
+  </div>
+</section>
+
+<!-- 6b. El ciclo -->
+<section class="d vc" data-ciclo>
+  <h2 class="tit en" style="text-align:center">Con el método correcto…</h2>
+  <div class="ciclo en r1">
+    <div class="ajuste"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2.2"/><circle cx="10" cy="17" r="2.2"/></svg>reajustamos</div>
+    <div class="pista"></div><div class="zona"></div>
+    <div class="marcador"><i></i></div>
+    <div class="etq izq">Fácil</div><div class="etq med">Punto medio</div><div class="etq der">Difícil</div>
+  </div>
+  <div class="niveles" id="niveles"><i></i><i></i><i></i><i></i><i></i><i></i><span>↑ tu nivel</span></div>
+  <div class="frases-ciclo">
+    <p class="medio" data-paso="0" data-solo="0">…y la dificultad en el <span style="color:var(--verde)">punto justo</span>.</p>
+    <p class="medio" data-paso="1" data-solo="1">Con mucho menos práctica, tiempo y energía,<br>esto <span class="nar">se vuelve fácil</span>.</p>
+    <p class="medio" data-paso="2" data-solo="2">Ahí hay que identificarlo y entender qué parámetros<br><span class="nar">reajustar</span> para volver al punto medio.</p>
+    <p class="medio" data-paso="3" data-solo="3">Y de nuevo se vuelve fácil. Y de nuevo, al punto medio.</p>
+    <p class="medio" data-paso="4">Eso genera un aprendizaje <span class="nar">más profundo, más seguro y más veloz</span>.</p>
   </div>
 </section>
 
@@ -344,29 +398,30 @@ body.pausa #marca-pausa{opacity:1}
   <h2 class="tit en" style="text-align:center"><span class="nar">¿Cómo</span> vamos a lograrlo?</h2>
   <p class="medio en r1" style="text-align:center;margin:26px 0 0;color:var(--suave)">El programa tiene <span class="nar">4 módulos</span>.</p>
   <div class="pilares">
-    <div class="pilar en r1"><div class="mod">Módulo 1</div>
+    <div class="pilar en r1"><div class="mod">Módulo 1</div><span class="mas">+</span>
       <svg viewBox="0 0 300 170" id="arp"><path id="arp-linea" d="M30 140 L90 100 L150 120 L210 60 L270 30" fill="none" stroke="#E8834F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
         <g id="arp-notas"><circle cx="30" cy="140" r="14"/><circle cx="90" cy="100" r="14"/><circle cx="150" cy="120" r="14"/><circle cx="210" cy="60" r="14"/><circle cx="270" cy="30" r="14"/></g></svg>
       <h3>Dominio de los arpegios</h3>
       <p><b>Conectar</b> la armonía en <b>tiempo real</b>, practicando <b>enlaces de arpegios en vivo</b>. Anticiparse a lo que viene para desarrollar <b>control y libertad</b> en cualquier <b>secuencia armónica</b>.</p>
     </div>
-    <div class="pilar en r2"><div class="mod">Módulo 2</div>
+    <div class="pilar en r2"><div class="mod">Módulo 2</div><span class="mas">+</span>
       <svg viewBox="0 0 300 170" id="adn"></svg>
       <h3>ADN del Jazz</h3>
       <p>Vamos a <b>Reconocer</b>, <b>Mecanizar</b> e <b>Integrar</b> los recursos fundamentales del <b>lenguaje del jazz</b> a tu música. <b>Transcribir</b> solos con una <b>profundidad distinta</b>, para <b>aprovecharlos</b> mucho, muuucho más que antes.</p>
     </div>
-    <div class="pilar en r3"><div class="mod">Módulo 3</div>
+    <div class="pilar en r3"><div class="mod">Módulo 3</div><span class="mas">+</span>
       <svg viewBox="0 0 300 170" id="ritmo"></svg>
       <h3>Laboratorio rítmico</h3>
       <p>Para que ganes <b>control y expresividad</b> al improvisar. <b>Conciencia rítmica</b> para saber de dónde venimos y hacia dónde vamos. Más <b>libertad</b> y <b>capacidad creativa</b> en lo rítmico.</p>
     </div>
-    <div class="pilar en r4"><div class="mod">Módulo 4</div>
+    <div class="pilar en r4"><div class="mod">Módulo 4</div><span class="mas">+</span>
       <svg viewBox="0 0 300 170"><path class="curva" d="M20 150 C 90 150, 110 40, 160 40 S 230 120, 280 20" fill="none" stroke="#E8834F" stroke-width="8" stroke-linecap="round"/><circle class="punta" r="13" fill="#F2F3F6"/></svg>
       <h3>Curva del solo</h3>
       <p>Darle <b>forma y dirección</b> a tus improvisaciones. Contar una idea musical, <b>sostenerla y transformarla</b> sin perder el hilo, para que tus solos <b>conecten</b> con vos y con quien escucha.</p>
     </div>
   </div>
   <i data-paso="4" hidden></i>
+  <div id="panel-mod"><div class="pm-caja"><button class="pm-cerrar" aria-label="Cerrar">✕</button><div class="mod"></div><h3></h3><ul></ul></div></div>
 </section>
 
 <!-- 9. Qué incluye -->
@@ -544,7 +599,7 @@ body.pausa #marca-pausa{opacity:1}
 
 <script>
 const D = [...document.querySelectorAll('.d')], esc = document.getElementById('escena');
-let i = 0, paso = 0, ultima = -1, tEntrada = 0, reloj = 0, pausado = false, antes = performance.now();
+let i = 0, paso = 0, pasoAnt = -1, tPaso = 0, ciclos = 0, ultima = -1, tEntrada = 0, reloj = 0, pausado = false, antes = performance.now();
 const pasosDe = d => Math.max(0, ...[...d.querySelectorAll('[data-paso]')].map(x => +x.dataset.paso));
 
 function ajustar() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); esc.style.transform = `translate(-50%, -50%) scale(${k})`; }
@@ -562,6 +617,7 @@ function pintar() {
   if (f) { f.classList.toggle('caos', paso === 0); f.classList.toggle('foco', paso >= 1); }
   // al entrar a una diapositiva: videos desde el principio (una sola vez, quedan en el último cuadro), red y chat de cero
   const nueva = i !== ultima; ultima = i;
+  if (nueva || paso !== pasoAnt) { tPaso = reloj; if (nueva) ciclos = 0; } pasoAnt = paso;
   D.forEach((x, n) => x.querySelectorAll('video').forEach(v => { if (n === i) { if (nueva) { v.currentTime = 0; v.play().catch(() => {}); } } else v.pause(); }));
   if (nueva) { pausar(false); tEntrada = reloj; if (d.hasAttribute('data-chat')) chat(); }
   // los 4 módulos: zoom en uno por vez
@@ -578,11 +634,12 @@ function pintar() {
   document.getElementById('num').textContent = `${i + 1} / ${D.length}`;
   history.replaceState(null, '', '#' + (i + 1));
 }
-function ir(n, p = 0) { n = Math.max(0, Math.min(D.length - 1, n)); if (n !== i) { i = n; paso = p === 'fin' ? pasosDe(D[n]) : p; } pintar(); }
+function ir(n, p = 0) { cerrarPanel(); n = Math.max(0, Math.min(D.length - 1, n)); if (n !== i) { i = n; paso = p === 'fin' ? pasosDe(D[n]) : p; } pintar(); }
 function sig() { if (paso < pasosDe(D[i])) { paso++; pintar(); } else if (i < D.length - 1) ir(i + 1); }
 function ant() { if (paso > 0) { paso--; pintar(); } else if (i > 0) ir(i - 1, 'fin'); }
 
 addEventListener('keydown', e => {
+  if (panel.classList.contains('ver')) { if (['Escape', 'ArrowRight', 'ArrowLeft', 'Enter', 'Backspace'].includes(e.key)) { e.preventDefault(); cerrarPanel(); } return; }
   if (e.key === ' ') { e.preventDefault(); pausar(); }
   else if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); sig(); }
   else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); ant(); }
@@ -653,6 +710,41 @@ function chatAvanzar() {
     while (box.children.length > 7) box.firstChild.remove();
   }
 }
+/* el ciclo: fácil → reajuste → punto medio, una y otra vez */
+const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+const resorte = u => 1 - Math.exp(-6 * u) * Math.cos(9 * u);
+function cicloCuadro(d) {
+  const c = d.querySelector('.ciclo'), m = c.querySelector('.marcador'), aj = c.querySelector('.ajuste'), te = reloj - tPaso;
+  const CENTRO = .5, FACIL = .13; let pos = CENTRO, ajustando = false;
+  if (paso === 1) pos = CENTRO + (FACIL - CENTRO) * ease(Math.min(1, te / 2.6));
+  else if (paso === 2) { const u = Math.min(1, te / 1.3); pos = FACIL + (CENTRO - FACIL) * resorte(u); ajustando = te < 1.6; }
+  else if (paso >= 3) {
+    const P = 5, k = Math.floor(te / P), u = te % P;
+    if (u < 2.8) pos = CENTRO + (FACIL - CENTRO) * ease(u / 2.8);
+    else if (u < 3.3) pos = FACIL;
+    else { pos = FACIL + (CENTRO - FACIL) * resorte(Math.min(1, (u - 3.3) / 1.2)); ajustando = u < 4.4; }
+    const n = Math.min(6, 2 + k + (u > 3.6 ? 1 : 0)); document.querySelectorAll('#niveles i').forEach((x, j) => x.classList.toggle('ver', j < n));
+  }
+  if (paso < 3) { const n = paso >= 2 && (reloj - tPaso) > 1 ? 2 : 1; document.querySelectorAll('#niveles i').forEach((x, j) => { x.classList.toggle('ver', j < n); }); }
+  document.querySelectorAll('#niveles i').forEach((x, j) => x.style.height = (34 + j * 15) + 'px');
+  m.style.left = (pos * 100) + '%'; aj.classList.toggle('ver', ajustando);
+  c.classList.toggle('ok', Math.abs(pos - CENTRO) < .09); c.classList.toggle('facil', pos < .3);
+}
+/* módulos: al tocar uno se abre un panel con lo que suelo contar */
+const PANEL = [
+  ['Módulo 1', 'Dominio de los arpegios', ['Enlaces de arpegios: primero con <b>dirección y ritmo fijos</b>, después liberamos de a una cosa', '<b>Dirección melódica libre</b> y <b>ritmo libre</b> sobre el standard que elegís', '<b>Anticipaciones</b>: llegar antes al acorde que viene', '<b>Superposiciones</b>: otros arpegios sobre el mismo acorde, para más colores']],
+  ['Módulo 2', 'ADN del Jazz', ['Cómo <b>transcribir eficientemente</b>: cantar el solo y armarlo por partes', 'Elementos del lenguaje, como los <b>cromáticos</b>: mecanizarlos e integrarlos', '<b>Combinación de elementos</b>: elegir un fragmento, decodificarlo y hacerlo tuyo', 'Pasar del oído a la guitarra y de la guitarra a tu improvisación']],
+  ['Módulo 3', 'Laboratorio rítmico', ['El ritmo <b>al cuerpo</b> antes que al instrumento', 'Cómo <b>destrabar cualquier ritmo</b>', '<b>Tiempos y contratiempos</b> en la improvisación', '<b>Unidades rítmicas</b> y variabilidad: más libertad y más ideas']],
+  ['Módulo 4', 'Curva del solo', ['Darle <b>forma y dirección</b> a tu solo', 'Contar una idea musical, <b>sostenerla y transformarla</b>', 'Que tus solos <b>conecten</b> con vos y con quien escucha']]];
+const panel = document.getElementById('panel-mod');
+function abrirPanel(k) {
+  const [mod, tit, items] = PANEL[k]; panel.querySelector('.mod').textContent = mod; panel.querySelector('h3').textContent = tit;
+  panel.querySelector('ul').innerHTML = items.map((x, j) => `<li style="transition-delay:${.15 + j * .12}s">${x}</li>`).join('');
+  panel.classList.remove('ver'); void panel.offsetWidth; panel.classList.add('ver');
+}
+const cerrarPanel = () => panel.classList.remove('ver');
+document.querySelectorAll('.pilar').forEach((c, k) => c.addEventListener('click', e => { e.stopPropagation(); abrirPanel(k); }));
+panel.addEventListener('click', e => { e.stopPropagation(); if (!e.target.closest('.pm-caja') || e.target.closest('.pm-cerrar')) cerrarPanel(); });
 /* pausa: congela animaciones, videos y el chat; se puede seguir pasando de diapositiva */
 function pausar(v = !pausado) {
   pausado = v; document.body.classList.toggle('pausa', v);
@@ -676,6 +768,7 @@ function cuadro(ahora) {
   reloj += dt;
   const t = reloj, now = reloj * 1000, d = D[i];
   if (d.hasAttribute('data-chat')) chatAvanzar();
+  if (d.hasAttribute('data-ciclo')) cicloCuadro(d);
   const pz = d.querySelector('.pilares.zoom'), quieto = el => pz && !el.closest('.pilar').classList.contains('foco');
   if (d.contains(cu)) lineas.forEach((l, k) => {
     const y = 90 + k * 88, ciclo = (t + k * .37) % 3.2, amp = 46 * Math.exp(-ciclo * 1.6) * (k === 2 ? 1.3 : .8), fr = 2.2 + k * .25;
