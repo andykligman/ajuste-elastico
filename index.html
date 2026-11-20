@@ -1640,11 +1640,12 @@ const STOPS = {
     },
   },
   fragmento: {
-    tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo',
+    tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo', audio: 'audio/fragmento/',
     sub: 'De la forma del tema a los compases, de los compases a los acordes, y de los acordes a la escala madre.',
     unidades: ['1', '2', '3', '4', '5', '6', '7', '8'],
     acordes: ['Bbmaj7', 'G7', 'C-7', 'F7', 'D-7', 'G7', 'C-7', 'F7'],
     tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'forma', t: 'Cómo ubicar tu fragmento en el solo' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'escuchar', t: 'Primero escuchá el tema de cero\ny asegurate de saber bien **en qué momento empieza la forma**.' },
       { sel: [-1, -1], pausa: true, grande: true, t: 'Si no tenés la armonía,\nbuscá el standard en **iReal** o su partitura.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'forma', t: 'Escuchá la melodía hasta que termine\ny fijate en qué momento empiezan **los compases de la forma para el solo**.' },
@@ -1654,6 +1655,7 @@ const STOPS = {
       { sel: [2, 3], zoom: true, t: 'Entonces suena sobre **C-7** y **F7**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'escala', t: 'C-7 y F7 son el **II y el V de Bb mayor**:\nesa es la **escala madre** donde pensás la frase.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'grados', t: 'Con la escala madre clara,\nla frase se puede mover por **todos los grados** de esa escala.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Y así realizar la **mecanización e integración** correspondiente.' },
     ],
   },
 };
@@ -2949,7 +2951,7 @@ function stopInner(id) {
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.15; stopAudio.preservesPitch = true;
-const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=23` : ''; };
+const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=24` : ''; };
 // En el celu, cambiar el src a un audio que todavía está bajando hace que Safari se trabe ("trrr") entre frases cortas:
 // apenas se toca Reproducir, bajo todos los audios del stop a memoria y los reproduzco desde ahí
 const audioMem = new Map();
