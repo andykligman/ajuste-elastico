@@ -318,8 +318,8 @@ const PROGRAMA = {
     },
     {
       id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
-      titulo: 'Testimonio de Iña',
-      embed: { tipo: 'ig', id: 'DYS9tBKtOY2' },
+      titulo: 'Testimonio de Igna',
+      embed: { tipo: 'yt', id: '3pFH0fIg5PI' },
       pregunta: '¿Seguimos?',
       progreso: [
         { id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' },

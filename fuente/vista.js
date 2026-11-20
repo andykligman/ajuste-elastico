@@ -246,7 +246,7 @@ function stopInner(id) {
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
-    <span class="stop-logo" aria-hidden="true">${LOGO}</span>
+    ${(S.contar || tanda.veces) && !tanda.grande ? '' : `<span class="stop-logo" aria-hidden="true">${LOGO}</span>`}
     ${!e.visto ? `<button class="stop-play-grande" data-stop-acc="play" data-stop-id="${id}" aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="spg-txt">Reproducir</span></button>` : ''}
     </div>
     ${e.visto ? `<div class="stop-ctrl">
@@ -356,10 +356,11 @@ function stopOla(S, enSel, est, partido) {
   return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="El solo como una onda, dividido en frases">${fondos}${barras}${marcas}</svg>`;
 }
 function stopCuerdas(S, enSel, est) {
-  const n = S.unidades.length, W = 640, gap = 30, y0 = 22, H = y0 * 2 + gap * (n - 1);
-  const grosor = [1.4, 1.9, 2.5, 3.1, 3.7, 4.3];
+  // En el celu el dibujo es más angosto (y por eso se ve más grande en pantalla)
+  const cel = innerWidth < 700, W = cel ? 360 : 640, n = S.unidades.length, gap = 30, y0 = 22, H = y0 * 2 + gap * (n - 1);
+  const grosor = [1.4, 1.9, 2.5, 3.1, 3.7, 4.3], paso = (W - 84) / 5.5;
   let t = '';
-  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * 95}" y1="${y0 - 10}" x2="${70 + f * 95}" y2="${H - y0 + 10}"/>`;
+  for (let f = 1; f < 6; f++) t += `<line class="trastes" x1="${70 + f * paso}" y1="${y0 - 10}" x2="${70 + f * paso}" y2="${H - y0 + 10}"/>`;
   t += `<rect class="cejilla" x="64" y="${y0 - 12}" width="6" height="${H - 2 * y0 + 24}" rx="2"/>`;
   for (let k = 0; k < n; k++) {
     const y = y0 + k * gap, on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
@@ -960,7 +961,7 @@ window.addEventListener('resize', () => requestAnimationFrame(dibujarCamino));
 /* ---------- El reproductor (uno solo, al costado) ---------- */
 let player = null, playerVid = null, ytCargando = false, simple = false;
 function panelVideoHTML() {
-  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span><button class="pv-cerrar" data-pv-cerrar>Cerrar video</button></p></aside>`;
+  return `<aside class="panel-video" id="panel-video" aria-label="Video"><div class="pv-marco"><div id="yt"></div></div><p class="pv-titulo"><span id="pv-titulo"></span><span class="pv-aviso" id="pv-aviso" aria-live="polite"></span></p></aside>`;
 }
 /* En el celu el video ocupa media pantalla: se muestra si el video del paso no se vio,
    o cuando el alumno toca un botón de video; se cierra con la ✕, al terminar o al cambiar de paso */
@@ -969,7 +970,17 @@ const vistos = new Set(String(leerLS('ae-vistos', '')).split(',').filter(Boolean
 function marcarVisto(id) { if (id && !vistos.has(id)) { vistos.add(id); guardarLS('ae-vistos', [...vistos].join(',')); } }
 const panelCerrado = () => { const l = $('.layout'); return !l || l.classList.contains('pv-cerrado'); };
 function abrirPanel() { const l = $('.layout'); if (l) l.classList.remove('pv-cerrado'); }
+function seekReset() {
+  document.querySelectorAll('[data-seek].seek-activo').forEach(b => { b.classList.remove('seek-activo'); if (b.dataset.orig != null) { b.innerHTML = b.dataset.orig; delete b.dataset.orig; } });
+}
+function seekActivar(b) {
+  seekReset(); b.classList.add('seek-activo');
+  if (b.classList.contains('panel-vid')) return;
+  b.dataset.orig = b.innerHTML;
+  b.innerHTML = `<span class="seek-x" aria-hidden="true">✕</span><span>Cerrar video</span>`;
+}
 function cerrarPanel() {
+  seekReset();
   const l = $('.layout'); if (l) l.classList.add('pv-cerrado');
   if (player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
   else if (simple && playerVid) { const f = $('#yt'); if (f && f.tagName === 'IFRAME') { marcarVisto(playerVid); f.src = f.src.replace('&autoplay=1', ''); } }
@@ -1100,8 +1111,31 @@ function irA(id, suave = true) {
   const y = el.getBoundingClientRect().top + window.scrollY - 76 - tapa;
   window.scrollTo({ top: Math.max(0, y), behavior: suave && !reduceMotion ? 'smooth' : 'auto' });
 }
+/* Link de la llamada: entre el entrenamiento y el testimonio, una pantalla que cuenta qué viene */
+function puenteTestimonio() {
+  if ($('.ll-puente')) return;
+  const d = document.createElement('div');
+  d.className = 'll-puente'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
+  d.innerHTML = `<div class="llp-caja">
+    <svg class="llp-vis" viewBox="0 0 360 150" aria-hidden="true">
+      ${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${40 + k * 30} H340"/>`).join('')}
+      <circle class="llp-check-fondo" cx="180" cy="75" r="40"/>
+      <path class="llp-check" d="M162 76 l13 13 l25 -27"/>
+      ${[...Array(14)].map((_, k) => `<rect class="llp-papel" x="${(k * 53) % 300 + 30}" y="-20" style="--k:${k};--c:${k % 2 ? '#E8834F' : '#5D7BB6'}" width="8" height="12" rx="2"/>`).join('')}
+    </svg>
+    <p class="llp-kicker">Entrenamiento completo</p>
+    <h2 class="llp-tit">¡Muy bien!</h2>
+    <p class="llp-txt">Esto que acabás de hacer es lo primero que hace cualquier alumno del programa.</p>
+    <p class="llp-txt">Ahora te quiero mostrar a <b>Igna</b>, que es alumno. Pasó por lo mismo que vos y cuenta cómo le fue.</p>
+    <button class="pl-entrenar llp-ir" data-llp-ir>Ver el testimonio de Igna →</button>
+  </div>`;
+  document.body.appendChild(d);
+  document.body.classList.add('sin-scroll');
+  d.querySelector('[data-llp-ir]').onclick = () => { d.classList.add('sale'); document.body.classList.remove('sin-scroll'); setTimeout(() => d.remove(), 350); };
+}
 function abrirPaso(id) {
   const cambio = id !== abierto;
+  if (esLlamada && cambio && id === 'llt1' && !hecho(ST, 'llt1')) puenteTestimonio();
   verTodo = false;
   if (cambio) { animVistas.delete(id); animVistas.delete(id + '-ciclo'); }   // la animación del paso se repite cada vez que se entra
   abierto = id; renderAlumno();
@@ -1122,7 +1156,7 @@ function enlazarAlumno() {
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
-    else if (d.seek) { const [id, t] = d.seek.split(':'); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
+    else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {
       const [id, opId] = d.seg.split(':'); const k = id + '_seg';
       if (ST.prog[k]?.op === opId) delete ST.prog[k]; else ST.prog[k] = { op: opId, t: hoyISO() };

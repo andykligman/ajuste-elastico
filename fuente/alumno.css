@@ -1043,3 +1043,34 @@ body.dv-abierto{overflow:hidden}
 .ll-fin{display:flex;flex-direction:column;gap:6px;text-align:center;margin:30px auto 10px;max-width:520px;padding:22px;border-radius:18px;background:#16213A;border:1px solid #5D7BB6}
 .ll-fin b{font:800 26px var(--display);color:#E8834F}
 .ll-fin span{font-size:17px;color:#EAF0FB}
+
+/* Ver video ⇄ Cerrar video en el mismo botón */
+[data-seek].seek-activo{border-color:var(--naranja)!important;color:var(--naranja)!important}
+.seek-x{display:inline-grid;place-items:center;width:20px;height:20px;font-size:13px;font-weight:700}
+/* Puente entre el entrenamiento y el testimonio (link de la llamada) */
+.ll-puente{position:fixed;inset:0;z-index:200;background:#16213A;display:grid;place-items:center;padding:24px;animation:plEntra .45s ease both;overflow:auto}
+.ll-puente.sale{animation:llpSale .35s ease forwards}
+@keyframes llpSale{to{opacity:0;transform:scale(1.03)}}
+.llp-caja{max-width:560px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.llp-vis{width:min(360px,100%);height:auto;overflow:visible;margin-bottom:6px}
+.llp-cuerda{stroke:#5D7BB6;stroke-width:2.5;stroke-linecap:round;opacity:.5;animation:vgVibra 1.8s ease-in-out infinite;animation-delay:calc(var(--k)*.3s);transform-box:fill-box;transform-origin:center}
+.llp-check-fondo{fill:#E8834F;transform-box:fill-box;transform-origin:center;animation:llpPop .5s .2s cubic-bezier(.2,1.4,.4,1) both}
+.llp-check{fill:none;stroke:#fff;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:70;stroke-dashoffset:70;animation:vgDibuja .5s .6s ease forwards}
+@keyframes llpPop{from{transform:scale(0)}to{transform:scale(1)}}
+.llp-papel{fill:var(--c);animation:llpCae 2.6s ease-in infinite;animation-delay:calc(var(--k)*.17s)}
+@keyframes llpCae{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(190px) rotate(260deg);opacity:0}}
+.llp-kicker{margin:0;font:700 13px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#A9BEE8}
+.llp-tit{margin:0;font:800 clamp(34px,7vw,48px)/1.1 var(--display);color:#E8834F}
+.llp-txt{margin:0;font:500 clamp(18px,3.4vw,22px)/1.4 var(--sans);color:#EAF0FB}
+.llp-txt b{color:#E8834F}
+.llp-ir{margin-top:14px}
+body.sin-scroll{overflow:hidden}
+@media (prefers-reduced-motion:reduce){.llp-papel,.llp-cuerda{animation:none}.llp-papel{display:none}}
+
+/* Celu: el stop usa casi todo el ancho para que el dibujo se vea más grande */
+@media (max-width:560px){
+  .tarjeta .stop{margin-left:-12px;margin-right:-12px}
+  .stop-dibujo{padding:6px 2px 2px}
+  .vis-grande{width:100%}
+}
+@media (max-width:560px){.stop-cuerpo{padding:2px 10px 14px}}
