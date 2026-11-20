@@ -735,7 +735,7 @@ function envioHTML(st, p) {
   // si ya mandó (por acá o por WhatsApp), en vez de los botones grandes queda una fila chiquita para mandar otro
   const botonesVideo = !conVideo || modo === 'admin-vista' ? '' : yaMando ? '' : `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>Grabar el video acá</button>
       <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>`;
-  const otroVideo = conVideo && modo !== 'admin-vista' && yaMando ? `<div class="otro-video"><span>¿Querés mandarme otro?</span><button class="link" data-grabar="${p.id}">Grabar</button><label class="link">Subir de la galería<input type="file" accept="video/*" data-subir="${p.id}" hidden></label></div>` : '';
+  const otroVideo = conVideo && modo !== 'admin-vista' && yaMando ? `<div class="otro-video"><button class="otro-btn" data-grabar="${p.id}"><i></i>Grabar otro</button><label class="otro-btn">${ICONO.enviar}Subir de la galería<input type="file" accept="video/*" data-subir="${p.id}" hidden></label></div>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
     <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te doy una devolución.</p>`}
