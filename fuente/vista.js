@@ -131,9 +131,12 @@ async function verDocEnAula(id, h) {
     const ir = () => { if (destino) marco.scrollTop = destino.getBoundingClientRect().top - marco.getBoundingClientRect().top + marco.scrollTop - 8; };
     ir(); requestAnimationFrame(ir);
     // las imágenes de arriba cargan después y empujan el texto: volvemos a acomodar mientras no haya tocado nada
-    let tocado = false; marco.addEventListener('touchstart', () => { tocado = true; }, { once: true, passive: true }); marco.addEventListener('wheel', () => { tocado = true; }, { once: true, passive: true });
-    raiz.querySelectorAll('img').forEach(im => { if (!im.complete) im.addEventListener('load', () => { if (!tocado) ir(); }, { once: true }); });
-    [400, 1200, 2500].forEach(ms => setTimeout(() => { if (!tocado) ir(); }, ms));
+    let tocado = false; ['touchstart', 'wheel', 'mousedown'].forEach(ev => marco.addEventListener(ev, () => { tocado = true; }, { once: true, passive: true }));
+    raiz.querySelectorAll('img').forEach(im => { im.loading = 'eager'; if (!im.complete) im.addEventListener('load', () => { if (!tocado) ir(); }, { once: true }); });
+    [400, 1200, 2500, 4000, 6000, 9000].forEach(ms => setTimeout(() => { if (!tocado) ir(); }, ms));
+    // cualquier cambio de alto del doc (imágenes, fuentes, tablas) corre el título: lo seguimos hasta que toque
+    const docEl = raiz.querySelector('.dv-doc');
+    if (docEl && window.ResizeObserver) { const ro = new ResizeObserver(() => { if (tocado || !d.isConnected) ro.disconnect(); else ir(); }); ro.observe(docEl); setTimeout(() => ro.disconnect(), 15000); }
   } catch (e) {
     marco.innerHTML = `<p class="dv-cargando">No pude cargar el documento acá. <a href="${full}" target="_blank" rel="noopener">Abrilo en Docs</a>.</p>`;
   }
@@ -404,7 +407,7 @@ function materialHTML(p) {
   const igual = r => v && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
   const dup = (p.recursos || []).find(r => r.url && igual(r) && /ejemplo/i.test(r.t));   // «Ver ejemplo…» conserva su nombre
   const rs = (p.recursos || []).filter(r => r.url && !igual(r));
-  const verVideo = v ? { t: dup ? dup.t : 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
+  const verVideo = v ? { principal: true, t: dup ? dup.t : 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
   if (verVideo) rs.unshift(verVideo);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
@@ -414,7 +417,7 @@ function materialHTML(p) {
   ${resto.length ? `<div class="material">${resto.map(r => {
     if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
@@ -469,11 +472,14 @@ function preguntaHTML(st, p) {
 const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buenísimo! Venís bárbaro, seguí así', 'Esooo! A lo que sigue'];
 /* «Escribime…» solo: en vez de recomendación, directo el cartel verde a WhatsApp */
 const soloEscribime = sel => !!(sel && sel.nivel === 'cuesta' && sel.resp && /escrib[ií]me/i.test(sel.resp) && sel.resp.length < 80);
+/* «No me sale», «me cuesta», «me trabo»…: siempre aparece el cartel verde para escribirme por WhatsApp */
+const pideAyuda = sel => !!(sel && (sel.nivel === 'cuesta' || /no me sale|me cuesta|me trab|me pierdo|no entiendo|dudas/i.test(sel.label || '')));
 function respOMinimizada(sel, p) {
-  if (!(sel.resp || sel.nivel === 'listo')) return '';
   if (soloEscribime(sel)) return waCartelHTML(p);
-  if (sel.nivel !== 'listo' && recCerradas.has(p.id)) return `<button class="rec-min" data-rec-abrir="${p.id}">${ICONO.idea}<span>Ver recomendación</span></button>`;
-  return respuestaHTML(sel, p);
+  const wa = pideAyuda(sel) ? waCartelHTML(p) : '';
+  if (!(sel.resp || sel.nivel === 'listo')) return wa;
+  if (sel.nivel !== 'listo' && recCerradas.has(p.id)) return `<button class="rec-min" data-rec-abrir="${p.id}">${ICONO.idea}<span>Ver recomendación</span></button>` + wa;
+  return respuestaHTML(sel, p) + wa;
 }
 function waCartelHTML(p) {
   if (typeof WHATSAPP_ANDY === 'undefined' || !WHATSAPP_ANDY) return '';
@@ -533,7 +539,7 @@ function tarjetaHTML(st, e, p) {
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
     ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) : ''}
-    ${p.soloVer || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${p.soloVer || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${pideAyuda(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}

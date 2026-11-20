@@ -46,7 +46,7 @@ function semillaDemo() {
   });
   const caro = Object.assign(alumnoVacio('Carolina (prueba)', 2, hoyISO(-40)), {
     codigo: 'caro-demo', email: 'caro@prueba.com', invitacion: 'demo-invitacion-caro', standard: 'That Old Feeling', clase: 3, claseFecha: hoyISO(-2), act: hoyISO(0),
-    prog: { ...marca(['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7', 'e1', 'e2', 'e3', 'e4', 'a1', 'a2', 'a3', 's1']), s2: { hecho: true, como: 'casi', t: hoyISO(0) }, s3: { hecho: true, como: 'casi', t: hoyISO(0) }, m1: { hecho: true, como: 'listo', t: hoyISO(0) } },
+    prog: { ...marca(['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7', 'e1', 'e2', 'e3', 'e4', 'a1', 'a2', 'a3', 's1']), s3: { hecho: true, como: 'casi', t: hoyISO(0) }, m1: { hecho: true, como: 'listo', t: hoyISO(0) } },
   });
   return { alumnos: [lucas, sofi, tomas, caro] };
 }
