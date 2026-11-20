@@ -274,6 +274,20 @@ b,strong{font-weight:700}
 #panel-mod.ver li{opacity:1;transform:none}
 .pm-caja li::before{content:"";position:absolute;left:0;top:.48em;width:16px;height:16px;border-radius:50%;background:var(--naranja)}
 .pm-caja li b{color:var(--ink)}
+.pm-caja.ancha{width:1560px;padding:56px 70px 60px}
+.pm-tabs{display:flex;gap:12px;margin:-6px 0 34px}
+.pm-tabs button{border:2px solid rgba(255,255,255,.14);background:transparent;color:var(--suave);font:600 26px var(--tit);padding:12px 26px;border-radius:999px;cursor:pointer}
+.pm-tabs button.on{background:var(--naranja);border-color:var(--naranja);color:#fff}
+.pm-hoja{display:none}.pm-hoja.on{display:block}
+.pm-grid{display:grid;grid-template-columns:1fr 600px;gap:56px;align-items:center}
+.pm-txt p{margin:0 0 22px;font-size:34px;line-height:1.38;color:var(--suave)}
+.pm-txt p b{color:var(--ink);font-weight:700}
+.pm-txt p.fuerte{font-family:var(--tit);font-weight:600;font-size:38px;color:var(--ink);line-height:1.3}
+.pm-txt .nar{color:var(--naranja)}
+.pm-chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.pm-chips span{padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);font:600 24px var(--tit);color:var(--ink)}
+.pm-chips span i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--naranja);margin-right:10px;vertical-align:2px}
+.pm-dib svg{width:100%;height:auto;overflow:visible}
 .pm-cerrar{position:absolute;top:26px;right:30px;width:56px;height:56px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font:600 26px var(--tit);cursor:pointer}
 /* ---------- Controles ---------- */
 #progreso{position:fixed;left:0;bottom:0;height:5px;background:var(--naranja);transition:width .5s var(--suave-in);z-index:5}
@@ -421,7 +435,7 @@ body.pausa #marca-pausa{opacity:1}
     </div>
   </div>
   <i data-paso="4" hidden></i>
-  <div id="panel-mod"><div class="pm-caja"><button class="pm-cerrar" aria-label="Cerrar">✕</button><div class="mod"></div><h3></h3><ul></ul></div></div>
+  <div id="panel-mod"><div class="pm-caja"><button class="pm-cerrar" aria-label="Cerrar">✕</button><div class="mod"></div><h3></h3><ul></ul><div class="pm-rico"></div></div></div>
 </section>
 
 <!-- 9. Qué incluye -->
@@ -736,10 +750,66 @@ const PANEL = [
   ['Módulo 2', 'ADN del Jazz', ['Cómo <b>transcribir eficientemente</b>: cantar el solo y armarlo por partes', 'Elementos del lenguaje, como los <b>cromáticos</b>: mecanizarlos e integrarlos', '<b>Combinación de elementos</b>: elegir un fragmento, decodificarlo y hacerlo tuyo', 'Pasar del oído a la guitarra y de la guitarra a tu improvisación']],
   ['Módulo 3', 'Laboratorio rítmico', ['El ritmo <b>al cuerpo</b> antes que al instrumento', 'Cómo <b>destrabar cualquier ritmo</b>', '<b>Tiempos y contratiempos</b> en la improvisación', '<b>Unidades rítmicas</b> y variabilidad: más libertad y más ideas']],
   ['Módulo 4', 'Curva del solo', ['Darle <b>forma y dirección</b> a tu solo', 'Contar una idea musical, <b>sostenerla y transformarla</b>', 'Que tus solos <b>conecten</b> con vos y con quien escucha']]];
+const ACORDES = '<svg viewBox="0 0 600 470" id="pm-acordes"><text x="120" y="40" text-anchor="middle" fill="#F2F3F6" font-family="Poppins" font-weight="700" font-size="34">C-7</text><text x="480" y="40" text-anchor="middle" fill="#F2F3F6" font-family="Poppins" font-weight="700" font-size="34">F7</text><g id="pm-lin"></g><g id="pm-not"></g><text x="300" y="455" text-anchor="middle" fill="#B9C3DA" font-family="Poppins" font-size="24">cualquier nota → cualquier nota, a tiempo real</text></svg>';
+const PUENTE = '<svg viewBox="0 0 600 470" id="pm-puente"><rect x="110" y="212" width="380" height="258" fill="#1A2440"/><path d="M0 200 L110 200 L124 470 L0 470 Z" fill="#3B4E76"/><path d="M490 200 L600 200 L600 470 L476 470 Z" fill="#3B4E76"/><g font-family="Poppins" font-weight="700" font-size="24" fill="#F2F3F6" text-anchor="middle"><text x="62" y="124"><tspan x="62">Lo que</tspan><tspan x="62" dy="32">entendés</tspan></text><text x="538" y="92"><tspan x="538">Lo que</tspan><tspan x="538" dy="32">tocás al</tspan><tspan x="538" dy="32">improvisar</tspan></text></g><g id="pm-tablas"><rect x="112" y="194" width="122" height="26" rx="5" fill="#B9C3DA"/><rect x="239" y="194" width="122" height="26" rx="5" fill="#E8834F"/><rect x="366" y="194" width="122" height="26" rx="5" fill="#E8834F"/></g><g font-family="Poppins" font-weight="600" font-size="21" text-anchor="middle"><text x="173" y="258" fill="#B9C3DA">Reconocer</text><text x="300" y="258" fill="#E8834F" class="pm-e2">Mecanizar</text><text x="427" y="258" fill="#E8834F" class="pm-e3">Integrar</text></g><text x="173" y="300" text-anchor="middle" fill="#8E9AB8" font-family="Poppins" font-size="19"><tspan x="173">acá solemos</tspan><tspan x="173" dy="23">quedarnos</tspan></text><circle id="pm-bola" r="16" fill="#F2F3F6" cy="176"/></svg>';
+const RICO = [
+`<div class="pm-tabs"><button class="on" data-t="a">El método</button><button data-t="b">Lo que ganás</button></div>
+<div class="pm-hoja on" data-t="a"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">No es que te tiro posiciones de arpegios y nos ponemos a improvisar. <span class="nar">Nada más lejano.</span></p>
+<p>Aprendemos a <b>desarmar las posiciones</b> con un método que te entrena para <b>conectar cualquier nota de un acorde con cualquier nota del siguiente</b>, a tiempo real, mientras improvisás.</p>
+<p>Con <b>parámetros limitantes</b> que regulan la dificultad de la práctica.</p>
+</div><div class="pm-dib">${ACORDES}</div></div></div>
+<div class="pm-hoja" data-t="b"><div class="pm-txt">
+<p class="fuerte">Elegir qué es lo que tocás, y <span class="nar">no que los acordes elijan por vos</span>.</p>
+<p>Anticiparte a lo que viene y tomar <b>decisiones conscientes y certeras</b>, sin tener que pensarlo y sin que los acordes se te vengan encima: decidís lo que querés hacer y lo hacés.</p>
+<p>Saber exactamente <b>dónde estás parado en cada momento</b>, sin pensarlo.</p>
+<div class="pm-chips"><span><i></i>Control y fluidez en los cambios</span><span><i></i>Seguridad</span><span><i></i>No solo en el jazz: en cualquier género</span></div>
+</div></div>`,
+`<div class="pm-tabs"><button class="on" data-t="a">El puente</button><button data-t="b">Sacar un solo</button></div>
+<div class="pm-hoja on" data-t="a"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">Construir el puente entre <span class="nar">lo que comprendés</span> y <span class="nar">lo que realmente podés tocar</span> cuando improvisás.</p>
+<p>Normalmente nos quedamos en el <b>reconocimiento</b>: entender el elemento y nada más. Para cruzar faltan las otras etapas: <b>mecanización e integración</b>.</p>
+<p>Así improvisás <b>combinando los elementos del lenguaje a tiempo real</b>, como hacen los músicos que admiramos.</p>
+</div><div class="pm-dib">${PUENTE}</div></div></div>
+<div class="pm-hoja" data-t="b"><div class="pm-txt">
+<p class="fuerte">Sacamos un solo y aprendemos a <span class="nar">decodificar sus frases</span>.</p>
+<p>No es copiar una frase y pegarla, ni sacar un solo para que queden cosas a medias, superficiales o copiadas exactas.</p>
+<p>Es entender <b>los mecanismos detrás de los solos que nos gustan</b> y pasarlos por la mecanización y la integración, para que no quedes solo en entenderlos: <b>que finalmente los uses para improvisar</b>.</p>
+<div class="pm-chips"><span><i></i>Aprender o reordenar el lenguaje del jazz</span><span><i></i>Transcribir eficientemente</span><span><i></i>Decodificar · Mecanizar · Integrar</span></div>
+</div></div>`, null, null];
+let panelT0 = 0;
+const NOT_A = ['Bb', 'G', 'Eb', 'C'], NOT_B = ['Eb', 'C', 'A', 'F'];
+function panelCuadro() {
+  const te = reloj - panelT0, ac = document.getElementById('pm-acordes');
+  if (ac && ac.closest('.pm-hoja.on')) {
+    const lin = document.getElementById('pm-lin'), nt = document.getElementById('pm-not');
+    if (!nt.childElementCount) {
+      [[NOT_A, 120], [NOT_B, 480]].forEach(([ns, x]) => ns.forEach((n, j) => { const y = 95 + j * 92; nt.insertAdjacentHTML('beforeend', `<g><circle cx="${x}" cy="${y}" r="34" fill="#2A3858" stroke="#B9C3DA" stroke-width="3"/><text x="${x}" y="${y + 10}" text-anchor="middle" fill="#F2F3F6" font-family="Poppins" font-weight="700" font-size="28">${n}</text></g>`); }));
+      for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) lin.insertAdjacentHTML('beforeend', `<line x1="154" y1="${95 + a * 92}" x2="446" y2="${95 + b * 92}" stroke="#E8834F" stroke-width="4" stroke-linecap="round" opacity=".12"/>`);
+    }
+    const k = Math.floor(te / 1.1) % 16, ls = lin.children, orden = [0, 6, 11, 13, 3, 9, 4, 14, 2, 7, 12, 1, 15, 8, 5, 10];
+    [...ls].forEach((l, j) => { const on = j === orden[k]; l.setAttribute('opacity', on ? 1 : .12); l.setAttribute('stroke-width', on ? 8 : 4); });
+    const ci = nt.querySelectorAll('circle'), o = orden[k], a = Math.floor(o / 4), b = o % 4;
+    ci.forEach((c, j) => c.setAttribute('stroke', (j === a || j === 4 + b) ? '#E8834F' : '#B9C3DA'));
+  }
+  const pu = document.getElementById('pm-puente');
+  if (pu && pu.closest('.pm-hoja.on')) {
+    const c = te % 9, tabs = pu.querySelectorAll('#pm-tablas rect'), e2 = pu.querySelector('.pm-e2'), e3 = pu.querySelector('.pm-e3'), bola = document.getElementById('pm-bola');
+    const v2 = c > 1.6, v3 = c > 3; tabs[1].style.opacity = v2 ? 1 : 0; e2.style.opacity = v2 ? 1 : 0; tabs[2].style.opacity = v3 ? 1 : 0; e3.style.opacity = v3 ? 1 : 0;
+    tabs[1].style.transition = tabs[2].style.transition = e2.style.transition = e3.style.transition = 'opacity .6s';
+    let x = 55; if (c < 1.2) x = 55 + 118 * (c / 1.2); else if (c < 4.2) x = 173; else if (c < 7) x = 173 + 372 * ((c - 4.2) / 2.8); else x = 545;
+    bola.setAttribute('cx', x); bola.setAttribute('fill', x > 490 ? '#5BD49A' : '#F2F3F6');
+  }
+}
 const panel = document.getElementById('panel-mod');
 function abrirPanel(k) {
-  const [mod, tit, items] = PANEL[k]; panel.querySelector('.mod').textContent = mod; panel.querySelector('h3').textContent = tit;
-  panel.querySelector('ul').innerHTML = items.map((x, j) => `<li style="transition-delay:${.15 + j * .12}s">${x}</li>`).join('');
+  const [mod, tit, items] = PANEL[k], caja = panel.querySelector('.pm-caja'), rico = RICO[k];
+  panel.querySelector('.mod').textContent = mod; panel.querySelector('h3').textContent = tit;
+  caja.classList.toggle('ancha', !!rico);
+  panel.querySelector('ul').innerHTML = rico ? '' : items.map((x, j) => `<li style="transition-delay:${.15 + j * .12}s">${x}</li>`).join('');
+  panel.querySelector('.pm-rico').innerHTML = rico || '';
+  panel.querySelectorAll('.pm-tabs button').forEach(b => b.onclick = e => { e.stopPropagation(); const n = b.dataset.t; panel.querySelectorAll('.pm-tabs button').forEach(x => x.classList.toggle('on', x === b)); panel.querySelectorAll('.pm-hoja').forEach(h => h.classList.toggle('on', h.dataset.t === n)); });
+  panelT0 = reloj;
   panel.classList.remove('ver'); void panel.offsetWidth; panel.classList.add('ver');
 }
 const cerrarPanel = () => panel.classList.remove('ver');
@@ -769,6 +839,7 @@ function cuadro(ahora) {
   const t = reloj, now = reloj * 1000, d = D[i];
   if (d.hasAttribute('data-chat')) chatAvanzar();
   if (d.hasAttribute('data-ciclo')) cicloCuadro(d);
+  if (panel.classList.contains('ver')) panelCuadro();
   const pz = d.querySelector('.pilares.zoom'), quieto = el => pz && !el.closest('.pilar').classList.contains('foco');
   if (d.contains(cu)) lineas.forEach((l, k) => {
     const y = 90 + k * 88, ciclo = (t + k * .37) % 3.2, amp = 46 * Math.exp(-ciclo * 1.6) * (k === 2 ? 1.3 : .8), fr = 2.2 + k * .25;
