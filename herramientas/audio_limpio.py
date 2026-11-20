@@ -2,6 +2,7 @@
 # Recorta silencio de punta a punta, highpass 70 Hz, fundido 30 ms al entrar y 200 ms donde termina la voz,
 # volumen a -25 LUFS (más fuerte le resultaba molesto), 0,4 s de silencio al final, AAC 128k mono 48 kHz.
 # Sin limitador ni reducción de ruido (saturaban). Nunca reprocesar un audio ya procesado: siempre desde el original.
+# Si Andy ya los mejoró en el iPhone, usar herramientas/audio_fino.py (sin EQ ni ruido, fundidos mínimos, pausas acortadas).
 # Uso: python3 herramientas/audio_limpio.py original.m4a audio/carpeta/NN.m4a
 # Al reemplazar audios, subir el ?v= de la URL en fuente/vista.js para que el navegador no use el viejo.
 import subprocess, sys, re, numpy as np
