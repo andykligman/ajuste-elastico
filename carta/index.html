@@ -167,7 +167,7 @@ b,strong{font-weight:700}
 .celu video{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:48px}
 .celu::before{content:"";position:absolute;top:28px;left:50%;width:120px;height:34px;margin-left:-60px;border-radius:20px;background:#000;z-index:2}
 .app{display:flex;flex-direction:column;align-items:center;gap:20px;transform:scale(.3);opacity:0;transition:transform .9s var(--resorte),opacity .5s}
-.app.ver{transform:none;opacity:1}
+.d.activa .app{transform:none;opacity:1;transition-delay:1.6s}
 .app img{width:220px;height:220px;border-radius:50px;box-shadow:0 30px 60px rgba(0,0,0,.4)}
 .app span{font-family:var(--tit);font-weight:600;font-size:32px}
 
@@ -239,6 +239,7 @@ b,strong{font-weight:700}
 .fin{position:relative}
 .trio{display:flex;align-items:center;gap:34px;margin-top:40px;font-family:var(--tit);font-weight:400;font-size:40px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .trio i{width:12px;height:12px;border-radius:50%;background:var(--naranja)}
+.ilu svg{display:block;width:110px;height:110px;margin-left:10px;fill:none;stroke:var(--naranja);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
 /* ---------- Controles ---------- */
 #progreso{position:fixed;left:0;bottom:0;height:5px;background:var(--naranja);transition:width .5s var(--suave-in);z-index:5}
 #ctrl{position:fixed;right:22px;bottom:20px;display:flex;align-items:center;gap:10px;z-index:6;opacity:0;transition:opacity .4s}
@@ -372,9 +373,9 @@ body.pausa #marca-pausa{opacity:1}
 <section class="d vc">
   <h2 class="tit en"><span class="nar">¿Qué incluye</span> el programa?</h2>
   <div class="lista">
-    <div class="item en r1"><div class="bola">1</div><div class="t">Aula virtual de Ajuste Elástico</div></div>
-    <div class="item en r2"><div class="bola">2</div><div class="t">Soporte por WhatsApp de lunes a viernes</div></div>
-    <div class="item en r3"><div class="bola">3</div><div class="t">Sesiones en vivo</div></div>
+    <div class="item en r1"><div class="bola">1</div><div class="t">Aula virtual de Ajuste Elástico</div><span class="ilu"><svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="5"/><path d="M2 52h60"/><circle cx="20" cy="29" r="4"/><path d="M24 29h10l6-6 8 0"/></svg></span></div>
+    <div class="item en r2"><div class="bola">2</div><div class="t">Soporte por WhatsApp de lunes a viernes</div><span class="ilu"><svg viewBox="0 0 64 64"><path d="M32 6a26 26 0 0 0-22 40L6 58l12-4a26 26 0 1 0 14-48z"/><path d="M22 28h20M22 36h12"/></svg></span></div>
+    <div class="item en r3"><div class="bola">3</div><div class="t">Sesiones en vivo</div><span class="ilu"><svg viewBox="0 0 64 64"><rect x="4" y="14" width="40" height="36" rx="6"/><path d="M44 26l16-9v30l-16-9z"/></svg></span></div>
   </div>
 </section>
 
@@ -386,19 +387,10 @@ body.pausa #marca-pausa{opacity:1}
       <p class="medio en r1">Todo el material del programa está en el aula.</p>
       <p class="chico en r2">No es una lista de videos: <b style="color:var(--ink)">es un camino</b>. Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1_camino.jpg" src="media/c1_camino.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1_camino.jpg?v=11201550" src="media/c1_camino.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">Y en el mapa ves <span class="nar">el programa completo</span>, módulo por módulo.</p>
-    </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1b_mapa.jpg" src="media/c1b_mapa.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
-  </div>
-</section>
 
 <section class="d">
   <div class="enc en"><h2>Aula virtual</h2></div>
@@ -407,7 +399,7 @@ body.pausa #marca-pausa{opacity:1}
       <p class="medio en r1">En cada paso tenés la clase, el material y una pregunta: <span class="nar">¿cómo te fue?</span></p>
       <p class="chico en r2">Según lo que contestes, el aula te da consejos y te marca el camino a seguir. O te sugiere que me consultes si te trabaste.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c2_paso.jpg" src="media/c2_paso.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c2_paso.jpg?v=11201550" src="media/c2_paso.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -418,7 +410,7 @@ body.pausa #marca-pausa{opacity:1}
       <p class="medio en r1">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p>
       <p class="chico en r2">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p>
     </div>
-    <div class="compu ancho"><div class="pant"><video muted playsinline preload="auto" poster="media/c3_animacion.jpg" src="media/c3_animacion.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu ancho"><div class="pant"><video muted playsinline preload="auto" poster="media/c3_animacion.jpg?v=11201550" src="media/c3_animacion.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -430,7 +422,7 @@ body.pausa #marca-pausa{opacity:1}
       <span class="chip en r2"><i></i>Ir a esta parte del video</span><span class="chip en r2"><i></i>Ir a esta parte del doc</span>
       <p class="chico en r3">Naturalmente, y haciendo cada paso en el momento adecuado.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c4_ir.jpg" src="media/c4_ir.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c4_ir.jpg?v=11201550" src="media/c4_ir.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -441,7 +433,7 @@ body.pausa #marca-pausa{opacity:1}
       <p class="medio en r1">A medida que hacés las tareas, me mandás <span class="nar">videos tuyos</span> ejecutándolas.</p>
       <p class="chico en r2">Los grabás ahí mismo y te devuelvo qué está bien y en qué hacer foco.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c5_grabar.jpg" src="media/c5_grabar.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c5_grabar.jpg?v=11201550" src="media/c5_grabar.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -453,8 +445,8 @@ body.pausa #marca-pausa{opacity:1}
       <p class="chico en r2">Para practicar donde te quede mejor.</p>
     </div>
     <div class="celu-grupo">
-      <div class="celu"><video muted playsinline preload="auto" poster="media/c6_celu.jpg" src="media/c6_celu.mp4"></video></div>
-      <div class="app" data-paso="1"><img src="../iconos/icono-512.png" alt=""><span>Ajuste Elástico</span></div>
+      <div class="celu"><video muted playsinline preload="auto" poster="media/c6_celu.jpg?v=11201550" src="media/c6_celu.mp4?v=11201550"></video></div>
+      <div class="app"><img src="../iconos/icono-512.png" alt=""><span>Ajuste Elástico</span></div>
     </div>
   </div>
 </section>
@@ -465,7 +457,7 @@ body.pausa #marca-pausa{opacity:1}
     <div class="txt">
       <p class="medio en r1">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c7_modulo.jpg" src="media/c7_modulo.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c7_modulo.jpg?v=11201550" src="media/c7_modulo.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -596,6 +588,7 @@ addEventListener('keydown', e => {
   else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); ant(); }
   else if (e.key === 'Home') ir(0); else if (e.key === 'End') ir(D.length - 1);
   else if (e.key === 'f' || e.key === 'F') pantalla();
+  else if (e.key === 'r' || e.key === 'R') { ultima = -1; ir(0); paso = 0; pintar(); }
 });
 document.getElementById('marco').addEventListener('click', e => { (e.clientX < innerWidth * 0.3 ? ant : sig)(); });
 document.getElementById('sig').onclick = e => { e.stopPropagation(); sig(); };
@@ -705,8 +698,7 @@ function cuadro(ahora) {
   if (d.contains(adn) && !quieto(adn)) hel.forEach((h, k) => { const x = 22 + k * 23, f = t * .9 + k * .55, y1 = 85 + 52 * Math.sin(f), y2 = 85 - 52 * Math.sin(f);
     h.l.setAttribute('x1', x); h.l.setAttribute('x2', x); h.l.setAttribute('y1', y1); h.l.setAttribute('y2', y2); h.a.setAttribute('cx', x); h.a.setAttribute('cy', y1); h.b.setAttribute('cx', x); h.b.setAttribute('cy', y2);
     const z = Math.cos(f); h.a.setAttribute('r', 7 + 3 * z); h.b.setAttribute('r', 7 - 3 * z); });
-  if (d.contains(rit) && !quieto(rit)) { const c = t % 1.6, lat = Math.exp(-Math.pow((c - .05) / .09, 2)) + .7 * Math.exp(-Math.pow((c - .36) / .09, 2));   // lub-dub, como un corazón
-    barras.forEach((b, k) => { const dist = Math.abs(k - 7.5) / 7.5, v = .16 + .84 * lat * (1 - .55 * dist) * (k % 4 === 0 ? 1 : .8), h = 20 + 120 * v; b.setAttribute('y', 85 - h / 2); b.setAttribute('height', h); }); }
+  if (d.contains(rit) && !quieto(rit)) barras.forEach((b, k) => { const g = k % 4 === 0 ? 1 : .55, fase = (t * .9 - k / 16 * 2) % 2, v = Math.max(.15, Math.exp(-((fase % 1) * 4))) * g, h = 20 + 120 * v; b.setAttribute('y', 85 - h / 2); b.setAttribute('height', h); });
   if (d.contains(arpL) && !quieto(arpL)) {   // los arpegios se van conectando de a poco
     const c = t % 7, u = Math.min(1, Math.max(0, (c - .4) / 4.2)), fade = c > 6.2 ? 1 - (c - 6.2) / .8 : 1;
     arpL.style.strokeDashoffset = arpLen * (1 - u); arpL.style.opacity = fade;
