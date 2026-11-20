@@ -148,6 +148,11 @@ b,strong{font-weight:700}
 .aula .txt .medio{font-size:44px}
 .aula .txt .chico{margin-top:26px;font-size:32px}
 .aula .txt .chip{display:inline-flex;align-items:center;gap:12px;margin:22px 12px 0 0;padding:12px 22px;border-radius:999px;background:rgba(255,255,255,.08);font-family:var(--tit);font-weight:600;font-size:26px;color:var(--ink);border:2px solid rgba(255,255,255,.12)}
+.aula-txt{position:relative;height:640px}
+.aula-txt .at{position:absolute;left:0;right:0;top:50%;transform:translateY(-40%);opacity:0;transition:opacity .5s,transform .6s var(--suave-in);pointer-events:none}
+.aula-txt .at.on{opacity:1;transform:translateY(-50%)}
+.aula-txt .at .medio{font-size:44px;margin:0}
+.aula-txt .at .chico{margin-top:26px;font-size:32px}
 .aula .txt .chip i{width:12px;height:12px;border-radius:50%;background:var(--naranja)}
 .compu{position:relative;width:1060px;margin:0 auto;transform:perspective(2400px) rotateY(-9deg) rotateX(3deg) translateX(30px) scale(.94);opacity:0;transition:transform 1.2s var(--suave-in),opacity .8s}
 .d.activa .compu{transform:perspective(2400px) rotateY(-5deg) rotateX(2deg);opacity:1}
@@ -186,8 +191,8 @@ b,strong{font-weight:700}
 .tile:nth-child(1) .av{background:var(--naranja)}.tile:nth-child(2) .av{background:var(--azul)}
 .tile .nom{position:absolute;left:20px;bottom:16px;font-family:var(--tit);font-weight:600;font-size:26px;background:rgba(0,0,0,.45);padding:4px 14px;border-radius:10px}
 .tile .onda{position:absolute;inset:0;border-radius:18px;border:4px solid var(--verde);opacity:0}
-.d.activa .tile:nth-child(1) .onda{animation:habla 2.4s ease-in-out infinite}
-.d.activa .tile:nth-child(2) .onda{animation:habla 2.4s 1.2s ease-in-out infinite}
+.tile .onda{transition:opacity .35s}
+.tile.habla .onda{opacity:1}
 @keyframes habla{0%,100%{opacity:0}20%,45%{opacity:1}}
 .barra-llamada{display:flex;justify-content:center;gap:22px;margin-top:20px}
 .barra-llamada i{width:70px;height:70px;border-radius:50%;background:#2a2f3a}
@@ -288,6 +293,12 @@ b,strong{font-weight:700}
 .pm-chips span{padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.1);font:600 24px var(--tit);color:var(--ink)}
 .pm-chips span i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--naranja);margin-right:10px;vertical-align:2px}
 .pm-dib svg{width:100%;height:auto;overflow:visible}
+.pm-txt>*{transition:opacity .45s,transform .5s var(--suave-in)}
+.pm-txt>.rv:not(.vis),.escalera .es.rv:not(.vis){opacity:0;transform:translateY(14px)}
+.escalera{position:relative;height:470px}
+.escalera .es{position:absolute;left:calc(var(--n) * 62px);bottom:calc(var(--n) * 74px);display:flex;align-items:center;gap:16px;transition:opacity .45s,transform .5s var(--suave-in)}
+.escalera .es i{flex:none;width:58px;height:58px;border-radius:14px;background:var(--bg3);border:3px solid var(--naranja);background-image:repeating-linear-gradient(90deg,transparent 0 9px,rgba(232,131,79,.9) 9px 13px,transparent 13px 22px);background-size:44px 18px;background-repeat:no-repeat;background-position:center}
+.escalera .es span{font-family:var(--tit);font-weight:600;font-size:27px;white-space:nowrap}
 .pm-cerrar{position:absolute;top:26px;right:30px;width:56px;height:56px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font:600 26px var(--tit);cursor:pointer}
 /* ---------- Controles ---------- */
 #progreso{position:fixed;left:0;bottom:0;height:5px;background:var(--naranja);transition:width .5s var(--suave-in);z-index:5}
@@ -390,13 +401,20 @@ body.pausa #marca-pausa{opacity:1}
     <div class="marcador"><i></i></div>
     <div class="etq izq">Fácil</div><div class="etq med">Punto medio</div><div class="etq der">Difícil</div>
   </div>
-  <div class="niveles" id="niveles"><i></i><i></i><i></i><i></i><i></i><i></i><span>↑ tu nivel</span></div>
+  <div class="niveles" id="niveles"><i></i><i></i><i></i><i></i><span>↑ tu nivel</span></div>
   <div class="frases-ciclo">
     <p class="medio" data-paso="0" data-solo="0">…y la dificultad en el <span style="color:var(--verde)">punto justo</span>.</p>
     <p class="medio" data-paso="1" data-solo="1">Con mucho menos práctica, tiempo y energía,<br>esto <span class="nar">se vuelve fácil</span>.</p>
     <p class="medio" data-paso="2" data-solo="2">Ahí hay que identificarlo y entender qué parámetros<br><span class="nar">reajustar</span> para volver al punto medio.</p>
     <p class="medio" data-paso="3" data-solo="3">Y de nuevo se vuelve fácil. Y de nuevo, al punto medio.</p>
-    <p class="medio" data-paso="4">Eso genera un aprendizaje <span class="nar">más profundo, más seguro y más veloz</span>.</p>
+  </div>
+</section>
+
+<!-- 6c. Resultado del ciclo -->
+<section class="d vc">
+  <div class="centro" style="height:auto">
+    <div class="niveles fijo"><i class="ver" style="height:34px"></i><i class="ver" style="height:60px"></i><i class="ver" style="height:86px"></i><i class="ver" style="height:112px"></i><span>↑ tu nivel</span></div>
+    <p class="grande en" style="margin-top:70px">Eso genera un aprendizaje<br><span class="nar">más profundo, más seguro y más veloz</span>.</p>
   </div>
 </section>
 
@@ -449,61 +467,21 @@ body.pausa #marca-pausa{opacity:1}
 </section>
 
 <!-- 10–16. Aula virtual -->
-<section class="d">
+<section class="d" data-aula>
   <div class="enc en"><h2>Aula virtual</h2></div>
   <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">Todo el material del programa está en el aula.</p>
-      <p class="chico en r2">No es una lista de videos: <b style="color:var(--ink)">es un camino</b>. Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p>
+    <div class="txt aula-txt">
+      <div class="at" data-k="0"><p class="medio">Todo el material del programa está en el aula.</p><p class="chico">No es una lista de videos: <b style="color:var(--ink)">es un camino</b>. Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p></div>
+      <div class="at" data-k="1"><p class="medio">En cada paso tenés la clase, el material y una pregunta: <span class="nar">¿cómo te fue?</span></p></div>
+      <div class="at" data-k="2"><p class="medio">Un mismo video puede tener varias ejercitaciones. El aula te acompaña para que <span class="nar">las surfees</span>.</p><span class="chip"><i></i>Ir a esta parte del video</span><span class="chip"><i></i>Ir a esta parte del doc</span><p class="chico">Naturalmente, y haciendo cada paso en el momento adecuado.</p></div>
+      <div class="at" data-k="3"><p class="medio">Según lo que contestes, el aula <span class="nar">te da consejos</span> y te marca el camino a seguir.</p><p class="chico">O te sugiere que me consultes si te trabaste.</p></div>
+      <div class="at" data-k="4"><p class="medio">A medida que hacés las tareas, me mandás <span class="nar">videos tuyos</span> ejecutándolas.</p><p class="chico">Los grabás ahí mismo y te devuelvo qué está bien y en qué hacer foco.</p></div>
+      <div class="at" data-k="5"><p class="medio">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p><p class="chico">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p></div>
+      <div class="at" data-k="6"><p class="medio">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p></div>
     </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1_camino.jpg?v=11201550" src="media/c1_camino.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video id="aula-video" muted playsinline preload="auto" poster="media/c8_aula.jpg?v=2" src="media/c8_aula.mp4?v=2"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
-</section>
-
-
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">En cada paso tenés la clase, el material y una pregunta: <span class="nar">¿cómo te fue?</span></p>
-      <p class="chico en r2">Según lo que contestes, el aula te da consejos y te marca el camino a seguir. O te sugiere que me consultes si te trabaste.</p>
-    </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c2_paso.jpg?v=11201550" src="media/c2_paso.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
-  </div>
-</section>
-
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p>
-      <p class="chico en r2">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p>
-    </div>
-    <div class="compu ancho"><div class="pant"><video muted playsinline preload="auto" poster="media/c3_animacion.jpg?v=11201550" src="media/c3_animacion.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
-  </div>
-</section>
-
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">Un mismo video puede tener varias ejercitaciones. El aula te acompaña para que <span class="nar">las surfees</span>.</p>
-      <span class="chip en r2"><i></i>Ir a esta parte del video</span><span class="chip en r2"><i></i>Ir a esta parte del doc</span>
-      <p class="chico en r3">Naturalmente, y haciendo cada paso en el momento adecuado.</p>
-    </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c4_ir.jpg?v=11201550" src="media/c4_ir.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
-  </div>
-</section>
-
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">A medida que hacés las tareas, me mandás <span class="nar">videos tuyos</span> ejecutándolas.</p>
-      <p class="chico en r2">Los grabás ahí mismo y te devuelvo qué está bien y en qué hacer foco.</p>
-    </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c5_grabar.jpg?v=11201550" src="media/c5_grabar.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
-  </div>
+  <i data-paso="6" hidden></i>
 </section>
 
 <section class="d" data-app>
@@ -517,16 +495,6 @@ body.pausa #marca-pausa{opacity:1}
       <div class="celu"><video muted playsinline preload="auto" poster="media/c6_celu.jpg?v=11201550" src="media/c6_celu.mp4?v=11201550"></video></div>
       <div class="app"><img src="../iconos/icono-512.png" alt=""><span>Ajuste Elástico</span></div>
     </div>
-  </div>
-</section>
-
-<section class="d">
-  <div class="enc en"><h2>Aula virtual</h2></div>
-  <div class="aula">
-    <div class="txt">
-      <p class="medio en r1">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p>
-    </div>
-    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c7_modulo.jpg?v=11201550" src="media/c7_modulo.mp4?v=11201550"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -558,7 +526,7 @@ body.pausa #marca-pausa{opacity:1}
 </section>
 
 <!-- 3. En vivo -->
-<section class="d">
+<section class="d" data-vivo>
   <div class="enc en"><div class="bola">3</div><h2>Sesiones en vivo</h2></div>
   <div class="envivo en r1">
     <div class="llamada">
@@ -574,9 +542,9 @@ body.pausa #marca-pausa{opacity:1}
   <h2 class="tit en">El programa es <span class="nar">personalizado</span></h2>
   <p class="grande en r1" style="margin-top:56px;font-size:54px">Seguimos un camino, pero yo estoy con vos todo el tiempo<br>y lo vamos <span class="nar">adaptando a tu caso</span>.</p>
   <div class="perso">
-    <div class="pc" data-paso="1"><i></i><span>Si necesitás ir tranqui, <b>vamos tranqui</b>.</span></div>
+    <div class="pc" data-paso="1"><i></i><span>Si necesitás ir tranqui, <b>vamos tranqui</b>. Si estás para darle con todo, <b>le damos con todo</b>.</span></div>
     <div class="pc" data-paso="2"><i></i><span>Si surgen dudas que no están en el programa, <b>lo charlamos</b> y lo vamos llevando.</span></div>
-    <div class="pc" data-paso="3"><i></i><span>La idea es que sea <b>la mejor experiencia educativa que hayas tenido</b>.</span></div>
+    <div class="pc" data-paso="3"><i></i><span>Mi intención es que sea <b>la mejor experiencia educativa que hayas tenido</b> hasta ahora.</span></div>
   </div>
 </section>
 
@@ -613,7 +581,7 @@ body.pausa #marca-pausa{opacity:1}
 
 <script>
 const D = [...document.querySelectorAll('.d')], esc = document.getElementById('escena');
-let i = 0, paso = 0, pasoAnt = -1, tPaso = 0, ciclos = 0, ultima = -1, tEntrada = 0, reloj = 0, pausado = false, antes = performance.now();
+let i = 0, paso = 0, pasoPrevio = 0, pasoAnt = -1, tPaso = 0, ciclos = 0, ultima = -1, tEntrada = 0, reloj = 0, pausado = false, antes = performance.now();
 const pasosDe = d => Math.max(0, ...[...d.querySelectorAll('[data-paso]')].map(x => +x.dataset.paso));
 
 function ajustar() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); esc.style.transform = `translate(-50%, -50%) scale(${k})`; }
@@ -632,7 +600,10 @@ function pintar() {
   // al entrar a una diapositiva: videos desde el principio (una sola vez, quedan en el último cuadro), red y chat de cero
   const nueva = i !== ultima; ultima = i;
   if (nueva || paso !== pasoAnt) { tPaso = reloj; if (nueva) ciclos = 0; } pasoAnt = paso;
-  D.forEach((x, n) => x.querySelectorAll('video').forEach(v => { if (n === i) { if (nueva) { v.currentTime = 0; v.play().catch(() => {}); } } else v.pause(); }));
+  const adelante = !nueva && paso > pasoPrevio;
+  D.forEach((x, n) => x.querySelectorAll('video:not(#aula-video)').forEach(v => { if (n === i) { if (nueva) { v.currentTime = 0; v.play().catch(() => {}); } } else v.pause(); }));
+  if (d.hasAttribute('data-aula') && (nueva || paso !== pasoPrevio)) aulaPaso(d, nueva, adelante); else if (!d.hasAttribute('data-aula')) document.getElementById('aula-video').pause();
+  pasoPrevio = paso;
   if (nueva) { pausar(false); tEntrada = reloj; if (d.hasAttribute('data-chat')) chat(); }
   // los 4 módulos: zoom en uno por vez
   const pil = d.querySelector('.pilares');
@@ -653,7 +624,7 @@ function sig() { if (paso < pasosDe(D[i])) { paso++; pintar(); } else if (i < D.
 function ant() { if (paso > 0) { paso--; pintar(); } else if (i > 0) ir(i - 1, 'fin'); }
 
 addEventListener('keydown', e => {
-  if (panel.classList.contains('ver')) { if (['Escape', 'ArrowRight', 'ArrowLeft', 'Enter', 'Backspace'].includes(e.key)) { e.preventDefault(); cerrarPanel(); } return; }
+  if (panel.classList.contains('ver')) { e.preventDefault(); if (e.key === 'Escape') cerrarPanel(); else if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) panelSig(); else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) panelAnt(); else if (e.key === ' ') pausar(); return; }
   if (e.key === ' ') { e.preventDefault(); pausar(); }
   else if (['ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); sig(); }
   else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); ant(); }
@@ -724,6 +695,17 @@ function chatAvanzar() {
     while (box.children.length > 7) box.firstChild.remove();
   }
 }
+/* aula: un solo video, cada flecha reproduce el tramo siguiente y se frena */
+const MARCAS = [2.5, 7.81, 14.01, 21.55, 39.92, 59.33, 66.82];
+let aulaHasta = 0;
+function aulaPaso(d, nueva, adelante) {
+  const v = document.getElementById('aula-video');
+  d.querySelectorAll('.at').forEach(x => x.classList.toggle('on', +x.dataset.k === paso));
+  if (nueva && paso === 0) { v.currentTime = 0; aulaHasta = MARCAS[0]; if (!pausado) v.play().catch(() => {}); return; }
+  if (nueva || !adelante) { v.pause(); v.currentTime = MARCAS[paso] - .05; aulaHasta = MARCAS[paso]; return; }
+  aulaHasta = MARCAS[paso]; if (!pausado) v.play().catch(() => {});
+}
+function aulaCuadro() { const v = document.getElementById('aula-video'); if (!v.paused && v.currentTime >= aulaHasta - .03) v.pause(); }
 /* el ciclo: fácil → reajuste → punto medio, una y otra vez */
 const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
 const resorte = u => 1 - Math.exp(-6 * u) * Math.cos(9 * u);
@@ -737,10 +719,10 @@ function cicloCuadro(d) {
     if (u < 2.8) pos = CENTRO + (FACIL - CENTRO) * ease(u / 2.8);
     else if (u < 3.3) pos = FACIL;
     else { pos = FACIL + (CENTRO - FACIL) * resorte(Math.min(1, (u - 3.3) / 1.2)); ajustando = u < 4.4; }
-    const n = Math.min(6, 2 + k + (u > 3.6 ? 1 : 0)); document.querySelectorAll('#niveles i').forEach((x, j) => x.classList.toggle('ver', j < n));
+    const n = Math.min(4, 2 + k + (u > 3.6 ? 1 : 0)); document.querySelectorAll('#niveles i').forEach((x, j) => x.classList.toggle('ver', j < n));
   }
   if (paso < 3) { const n = paso >= 2 && (reloj - tPaso) > 1 ? 2 : 1; document.querySelectorAll('#niveles i').forEach((x, j) => { x.classList.toggle('ver', j < n); }); }
-  document.querySelectorAll('#niveles i').forEach((x, j) => x.style.height = (34 + j * 15) + 'px');
+  document.querySelectorAll('#niveles i').forEach((x, j) => x.style.height = (34 + j * 26) + 'px');
   m.style.left = (pos * 100) + '%'; aj.classList.toggle('ver', ajustando);
   c.classList.toggle('ok', Math.abs(pos - CENTRO) < .09); c.classList.toggle('facil', pos < .3);
 }
@@ -763,7 +745,7 @@ const RICO = [
 <p class="fuerte">Elegir qué es lo que tocás, y <span class="nar">no que los acordes elijan por vos</span>.</p>
 <p>Anticiparte a lo que viene y tomar <b>decisiones conscientes y certeras</b>, sin tener que pensarlo y sin que los acordes se te vengan encima: decidís lo que querés hacer y lo hacés.</p>
 <p>Saber exactamente <b>dónde estás parado en cada momento</b>, sin pensarlo.</p>
-<div class="pm-chips"><span><i></i>Control y fluidez en los cambios</span><span><i></i>Seguridad</span><span><i></i>No solo en el jazz: en cualquier género</span></div>
+<div class="pm-chips"><span><i></i>No solo en el jazz: en cualquier género</span></div>
 </div></div>`,
 `<div class="pm-tabs"><button class="on" data-t="a">El puente</button><button data-t="b">Sacar un solo</button></div>
 <div class="pm-hoja on" data-t="a"><div class="pm-grid"><div class="pm-txt">
@@ -775,9 +757,64 @@ const RICO = [
 <p class="fuerte">Sacamos un solo y aprendemos a <span class="nar">decodificar sus frases</span>.</p>
 <p>No es copiar una frase y pegarla, ni sacar un solo para que queden cosas a medias, superficiales o copiadas exactas.</p>
 <p>Es entender <b>los mecanismos detrás de los solos que nos gustan</b> y pasarlos por la mecanización y la integración, para que no quedes solo en entenderlos: <b>que finalmente los uses para improvisar</b>.</p>
-<div class="pm-chips"><span><i></i>Aprender o reordenar el lenguaje del jazz</span><span><i></i>Transcribir eficientemente</span><span><i></i>Decodificar · Mecanizar · Integrar</span></div>
-</div></div>`, null, null];
+</div></div>`,
+`<div class="pm-tabs"><button class="on" data-t="a">Por qué el ritmo</button><button data-t="b">Cómo lo practicamos</button><button data-t="c">Entrenador rítmico</button></div>
+<div class="pm-hoja on" data-t="a"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">El ritmo es una de las tres patas de la música… y <span class="nar">la que más relegada queda</span>.</p>
+<p>Casi no se practica con el foco puesto solo en él.</p>
+<p>Si sentís que <b>te repetís</b>, una de las causas más fundamentales es que <b>el ritmo de lo que tocás es siempre igual</b>.</p>
+<p>Sacamos el foco de las notas, los acordes y el lenguaje por un rato y nos concentramos en el ritmo: entender qué tocamos y <b>qué opciones tenemos para generar variabilidad</b>.</p>
+<p>Te hace sentir <b>mucho más en control</b> y te da un abanico mucho más amplio de herramientas para la <b>expresividad</b>.</p>
+</div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-patas"><g font-family="Poppins" font-weight="700" font-size="28" text-anchor="middle"><circle cx="300" cy="110" r="88" fill="#2A3858" stroke="#B9C3DA" stroke-width="4"/><text x="300" y="120" fill="#F2F3F6">Melodía</text><circle cx="170" cy="330" r="88" fill="#2A3858" stroke="#B9C3DA" stroke-width="4"/><text x="170" y="340" fill="#F2F3F6">Armonía</text><circle id="pm-ritmo" cx="430" cy="330" r="88" fill="#2A3858" stroke="#5E6B88" stroke-width="4" stroke-dasharray="10 10"/><text id="pm-ritmo-t" x="430" y="340" fill="#7d8aa8">Ritmo</text></g></svg></div></div></div>
+<div class="pm-hoja" data-t="b"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">Practicamos <span class="nar">ritmos fijos que van variando</span>.</p>
+<p>Cada ritmo lo llevamos por una escalera, siempre con <b>el mismo ritmo fijo</b>.</p>
+</div><div class="escalera">
+<div class="es" style="--n:0"><i></i><span>Con el cuerpo</span></div>
+<div class="es" style="--n:1"><i></i><span>Una sola nota en la guitarra</span></div>
+<div class="es" style="--n:2"><i></i><span>Una escala</span></div>
+<div class="es" style="--n:3"><i></i><span>Una escala más abierta</span></div>
+<div class="es" style="--n:4"><i></i><span>Cambios de acorde con arpegios</span></div>
+<div class="es" style="--n:5"><i></i><span>Cambios de acorde con escalas</span></div>
+</div></div></div>
+<div class="pm-hoja" data-t="c"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">Un <span class="nar">entrenador rítmico</span> diseñado y curado por mí.</p>
+<p>Te ayuda a mejorar tu capacidad de <b>generar muchas ideas nuevas con un elemento a la vez</b>…</p>
+<p>…y después a <b>combinarlos entre sí</b>.</p>
+</div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-entren"></svg></div></div></div>`,
+`<div class="pm-tabs"><button class="on" data-t="a">El discurso</button><button data-t="b">Qué entrenamos</button><button data-t="c">El resultado</button></div>
+<div class="pm-hoja on" data-t="a"><div class="pm-txt" style="max-width:1200px">
+<p class="fuerte">El desarrollo de un solo y el discurso <span class="nar">no tienen por qué venir de la inspiración</span>.</p>
+<p>Tampoco de forzarnos a tocar con más discurso o más melodía: eso, si sirve, sirve de muy poco.</p>
+<p class="fuerte">Lo que hay que hacer es practicar <span class="nar">ejercicios diseñados</span> para mejorar tu capacidad discursiva.</p>
+</div></div>
+<div class="pm-hoja" data-t="b"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">Estos ejercicios trabajan…</p>
+<p>…<b>la memoria</b>…</p>
+<p>…un <b>registro fino</b> de escuchar lo que estás tocando y recordarlo…</p>
+<p>…y herramientas para <b>variarlo, fragmentarlo y extenderlo</b>, desde el ritmo y desde las notas.</p>
+</div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-motivo"></svg></div></div></div>
+<div class="pm-hoja" data-t="c"><div class="pm-grid"><div class="pm-txt">
+<p class="fuerte">Solos con <span class="nar">coherencia, dirección y claridad</span>.</p>
+<p>Que los disfrutes vos y cualquiera que escucha: <b>musicales, lindos de escuchar</b>.</p>
+<p>No alcanza con saber las notas correctas, ni el lenguaje, ni el ritmo: hay que <b>ordenar todo eso en un discurso musical y bello</b>.</p>
+</div><div class="pm-dib"><svg viewBox="0 0 600 470"><path id="pm-curva" d="M30 400 C 130 400, 150 200, 240 210 S 330 330, 400 250 S 500 60, 570 70" fill="none" stroke="#E8834F" stroke-width="9" stroke-linecap="round"/><circle id="pm-punta" r="15" fill="#F2F3F6"/></svg></div></div></div>`];
 let panelT0 = 0;
+const itemsDe = h => h ? [...h.querySelectorAll('.pm-txt>.rv, .escalera .es.rv')] : [];
+function mostrarHoja(h, todo) { if (!h) return; itemsDe(h).forEach((x, j) => x.classList.toggle('vis', todo || j === 0)); }
+function elegirHoja(h, todo) { panel.querySelectorAll('.pm-hoja').forEach(x => x.classList.toggle('on', x === h)); panel.querySelectorAll('.pm-tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === h.dataset.t)); mostrarHoja(h, todo); }
+function panelSig() {
+  const h = panel.querySelector('.pm-hoja.on'); if (!h) return;
+  const it = itemsDe(h), nx = it.find(x => !x.classList.contains('vis'));
+  if (nx) { nx.classList.add('vis'); return; }
+  const hs = [...panel.querySelectorAll('.pm-hoja')], k = hs.indexOf(h); if (k < hs.length - 1) elegirHoja(hs[k + 1]);
+}
+function panelAnt() {
+  const h = panel.querySelector('.pm-hoja.on'); if (!h) return;
+  const vis = itemsDe(h).filter(x => x.classList.contains('vis'));
+  if (vis.length > 1) { vis[vis.length - 1].classList.remove('vis'); return; }
+  const hs = [...panel.querySelectorAll('.pm-hoja')], k = hs.indexOf(h); if (k > 0) elegirHoja(hs[k - 1], true);
+}
 const NOT_A = ['Bb', 'G', 'Eb', 'C'], NOT_B = ['Eb', 'C', 'A', 'F'];
 function panelCuadro() {
   const te = reloj - panelT0, ac = document.getElementById('pm-acordes');
@@ -792,6 +829,34 @@ function panelCuadro() {
     const ci = nt.querySelectorAll('circle'), o = orden[k], a = Math.floor(o / 4), b = o % 4;
     ci.forEach((c, j) => c.setAttribute('stroke', (j === a || j === 4 + b) ? '#E8834F' : '#B9C3DA'));
   }
+  const pr = document.getElementById('pm-ritmo');
+  if (pr && pr.closest('.pm-hoja.on')) { const on = (te % 6) > 2.2; pr.setAttribute('stroke', on ? '#E8834F' : '#5E6B88'); pr.setAttribute('stroke-dasharray', on ? '0' : '10 10'); pr.setAttribute('r', on ? 88 + 6 * Math.sin(te * 5) : 88); document.getElementById('pm-ritmo-t').setAttribute('fill', on ? '#F2F3F6' : '#7d8aa8'); }
+  const en = document.getElementById('pm-entren');
+  if (en && en.closest('.pm-hoja.on')) {
+    if (!en.childElementCount) {
+      const pats = [[1,0,0,1,0,0,1,0], [0,1,0,1,0,1,1,0], [1,0,1,0,0,1,0,1]], cols = ['#E8834F', '#7FA0E0', '#5BD49A'], noms = ['Elemento 1', 'Elemento 2', 'Elemento 3'];
+      pats.forEach((pt, r) => { en.insertAdjacentHTML('beforeend', `<text x="20" y="${78 + r * 100}" fill="#B9C3DA" font-family="Poppins" font-weight="600" font-size="22">${noms[r]}</text>`); pt.forEach((v, c) => en.insertAdjacentHTML('beforeend', `<rect class="ce" data-r="${r}" data-c="${c}" x="${170 + c * 52}" y="${50 + r * 100}" width="42" height="42" rx="8" fill="${v ? cols[r] : '#2A3858'}"/>`)); });
+      en.insertAdjacentHTML('beforeend', `<text x="20" y="408" fill="#F2F3F6" font-family="Poppins" font-weight="700" font-size="22">Combinados</text>`);
+      for (let c = 0; c < 8; c++) en.insertAdjacentHTML('beforeend', `<rect class="cc" data-c="${c}" x="${170 + c * 52}" y="380" width="42" height="42" rx="8" fill="#2A3858"/>`);
+      en._pats = pats; en._cols = cols;
+    }
+    const paso8 = Math.floor(te * 2.5) % 8, ronda = Math.floor(te / 6.4) % 3;
+    en.querySelectorAll('.ce').forEach(r => r.setAttribute('opacity', +r.dataset.c === paso8 ? 1 : .55));
+    en.querySelectorAll('.cc').forEach(r => { const c = +r.dataset.c, src = (c + ronda) % 3; r.setAttribute('fill', en._pats[src][c] ? en._cols[src] : '#2A3858'); r.setAttribute('opacity', c === paso8 ? 1 : .6); });
+  }
+  const mo = document.getElementById('pm-motivo');
+  if (mo && mo.closest('.pm-hoja.on')) {
+    if (!mo.childElementCount) {
+      const filas = [['Idea', [2, 4, 3, 5]], ['Variar', [2, 4, 1, 5]], ['Fragmentar', [2, 4]], ['Extender', [2, 4, 3, 5, 6, 4]]];
+      filas.forEach(([n, ns], r) => { const y0 = 40 + r * 110; mo.insertAdjacentHTML('beforeend', `<text class="mf" data-r="${r}" x="10" y="${y0 + 52}" fill="#B9C3DA" font-family="Poppins" font-weight="600" font-size="24">${n}</text>`);
+        let pth = ''; ns.forEach((v, j) => { const x = 200 + j * 62, y = y0 + 80 - v * 11; pth += (j ? ' L ' : 'M ') + x + ' ' + y; mo.insertAdjacentHTML('beforeend', `<circle class="mf" data-r="${r}" cx="${x}" cy="${y}" r="13" fill="${r ? '#E8834F' : '#F2F3F6'}"/>`); });
+        mo.insertAdjacentHTML('afterbegin', `<path class="mf" data-r="${r}" d="${pth}" fill="none" stroke="${r ? '#E8834F' : '#F2F3F6'}" stroke-width="4" opacity=".5"/>`); });
+    }
+    const vis = Math.floor(te / 1.2) % 6;
+    mo.querySelectorAll('.mf').forEach(x => { x.style.transition = 'opacity .5s'; x.style.opacity = +x.dataset.r <= vis ? 1 : .08; });
+  }
+  const pc = document.getElementById('pm-curva');
+  if (pc && pc.closest('.pm-hoja.on')) { const L = pc.getTotalLength(), u = (te % 4.5) / 4.5, pt = pc.getPointAtLength(L * u); const pp = document.getElementById('pm-punta'); pp.setAttribute('cx', pt.x); pp.setAttribute('cy', pt.y); }
   const pu = document.getElementById('pm-puente');
   if (pu && pu.closest('.pm-hoja.on')) {
     const c = te % 9, tabs = pu.querySelectorAll('#pm-tablas rect'), e2 = pu.querySelector('.pm-e2'), e3 = pu.querySelector('.pm-e3'), bola = document.getElementById('pm-bola');
@@ -808,17 +873,19 @@ function abrirPanel(k) {
   caja.classList.toggle('ancha', !!rico);
   panel.querySelector('ul').innerHTML = rico ? '' : items.map((x, j) => `<li style="transition-delay:${.15 + j * .12}s">${x}</li>`).join('');
   panel.querySelector('.pm-rico').innerHTML = rico || '';
-  panel.querySelectorAll('.pm-tabs button').forEach(b => b.onclick = e => { e.stopPropagation(); const n = b.dataset.t; panel.querySelectorAll('.pm-tabs button').forEach(x => x.classList.toggle('on', x === b)); panel.querySelectorAll('.pm-hoja').forEach(h => h.classList.toggle('on', h.dataset.t === n)); });
+  panel.querySelectorAll('.pm-tabs button').forEach(b => b.onclick = e => { e.stopPropagation(); const n = b.dataset.t; panel.querySelectorAll('.pm-tabs button').forEach(x => x.classList.toggle('on', x === b)); panel.querySelectorAll('.pm-hoja').forEach(h => h.classList.toggle('on', h.dataset.t === n)); mostrarHoja(panel.querySelector('.pm-hoja.on')); });
   panelT0 = reloj;
+  panel.querySelectorAll('.pm-txt>*, .escalera .es').forEach(x => x.classList.add('rv'));
+  mostrarHoja(panel.querySelector('.pm-hoja'));
   panel.classList.remove('ver'); void panel.offsetWidth; panel.classList.add('ver');
 }
 const cerrarPanel = () => panel.classList.remove('ver');
 document.querySelectorAll('.pilar').forEach((c, k) => c.addEventListener('click', e => { e.stopPropagation(); abrirPanel(k); }));
-panel.addEventListener('click', e => { e.stopPropagation(); if (!e.target.closest('.pm-caja') || e.target.closest('.pm-cerrar')) cerrarPanel(); });
+panel.addEventListener('click', e => { e.stopPropagation(); if (!e.target.closest('.pm-caja') || e.target.closest('.pm-cerrar')) cerrarPanel(); else if (!e.target.closest('button')) panelSig(); });
 /* pausa: congela animaciones, videos y el chat; se puede seguir pasando de diapositiva */
 function pausar(v = !pausado) {
   pausado = v; document.body.classList.toggle('pausa', v);
-  D[i] && D[i].querySelectorAll('video').forEach(x => { if (v) x.pause(); else if (!x.ended && x.currentTime > 0) x.play().catch(() => {}); });
+  D[i] && D[i].querySelectorAll('video').forEach(x => { if (v) x.pause(); else if (!x.ended && x.currentTime > 0 && !(x.id === 'aula-video' && x.currentTime >= aulaHasta - .05)) x.play().catch(() => {}); });
   const b = document.getElementById('pausa'); if (b) b.innerHTML = v ? '<svg viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="#fff" stroke="none"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
 }
 
@@ -839,6 +906,8 @@ function cuadro(ahora) {
   const t = reloj, now = reloj * 1000, d = D[i];
   if (d.hasAttribute('data-chat')) chatAvanzar();
   if (d.hasAttribute('data-ciclo')) cicloCuadro(d);
+  if (d.hasAttribute('data-vivo')) { const k = Math.floor(Math.max(0, reloj - tEntrada - .6) / 1.5), quien = k >= 5 ? 1 : k % 2; d.querySelectorAll('.tile').forEach((x, j) => x.classList.toggle('habla', j === quien)); }
+  if (d.hasAttribute('data-aula')) aulaCuadro();
   if (panel.classList.contains('ver')) panelCuadro();
   const pz = d.querySelector('.pilares.zoom'), quieto = el => pz && !el.closest('.pilar').classList.contains('foco');
   if (d.contains(cu)) lineas.forEach((l, k) => {
