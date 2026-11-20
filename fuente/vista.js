@@ -609,12 +609,13 @@ function embedHTML(e) {
     // tapa con la miniatura del video (la de YouTube es 4:3: si el video es 16:9, viene con franjas negras arriba y abajo)
     const poster = `url(https://i.ytimg.com/vi/${esc(e.id)}/hqdefault.jpg)`, alto = (100 * Math.max(1, fte / (4 / 3))).toFixed(1) + '%';
     return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)};--poster:${poster};--poster-alto:${alto}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
-      <button class="ev-capa" data-ev-capa aria-label="Pausar"></button>
+      <button class="ev-capa ev-zona-izq" data-ev-salto="-15" aria-label="Volver 15 segundos"></button><button class="ev-capa ev-zona-med" data-ev-capa aria-label="Pausar"></button><button class="ev-capa ev-zona-der" data-ev-salto="15" aria-label="Adelantar 15 segundos"></button>
+      <span class="ev-aviso-salto"></span>
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
-      <button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button>
+      <div class="ev-saltos"><button data-ev-salto="-15" aria-label="Volver 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg><b>15</b></button><button data-ev-salto="15" aria-label="Adelantar 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg><b>15</b></button></div>
+      <div class="ev-acciones"><a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt aria-label="Ver en YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg><span>Ver en YouTube</span></a><button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button></div>
       <button class="ev-achicar" data-ev-grande aria-label="Achicar">✕</button>
-      <div class="ev-barra" data-ev-barra><i></i><b></b></div><span class="ev-tiempo"></span></div>
-      <a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg>Ver en YouTube</a></div>`;
+      <div class="ev-barra" data-ev-barra><i></i><b></b></div><span class="ev-tiempo"></span></div></div>`;
   }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
   return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
@@ -633,6 +634,9 @@ function montarVerticales() {
       }
       let timer = 0;
       const barra = m.querySelector('.ev-barra i');
+      const caja = m.querySelector('.ev-yt'), k = parseFloat(m.closest('.emb').style.getPropertyValue('--k')) || 1;
+      const ubicar = () => { const W = m.clientWidth; if (!W) return; caja.style.width = (W * k) + 'px'; caja.style.left = (-(k - 1) / 2 * W) + 'px'; caja.style.marginLeft = '0'; };
+      ubicar(); if (window.ResizeObserver) new ResizeObserver(ubicar).observe(m);
       const pl = new YT.Player(hueco, {
         videoId: id, host: 'https://www.youtube-nocookie.com',
         playerVars: { controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, cc_load_policy: 0 },
@@ -717,6 +721,12 @@ function evAccion(b, d) {
   const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
   try {
     if (d.evCapa !== undefined) pl.pauseVideo();
+    else if (d.evSalto !== undefined) {
+      const dur = pl.getDuration() || 0, t = Math.max(0, Math.min(dur ? dur - 0.5 : 1e9, pl.getCurrentTime() + Number(d.evSalto)));
+      pl.seekTo(t, true);
+      const av = m.querySelector('.ev-aviso-salto'); av.textContent = (Number(d.evSalto) > 0 ? '+' : '−') + '15 s';
+      av.classList.toggle('der', Number(d.evSalto) > 0); av.classList.remove('ver'); void av.offsetWidth; av.classList.add('ver');
+    }
     else if (d.evPlay !== undefined) { if (m.classList.contains('ev-fin')) pl.seekTo(0, true); pl.playVideo(); m.classList.add('ev-pidio'); }
   } catch (_) {}
 }
@@ -1347,7 +1357,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
-    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined) { evAccion(b, d); return; }
+    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined || d.evSalto !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
@@ -1397,7 +1407,7 @@ function enlazarAlumno() {
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
-    else if (d.accion === 'presentacion') renderLlamada();
+    else if (d.accion === 'presentacion') { presEst.i = 0; renderLlamada(); }
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.accion === 'reiniciar-llamada') reiniciarLlamada(b);
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }

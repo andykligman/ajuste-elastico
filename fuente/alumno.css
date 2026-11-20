@@ -1150,7 +1150,7 @@ body.sin-scroll{overflow:hidden}
 .ev-sonando .ev-play>*{visibility:hidden}
 .ev-sonando.ev-ver .ev-play{opacity:0}
 /* Ver en grande */
-.ev-agrandar{position:absolute;right:10px;bottom:14px;z-index:5;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
+.ev-agrandar{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
 .ev-agrandar svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .ev-sonando .ev-agrandar span{display:none}
 .ev-achicar{display:none}
@@ -1180,12 +1180,6 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ev-arranco .ev-barra i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#E8834F;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 .ev-tiempo{position:absolute;left:10px;bottom:16px;z-index:6;padding:3px 8px;border-radius:6px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);display:none;pointer-events:none}
 .ev-arrastrando .ev-tiempo{display:block}
-.ev-agrandar{bottom:18px}
-/* Ver en YouTube: chiquito, abajo del video */
-.ev-en-yt{display:inline-flex;align-items:center;gap:6px;margin:8px auto 0;padding:4px 10px;border-radius:999px;color:#5A6478;font:600 13px var(--sans);text-decoration:none;border:1px solid rgba(58,79,122,.25)}
-.ev-en-yt svg{width:17px;height:17px;fill:#E33}
-.ev-en-yt:hover{color:#3A4F7A;border-color:#3A4F7A}
-.emb.ev-grande .ev-en-yt{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:6;margin:0;color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
 
 /* Mandar otro video, cuando ya mandó uno: dos links, sin recuadro */
 .envio.envio-ok:has(.otro-video){flex-wrap:wrap;width:100%;justify-content:flex-start;row-gap:6px}
@@ -1201,3 +1195,27 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .otro-video{width:auto;margin-left:auto;flex-wrap:nowrap}
   .otro-btn{font-size:16px}
 }
+
+/* Testimonios: tocar a la izquierda / derecha = -15 s / +15 s, al medio = pausa */
+.ev-sonando .ev-capa{display:block}
+.ev-zona-izq{right:auto!important;width:32%}.ev-zona-der{left:auto!important;width:32%}.ev-zona-med{left:32%!important;right:32%!important}
+.ev-aviso-salto{position:absolute;top:50%;left:18%;z-index:6;white-space:nowrap;transform:translate(-50%,-50%);padding:10px 16px;border-radius:999px;background:rgba(9,13,24,.75);color:#fff;font:700 18px var(--sans);opacity:0;pointer-events:none}
+.ev-aviso-salto.der{left:82%}
+.ev-aviso-salto.ver{animation:evSalto .8s ease-out}
+@keyframes evSalto{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1}100%{opacity:0}}
+/* botones -15 / +15, abajo a la izquierda */
+.ev-saltos{position:absolute;left:10px;bottom:18px;z-index:7;display:none;gap:8px}
+.ev-arranco .ev-saltos{display:flex}
+.ev-saltos button{position:relative;width:42px;height:42px;border:0;border-radius:50%;background:rgba(9,13,24,.72);color:#fff;cursor:pointer;display:grid;place-items:center;padding:0}
+.ev-saltos svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ev-saltos b{position:absolute;font:700 11px var(--sans);top:50%;left:50%;transform:translate(-50%,-42%)}
+/* Ver en YouTube y Ver en grande, juntos abajo a la derecha */
+.ev-acciones{position:absolute;right:10px;bottom:18px;z-index:7;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ev-acciones>*{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer;text-decoration:none}
+.ev-en-yt svg{width:18px;height:18px;fill:#FF3B30}
+.ev-sonando .ev-acciones span{display:none}
+.ev-sonando .ev-acciones>*{padding:8px}
+.ev-simple .ev-acciones,.ev-simple .ev-saltos{display:none}
+.emb.ev-grande .ev-acciones{position:fixed;right:12px;bottom:max(20px,env(safe-area-inset-bottom))}
+.emb.ev-grande .ev-saltos{position:fixed;left:12px;bottom:max(20px,env(safe-area-inset-bottom))}
+.emb.ev-grande .ev-agrandar{display:none}

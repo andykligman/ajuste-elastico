@@ -15,7 +15,7 @@ let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.
 function urlAdmin() {
   if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
   else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
-  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); } catch (e) {} }
+  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); if (esLlamada) { localStorage.setItem('mapaAE_llamada_aula', '1'); localStorage.setItem('mapaAE_llamada_paso', abierto || ''); } } catch (e) {} }
 }
 function aplicarDestino() {
   const d = DESTINO; if (!d) return false; DESTINO = null;
@@ -122,7 +122,8 @@ function reiniciarLlamada(b) {
   }
   const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
-  try { localStorage.removeItem(clavePrueba()); } catch (e) {}
+  try { ['mapaAE_llamada_aula', 'mapaAE_llamada_paso', 'mapaAE_llamada_pres'].forEach(k => localStorage.removeItem(k)); localStorage.removeItem(clavePrueba()); } catch (e) {}
+  presEst.i = 0;
   ST = Object.assign(alumnoVacio('Invitado', 2, hoyISO()), { codigo: cod, modulos: '0' });
   abierto = null; document.querySelectorAll('.ll-puente').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
   renderLlamada(); window.scrollTo(0, 0);
@@ -244,7 +245,8 @@ function presVis(v, paso) {
   else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; }
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
-const presEst = { i: 0, visto: false, timer: null };
+const presEst = { i: (() => { try { return Math.max(0, +localStorage.getItem('mapaAE_llamada_pres') || 0); } catch (e) { return 0; } })(), visto: false, timer: null };
+const guardarPres = () => { try { localStorage.setItem('mapaAE_llamada_pres', String(presEst.i)); } catch (e) {} };
 const presUrl = i => `audio/llamada/${String(i + 1).padStart(2, '0')}.m4a?v=5`;
 const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
@@ -272,10 +274,10 @@ function presAccion(acc) {
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
-  if (acc === 'sig' || acc === 'ant') { parar(); presEst.i = Math.max(0, Math.min(PRES_LLAMADA.length - 1, presEst.i + (acc === 'sig' ? 1 : -1))); pintar(); sonar(); return; }
+  if (acc === 'sig' || acc === 'ant') { parar(); presEst.i = Math.max(0, Math.min(PRES_LLAMADA.length - 1, presEst.i + (acc === 'sig' ? 1 : -1))); guardarPres(); pintar(); sonar(); return; }
   if (presEst.timer) { parar(); pintar(); return; }
   presEst.visto = true; if (presEst.i >= PRES_LLAMADA.length - 1) presEst.i = 0;
-  const paso = () => { if (presEst.i >= PRES_LLAMADA.length - 1) { parar(); pintar(); return; } presEst.i++; pintar(); sonar(paso); };
+  const paso = () => { if (presEst.i >= PRES_LLAMADA.length - 1) { parar(); pintar(); return; } presEst.i++; guardarPres(); pintar(); sonar(paso); };
   presEst.timer = -1; pintar(); sonar(paso);
 }
 function renderLlamada() {
@@ -794,7 +796,12 @@ window.addEventListener('resize', () => {
 
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
-  if (esLlamada && !params.has('aula')) { renderLlamada(); return; }
+  // link de la llamada: si ya había entrado al aula en este aparato, vuelve al paso donde quedó (no a la presentación)
+  if (esLlamada && !params.has('aula')) {
+    let ya = null, paso = null; try { ya = localStorage.getItem('mapaAE_llamada_aula'); paso = localStorage.getItem('mapaAE_llamada_paso'); } catch (e) {}
+    if (ya) { DESTINO = { prueba: true, paso: paso || null }; nav('?llamada&aula'); aplicarDestino(); return; }
+    renderLlamada(); return;
+  }
   if (esDemo) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); return; }
   if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }

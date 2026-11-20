@@ -1223,7 +1223,7 @@ body.sin-scroll{overflow:hidden}
 .ev-sonando .ev-play>*{visibility:hidden}
 .ev-sonando.ev-ver .ev-play{opacity:0}
 /* Ver en grande */
-.ev-agrandar{position:absolute;right:10px;bottom:14px;z-index:5;display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
+.ev-agrandar{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer}
 .ev-agrandar svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .ev-sonando .ev-agrandar span{display:none}
 .ev-achicar{display:none}
@@ -1253,12 +1253,6 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ev-arranco .ev-barra i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#E8834F;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
 .ev-tiempo{position:absolute;left:10px;bottom:16px;z-index:6;padding:3px 8px;border-radius:6px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);display:none;pointer-events:none}
 .ev-arrastrando .ev-tiempo{display:block}
-.ev-agrandar{bottom:18px}
-/* Ver en YouTube: chiquito, abajo del video */
-.ev-en-yt{display:inline-flex;align-items:center;gap:6px;margin:8px auto 0;padding:4px 10px;border-radius:999px;color:#5A6478;font:600 13px var(--sans);text-decoration:none;border:1px solid rgba(58,79,122,.25)}
-.ev-en-yt svg{width:17px;height:17px;fill:#E33}
-.ev-en-yt:hover{color:#3A4F7A;border-color:#3A4F7A}
-.emb.ev-grande .ev-en-yt{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:6;margin:0;color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
 
 /* Mandar otro video, cuando ya mandó uno: dos links, sin recuadro */
 .envio.envio-ok:has(.otro-video){flex-wrap:wrap;width:100%;justify-content:flex-start;row-gap:6px}
@@ -1274,6 +1268,30 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .otro-video{width:auto;margin-left:auto;flex-wrap:nowrap}
   .otro-btn{font-size:16px}
 }
+
+/* Testimonios: tocar a la izquierda / derecha = -15 s / +15 s, al medio = pausa */
+.ev-sonando .ev-capa{display:block}
+.ev-zona-izq{right:auto!important;width:32%}.ev-zona-der{left:auto!important;width:32%}.ev-zona-med{left:32%!important;right:32%!important}
+.ev-aviso-salto{position:absolute;top:50%;left:18%;z-index:6;white-space:nowrap;transform:translate(-50%,-50%);padding:10px 16px;border-radius:999px;background:rgba(9,13,24,.75);color:#fff;font:700 18px var(--sans);opacity:0;pointer-events:none}
+.ev-aviso-salto.der{left:82%}
+.ev-aviso-salto.ver{animation:evSalto .8s ease-out}
+@keyframes evSalto{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%{opacity:1}100%{opacity:0}}
+/* botones -15 / +15, abajo a la izquierda */
+.ev-saltos{position:absolute;left:10px;bottom:18px;z-index:7;display:none;gap:8px}
+.ev-arranco .ev-saltos{display:flex}
+.ev-saltos button{position:relative;width:42px;height:42px;border:0;border-radius:50%;background:rgba(9,13,24,.72);color:#fff;cursor:pointer;display:grid;place-items:center;padding:0}
+.ev-saltos svg{width:30px;height:30px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ev-saltos b{position:absolute;font:700 11px var(--sans);top:50%;left:50%;transform:translate(-50%,-42%)}
+/* Ver en YouTube y Ver en grande, juntos abajo a la derecha */
+.ev-acciones{position:absolute;right:10px;bottom:18px;z-index:7;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ev-acciones>*{display:flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px 7px 9px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);cursor:pointer;text-decoration:none}
+.ev-en-yt svg{width:18px;height:18px;fill:#FF3B30}
+.ev-sonando .ev-acciones span{display:none}
+.ev-sonando .ev-acciones>*{padding:8px}
+.ev-simple .ev-acciones,.ev-simple .ev-saltos{display:none}
+.emb.ev-grande .ev-acciones{position:fixed;right:12px;bottom:max(20px,env(safe-area-inset-bottom))}
+.emb.ev-grande .ev-saltos{position:fixed;left:12px;bottom:max(20px,env(safe-area-inset-bottom))}
+.emb.ev-grande .ev-agrandar{display:none}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -2596,7 +2614,7 @@ let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.
 function urlAdmin() {
   if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
   else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
-  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); } catch (e) {} }
+  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); if (esLlamada) { localStorage.setItem('mapaAE_llamada_aula', '1'); localStorage.setItem('mapaAE_llamada_paso', abierto || ''); } } catch (e) {} }
 }
 function aplicarDestino() {
   const d = DESTINO; if (!d) return false; DESTINO = null;
@@ -2703,7 +2721,8 @@ function reiniciarLlamada(b) {
   }
   const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
-  try { localStorage.removeItem(clavePrueba()); } catch (e) {}
+  try { ['mapaAE_llamada_aula', 'mapaAE_llamada_paso', 'mapaAE_llamada_pres'].forEach(k => localStorage.removeItem(k)); localStorage.removeItem(clavePrueba()); } catch (e) {}
+  presEst.i = 0;
   ST = Object.assign(alumnoVacio('Invitado', 2, hoyISO()), { codigo: cod, modulos: '0' });
   abierto = null; document.querySelectorAll('.ll-puente').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
   renderLlamada(); window.scrollTo(0, 0);
@@ -3326,12 +3345,13 @@ function embedHTML(e) {
     // tapa con la miniatura del video (la de YouTube es 4:3: si el video es 16:9, viene con franjas negras arriba y abajo)
     const poster = `url(https://i.ytimg.com/vi/${esc(e.id)}/hqdefault.jpg)`, alto = (100 * Math.max(1, fte / (4 / 3))).toFixed(1) + '%';
     return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)};--poster:${poster};--poster-alto:${alto}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
-      <button class="ev-capa" data-ev-capa aria-label="Pausar"></button>
+      <button class="ev-capa ev-zona-izq" data-ev-salto="-15" aria-label="Volver 15 segundos"></button><button class="ev-capa ev-zona-med" data-ev-capa aria-label="Pausar"></button><button class="ev-capa ev-zona-der" data-ev-salto="15" aria-label="Adelantar 15 segundos"></button>
+      <span class="ev-aviso-salto"></span>
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
-      <button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button>
+      <div class="ev-saltos"><button data-ev-salto="-15" aria-label="Volver 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg><b>15</b></button><button data-ev-salto="15" aria-label="Adelantar 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg><b>15</b></button></div>
+      <div class="ev-acciones"><a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt aria-label="Ver en YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg><span>Ver en YouTube</span></a><button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button></div>
       <button class="ev-achicar" data-ev-grande aria-label="Achicar">✕</button>
-      <div class="ev-barra" data-ev-barra><i></i><b></b></div><span class="ev-tiempo"></span></div>
-      <a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg>Ver en YouTube</a></div>`;
+      <div class="ev-barra" data-ev-barra><i></i><b></b></div><span class="ev-tiempo"></span></div></div>`;
   }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
   return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
@@ -3350,6 +3370,9 @@ function montarVerticales() {
       }
       let timer = 0;
       const barra = m.querySelector('.ev-barra i');
+      const caja = m.querySelector('.ev-yt'), k = parseFloat(m.closest('.emb').style.getPropertyValue('--k')) || 1;
+      const ubicar = () => { const W = m.clientWidth; if (!W) return; caja.style.width = (W * k) + 'px'; caja.style.left = (-(k - 1) / 2 * W) + 'px'; caja.style.marginLeft = '0'; };
+      ubicar(); if (window.ResizeObserver) new ResizeObserver(ubicar).observe(m);
       const pl = new YT.Player(hueco, {
         videoId: id, host: 'https://www.youtube-nocookie.com',
         playerVars: { controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, cc_load_policy: 0 },
@@ -3434,6 +3457,12 @@ function evAccion(b, d) {
   const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
   try {
     if (d.evCapa !== undefined) pl.pauseVideo();
+    else if (d.evSalto !== undefined) {
+      const dur = pl.getDuration() || 0, t = Math.max(0, Math.min(dur ? dur - 0.5 : 1e9, pl.getCurrentTime() + Number(d.evSalto)));
+      pl.seekTo(t, true);
+      const av = m.querySelector('.ev-aviso-salto'); av.textContent = (Number(d.evSalto) > 0 ? '+' : '−') + '15 s';
+      av.classList.toggle('der', Number(d.evSalto) > 0); av.classList.remove('ver'); void av.offsetWidth; av.classList.add('ver');
+    }
     else if (d.evPlay !== undefined) { if (m.classList.contains('ev-fin')) pl.seekTo(0, true); pl.playVideo(); m.classList.add('ev-pidio'); }
   } catch (_) {}
 }
@@ -4064,7 +4093,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
-    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined) { evAccion(b, d); return; }
+    if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined || d.evSalto !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
@@ -4114,7 +4143,7 @@ function enlazarAlumno() {
     else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
-    else if (d.accion === 'presentacion') renderLlamada();
+    else if (d.accion === 'presentacion') { presEst.i = 0; renderLlamada(); }
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.accion === 'reiniciar-llamada') reiniciarLlamada(b);
     else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
@@ -4511,7 +4540,8 @@ function presVis(v, paso) {
   else if (v === 'final') { for (let k = 0; k < 18; k++) s += `<rect class="pl-confeti" x="${20 + (k * 37) % 320}" y="-10" width="7" height="12" rx="2" style="--k:${k};--r:${(k * 47) % 360}deg"/>`; }
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
-const presEst = { i: 0, visto: false, timer: null };
+const presEst = { i: (() => { try { return Math.max(0, +localStorage.getItem('mapaAE_llamada_pres') || 0); } catch (e) { return 0; } })(), visto: false, timer: null };
+const guardarPres = () => { try { localStorage.setItem('mapaAE_llamada_pres', String(presEst.i)); } catch (e) {} };
 const presUrl = i => `audio/llamada/${String(i + 1).padStart(2, '0')}.m4a?v=5`;
 const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
@@ -4539,10 +4569,10 @@ function presAccion(acc) {
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
-  if (acc === 'sig' || acc === 'ant') { parar(); presEst.i = Math.max(0, Math.min(PRES_LLAMADA.length - 1, presEst.i + (acc === 'sig' ? 1 : -1))); pintar(); sonar(); return; }
+  if (acc === 'sig' || acc === 'ant') { parar(); presEst.i = Math.max(0, Math.min(PRES_LLAMADA.length - 1, presEst.i + (acc === 'sig' ? 1 : -1))); guardarPres(); pintar(); sonar(); return; }
   if (presEst.timer) { parar(); pintar(); return; }
   presEst.visto = true; if (presEst.i >= PRES_LLAMADA.length - 1) presEst.i = 0;
-  const paso = () => { if (presEst.i >= PRES_LLAMADA.length - 1) { parar(); pintar(); return; } presEst.i++; pintar(); sonar(paso); };
+  const paso = () => { if (presEst.i >= PRES_LLAMADA.length - 1) { parar(); pintar(); return; } presEst.i++; guardarPres(); pintar(); sonar(paso); };
   presEst.timer = -1; pintar(); sonar(paso);
 }
 function renderLlamada() {
@@ -5061,7 +5091,12 @@ window.addEventListener('resize', () => {
 
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
-  if (esLlamada && !params.has('aula')) { renderLlamada(); return; }
+  // link de la llamada: si ya había entrado al aula en este aparato, vuelve al paso donde quedó (no a la presentación)
+  if (esLlamada && !params.has('aula')) {
+    let ya = null, paso = null; try { ya = localStorage.getItem('mapaAE_llamada_aula'); paso = localStorage.getItem('mapaAE_llamada_paso'); } catch (e) {}
+    if (ya) { DESTINO = { prueba: true, paso: paso || null }; nav('?llamada&aula'); aplicarDestino(); return; }
+    renderLlamada(); return;
+  }
   if (esDemo) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); return; }
   if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
