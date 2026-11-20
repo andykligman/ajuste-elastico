@@ -2902,6 +2902,7 @@ const stopEst = {};   // id -> { i, modo: 'si' | 'no' }
 let stopTimer = null;
 function stopHTML(p) {
   const id = p.stop, S = STOPS[id]; if (!S) return '';
+  if (S.audio || S.audioNo) setTimeout(() => precargarStop(S), 400);   // que los audios ya estén en memoria cuando toque Reproducir
   return `<details class="stop stop-${S.tipo}" ${p.stopCerrado ? '' : 'open'}><summary><span>${esc(S.titulo)}</span><small>${enLinea(S.sub)}</small></summary>
     <div class="stop-cuerpo" data-stop-caja="${id}">${stopInner(id)}</div></details>`;
 }
@@ -2948,9 +2949,21 @@ function stopInner(id) {
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
 const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.15; stopAudio.preservesPitch = true;
-const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=20` : ''; };
+const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=21` : ''; };
+// En el celu, cambiar el src a un audio que todavía está bajando hace que Safari se trabe ("trrr") entre frases cortas:
+// apenas se toca Reproducir, bajo todos los audios del stop a memoria y los reproduzco desde ahí
+const audioMem = new Map();
+function precargarStop(S) {
+  const seq = stopSeq(S);
+  seq.forEach((it, i) => {
+    const url = audioDe(S, { i }); if (!url || audioMem.has(url)) return;
+    audioMem.set(url, null);
+    fetch(url).then(r => r.ok ? r.blob() : Promise.reject()).then(b => audioMem.set(url, URL.createObjectURL(b))).catch(() => audioMem.delete(url));
+  });
+}
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
+  if (stopSonido && (acc === 'play' || acc === 'sig' || acc === 'ant')) precargarStop(S);
   const total = () => seq.length;
   const parar = () => { if (stopTimer) { clearTimeout(stopTimer.h); stopTimer = null; } stopAudio.onended = stopAudio.onerror = null; stopAudio.pause(); };
   const pintar = () => { const c = document.querySelector(`[data-stop-caja="${id}"]`); if (c) c.innerHTML = stopInner(id); else parar(); };
@@ -2959,7 +2972,7 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.15;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = audioMem.get(src) || src; stopAudio.playbackRate = 1.15;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };

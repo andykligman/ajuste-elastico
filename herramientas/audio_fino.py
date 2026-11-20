@@ -1,5 +1,5 @@
 # Audios que Andy ya mejoró en el iPhone ("Mejorar grabación"): UNA sola pasada desde ese archivo.
-# Sin EQ ni reducción de ruido. Recorta punta y final con fundidos mínimos (10 ms al entrar, 40 ms al salir),
+# Sin EQ ni reducción de ruido. Recorta punta y final con fundidos mínimos (10 ms al entrar, 40 ms al salir), 80 ms de aire antes de la voz,
 # acorta las pausas largas en el medio (> 0,35 s quedan en 0,22 s, con cruce de 10 ms) para que sea ágil,
 # volumen a -25 LUFS y 0,12 s de aire al final. AAC 128k mono 48 kHz.
 # Uso: python3 herramientas/audio_fino.py original.m4a audio/carpeta/NN.m4a
@@ -13,7 +13,7 @@ r = np.array([20*np.log10(np.sqrt(np.mean(x[k:k+w]**2))+1e-9) for k in range(0, 
 umbral = max(-62, r.max() - 42)
 voz = r > umbral
 idx = np.where(voz)[0]
-ini = max(0, idx[0] - 4)            # 40 ms antes de la primera palabra
+ini = max(0, idx[0] - 8)            # 80 ms antes de la primera palabra (el celu a veces se come el arranque)
 fin = min(len(r), idx[-1] + 1 + 6)  # 60 ms después de la última
 # pausas internas
 keep = []; k = ini; i = ini
