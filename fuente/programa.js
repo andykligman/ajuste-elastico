@@ -187,7 +187,7 @@ const STOPS = {
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
     contar: 'Veces que cantaste cada parte',
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo armar el solo **por partes**' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'partir', t: 'Cómo armar el solo **por partes**' },
       { sel: [0, 0], t: 'Frase A.' },
       { sel: [1, 3], traba: 1, t: 'Frase B… y se complica.' },
       { sel: [1, 1], zoom: true, partir: 1, t: 'Partís la B en las partes que necesites: **B1**…' },
@@ -210,12 +210,12 @@ const STOPS = {
       { sel: [6, 9], t: 'De la E a la H.' },
       { sel: [0, 5], t: 'Un repaso de la A a la D.' },
       { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Si en algún momento vuelve a aparecer una traba,\nen la B1 o donde sea, **vas directo ahí**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'directo', t: 'Si en algún momento vuelve a aparecer una traba,\nen la B1 o donde sea, **vas directo ahí**.' },
     ],
     no: {
       tandas: [
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Para transcribir, cantás el solo\nencima de la grabación, **frase por frase**.' },
-        { sel: [-1, -1], pausa: true, grande: true, vis: 'no-sumar', t: 'Cómo **no** armar el solo' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'cantar', t: 'Para transcribir, cantás el solo\nencima de la grabación, **frase por frase**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'no-transcribir', t: 'Cómo **no** armar el solo' },
         { sel: [0, 0], t: 'Lo que hace casi todo el mundo: siempre desde el principio. La A.' },
         { sel: [0, 3], t: 'A y B.' },
         { sel: [0, 4], t: 'A, B y C.' },
@@ -228,16 +228,19 @@ const STOPS = {
   },
   fragmento: {
     tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo',
-    sub: 'Del fragmento a los acordes, y de los acordes a la escala madre.',
+    sub: 'De la forma del tema a los compases, de los compases a los acordes, y de los acordes a la escala madre.',
     unidades: ['1', '2', '3', '4', '5', '6', '7', '8'],
     acordes: ['Bbmaj7', 'G7', 'C-7', 'F7', 'D-7', 'G7', 'C-7', 'F7'],
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo ubicar tu fragmento en el solo' },
-      { sel: [0, 7], t: 'Estos son los compases de tu solo, con sus acordes.' },
-      { sel: [2, 3], t: 'Elegiste un fragmento chico, de 4 a 8 notas. ¿En qué compases suena? Acá: **el 3 y el 4**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'escuchar', t: 'Primero escuchá el tema de cero\ny asegurate de saber bien **en qué momento empieza la forma**.' },
+      { sel: [-1, -1], pausa: true, grande: true, t: 'Si no tenés la armonía,\nbuscá el standard en **iReal** o su partitura.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'forma', t: 'Escuchá la melodía hasta que termine\ny fijate en qué momento empiezan **los compases de la forma para el solo**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: 'Después ubicá el fragmento en los compases que corresponden.\nSi hace falta, **contá los pulsos con los dedos**\npara saber en qué momento está sucediendo.' },
+      { sel: [0, 7], t: 'Por ejemplo, estos son los compases del solo.' },
+      { sel: [2, 3], t: 'Supongamos que tu fragmento cae en **el 3 y el 4**.' },
       { sel: [2, 3], zoom: true, t: 'Entonces suena sobre **C-7** y **F7**.' },
-      { sel: [-1, -1], pausa: true, grande: true, t: 'C-7 y F7 son el **II y el V de Bb mayor**:\nesa es la **escala madre** donde pensás la frase.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Con la escala madre clara,\nla frase se puede mover por **todos los grados** de esa escala.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'escala', t: 'C-7 y F7 son el **II y el V de Bb mayor**:\nesa es la **escala madre** donde pensás la frase.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'grados', t: 'Con la escala madre clara,\nla frase se puede mover por **todos los grados** de esa escala.' },
     ],
   },
 };
@@ -737,7 +740,7 @@ const PROGRAMA = {
       detalle: 'Mirá **el video** con **el doc al lado**. Todavía no hace falta tocar: en los pasos que siguen lo hacemos con **el solo que transcribiste**.',
       progreso: [
         { id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' },
-        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la viola. Mientras tanto, seguí con los cromáticos. Cuando lo tengas, volvé acá!' },
+        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Ponete las pilas con el solo! 😛 Podés ir viendo el video igual.' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: [SEC_M2.combinacion, 'Combinación de elementos del lenguaje'] }],
@@ -750,10 +753,10 @@ const PROGRAMA = {
       detalle: '1) Elegí **un fragmento chico** del solo, **de 4 a 8 notas**. Uno alcanza (dos como mucho).\n2) Fijate **en qué compases del solo** está sonando.\n3) Con eso, **sobre qué acordes** suena.\n4) Y con los acordes, **en qué escala madre** lo podés pensar: mayor, menor armónica o menor melódica.\n# Mandame un video contando sobre qué acordes suena y en qué escala madre lo ubicás\nTener clara la escala madre es lo que después te deja mover la frase por **todos los grados** de esa escala.',
       progreso: [
         { id: 'listo', label: 'Ya lo tengo ubicado', nivel: 'listo' },
-        { id: 'escala', label: 'No me doy cuenta de en qué escala madre está', nivel: 'cuesta', resp: 'Si la frase pasa por **dos acordes**, buscá la escala que los contiene a los dos (un II-V, por ejemplo, vive en la escala mayor del I). Si no sale, mandame el fragmento con los compases y lo vemos!' },
+        { id: 'escala', label: 'No me doy cuenta de en qué escala madre está', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
         { id: 'largo', label: 'No sé qué fragmento elegir', nivel: 'casi', resp: 'Elegí uno que **te guste** y que sientas que vas a poder mecanizar: porque lo reconocés dentro de una escala, porque entendés cómo funciona, o porque creés que lo vas a entender. Y que sea **corto**: no tiene por qué ser algo largo.' },
       ],
-      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.swdxlmi0s72j', '1. La decodificación (la escala madre)'] }],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.5fi2xqft8img', 'La escala madre'] }],
     },
     {
       id: 'k3', etapa: 'm2', entrega: 'video', envia: 'un video explicando de qué está hecho tu fragmento: nota x nota o por estructuras interválicas.',
@@ -767,7 +770,7 @@ const PROGRAMA = {
       ],
       recursos: [
         { t: 'Video: Ejemplos de decodificación', url: 'https://youtu.be/GrXVCxwRs6g?t=605' },
-        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.qxxedej69es3', 'El juego entre resumir y no equivocarse'] },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.tc0vb1lte1jo', 'Nota x nota o estructuras interválicas'] },
       ],
     },
     {
@@ -777,7 +780,6 @@ const PROGRAMA = {
       detalle: '1) **Reconocelo** sin metrónomo: movelo por **todos los grados** de la escala, dentro de **una posición**. Si lo anotaste nota x nota, bajale un número a todos los grados y así sucesivamente.\n2) **Mecanizalo** a tiempo real, todavía sin acordes: **una sola manera** de tocarlo y con el ritmo de la frase original.\n3) Los errores los corregís sin metrónomo, justo donde aparecen, y volvés a tempo.\n4) Cuando sale, **subí el tempo** para tener resto.\n# Con la oreja o adivinando, no: usá lo que escribiste',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'adaptar', label: 'En algunos grados no puedo hacer el movimiento exacto', nivel: 'casi', resp: 'Pasa seguido! Elegí **una sola forma de adaptar** ese pedazo y hacelo siempre igual en todos los grados.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: '**Partila todavía más**: mecanizá un pedacito más corto y después decidís si juntás todo o no. Igual que con la transcripción o los enlaces: menos información, más rápido y con menos frustración.' },
       ],
       recursos: [
@@ -819,33 +821,42 @@ const PROGRAMA = {
     {
       id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
       titulo: 'Introducción: entrenamiento rítmico',
-      detalle: 'Mirá el video de introducción al módulo',
+      detalle: 'Mirá el video de introducción al módulo.',
+      verYSeguir: true,
+      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3 }],
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
       titulo: 'Ritmo A + ritmo al cuerpo',
       detalle: 'Mirá el video y practicá el **ritmo A con el cuerpo**, como muestro ahí.',
+      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
     },
     {
       id: 'r3', etapa: 'ritmo', video: { id: 'Y5o2rSOFpnQ' }, hotmart: '97B2PPYx7p',
       titulo: 'Ritmo B + cómo destrabar cualquier ritmo',
       detalle: 'Mirá el video y practicá el **ritmo B** como muestro ahí.',
+      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
     },
     {
       id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D',
       titulo: 'Ritmo A + aplicaciones varias al instrumento',
-      detalle: 'Mirá el video con el PDF al lado y llevá el **ritmo A a la viola**.',
-      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3 }],
+      detalle: 'Mirá el video con el doc al lado y llevá el **ritmo A a la viola**.',
+      recursos: [
+        { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: [SEC_M3.integracion, 'Integración de un ritmo al instrumento'] },
+        { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.2i00i28i36lq', 'Reglas del ejercicio'] },
+      ],
     },
     {
       id: 'r5', etapa: 'ritmo', video: { id: 'ersUb9-L1zA' }, hotmart: 'y4bp2dGy7R',
       titulo: 'Ritmo B: ejemplos en el instrumento',
-      detalle: 'Mirá el video y llevá el **ritmo B a la viola**.',
+      detalle: 'Mirá el video y llevá el **ritmo B a la viola**, con los mismos niveles que el A.',
+      recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.p0dip9fimibq', 'Progresión de dificultad'] }],
     },
     {
       id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
       titulo: 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
-      detalle: 'Mirá el video con el PDF al lado.',
+      detalle: 'Mirá el video con el doc al lado.',
+      verYSeguir: true,
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
     },
     {
@@ -855,7 +866,7 @@ const PROGRAMA = {
       detalle: 'Mirá el video con el doc al lado y practicá con el **entrenador rítmico**: elegís las unidades y te arma improvisaciones para leer y cantar.',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },
-        { t: 'Entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/' },
+        { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
       ],
     },
   ],

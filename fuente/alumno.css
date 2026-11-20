@@ -1123,3 +1123,20 @@ body.sin-scroll{overflow:hidden}
 .paso-wa{margin:4px 0 8px}
 .mat .mat-mini{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;margin:-3px 4px -3px -7px;flex:none;background:#000;border:1px solid rgba(232,131,79,.35)}
 @media (max-width:560px){.mat .mat-mini{width:80px}}
+.vg-grab{fill:#3a3b41}
+.vg-voz{fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:320;stroke-dashoffset:320;animation:vgDibuja 2.4s .3s ease forwards}
+.vg-fila-no{fill:rgba(226,112,90,.18);stroke:#E2705A;stroke-width:1.5;opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.55s)}
+.vg-bloque{fill:none;stroke:#4a4b51;stroke-width:2;stroke-dasharray:5 5}
+.vg-trozo{fill:var(--azul);opacity:.25;animation:vgTrozo 4s ease-in-out infinite;animation-delay:calc(var(--k)*.7s)}
+@keyframes vgTrozo{0%,100%{opacity:.25}15%,30%{opacity:1}}
+.vg-paso{fill:#5a5b61}.vg-paso.mal{fill:#E2705A}
+.vg-salto{fill:none;stroke:var(--naranja);stroke-width:3;stroke-linecap:round;stroke-dasharray:220;stroke-dashoffset:220;animation:vgDibuja 1.2s .5s ease forwards}
+.vg-parlante{fill:var(--azul)}
+.vg-arco{fill:none;stroke:var(--naranja);stroke-width:3;stroke-linecap:round;animation:vgParpadeo 1.8s ease-in-out infinite;animation-delay:calc(var(--k)*.3s)}
+.vg-compas{fill:none;stroke:#5a5b61;stroke-width:2}.vg-compas.inicio{stroke:var(--naranja);fill:rgba(232,131,79,.2)}
+.vg-bandera{fill:var(--naranja);stroke:var(--naranja);stroke-width:2;stroke-linejoin:round}
+.vg-dedo{fill:#2b2c31;stroke:var(--azul);stroke-width:2;animation:vgDedo 2.4s steps(1) infinite;animation-delay:calc(var(--k)*.6s)}
+@keyframes vgDedo{0%,24%{fill:var(--azul)}25%,100%{fill:#2b2c31}}
+.vg-num{fill:var(--tinta);font:700 16px var(--display);text-anchor:middle}
+.vg-grado{fill:var(--azul);opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.35s)}
+.vg-motivo{fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:vgAparece 5s ease infinite;animation-delay:calc(var(--k)*.6s)}

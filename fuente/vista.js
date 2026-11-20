@@ -15,6 +15,7 @@ const ICONO = {
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   ok: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#0E1F16" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   idea: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  web: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 9h18" stroke="currentColor" stroke-width="1.8"/><circle cx="6.5" cy="6.5" r=".9" fill="currentColor"/><circle cx="9.5" cy="6.5" r=".9" fill="currentColor"/></svg>',
   abajo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v13M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 const ytId = url => { const m = String(url || '').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); return m ? m[1] : null; };
@@ -155,7 +156,7 @@ document.addEventListener('click', ev => {
 /* Material: los videos se abren en el reproductor de al lado; los documentos, en otra pestaña */
 const esCelular = () => window.matchMedia('(pointer: coarse)').matches || innerWidth < 1000;
 const attrSec = (url, h) => { const m = String(url).match(/\/document\/d\/([\w-]+)/); return m && esCelular() ? ` data-doc-sec="${m[1]}|${esc(h)}"` : ''; };
-const esDoc = r => r.url && !ytId(r.url);
+const esDoc = r => r.url && !ytId(r.url) && !r.web;
 function docNuevo(p, r) {
   const i = ORDEN.indexOf(p.id);
   for (let j = 0; j < i; j++) if ((PASO[ORDEN[j]].recursos || []).some(x => x.url === r.url)) return false;
@@ -253,7 +254,7 @@ function stopInner(id) {
     <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
-    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:repeat(${n},1fr)">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
+    <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
     ${(S.contar || tanda.veces) && !tanda.grande ? '' : `<span class="stop-logo" aria-hidden="true">${LOGO}</span>`}
     ${!e.visto ? `<button class="stop-play-grande" data-stop-acc="play" data-stop-id="${id}" aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="spg-txt">Reproducir</span></button>` : ''}
     </div>
@@ -329,6 +330,29 @@ function visGrande(v) {
     s = pts + '<line class="vg-pulso" x1="20" y1="80" x2="300" y2="80"/><circle class="vg-beat" cx="20" cy="80" r="5"/>';
   } else if (v === 'sumar') { for (let k = 0; k < 8; k++) s += caja(16 + k * 37, k < 4 ? 'base' : 'suma', k); }
   else if (v === 'no-sumar') { for (let k = 0; k < 8; k++) s += caja(16 + k * 37, 'todo', k); }
+  else if (v === 'cantar') {   // la voz (ondas) encima de la grabación (barras)
+    for (let k = 0; k < 14; k++) { const a = 5 + Math.abs(Math.sin(k * 1.7)) * 14; s += `<rect class="vg-grab" x="${24 + k * 20}" y="${(82 - a).toFixed(1)}" width="8" height="${(a * 2).toFixed(1)}" rx="2"/>`; }
+    s += '<path class="vg-voz" d="M24 34 C 54 14, 84 54, 114 34 S 174 14, 204 34 S 264 54, 296 30"/>';
+  } else if (v === 'no-transcribir') { [1, 2, 3, 4, 5].forEach((m, f) => { s += `<rect class="vg-fila-no" x="20" y="${8 + f * 20}" width="${m * 56}" height="12" rx="6" style="--k:${f}"/>`; }); }
+  else if (v === 'partir') {
+    s = '<rect class="vg-bloque" x="20" y="38" width="280" height="30" rx="8"/>';
+    [0, 1, 2, 3].forEach(k => { s += `<rect class="vg-trozo" x="${22 + k * 70}" y="40" width="66" height="26" rx="6" style="--k:${k}"/>`; });
+  } else if (v === 'directo') {
+    s = '<line class="vg-pulso" x1="20" y1="70" x2="300" y2="70"/>';
+    [0, 1, 2, 3, 4, 5, 6].forEach(k => { s += `<circle class="vg-paso ${k === 4 ? 'mal' : ''}" cx="${40 + k * 40}" cy="70" r="${k === 4 ? 9 : 6}"/>`; });
+    s += '<path class="vg-salto" d="M40 58 C 80 0, 160 0, 200 56"/><text class="vg-alerta" x="194" y="100">!</text>';
+  } else if (v === 'escuchar') {
+    s = '<path class="vg-parlante" d="M96 44 h22 l26 -20 v64 l-26 -20 h-22 z"/>';
+    [0, 1, 2].forEach(k => { s += `<path class="vg-arco" d="M${162 + k * 22} ${30 - k * 8} q ${18 + k * 6} 26 0 ${52 + k * 16}" style="--k:${k}"/>`; });
+  } else if (v === 'forma') {
+    for (let k = 0; k < 8; k++) s += `<rect class="vg-compas ${k === 0 ? 'inicio' : ''}" x="${16 + k * 37}" y="36" width="33" height="36" rx="4"/>`;
+    s += '<path class="vg-bandera" d="M20 34 V8 l26 8 l-26 8"/>';
+  } else if (v === 'contar') {
+    [0, 1, 2, 3].forEach(k => { s += `<circle class="vg-dedo" cx="${70 + k * 60}" cy="52" r="16" style="--k:${k}"/><text class="vg-num" x="${70 + k * 60}" y="58">${k + 1}</text>`; });
+  } else if (v === 'escala') { for (let k = 0; k < 7; k++) s += `<rect class="vg-grado" x="${30 + k * 38}" y="${88 - k * 11}" width="30" height="${10 + k * 11}" rx="3" style="--k:${k}"/>`; }
+  else if (v === 'grados') {
+    [0, 1, 2, 3].forEach(g => { const x = 24 + g * 74, y = 82 - g * 16; s += `<path class="vg-motivo" d="M${x} ${y} l14 -10 l14 6 l14 -14" style="--k:${g}"/>`; });
+  }
   else if (v === 'ciclo') s = '<circle class="vg-ciclo" cx="160" cy="48" r="32"/><circle class="vg-viaja" cx="160" cy="16" r="6"/><path class="vg-flecha" d="M186 30 l8 -2 l-1 8"/>';
   return s ? `<svg class="vis-grande vg-${v}" viewBox="0 0 320 112" aria-hidden="true">${s}</svg>` : '';
 }
@@ -339,26 +363,37 @@ function stopCifrado(S, enSel, est) {
   }).join('')}</div>`;
 }
 const ruido = (k, j) => { const x = Math.sin(k * 12.9898 + j * 78.233) * 43758.5453; return x - Math.floor(x); };
+/* Ancho de cada unidad: todas las frases miden lo mismo, y las subpartes (B1, B2…) parten el ancho de su frase */
+function anchosOla(S) {
+  const n = S.unidades.length, grupos = S.grupos || S.unidades.map((x, k) => [x, k, k]);
+  const w = Array(n).fill(1);
+  grupos.forEach(([, a, b]) => { for (let k = a; k <= b; k++) w[k] = 1 / (b - a + 1); });
+  return w;
+}
 function stopOla(S, enSel, est, partido) {
-  const n = S.unidades.length, W = 640, H = 112, u = W / n, cy = 62;
+  const n = S.unidades.length, W = 640, H = 112, cy = 62;
   const grupos = S.grupos || S.unidades.map((x, k) => [x, k, k]);
+  const w = anchosOla(S), tot = w.reduce((a, b) => a + b, 0);
+  const ux = [], uw = []; let acc = 0;
+  for (let k = 0; k < n; k++) { ux.push(acc * W / tot); uw.push(w[k] * W / tot); acc += w[k]; }
   let barras = '', marcas = '', fondos = '';
   for (let k = 0; k < n; k++) {
-    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '';
-    if (on) fondos += `<rect class="ola-sel ${cl}" x="${k * u + 1}" y="26" width="${u - 2}" height="${cy * 2 - 46}" rx="4"/>`;
-    for (let j = 0; j < 9; j++) {
+    const on = enSel(k), cl = est[k] === 'traba' ? 'traba' : est[k] === 'ok' ? 'ok' : '', x = ux[k], u = uw[k];
+    if (on) fondos += `<rect class="ola-sel ${cl}" x="${(x + 1).toFixed(1)}" y="26" width="${(u - 2).toFixed(1)}" height="${cy * 2 - 46}" rx="4"/>`;
+    const nb = Math.max(3, Math.round(9 * w[k]));
+    for (let j = 0; j < nb; j++) {
       const a = 4 + ruido(k, j) * 22 * (0.5 + 0.5 * Math.sin((k * 5 + j) / 2.3) ** 2);
-      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(k * u + 4 + j * (u - 8) / 9).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${((u - 8) / 16).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
+      barras += `<rect class="ola-b ${on ? 'on' : ''} ${cl}" x="${(x + 4 + j * (u - 8) / nb).toFixed(1)}" y="${(cy - a).toFixed(1)}" width="${(((u - 8) / nb) * 0.55).toFixed(1)}" height="${(a * 2).toFixed(1)}" rx="1"/>`;
     }
   }
   grupos.forEach(([letra, a, b]) => {
-    const x0 = a * u + 5, x1 = (b + 1) * u - 5, on = [...Array(b - a + 1)].some((_, s) => enSel(a + s));
+    const x0 = ux[a] + 5, x1 = ux[b] + uw[b] - 5, on = [...Array(b - a + 1)].some((_, s) => enSel(a + s));
     const tr = [...Array(b - a + 1)].some((_, s) => est[a + s] === 'traba'), ok = [...Array(b - a + 1)].some((_, s) => est[a + s] === 'ok');
-    marcas += `<path class="m-llave ${on ? 'on' : ''} ${tr ? 'traba' : ok ? 'ok' : ''}" d="M${x0} 24 v-6 H${x1} v6"/><text class="m-letra ${on ? 'on' : ''}" x="${(x0 + x1) / 2}" y="13">${esc(letra)}</text>`;
-    if (tr) marcas += `<text class="ola-alerta" x="${x1 - 2}" y="15">!</text>`;
+    marcas += `<path class="m-llave ${on ? 'on' : ''} ${tr ? 'traba' : ok ? 'ok' : ''}" d="M${x0.toFixed(1)} 24 v-6 H${x1.toFixed(1)} v6"/><text class="m-letra ${on ? 'on' : ''}" x="${((x0 + x1) / 2).toFixed(1)}" y="13">${esc(letra)}</text>`;
+    if (tr) marcas += `<text class="ola-alerta" x="${(x1 - 2).toFixed(1)}" y="15">!</text>`;
     if (b > a && partido) for (let k = a; k <= b; k++) {
-      marcas += `<text class="ola-num ${enSel(k) ? 'on' : ''}" x="${k * u + u / 2}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
-      if (k > a) marcas += `<line class="m-corte" x1="${k * u}" y1="30" x2="${k * u}" y2="${H - 14}"/>`;
+      marcas += `<text class="ola-num ${enSel(k) ? 'on' : ''}" x="${(ux[k] + uw[k] / 2).toFixed(1)}" y="${H - 2}">${esc(S.unidades[k])}</text>`;
+      if (k > a) marcas += `<line class="m-corte" x1="${ux[k].toFixed(1)}" y1="30" x2="${ux[k].toFixed(1)}" y2="${H - 14}"/>`;
     }
   });
   return `<svg viewBox="0 0 ${W} ${H}" class="svg-ola" role="img" aria-label="El solo como una onda, dividido en frases">${fondos}${barras}${marcas}</svg>`;
@@ -423,7 +458,7 @@ function materialHTML(p) {
     if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
     if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${id ? `<img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">` : ''}${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
-    return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
+    return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
 function apoyoHTML(p, sel) {
@@ -541,11 +576,11 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
+    ${p.verYSeguir && !p.soloVer ? (sig ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>${hecho(st, p.id) ? 'Seguir' : 'Ya lo vi, siguiente'}</span>${ICONO.abajo}</button></div>` : '') : p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
     ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) : ''}
-    ${p.soloVer || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${pideAyuda(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${p.soloVer || p.verYSeguir || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${pideAyuda(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
@@ -1247,7 +1282,10 @@ function enlazarAlumno() {
     else if (d.recOk) { recCerradas.add(d.recOk); renderAlumno(); }
     else if (d.recAbrir) { recCerradas.delete(d.recAbrir); renderAlumno(); }
     else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
-    else if (d.op) {
+    else if (d.vistoSeguir) {
+      const id = d.vistoSeguir; if (!hecho(ST, id)) { ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno(); }
+      const sig = siguienteDe(id); if (sig) abrirPaso(sig.id); else renderAlumno();
+    } else if (d.op) {
       const [id, opId] = d.op.split(':'); cambiando.delete(id); recCerradas.delete(id); const o = opcionesProgreso(PASO[id]).find(x => x.id === opId);
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
