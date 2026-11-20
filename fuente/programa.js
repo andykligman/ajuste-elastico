@@ -319,17 +319,24 @@ const PROGRAMA = {
     {
       id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
       titulo: 'Testimonio de Igna',
-      embed: { tipo: 'yt', id: '3pFH0fIg5PI' },
+      embed: { tipo: 'yt', id: '3pFH0fIg5PI', recorte: '9/16' },
       pregunta: '¿Seguimos?',
       progreso: [
         { id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' },
-        { id: 'visto', label: 'Ya lo había visto', nivel: 'listo', resp: 'Entonces mirá este otro, el de Manu 👇', embed: { tipo: 'yt', id: '5nnkrbhQ4qI' } },
+        { id: 'visto', label: 'Ya lo había visto', nivel: 'listo', resp: 'Entonces mirá este otro, el de Manu 👇', embed: { tipo: 'yt', id: '5nnkrbhQ4qI', fuente: '4/3', recorte: '4/5' } },
       ],
     },
     {
       id: 'llfin', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
       titulo: 'Video de bienvenida',
-      embed: { tipo: 'yt', id: 'A6bIbYywz3I' },
+      embed: { tipo: 'yt', id: 'A6bIbYywz3I', recorte: '9/16' },
+      pregunta: '¿Seguimos?',
+      progreso: [{ id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' }],
+    },
+    {
+      id: 'llt2', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
+      titulo: 'Testimonio de Manu',
+      embed: { tipo: 'yt', id: '5nnkrbhQ4qI', fuente: '4/3', recorte: '4/5' },
       pregunta: '¿Seguimos?',
       progreso: [{ id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' }],
     },

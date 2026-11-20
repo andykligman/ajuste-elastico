@@ -542,8 +542,64 @@ function tarjetaHTML(st, e, p) {
 
 /* Videos sueltos dentro de un paso (testimonios del link de la llamada): Instagram vertical o YouTube */
 function embedHTML(e) {
+  if (e.tipo === 'yt' && e.recorte) {
+    // Los testimonios son verticales subidos a YouTube con bandas a los costados: muestro solo la franja del medio, sin los controles de YouTube
+    const n = x => { const [a, b] = String(x).split('/').map(Number); return b ? a / b : a; };
+    const rec = n(e.recorte), fte = n(e.fuente || '16/9');
+    return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
+      <button class="ev-capa" data-ev-capa aria-label="Pausar"></button>
+      <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
+      <div class="ev-barra" data-ev-barra><i></i></div></div></div>`;
+  }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
   return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
+}
+const evPlayers = new Map();
+function montarVerticales() {
+  document.querySelectorAll('.emb-marco.ev-nuevo').forEach(m => {
+    m.classList.remove('ev-nuevo');
+    const id = m.dataset.ev, hueco = m.querySelector('.ev-yt > div');
+    asegurarYT(() => {
+      if (!m.isConnected) return;
+      if (simple || !(window.YT && window.YT.Player)) {   // sin la API: el video común, entero
+        m.closest('.emb').classList.add('ev-simple');
+        hueco.outerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+        return;
+      }
+      let timer = 0;
+      const barra = m.querySelector('.ev-barra i');
+      const pl = new YT.Player(hueco, {
+        videoId: id, host: 'https://www.youtube-nocookie.com',
+        playerVars: { controls: 0, rel: 0, playsinline: 1, modestbranding: 1, iv_load_policy: 3, disablekb: 1, fs: 0, cc_load_policy: 0 },
+        events: {
+          onReady: () => m.classList.add('ev-listo'),
+          onStateChange: ev => {
+            const S = YT.PlayerState;
+            m.classList.toggle('ev-sonando', ev.data === S.PLAYING || ev.data === S.BUFFERING);
+            m.classList.toggle('ev-pausa', ev.data === S.PAUSED);
+            m.classList.toggle('ev-fin', ev.data === S.ENDED);
+            if (ev.data === S.PLAYING) {
+              m.classList.add('ev-arranco');
+              if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
+              evPlayers.forEach((o, el) => { if (el !== m && el.isConnected) try { o.pauseVideo(); } catch (_) {} });
+              clearInterval(timer);
+              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
+            } else clearInterval(timer);
+            if (ev.data === S.ENDED) barra.style.width = '100%';
+          },
+        },
+      });
+      evPlayers.set(m, pl);
+    });
+  });
+  evPlayers.forEach((_, el) => { if (!el.isConnected) evPlayers.delete(el); });
+}
+function evAccion(b, d) {
+  const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
+  try {
+    if (d.evCapa !== undefined) pl.pauseVideo();
+    else if (d.evPlay !== undefined) { if (m.classList.contains('ev-fin')) pl.seekTo(0, true); pl.playVideo(); m.classList.add('ev-pidio'); }
+  } catch (_) {}
 }
 function envioHTML(st, p) {
   const pr = st.prog[p.id] || {};
@@ -769,7 +825,7 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Espectacular!</b><span>Ya completaste todos los pasos para aprovechar al 100% tu llamada. ¡Ahí nos vemos!</span></div>` : '') : selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Buenísimo!</b><span>Ya estás listo para aprovechar tu llamada al 100%. ¡Nos vemos ahí!</span></div>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
@@ -946,8 +1002,8 @@ function consultaHTML() {
 function dibujarCamino() {
   const cam = $('#camino'); if (!cam) return;
   const svg = cam.querySelector('.trazo');
-  const base = cam.getBoundingClientRect();
-  const centro = el => { const r = el.getBoundingClientRect(); return [r.left - base.left + r.width / 2, r.top - base.top + r.height / 2]; };
+  const base = cam.getBoundingClientRect(), z = cam.currentCSSZoom || 1;   // en la llamada la vista va con zoom en la compu
+  const centro = el => { const r = el.getBoundingClientRect(); return [(r.left - base.left + r.width / 2) / z, (r.top - base.top + r.height / 2) / z]; };
   const puntos = [...cam.querySelectorAll('.punto')].map(centro);
   const meta = cam.querySelector('.meta span'); if (meta) puntos.push(centro(meta));
   svg.setAttribute('width', cam.clientWidth); svg.setAttribute('height', cam.scrollHeight);
@@ -1087,6 +1143,8 @@ function renderAlumno(animar) {
     app().innerHTML = `${barra(st.nombre)}<div class="layout"><main class="alumno" id="vista"></main>${panelVideoHTML()}</div>`;
   }
   $('#vista').innerHTML = vistaHTML(st, e, animar);
+  document.body.classList.toggle('en-llamada', esLlamada);
+  montarVerticales();
   const sinVid = !!(PASO[abierto] && (PASO[abierto].sinVideo || PASO[abierto].hojaDeRuta));   // en los objetivos del módulo no va video, así se ve la animación   // pasos sin video: el contenido ocupa toda la pantalla
   $('.layout').classList.toggle('sin-video', sinVid);
   if (sinVid && player && player.pauseVideo) try { player.pauseVideo(); } catch (_) {}
@@ -1111,27 +1169,35 @@ function irA(id, suave = true) {
   const y = el.getBoundingClientRect().top + window.scrollY - 76 - tapa;
   window.scrollTo({ top: Math.max(0, y), behavior: suave && !reduceMotion ? 'smooth' : 'auto' });
 }
-/* Link de la llamada: entre el entrenamiento y el testimonio, una pantalla que cuenta qué viene */
-function puenteTestimonio() {
+/* Link de la llamada: pantallas grandes, como la presentación */
+function pantallaLlamada(html, boton, alSalir) {
   if ($('.ll-puente')) return;
   const d = document.createElement('div');
   d.className = 'll-puente'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
-  d.innerHTML = `<div class="llp-caja">
-    <svg class="llp-vis" viewBox="0 0 360 150" aria-hidden="true">
+  d.innerHTML = `<div class="llp-caja">${html}<button class="pl-entrenar llp-ir" data-llp-ir>${boton}</button></div>`;
+  document.body.appendChild(d);
+  document.body.classList.add('sin-scroll');
+  d.querySelector('[data-llp-ir]').onclick = () => { d.classList.add('sale'); document.body.classList.remove('sin-scroll'); setTimeout(() => d.remove(), 350); alSalir && alSalir(); };
+}
+const papelitos = () => [...Array(14)].map((_, k) => `<rect class="llp-papel" x="${(k * 53) % 300 + 30}" y="-20" style="--k:${k};--c:${k % 2 ? '#E8834F' : '#5D7BB6'}" width="8" height="12" rx="2"/>`).join('');
+function puenteTestimonio() {
+  pantallaLlamada(`<svg class="llp-vis" viewBox="0 0 360 150" aria-hidden="true">
       ${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${40 + k * 30} H340"/>`).join('')}
       <circle class="llp-check-fondo" cx="180" cy="75" r="40"/>
-      <path class="llp-check" d="M162 76 l13 13 l25 -27"/>
-      ${[...Array(14)].map((_, k) => `<rect class="llp-papel" x="${(k * 53) % 300 + 30}" y="-20" style="--k:${k};--c:${k % 2 ? '#E8834F' : '#5D7BB6'}" width="8" height="12" rx="2"/>`).join('')}
+      <path class="llp-check" d="M162 76 l13 13 l25 -27"/>${papelitos()}
     </svg>
     <p class="llp-kicker">Entrenamiento completo</p>
     <h2 class="llp-tit">¡Muy bien!</h2>
     <p class="llp-txt">Esto que acabás de hacer es lo primero que hace cualquier alumno del programa.</p>
-    <p class="llp-txt">Ahora te quiero mostrar a <b>Igna</b>, que es alumno. Pasó por lo mismo que vos y cuenta cómo le fue.</p>
-    <button class="pl-entrenar llp-ir" data-llp-ir>Ver el testimonio de Igna →</button>
-  </div>`;
-  document.body.appendChild(d);
-  document.body.classList.add('sin-scroll');
-  d.querySelector('[data-llp-ir]').onclick = () => { d.classList.add('sale'); document.body.classList.remove('sin-scroll'); setTimeout(() => d.remove(), 350); };
+    <p class="llp-txt">Ahora te quiero mostrar a <b>Igna</b>. Tiene 64 años y llevaba décadas buscando cómo improvisar en jazz: probó métodos, libros, YouTube, profesores… y siempre terminaba saturado o frustrado.</p>
+    <p class="llp-txt">Hoy toca con otros y tiene que <b>controlar el impulso</b>, porque se le ocurren un montón de recursos que antes no tenía.</p>`, 'Ver el testimonio de Igna →');
+}
+function finLlamada() {
+  pantallaLlamada(`<div class="ll-logo llp-logo">${LOGO}</div>
+    <svg class="llp-vis chico" viewBox="0 0 360 110" aria-hidden="true">${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${30 + k * 26} H340"/>`).join('')}${papelitos()}</svg>
+    <h2 class="llp-tit">¡Buenísimo!</h2>
+    <p class="llp-txt grande">Ya estás listo para aprovechar <b>tu llamada al 100%</b>.</p>
+    <p class="llp-txt grande">¡Nos vemos ahí!</p>`, 'Listo 👋');
 }
 function abrirPaso(id) {
   const cambio = id !== abierto;
@@ -1154,6 +1220,7 @@ function enlazarAlumno() {
     const b = ev.target.closest('button, input'); if (!b) return;
     const d = b.dataset;
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
+    if (d.evCapa !== undefined || d.evPlay !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
@@ -1171,7 +1238,12 @@ function enlazarAlumno() {
       const vids = ST.prog[id]?.videos;
       if (opcionElegida(ST, PASO[id]) === o) { if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; }
       else ST.prog[id] = { hecho: true, como: o.nivel, op: o.id, t: hoyISO(), ...(ST.prog[id]?.envio ? { envio: true } : {}), ...(vids ? { videos: vids } : {}) };
+      if (esLlamada && id === 'llt1') {   // si ya había visto el de Igna, el de Manu lo ve ahí mismo y no se lo repito al final
+        if (ST.prog.llt1?.op === 'visto') ST.prog.llt2 = { hecho: true, como: 'listo', op: 'listo', t: hoyISO(), auto: true };
+        else if (ST.prog.llt2?.auto) delete ST.prog.llt2;
+      }
       guardarAlumno(); renderAlumno();
+      if (esLlamada && ST.prog[id]?.hecho && PASOS_LLAMADA.every(x => hecho(ST, x))) setTimeout(finLlamada, 500);
       if (o.nivel === 'cuesta' && ST.prog[id]?.op === o.id) llamarConsulta();
     } else if (d.standard) {
       const primera = !ST.standard;

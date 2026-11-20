@@ -1074,3 +1074,27 @@ body.sin-scroll{overflow:hidden}
   .vis-grande{width:100%}
 }
 @media (max-width:560px){.stop-cuerpo{padding:2px 10px 14px}}
+
+/* Videos verticales (testimonios): solo la franja del medio, sin los controles de YouTube */
+.emb-vert{max-width:none;display:flex;flex-direction:column;align-items:center}
+.emb-vert .emb-marco{aspect-ratio:var(--rec);width:min(100%,calc(74vh * var(--rec)));background:#000}
+.emb-vert.ev-simple .emb-marco{aspect-ratio:16/9;width:100%}
+.ev-yt{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--k) * 100%);transform:translateX(-50%);pointer-events:none}
+.ev-simple .ev-yt{left:0;width:100%;transform:none;pointer-events:auto}
+.ev-yt iframe,.ev-yt>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ev-capa{position:absolute;inset:0;z-index:2;border:0;background:transparent;cursor:pointer;display:none}
+.ev-sonando .ev-capa{display:block}
+.ev-play{position:absolute;inset:0;z-index:3;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(9,13,24,.55);color:#fff;font:700 18px var(--display)}
+.ev-play .spg-boton{width:92px;height:92px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.ev-play svg{width:42px;height:42px;fill:#0D1220;margin-left:5px}
+.ev-sonando .ev-play{display:none}
+.ev-arranco:not(.ev-sonando) .ev-play{background:rgba(9,13,24,.7)}
+.ev-fin .ev-txt::after{content:" de nuevo"}
+.ev-simple .ev-play,.ev-simple .ev-capa,.ev-simple .ev-barra{display:none}
+.ev-barra{position:absolute;left:0;right:0;bottom:0;z-index:4;height:5px;background:rgba(255,255,255,.18);pointer-events:none}
+.ev-barra i{display:block;height:100%;width:0;background:#E8834F;transition:width .25s linear}
+.llp-logo svg{height:72px;width:auto}
+.llp-vis.chico{width:min(300px,90%)}
+.llp-txt.grande{font-size:clamp(20px,3.8vw,26px)}
+/* En la compu, el link de la llamada se ve más grande */
+@media (min-width:1000px){body.en-llamada #vista{zoom:1.18}}
