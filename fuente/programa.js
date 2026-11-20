@@ -93,7 +93,7 @@ const PROGRESO_BASE = [
    traba: unidad que se marca en rojo; arregla: unidad que pasa a verde. no: la forma que no sirve. */
 const STOPS = {
   compases: {
-    tipo: 'cifrado', titulo: 'Cómo sumar compases sin perder profundidad ni control', audio: 'audio/compases/', audioNo: 'audio/compases-no/', empiezaNo: true,
+    tipo: 'cifrado', titulo: 'Cómo sumar compases sin perder profundidad ni control', velocidad: 1, audio: 'audio/compases/', audioNo: 'audio/compases-no/', empiezaNo: true,
     sub: 'Los primeros 16 compases de un standard. Cada tanda es un rato de práctica.',
     unidades: Array.from({ length: 16 }, (_, i) => String(i + 1)),
     acordes: ['F-7', 'Bb-7', 'Eb7', 'Abmaj7', 'Dbmaj7', 'D-7', 'G7', 'Cmaj7', 'C-7', 'F-7', 'Bb7', 'Ebmaj7', 'Abmaj7', 'A-7b5', 'D7', 'Gmaj7'],
@@ -181,7 +181,7 @@ const STOPS = {
     },
   },
   transcripcion: {
-    tipo: 'ola', titulo: 'Cómo armar el solo por partes', audio: 'audio/transcripcion/', audioNo: 'audio/transcripcion-no/', empiezaNo: true,
+    tipo: 'ola', titulo: 'Cómo armar el solo por partes', velocidad: 1, audio: 'audio/transcripcion/', audioNo: 'audio/transcripcion-no/', empiezaNo: true,
     sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
     unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
@@ -234,7 +234,7 @@ const STOPS = {
     },
   },
   fragmento: {
-    tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo', audio: 'audio/fragmento/',
+    tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo', velocidad: 1, audio: 'audio/fragmento/',
     sub: 'De la forma del tema a los compases, de los compases a los acordes, y de los acordes a la escala madre.',
     unidades: ['1', '2', '3', '4', '5', '6', '7', '8'],
     acordes: ['Bbmaj7', 'G7', 'C-7', 'F7', 'D-7', 'G7', 'C-7', 'F7'],

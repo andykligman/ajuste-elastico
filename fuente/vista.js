@@ -291,7 +291,7 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = audioMem.get(src) || src; stopAudio.playbackRate = 1.15;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = audioMem.get(src) || src; stopAudio.defaultPlaybackRate = stopAudio.playbackRate = S.velocidad || 1.15;   // por defecto un poco más rápido, sin cambiar el tono; velocidad: 1 = normal
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
