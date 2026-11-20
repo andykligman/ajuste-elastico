@@ -422,7 +422,7 @@ function materialHTML(p) {
   ${resto.length ? `<div class="material">${resto.map(r => {
     if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${id ? `<img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">` : ''}${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }

@@ -1194,6 +1194,8 @@ body.sin-scroll{overflow:hidden}
 
 /* Botón a WhatsApp con mensaje armado (p. ej. elegir el standard) */
 .paso-wa{margin:4px 0 8px}
+.mat .mat-mini{width:96px;aspect-ratio:16/9;object-fit:cover;border-radius:6px;margin:-3px 4px -3px -7px;flex:none;background:#000;border:1px solid rgba(232,131,79,.35)}
+@media (max-width:560px){.mat .mat-mini{width:80px}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1541,12 +1543,13 @@ const STOPS = {
     },
   },
   transcripcion: {
-    tipo: 'ola', titulo: 'Cómo armar el solo por partes',
+    tipo: 'ola', titulo: 'Cómo armar el solo por partes', empiezaNo: true,
     sub: 'Objetivo: **30 segundos del solo**. Lo partís en frases: A, B, C…',
     unidades: ['A', 'B1', 'B2', 'B3', 'C', 'D', 'E', 'F', 'G', 'H'],
     grupos: [['A', 0, 0], ['B', 1, 3], ['C', 4, 4], ['D', 5, 5], ['E', 6, 6], ['F', 7, 7], ['G', 8, 8], ['H', 9, 9]],
     contar: 'Veces que cantaste cada parte',
     tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo armar el solo **por partes**' },
       { sel: [0, 0], t: 'Frase A.' },
       { sel: [1, 3], traba: 1, t: 'Frase B… y se complica.' },
       { sel: [1, 1], zoom: true, partir: 1, t: 'Partís la B en las partes que necesites: **B1**…' },
@@ -1568,13 +1571,36 @@ const STOPS = {
       { sel: [9, 9], t: 'H.' },
       { sel: [6, 9], t: 'De la E a la H.' },
       { sel: [0, 5], t: 'Un repaso de la A a la D.' },
-      { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**. Si en algún momento vuelve a aparecer una traba, en la B1 o donde sea, vas directo ahí.' },
+      { sel: [0, 9], t: 'Y el solo entero: **tus 30 segundos**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Si en algún momento vuelve a aparecer una traba,\nen la B1 o donde sea, **vas directo ahí**.' },
     ],
     no: {
-      tandas: [{ sel: [0, 0] }, { sel: [0, 3] }, { sel: [0, 4] }, { sel: [0, 5] }, { sel: [0, 6] }, { sel: [0, 7] }, { sel: [0, 8] }, { sel: [0, 9] }],
-      t: 'Siempre desde el principio: A, A-B, A-B-C…',
-      fin: '**La A la cantaste 8 veces y la H una sola.** Y las partes difíciles nunca las trabajaste solas.',
+      tandas: [
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'info', t: 'Para transcribir, cantás el solo\nencima de la grabación, **frase por frase**.' },
+        { sel: [-1, -1], pausa: true, grande: true, vis: 'no-sumar', t: 'Cómo **no** armar el solo' },
+        { sel: [0, 0], t: 'Lo que hace casi todo el mundo: siempre desde el principio. La A.' },
+        { sel: [0, 3], t: 'A y B.' },
+        { sel: [0, 4], t: 'A, B y C.' },
+        { sel: [0, 5], t: 'Hasta la D.' },
+        { sel: [0, 7], t: 'Hasta la F.' },
+        { sel: [0, 9], t: 'Hasta la H.' },
+        { sel: [0, 9], pausa: true, malo: true, veces: true, t: '**La A la cantaste 6 veces y la H una sola.**\nY las partes difíciles nunca las trabajaste solas.' },
+      ],
     },
+  },
+  fragmento: {
+    tipo: 'cifrado', titulo: 'Cómo ubicar tu fragmento en el solo',
+    sub: 'Del fragmento a los acordes, y de los acordes a la escala madre.',
+    unidades: ['1', '2', '3', '4', '5', '6', '7', '8'],
+    acordes: ['Bbmaj7', 'G7', 'C-7', 'F7', 'D-7', 'G7', 'C-7', 'F7'],
+    tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'separar', t: 'Cómo ubicar tu fragmento en el solo' },
+      { sel: [0, 7], t: 'Estos son los compases de tu solo, con sus acordes.' },
+      { sel: [2, 3], t: 'Elegiste un fragmento chico, de 4 a 8 notas. ¿En qué compases suena? Acá: **el 3 y el 4**.' },
+      { sel: [2, 3], zoom: true, t: 'Entonces suena sobre **C-7** y **F7**.' },
+      { sel: [-1, -1], pausa: true, grande: true, t: 'C-7 y F7 son el **II y el V de Bb mayor**:\nesa es la **escala madre** donde pensás la frase.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Con la escala madre clara,\nla frase se puede mover por **todos los grados** de esa escala.' },
+    ],
   },
 };
 
@@ -1936,12 +1962,12 @@ const PROGRAMA = {
       hojaDeRuta: {
         objetivos: [
           '**Transcribir 30 segundos de un solo**: primero cantando, después en la viola.',
-          '**Conocer los elementos** del lenguaje del jazz.',
+          '**Conocer o reordenar los elementos** del lenguaje del jazz.',
           '**Incorporarlos en 3 etapas**: reconocimiento, mecanización e integración. Primero con los cromáticos ascendentes.',
           '**Decodificar un fragmento de tu solo** y pasarlo por el mismo proceso.',
         ],
-        puente: { desde: 'Lo que conocemos', pasos: ['Reconocimiento', 'Mecanización', 'Integración'], hasta: 'Lo que usamos al improvisar' },
-        meta: 'Llegar a trabajar un fragmento de tu solo **entre la clase 3 y la 4**. Mientras antes, mejor.',
+        puente: { desde: 'Lo que entendemos en teoría', pasos: ['Reconocimiento', 'Mecanización', 'Integración'], hasta: 'Lo que logramos usar al improvisar' },
+        meta: 'Llegar a trabajar un fragmento de tu solo **entre la clase 3 y la 4**.',
         importante: ['No importa en cuántos elementos lo hagas, sino **qué tan profundo** y bien lo hacés.'],
         cierre: 'Que te vayas con **un método para sumar recursos del lenguaje a tu tocada**.',
       },
@@ -1951,18 +1977,29 @@ const PROGRAMA = {
       ],
     },
     {
-      id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
+      id: 'm2v', etapa: 'm2',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
-      stop: 'transcripcion',
       titulo: 'Cómo transcribir eficientemente',
-      detalle: 'Elegí un solo para transcribir y mirá el video: ahí te muestro cómo transcribir **cantando**, con Audiostretch.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melo!).',
+      detalle: 'Elegí un solo para transcribir y mirá **el video**: ahí te muestro cómo transcribir **cantando**, con Audiostretch.',
+      progreso: [
+        { id: 'visto', label: 'Ya lo vi, ¡se entiende bien!', nivel: 'listo' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
+      ],
+      recursos: [{ t: 'Doc: Módulo 2 - ADN del Jazz', url: DOC_M2, sec: [SEC_M2.transcribir, 'Cómo transcribir eficientemente'] }],
+    },
+    {
+      id: 'm2', etapa: 'm2', entrega: 'audio o video', envia: 'un audio o video cantando 30 segundos del solo encima de la pista.',
+      sinVideo: true, hotmart: 'r48bWKZw7R',
+      stop: 'transcripcion',
+      titulo: 'Cantar 30 segundos del solo',
+      detalle: 'Armalo **por partes**, como en la animación.\nDespués mandame un audio o video cantando **30 segundos del solo encima de la pista** (del solo, no de la intro ni de la melo!).',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'listo', envia: 'esos 15 segundos cantando el solo encima de la pista.', resp: 'Mandame esos 15 segundos y seguí sumando hasta los 30! Para lo que falta, **hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.' },
-        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como muestro en el video.\nVa a salir' },
+        { id: 'quince', label: 'Tengo solo 15 segundos', nivel: 'listo', envia: 'esos 15 segundos cantando el solo encima de la pista.', resp: 'Mandame esos 15 segundos y seguí sumando hasta los 30! Para lo que falta, **hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como en la animación.' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', envia: 'aunque sea 15 segundos cantando el solo encima de la pista. Si no sale, escribime y lo resolvemos.', resp: '**Hacelo por partes**:\n- **Loops cortos**: de 2 a 5 segundos, de 3 a 5 notas como mucho.\n- Si una nota no sale, pasá el dedo por encima de las notas en la app y escuchalas una por una.\n- Armá los pedacitos que necesites y andá juntándolos, como en la animación.\nVa a salir' },
         { id: 'saltear', label: 'Saltearlo por ahora', nivel: 'casi', saltea: true, resp: 'Dale, seguí con lo que viene. Cuando lo tengas, volvé a este paso y mandámelo.' },
       ],
-      recursos: [{ t: 'Doc: Módulo 2 - ADN del Jazz', url: DOC_M2 }],
+      recursos: [{ t: 'Doc: Módulo 2 - ADN del Jazz', url: DOC_M2, sec: ['h.vb6cfms5yiq', 'Cómo regular la dificultad'] }],
     },
     {
       id: 'm1', etapa: 'm2',
@@ -1975,8 +2012,8 @@ const PROGRAMA = {
     {
       id: 'c1', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº1 a tempo, para arriba y para abajo.',
       video: { id: 'o-sV1KM5J-o', t: 178 }, hotmart: 'RO9qy9mjOP',
-      titulo: 'Cromáticos ascendentes: Ejercitación Nº1',
-      detalle: 'Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo, de la tónica a la 7ma. En cada una buscá la nota **un semitono abajo**: esa es su aproximación. Ojo con los dos casos especiales: hacia la 4ta el cromático es la 3ra, y hacia la tónica es la 7ma. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n# El cromático en el aire, la nota de la escala en la tierra\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te **desafíe un poco**, aunque sea lenta, pero constante.',
+      titulo: 'Cromáticos ascendentes: Ejercitación 1 · Mecanización',
+      detalle: 'Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo. En cada una buscá la nota **un semitono abajo**: esa es su aproximación. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n# El cromático en el aire, la nota de la escala en la tierra\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te **desafíe un poco**, aunque sea lenta, pero constante.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'lento', label: 'Me sale sin errores, pero lento', nivel: 'listo', resp: 'Está bien así: **lento pero constante**. Mandámelo a esa velocidad y de ahí vamos subiendo de a poco.' },
@@ -1988,8 +2025,8 @@ const PROGRAMA = {
     {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
-      titulo: 'Cromáticos ascendentes: Ejercitación Nº2',
-      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a 1, 2 y 3; desde la 2da, a 2, 3 y 4; desde la 3ra, a 3, 4 y 5; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
+      titulo: 'Cromáticos ascendentes: Ejercitación 2 · Mecanización',
+      detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a tónica, 2da y 3ra; desde la 2da, a 2da, 3ra y 4ta; desde la 3ra, a 3ra, 4ta y 5ta; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: **en qué nota arrancás** (decila en voz alta) y **qué nota se repite** (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, de a 3 o 4 líneas como máximo, y después juntar las piezas. Lo que te confunda, revisalo sin tempo.' },
@@ -2000,17 +2037,17 @@ const PROGRAMA = {
     {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
-      titulo: 'Cromáticos ascendentes: Ejercitación Nº3',
-      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\nHay **dos videos**, mirate ambos.',
+      titulo: 'Cromáticos ascendentes: Ejercitación 3 · Integración',
+      detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\n# Hay dos videos, mirate ambos',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes **de a una**: un rato solo líneas para abajo, otro solo largas, otro empezando en distintos lugares del compás. Después mezclalas.' },
+        { id: 'mismas', label: 'Me quedo siempre en las mismas líneas', nivel: 'casi', resp: 'Trabajá las variantes **de a una**: un rato solo líneas para abajo, otro para arriba, otro solo largas, otro solo cortas, otro empezando en distintos lugares del compás. Y lueeego... **mezclalas**.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Volvé un rato a la Ejercitación Nº2 y después probá con **líneas cortas sobre un solo acorde**. Y si querés, escribime por WhatsApp!' },
       ],
       recursos: [
-        { t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: ['h.aib8rdfi7b9', 'Ejercitación 3: Etapa de Integración'] },
-        { t: 'Video: Ejemplos de la Ejercitación Nº3', url: 'https://youtu.be/o-sV1KM5J-o?t=604' },
+        { t: 'Video: Ejemplos de la Ejercitación 3', url: 'https://youtu.be/o-sV1KM5J-o?t=604' },
         { t: 'Video: Momento de integración libre', url: 'https://youtu.be/saRjud2tZw4?t=0' },
+        { t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: ['h.aib8rdfi7b9', 'Ejercitación 3: Etapa de Integración'] },
       ],
     },
     {
@@ -2055,17 +2092,75 @@ const PROGRAMA = {
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: ['h.wuqwlhdguj6r', 'Entonces, recapitulando…'] }],
     },
+    /* Combinación de elementos del lenguaje, en pasos */
     {
-      id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video tocando el fragmento de tu solo que decodificaste, mecanizado por la escala.',
-      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
-      titulo: 'Combinación de elementos del lenguaje',
-      detalle: 'Mirá el video con el doc al lado. La idea es hacerlo con **el solo que transcribiste**:\n- Elegí un **fragmento chico** (no tiene que ser largo!).\n- **Decodificalo**: en qué escala madre está y de qué está hecho, nota por nota o por intervalos. Anotalo.\n- **Reconocelo** en el diapasón, en todos los grados de la escala, dentro de una posición.\n- **Mecanizalo** y después **integralo**, igual que con los cromáticos ascendentes.\n[Ejemplos de decodificación](https://youtu.be/GrXVCxwRs6g?t=605)',
+      id: 'k1', etapa: 'm2', video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Combinación de elementos: mirar el video',
+      detalle: 'Mirá **el video** con **el doc al lado**. Todavía no hace falta tocar: en los pasos que siguen lo hacemos con **el solo que transcribiste**.',
       progreso: [
-        { id: 'listo', label: 'Ya decodifiqué un fragmento y lo estoy mecanizando', nivel: 'listo' },
-        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la viola. Mientras tanto, seguí con los cromáticos y mirá lo que viene. Cuando lo tengas, volvé acá!' },
-        { id: 'decodificar', label: 'No me doy cuenta de qué elementos tiene', nivel: 'cuesta', saltea: true, resp: 'Probá con un pedazo más corto, de 3 o 4 notas. Si igual no sale, no hay drama: traé el fragmento a la clase y lo decodificamos juntos.' },
+        { id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' },
+        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Primero terminá de pasar el solo a la viola. Mientras tanto, seguí con los cromáticos. Cuando lo tengas, volvé acá!' },
+        { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
-      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.jx2axfx9nqcx', 'Las 4 etapas del proceso'] }],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: [SEC_M2.combinacion, 'Combinación de elementos del lenguaje'] }],
+    },
+    {
+      id: 'k2', etapa: 'm2', entrega: 'video', envia: 'un video explicando sobre qué acordes suena tu fragmento y en qué escala madre lo ubicás.',
+      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      stop: 'fragmento',
+      titulo: 'Elegir el fragmento y ubicarlo en el solo',
+      detalle: '1) Elegí **un fragmento chico** del solo, **de 4 a 8 notas**. Uno alcanza (dos como mucho).\n2) Fijate **en qué compases del solo** está sonando.\n3) Con eso, **sobre qué acordes** suena.\n4) Y con los acordes, **en qué escala madre** lo podés pensar: mayor, menor armónica o menor melódica.\n# Mandame un video contando sobre qué acordes suena y en qué escala madre lo ubicás\nTener clara la escala madre es lo que después te deja mover la frase por **todos los grados** de esa escala.',
+      progreso: [
+        { id: 'listo', label: 'Ya lo tengo ubicado', nivel: 'listo' },
+        { id: 'escala', label: 'No me doy cuenta de en qué escala madre está', nivel: 'cuesta', resp: 'Si la frase pasa por **dos acordes**, buscá la escala que los contiene a los dos (un II-V, por ejemplo, vive en la escala mayor del I). Si no sale, mandame el fragmento con los compases y lo vemos!' },
+        { id: 'largo', label: 'No sé qué fragmento elegir', nivel: 'casi', resp: 'Elegí uno que **te guste** y que sientas que vas a poder mecanizar: porque lo reconocés dentro de una escala, porque entendés cómo funciona, o porque creés que lo vas a entender. Y que sea **corto**: no tiene por qué ser algo largo.' },
+      ],
+      recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.swdxlmi0s72j', '1. La decodificación (la escala madre)'] }],
+    },
+    {
+      id: 'k3', etapa: 'm2', entrega: 'video', envia: 'un video explicando de qué está hecho tu fragmento: nota x nota o por estructuras interválicas.',
+      video: { id: 'GrXVCxwRs6g', t: 605 }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Decodificar el fragmento',
+      detalle: 'Poné en palabras exactas **de qué está hecha** la frase, así la podés reconstruir en cualquier grado de la escala sin dudar. Es más trabajo de escritorio que de instrumento.\nHay dos maneras, las dos valen:\n- **Nota x nota**: cada nota por su relación con la tónica de la escala madre.\n- **Estructuras interválicas**: las distancias entre las notas (tríadas, arpegios, seguidillas por la escala, etc.), más alguna nota de aproximación.\n# Escribilo, y mandame un video explicándolo\nSé lo más preciso posible: si hay un error acá, se repite en todas las transposiciones.',
+      progreso: [
+        { id: 'listo', label: 'Ya lo tengo escrito', nivel: 'listo' },
+        { id: 'resumir', label: 'No sé si resumirlo o ir nota por nota', nivel: 'casi', resp: 'Nota x nota es más seguro, pero después moverla es más engorroso. Si la resumís en estructuras todo se vuelve más simple… **pero si la resumís mal, te equivocás**. Ahí está el juego: resumir sin cometer errores. Al principio, escribila nota x nota.' },
+        { id: 'cuesta', label: 'No me doy cuenta de qué está hecha', nivel: 'cuesta', resp: 'Probá con **un pedazo más corto**, de 3 o 4 notas. Si igual no sale, mandame el fragmento y lo decodificamos juntos.' },
+      ],
+      recursos: [
+        { t: 'Video: Ejemplos de decodificación', url: 'https://youtu.be/GrXVCxwRs6g?t=605' },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.qxxedej69es3', 'El juego entre resumir y no equivocarse'] },
+      ],
+    },
+    {
+      id: 'k4', etapa: 'm2', entrega: 'video', envia: 'un video de la mecanización del fragmento por los grados de la escala, en una posición.',
+      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Mecanizar el fragmento',
+      detalle: '1) **Reconocelo** sin metrónomo: movelo por **todos los grados** de la escala, dentro de **una posición**. Si lo anotaste nota x nota, bajale un número a todos los grados y así sucesivamente.\n2) **Mecanizalo** a tiempo real, todavía sin acordes: **una sola manera** de tocarlo y con el ritmo de la frase original.\n3) Los errores los corregís sin metrónomo, justo donde aparecen, y volvés a tempo.\n4) Cuando sale, **subí el tempo** para tener resto.\n# Con la oreja o adivinando, no: usá lo que escribiste',
+      progreso: [
+        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
+        { id: 'adaptar', label: 'En algunos grados no puedo hacer el movimiento exacto', nivel: 'casi', resp: 'Pasa seguido! Elegí **una sola forma de adaptar** ese pedazo y hacelo siempre igual en todos los grados.' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: '**Partila todavía más**: mecanizá un pedacito más corto y después decidís si juntás todo o no. Igual que con la transcripción o los enlaces: menos información, más rápido y con menos frustración.' },
+      ],
+      recursos: [
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.5u84fu4gcxst', '2. Reconocimiento'] },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.vj9synhvjvip', '3. Mecanización'] },
+      ],
+    },
+    {
+      id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video integrando el fragmento sobre una progresión de esa escala madre.',
+      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      titulo: 'Integrar el fragmento',
+      detalle: 'Poné una progresión que refleje **la escala madre** de la frase y tocá el fragmento **desde distintos grados**, en desorden y empezando en **distintos lugares del compás**.\nPrimero la meta es tocarlo a tiempo real sin equivocarte, con el ritmo y las notas que corresponden.\nDespués **flexibilizalo**: pedacitos, mezclado con notas sueltas de la escala, variando el ritmo.',
+      progreso: [
+        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
+        { id: 'olvido', label: 'Lo había mecanizado y ahora no me sale', nivel: 'casi', resp: 'Es normal: **hoy te acostaste y mañana no está** 😛 Volvé a mecanizarlo un rato, incluso en la posición que ya practicaste, y después volvé a integrarlo.' },
+        { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Volvé a mecanizar o repasá **la zona que no sale**. A veces es cuestión de refrescar un poco la memoria nada más 😉' },
+      ],
+      recursos: [
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.o2ku5r6a0gf7', '4. Integración'] },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.bt1nozkeibiw', 'Te vas a olvidar, y está bien!'] },
+      ],
     },
     /* ---------- Módulo 3: Entrenamiento rítmico ---------- */
     {
@@ -2133,8 +2228,8 @@ const PROGRAMA = {
     1: { min: ['p2', 'p3', 'p4', 'p5', 'p5b', 'p6', 'p7'], esp: ['e1'], ideal: ['e2'] },
     2: { min: ['e1'], esp: ['e2', 'e3'], ideal: ['e4', 'a1', 'a2'] },
     3: { min: ['e2', 'e3'], esp: ['a1', 'a2', 'a3'], ideal: ['e4', 's1'] },
-    4: { min: ['a1', 'a2', 'a3', 's1'], esp: ['s3'], ideal: ['m1', 'm2'] },
-    5: { min: [], esp: ['m1', 'm2', 'c1'], ideal: ['c2', 'c3'] },
+    4: { min: ['a1', 'a2', 'a3', 's1'], esp: ['s3'], ideal: ['m1', 'm2v', 'm2'] },
+    5: { min: [], esp: ['m1', 'm2v', 'm2', 'c1'], ideal: ['c2', 'c3'] },
   },
   clases: 4,
   consejoGeneral: 'Todo lo que signifique incorporar algo nuevo pide dar un paso atrás: menos compases, menos cuerdas, o repasar las posiciones y los acordes fuera del ritmo. Bajar el tempo también sirve, pero suele haber mejores opciones.',
@@ -2932,7 +3027,7 @@ function materialHTML(p) {
   ${resto.length ? `<div class="material">${resto.map(r => {
     if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
     const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${id ? `<img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">` : ''}${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
     return `<a class="mat" href="${esc(r.url)}" target="_blank" rel="noopener">${ICONO.doc}<span>${esc(r.t)}</span></a>`;
   }).join('')}</div>` : ''}`;
 }
