@@ -195,7 +195,7 @@ const PRES_LLAMADA = [
   { v: 'elastico', t: 'No con más información, sino con un método\nque **adapta la práctica a vos**, momento a momento.' },
   { v: 'mapa', t: 'Un **mapa** que ordena tu camino\npara que puedas avanzar sin trabas.' },
   { v: 'cana', t: 'No son más pescados:\nes **una caña de pescar**.' },
-  { v: 'reloj', t: 'Para que el tiempo y la energía que le dedicás a estudiar\nte den **los resultados que merecés**.' },
+  { v: 'reloj', t: 'Para que el tiempo y la energía que empleás en estudiar\nte den **los resultados que merecés**.' },
   { v: 'pasos', paso: 1, t: 'En la llamada vamos a charlar sobre **tu situación actual** con la guitarra\ny ver si te puedo ayudar con lo que buscás:' },
   { v: 'pasos', paso: 2, t: 'Entender **qué es lo que te está trabando**…' },
   { v: 'pasos', paso: 3, t: '…y **el camino concreto** para destrabarlo.' },
@@ -231,6 +231,7 @@ function presVis(v, paso) {
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: 0, visto: false, timer: null };
+const presUrl = i => `audio/llamada/${String(i + 1).padStart(2, '0')}.m4a?v=5`;
 const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
   const i = presEst.i, sl = PRES_LLAMADA[i], sonando = !!presEst.timer, fin = i === PRES_LLAMADA.length - 1;
@@ -253,7 +254,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=5`; presAudio.playbackRate = 1;
+    const u = new URL(presUrl(presEst.i), location.href).href; if (presAudio.src !== u) presAudio.src = u; else presAudio.currentTime = 0; presAudio.playbackRate = 1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
@@ -269,6 +270,9 @@ function renderLlamada() {
   const [t1, t2] = LLAMADA.testimonios || [];
   const testimonio = t => t && t.id ? `<section class="ll-bloque"><p class="ll-eti">Testimonio</p><h2>${esc(t.titulo || `La experiencia de ${t.nombre}`)}</h2>${yt(t.id)}</section>` : '';
   app().innerHTML = `<main class="llamada-full"><div class="pl-pantalla">${presHTML()}</div></main>`;
+  // que arranque al toque en el celu: el primer audio ya cargado y el resto bajando de fondo
+  presAudio.src = presUrl(presEst.i); presAudio.load();
+  setTimeout(() => PRES_LLAMADA.forEach((_, k) => { if (k) fetch(presUrl(k)).catch(() => {}); }), 800);
   app().onclick = ev => {
     const b = ev.target.closest('[data-pl]'); if (b) { presAccion(b.dataset.pl); return; }
     if (ev.target.closest('[data-ll-entrar]')) { presAudio.pause(); clearTimeout(presEst.timer); presEst.timer = null; DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); }

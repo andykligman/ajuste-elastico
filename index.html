@@ -22,7 +22,7 @@
   --fondo:#111214; --sup:#1B1C20; --sup2:#24262B; --linea:#2E3036;
   --tinta:#EDEEF0; --gris:#9DA2AC; --blanco:#FFFFFF;
   --azul:#5D7BB6; --azul-txt:#A9BEE8; --azul-osc:#3A4F7A; --azul-claro:#22304A; --azul-velo:#1A2232;
-  --oxido:#E2643A; --oxido-txt:#F29A78; --oxido-claro:#3A2219; --naranja:#5D7BB6; --naranja-claro:#1A2232;
+  --oxido:#E2643A; --oxido-txt:#F29A78; --oxido-claro:#3A2219; --naranja:#E8834F; --naranja-claro:#33241B;
   --papel:var(--fondo);
   --radio-s:6px; --radio-m:12px;
   --sans:'Source Sans 3', system-ui, sans-serif; --display:'Poppins', system-ui, sans-serif;
@@ -99,7 +99,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .tramo{display:grid;gap:6px;min-width:0;align-content:start}
 .barra-tramo{height:6px;border-radius:999px;background:var(--sup2);overflow:hidden}
 .barra-tramo span{display:block;height:100%;width:calc(var(--lleno) * 100%);background:var(--tinta);border-radius:999px}
-.tramo.prox .barra-tramo span{background:var(--naranja)}
+.tramo.prox .barra-tramo span{background:var(--azul)}
 .tramo.prox.meterle .barra-tramo span{background:var(--oxido)}
 .tramo-txt{display:flex;align-items:center;gap:3px;font-family:var(--display);font-weight:500;font-size:12.5px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tramo-txt svg{width:13px;height:13px;flex:none}
@@ -123,7 +123,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .camino{position:relative;margin-top:34px;padding-bottom:10px}
 .trazo{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .trazo-base{fill:none;stroke:#3A3D45;stroke-width:3;stroke-dasharray:2 9;stroke-linecap:round}
-.trazo-hecho{fill:none;stroke:var(--naranja);stroke-width:4;stroke-linecap:round;opacity:.9}
+.trazo-hecho{fill:none;stroke:var(--azul);stroke-width:4;stroke-linecap:round;opacity:.9}
 .etapa-label{position:relative;z-index:1;margin:30px 0 12px 64px;background:var(--fondo);padding:4px 10px 4px 0;width:max-content;max-width:calc(100% - 64px)}
 .etapa-label:first-of-type{margin-top:6px}
 .etapa-label h3{font-size:13.5px;font-family:var(--sans);font-weight:600;color:var(--gris);margin:0}
@@ -142,8 +142,8 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .nodo-tit small{font-size:14px;color:var(--gris)}
 .nodo-tit small.oxido{color:var(--oxido-txt);font-weight:600}
 .nodo.abierto{margin:14px 0 22px}
-.nodo.abierto .punto{width:58px;height:58px;font-size:18px;background:var(--naranja);border-color:var(--naranja);color:#0B1220;box-shadow:0 0 0 7px rgba(93,123,182,.18)}
-.nodo.abierto.est-listo .punto,.nodo.abierto.est-casi .punto{background:var(--naranja);border-color:var(--naranja)}
+.nodo.abierto .punto{width:58px;height:58px;font-size:18px;background:var(--azul);border-color:var(--azul);color:#0B1220;box-shadow:0 0 0 7px rgba(93,123,182,.18)}
+.nodo.abierto.est-listo .punto,.nodo.abierto.est-casi .punto{background:var(--azul);border-color:var(--azul)}
 .nodo.abierto .nodo-tit span{font-family:var(--display);font-weight:600;font-size:22px;color:var(--tinta);line-height:1.2}
 .tarjeta{position:relative;z-index:1;margin:12px 0 0 0;background:var(--sup);border:1px solid var(--linea);border-radius:14px;padding:20px 22px 22px;animation:abrir .25s cubic-bezier(.2,.8,.3,1) both}
 @keyframes abrir{from{opacity:0;transform:translateY(-6px)}}
@@ -290,7 +290,7 @@ a.mat svg{color:var(--azul-txt)}
 .bc-puntos{display:flex;gap:5px;margin-top:4px}
 .bc-puntos i{width:9px;height:9px;border-radius:50%;background:var(--linea)}
 .bc-puntos i.ok{background:var(--tinta)}
-.bc-puntos i.ahora{background:var(--naranja);box-shadow:0 0 0 3px rgba(93,123,182,.25)}
+.bc-puntos i.ahora{background:var(--azul);box-shadow:0 0 0 3px rgba(93,123,182,.25)}
 .bc-sig{display:grid;text-align:right;gap:1px;max-width:58%;padding:8px 12px;border-radius:10px;background:var(--sup2);border:1px solid var(--linea)}
 .bc-sig small{font-size:12.5px;color:var(--naranja);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .bc-sig span{font-size:14.5px;font-weight:600;line-height:1.25;color:var(--tinta);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -352,8 +352,8 @@ body.con-grabador{overflow:hidden}
 .subida-pill.ok svg{width:18px;height:18px}
 .subida-pill.error{white-space:normal;border-radius:14px;color:var(--oxido-txt);font-weight:400}
 .subida-pill .link{flex:none}
-.sp-anillo{--p:30;width:18px;height:18px;border-radius:50%;flex:none;background:conic-gradient(var(--naranja) calc(var(--p)*1%),#3A3D45 0);-webkit-mask:radial-gradient(circle,transparent 5px,#000 6px);mask:radial-gradient(circle,transparent 5px,#000 6px)}
-.vid-pend .sp-anillo{animation:girar 1.2s linear infinite;background:conic-gradient(var(--naranja) 30%,#3A3D45 0)}
+.sp-anillo{--p:30;width:18px;height:18px;border-radius:50%;flex:none;background:conic-gradient(var(--azul) calc(var(--p)*1%),#3A3D45 0);-webkit-mask:radial-gradient(circle,transparent 5px,#000 6px);mask:radial-gradient(circle,transparent 5px,#000 6px)}
+.vid-pend .sp-anillo{animation:girar 1.2s linear infinite;background:conic-gradient(var(--azul) 30%,#3A3D45 0)}
 @keyframes girar{to{transform:rotate(1turn)}}
 .vid-pend{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;font-size:15px;color:var(--gris)}
 .vid-pend .sp-anillo{margin-top:3px}
@@ -721,7 +721,7 @@ body.con-mapa{overflow:hidden}
 .in-nodo i svg{width:16px;height:16px}
 .in-nodo.hecho{background:var(--tinta);color:#111;border-color:var(--tinta)}
 .in-nodo.hecho b{display:none}.in-nodo.hecho i{display:block}
-.in-nodo.ahora{background:var(--naranja);color:#0B1220;border-color:var(--naranja);transform:scale(1.18);box-shadow:0 0 0 6px rgba(93,123,182,.18)}
+.in-nodo.ahora{background:var(--azul);color:#0B1220;border-color:var(--azul);transform:scale(1.18);box-shadow:0 0 0 6px rgba(93,123,182,.18)}
 .in-escena[data-s="1"] .in-nodo{animation:inLate 1.2s ease both}
 .in-escena[data-s="1"] .in-nodo:nth-child(3){animation-delay:.6s}.in-escena[data-s="1"] .in-nodo:nth-child(4){animation-delay:1.2s}.in-escena[data-s="1"] .in-nodo:nth-child(5){animation-delay:1.8s}
 @keyframes inLate{0%{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.1)}100%{opacity:1}}
@@ -764,7 +764,7 @@ body.con-mapa{overflow:hidden}
 .in-ctrl{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .in-puntos{display:flex;gap:6px}
 .in-puntos i{width:7px;height:7px;border-radius:50%;background:var(--linea);transition:background .3s}
-.in-puntos i.on{background:var(--naranja)}
+.in-puntos i.on{background:var(--azul)}
 .in-ctrl .primario{min-width:118px}
 @media (max-width:560px){.in-caja{gap:14px}.in-escena{grid-template-columns:38px 1fr;gap:10px}.in-nodo{width:30px;height:30px}.in-camino{gap:26px}.in-tarjeta{padding:12px;gap:9px}}
 @media (prefers-reduced-motion:reduce){.intro-aula *{animation:none!important;transition:none!important}}
@@ -853,11 +853,11 @@ body.con-mapa{overflow:hidden}
 /* Dibujitos de los cuadros de solo texto */
 .vis-grande{display:block;width:min(360px,86%);height:auto;margin:14px auto 0;overflow:visible}
 .vg-cuerda{stroke:#cfc7bd;stroke-width:2.4;stroke-linecap:round;transition:stroke .4s}
-.vg-cuerda.on{stroke:var(--naranja)}
+.vg-cuerda.on{stroke:var(--azul)}
 .vg-cuerda.tenue{stroke:#45464c}
-.vg-cuerda.vibra{stroke:var(--naranja);animation:vgVibra 1.6s ease-in-out infinite;animation-delay:calc(var(--k)*.35s);transform-box:fill-box;transform-origin:center}
+.vg-cuerda.vibra{stroke:var(--azul);animation:vgVibra 1.6s ease-in-out infinite;animation-delay:calc(var(--k)*.35s);transform-box:fill-box;transform-origin:center}
 @keyframes vgVibra{0%,60%,100%{transform:scaleY(1)}10%{transform:translateY(-2.5px)}20%{transform:translateY(2px)}30%{transform:translateY(-1px)}}
-.vg-cuerda.sep{stroke:var(--naranja);animation:vgSep 3.2s ease-in-out infinite}
+.vg-cuerda.sep{stroke:var(--azul);animation:vgSep 3.2s ease-in-out infinite}
 .vg-cuerda.sep0{--d:-12px}.vg-cuerda.sep1{--d:0px;animation-name:vgSep1}.vg-cuerda.sep2{--d:12px}
 @keyframes vgSep{0%,15%,85%,100%{transform:translateY(0)}35%,65%{transform:translateY(var(--d))}}
 @keyframes vgSep1{0%,15%,85%,100%{opacity:1}35%,65%{opacity:.35}}
@@ -875,7 +875,7 @@ body.con-mapa{overflow:hidden}
 .vg-cap{font:600 12px var(--sans);fill:var(--gris);text-anchor:middle}
 .vg-cap.on{fill:var(--naranja)}
 .vg-mal{opacity:.55}
-.vg-punto{fill:var(--naranja)}
+.vg-punto{fill:var(--azul)}
 .vg-punto.se-va{animation:vgSeVa 3.6s ease-in-out infinite}
 @keyframes vgSeVa{0%,20%{opacity:1;transform:scale(1)}45%,85%{opacity:.08;transform:scale(.6)}100%{opacity:1}}
 .vg-punto{transform-box:fill-box;transform-origin:center}
@@ -889,7 +889,7 @@ body.con-mapa{overflow:hidden}
 .vg-caja.todo{stroke:#E2705A;fill:rgba(226,112,90,.15);animation:vgTiembla .5s ease-in-out infinite;animation-delay:calc(var(--k)*.05s)}
 @keyframes vgTiembla{25%{transform:translateX(-1.5px)}75%{transform:translateX(1.5px)}}
 .vg-ciclo{fill:none;stroke:#4a4b51;stroke-width:3}
-.vg-viaja{fill:var(--naranja);transform-origin:160px 48px;animation:vgGira 2.8s linear infinite}
+.vg-viaja{fill:var(--azul);transform-origin:160px 48px;animation:vgGira 2.8s linear infinite}
 @keyframes vgGira{to{transform:rotate(360deg)}}
 .vg-flecha{fill:none;stroke:#4a4b51;stroke-width:3;stroke-linecap:round}
 @media (prefers-reduced-motion:reduce){.vis-grande *{animation:none!important;opacity:1!important}}
@@ -913,8 +913,8 @@ body.dv-abierto{overflow:hidden}
 .spg-txt{font:700 17px var(--sans);letter-spacing:.02em}
 .stop-play-grande:hover .spg-boton{transform:scale(1.06)}
 @keyframes spgLatido{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 0 rgba(255,255,255,.35)}50%{box-shadow:0 8px 28px rgba(0,0,0,.45),0 0 0 14px rgba(255,255,255,0)}}
-.vg-cuerda.se-apaga{stroke:var(--naranja);animation:vgApaga 4s ease-in-out infinite}
-@keyframes vgApaga{0%,20%{stroke:var(--naranja);opacity:1}45%,85%{stroke:#45464c;opacity:.6}100%{stroke:var(--naranja);opacity:1}}
+.vg-cuerda.se-apaga{stroke:var(--azul);animation:vgApaga 4s ease-in-out infinite}
+@keyframes vgApaga{0%,20%{stroke:var(--azul);opacity:1}45%,85%{stroke:#45464c;opacity:.6}100%{stroke:var(--azul);opacity:1}}
 
 /* Dibujitos del acompañamiento por WhatsApp */
 .vg-burbuja{fill:#2b2c31;opacity:0;animation:vgAparece 5.4s ease infinite;animation-delay:calc(var(--k)*.8s)}
@@ -1113,6 +1113,9 @@ body.dv-abierto{overflow:hidden}
 .emb-ig{max-width:420px}
 .emb-ig .emb-marco{aspect-ratio:9/16.6;background:#fff}
 .emb-marco iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ll-fin{display:flex;flex-direction:column;gap:6px;text-align:center;margin:30px auto 10px;max-width:520px;padding:22px;border-radius:18px;background:#16213A;border:1px solid #5D7BB6}
+.ll-fin b{font:800 26px var(--display);color:#E8834F}
+.ll-fin span{font-size:17px;color:#EAF0FB}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1530,7 +1533,7 @@ const PROGRAMA = {
       progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
     },
     {
-      id: 'p0w', etapa: 'pre', opcional: true, sinVideo: true,
+      id: 'p0w', etapa: 'pre', opcional: true, sinVideo: true, soloVer: true,
       titulo: 'Cómo usar el acompañamiento por WhatsApp',
       stop: 'whatsapp',
       pregunta: '¿Se entiende?',
@@ -1538,14 +1541,6 @@ const PROGRAMA = {
         { id: 'listo', label: 'Sí, dale', nivel: 'listo' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
       ],
-    },
-    {
-      id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true,
-      titulo: 'Antes de arrancar: un testimonio',
-      detalle: 'Mirá cómo le fue a un alumno que estaba en una situación parecida a la tuya.',
-      embed: { tipo: 'ig', id: 'DYS9tBKtOY2', eti: 'Testimonio' },
-      pregunta: '¿Arrancamos?',
-      progreso: [{ id: 'listo', label: '¡Dale, vamos al entrenamiento!', nivel: 'listo' }],
     },
     {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
@@ -1580,7 +1575,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.7icmi6cvsqs0', 'Segundo paso: pasar a tempo'] }],
     },
     {
-      id: 'p3c', etapa: 'pre', opcional: true, sinVideo: true,
+      id: 'p3c', etapa: 'pre', opcional: true, sinVideo: true, soloVer: true,
       titulo: 'Cómo bajar de cuerdas y volver a juntarlas',
       stop: 'cuerdas',
       pregunta: '¿Se entiende?',
@@ -1604,20 +1599,21 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA, sec: ['h.mbggwpqnwk8v', 'Skipping'] }],
     },
     {
-      id: 'llt2', etapa: 'pre', soloLlamada: true, sinVideo: true,
-      titulo: 'Otro testimonio',
-      detalle: 'Otro alumno que arrancó con las mismas dudas.',
-      embed: { tipo: 'yt', id: 'A6bIbYywz3I', eti: 'Testimonio' },
+      id: 'llt1', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
+      titulo: 'Testimonio de Iña',
+      embed: { tipo: 'ig', id: 'DYS9tBKtOY2' },
       pregunta: '¿Seguimos?',
-      progreso: [{ id: 'listo', label: '¡Sigamos!', nivel: 'listo' }],
+      progreso: [
+        { id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' },
+        { id: 'visto', label: 'Ya lo había visto', nivel: 'listo', resp: 'Entonces mirá este otro, el de Manu 👇', embed: { tipo: 'yt', id: '5nnkrbhQ4qI' } },
+      ],
     },
     {
-      id: 'llfin', etapa: 'pre', soloLlamada: true, sinVideo: true,
-      titulo: 'De qué se trata el método',
-      detalle: 'Para cerrar, un video corto que explica de qué se trata Ajuste Elástico.',
-      embed: { tipo: 'yt', id: '5nnkrbhQ4qI', eti: 'Bienvenida' },
-      pregunta: '¿Listo?',
-      progreso: [{ id: 'listo', label: '¡Listo! Nos vemos en la llamada', nivel: 'listo' }],
+      id: 'llfin', etapa: 'pre', soloLlamada: true, sinVideo: true, sinTexto: true,
+      titulo: 'Video de bienvenida',
+      embed: { tipo: 'yt', id: 'A6bIbYywz3I' },
+      pregunta: '¿Seguimos?',
+      progreso: [{ id: 'listo', label: 'Vi el video y estoy listo para seguir', nivel: 'listo' }],
     },
     {
       id: 'p5', etapa: 'pre',
@@ -2070,7 +2066,7 @@ const PROGRAMA = {
    ===================================================================== */
 const COLS = ['min', 'esp', 'ideal'];
 /* Link ?llamada: solo los primeros dos videos (arpegios base) y la animación de cuerdas, con el doc de Previa técnica */
-const PASOS_LLAMADA = ['llt1', 'p2', 'p3', 'p3c', 'p4', 'llt2', 'llfin'];
+const PASOS_LLAMADA = ['p2', 'p3', 'p3c', 'p4', 'llt1', 'llfin'];
 if (!new URLSearchParams(location.search).has('llamada')) PROGRAMA.pasos = PROGRAMA.pasos.filter(p => !p.soloLlamada);
 if (new URLSearchParams(location.search).has('llamada')) {
   PROGRAMA.pasos = PROGRAMA.pasos.filter(p => PASOS_LLAMADA.includes(p.id));
@@ -2692,8 +2688,8 @@ function stopInner(id) {
 }
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
-const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.25; stopAudio.preservesPitch = true;
-const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=16` : ''; };
+const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.15; stopAudio.preservesPitch = true;
+const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=17` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
   const total = () => seq.length;
@@ -2704,10 +2700,14 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.25;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = src; stopAudio.playbackRate = 1.15;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
+  if (acc === 'seguir' && PASO[abierto]?.soloVer) {   // animaciones solas: «Seguir» la da por vista y abre el paso siguiente
+    parar(); ST.prog[abierto] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno();
+    const sig = siguienteDe(abierto); if (sig) abrirPaso(sig.id); else renderAlumno(); return;
+  }
   if (acc === 'seguir') { parar(); const c = document.querySelector(`[data-stop-caja="${id}"]`); const q = c && c.closest('.tarjeta')?.querySelector('.pregunta, .envio, .seguir'); if (q) q.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; }
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
   if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
@@ -2949,7 +2949,7 @@ function tarjetaHTML(st, e, p) {
   const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
-    <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
@@ -2959,10 +2959,11 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
+    ${p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
-    ${recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) : ''}
+    ${p.soloVer || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
@@ -3099,7 +3100,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
-const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.25; audioIntro.preservesPitch = true;
+const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.15; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
 const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
@@ -3145,9 +3146,9 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.25;   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=9'; audioIntro.playbackRate = 1.15;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.25 - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.15 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
@@ -3198,7 +3199,7 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<p class="ll-fin">Listo! Lo vemos en la llamada 😉</p>` : '') : selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Espectacular!</b><span>Ya completaste todos los pasos para aprovechar al 100% tu llamada. ¡Ahí nos vemos!</span></div>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
@@ -3952,7 +3953,7 @@ const PRES_LLAMADA = [
   { v: 'elastico', t: 'No con más información, sino con un método\nque **adapta la práctica a vos**, momento a momento.' },
   { v: 'mapa', t: 'Un **mapa** que ordena tu camino\npara que puedas avanzar sin trabas.' },
   { v: 'cana', t: 'No son más pescados:\nes **una caña de pescar**.' },
-  { v: 'reloj', t: 'Para que el tiempo y la energía que le dedicás a estudiar\nte den **los resultados que merecés**.' },
+  { v: 'reloj', t: 'Para que el tiempo y la energía que empleás en estudiar\nte den **los resultados que merecés**.' },
   { v: 'pasos', paso: 1, t: 'En la llamada vamos a charlar sobre **tu situación actual** con la guitarra\ny ver si te puedo ayudar con lo que buscás:' },
   { v: 'pasos', paso: 2, t: 'Entender **qué es lo que te está trabando**…' },
   { v: 'pasos', paso: 3, t: '…y **el camino concreto** para destrabarlo.' },
@@ -3988,6 +3989,7 @@ function presVis(v, paso) {
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: 0, visto: false, timer: null };
+const presUrl = i => `audio/llamada/${String(i + 1).padStart(2, '0')}.m4a?v=5`;
 const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
   const i = presEst.i, sl = PRES_LLAMADA[i], sonando = !!presEst.timer, fin = i === PRES_LLAMADA.length - 1;
@@ -4010,7 +4012,7 @@ function presAccion(acc) {
   const espera = () => Math.min(5000, Math.max(1800, 900 + PRES_LLAMADA[presEst.i].t.length * 40));
   const sonar = luego => {
     const despues = ms => { if (luego && presEst.timer) presEst.timer = setTimeout(luego, ms); };
-    presAudio.src = `audio/llamada/${String(presEst.i + 1).padStart(2, '0')}.m4a?v=5`; presAudio.playbackRate = 1;
+    const u = new URL(presUrl(presEst.i), location.href).href; if (presAudio.src !== u) presAudio.src = u; else presAudio.currentTime = 0; presAudio.playbackRate = 1;
     if (luego) { presAudio.onended = () => despues(60); presAudio.onerror = () => despues(espera()); }
     presAudio.play().catch(() => despues(espera()));
   };
@@ -4026,6 +4028,9 @@ function renderLlamada() {
   const [t1, t2] = LLAMADA.testimonios || [];
   const testimonio = t => t && t.id ? `<section class="ll-bloque"><p class="ll-eti">Testimonio</p><h2>${esc(t.titulo || `La experiencia de ${t.nombre}`)}</h2>${yt(t.id)}</section>` : '';
   app().innerHTML = `<main class="llamada-full"><div class="pl-pantalla">${presHTML()}</div></main>`;
+  // que arranque al toque en el celu: el primer audio ya cargado y el resto bajando de fondo
+  presAudio.src = presUrl(presEst.i); presAudio.load();
+  setTimeout(() => PRES_LLAMADA.forEach((_, k) => { if (k) fetch(presUrl(k)).catch(() => {}); }), 800);
   app().onclick = ev => {
     const b = ev.target.closest('[data-pl]'); if (b) { presAccion(b.dataset.pl); return; }
     if (ev.target.closest('[data-ll-entrar]')) { presAudio.pause(); clearTimeout(presEst.timer); presEst.timer = null; DESTINO = { prueba: true }; nav('?llamada&aula'); aplicarDestino(); window.scrollTo(0, 0); }

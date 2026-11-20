@@ -257,8 +257,8 @@ function stopInner(id) {
 }
 /* Audio de Andy por tanda: audio/<stop>/NN.m4a («Así sí») y audioNo para «Así no» */
 let stopSonido = true;
-const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.25; stopAudio.preservesPitch = true;
-const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=16` : ''; };
+const stopAudio = new Audio(); stopAudio.preload = 'auto'; stopAudio.defaultPlaybackRate = 1.15; stopAudio.preservesPitch = true;
+const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 'no' ? S.audioNo : S.audio; return dir && stopSonido ? `${dir}${String(it.k + 1).padStart(2, '0')}.m4a?v=17` : ''; };
 function stopAccion(id, acc) {
   const S = STOPS[id], e = stopEst[id] || (stopEst[id] = { i: 0 }), seq = stopSeq(S);
   const total = () => seq.length;
@@ -269,10 +269,14 @@ function stopAccion(id, acc) {
     const src = audioDe(S, e);
     const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
     if (!src) { despues(espera()); return; }
-    stopAudio.src = src; stopAudio.playbackRate = 1.25;   // un poco más rápido, sin cambiar el tono
+    stopAudio.src = src; stopAudio.playbackRate = 1.15;   // un poco más rápido, sin cambiar el tono
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
     stopAudio.play().catch(() => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, espera()); });
   };
+  if (acc === 'seguir' && PASO[abierto]?.soloVer) {   // animaciones solas: «Seguir» la da por vista y abre el paso siguiente
+    parar(); ST.prog[abierto] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno();
+    const sig = siguienteDe(abierto); if (sig) abrirPaso(sig.id); else renderAlumno(); return;
+  }
   if (acc === 'seguir') { parar(); const c = document.querySelector(`[data-stop-caja="${id}"]`); const q = c && c.closest('.tarjeta')?.querySelector('.pregunta, .envio, .seguir'); if (q) q.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }); return; }
   if (acc === 'sig') { parar(); e.i = Math.min(e.i + 1, total() - 1); pintar(); sonar(); return; }
   if (acc === 'ant') { parar(); e.i = Math.max(e.i - 1, 0); pintar(); sonar(); return; }
@@ -514,7 +518,7 @@ function tarjetaHTML(st, e, p) {
   const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
-    <div class="consigna">${textoHTML(p.detalle)}</div>
+    ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
     ${p.stop ? stopHTML(p) : ''}
@@ -524,10 +528,11 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
+    ${p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
-    ${recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
+    ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) : ''}
+    ${p.soloVer || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${soloEscribime(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
       </div>` : ''}
@@ -664,7 +669,7 @@ const INTRO = [
   { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
   { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
 ];
-const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.25; audioIntro.preservesPitch = true;
+const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.15; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
 const introVista = () => !!(ST?.prog?.intro || leerLocal('mapaAE_intro_' + (ST?.codigo || '')));
@@ -710,9 +715,9 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=8'; audioIntro.playbackRate = 1.25;   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=9'; audioIntro.playbackRate = 1.15;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
-    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.25 - (Date.now() - t0))); };
+    audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.15 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
     audioIntro.play().catch(() => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); });
   };
@@ -763,7 +768,7 @@ function vistaHTML(st, e, animar) {
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
     ${instalarAppHTML()}
     ${caminoHTML(st, e)}
-    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<p class="ll-fin">Listo! Lo vemos en la llamada 😉</p>` : '') : selectorModulosHTML(st, e)}
+    ${esLlamada ? (PASOS_LLAMADA.every(id => hecho(st, id)) ? `<div class="ll-fin"><b>¡Espectacular!</b><span>Ya completaste todos los pasos para aprovechar al 100% tu llamada. ¡Ahí nos vemos!</span></div>` : '') : selectorModulosHTML(st, e)}
     ${modo === 'alumno' ? `<p class="salir-pie"><span>${esc(st.nombre)}</span> · <button class="link suave" data-accion="salir">Salir de mi cuenta</button></p>` : ''}
     ${esLlamada ? '' : barraClaseHTML(st, e)}`;
 }
