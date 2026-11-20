@@ -31,6 +31,7 @@ html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;color:var(--
 
 .d{position:absolute;inset:0;padding:110px 140px;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s .55s}
 .d.activa{opacity:1;visibility:visible;transition:opacity .55s ease}
+.d.vc{display:flex;flex-direction:column;justify-content:center}
 .d .en{opacity:0;transform:translateY(28px);transition:opacity .7s var(--suave-in),transform .8s var(--suave-in)}
 .d.activa .en{opacity:1;transform:none}
 .d .en.r1{transition-delay:.12s}.d .en.r2{transition-delay:.24s}.d .en.r3{transition-delay:.36s}.d .en.r4{transition-delay:.48s}.d .en.r5{transition-delay:.6s}
@@ -60,7 +61,7 @@ b,strong{font-weight:700}
 .banda svg{width:100%;height:100%;overflow:visible}
 
 /* ---------- Medidor de dificultad ---------- */
-.medidor{position:relative;width:1560px;margin:120px auto 0;height:300px}
+.medidor{position:relative;width:1560px;margin:90px auto 0;height:300px}
 .pista{position:absolute;left:0;right:0;top:120px;height:30px;border-radius:30px;background:linear-gradient(90deg,#5E7299 0%,#5E7299 32%,var(--verde) 40%,var(--verde) 60%,var(--rojo) 68%,var(--rojo) 100%);opacity:.35;transition:opacity .6s}
 .zona{position:absolute;left:36%;width:28%;top:96px;height:78px;border-radius:24px;border:3px solid transparent;transition:all .7s}
 .medidor.centro-ok .zona{border-color:var(--verde);box-shadow:0 0 60px rgba(91,212,154,.45),inset 0 0 40px rgba(91,212,154,.18)}
@@ -109,15 +110,21 @@ b,strong{font-weight:700}
 .leyenda-faders p{position:absolute;left:0;right:0;text-align:center;margin:0}
 
 /* ---------- Red de conexiones ---------- */
-.red{width:1500px;height:520px;margin:30px auto 0}
+.red{width:1400px;height:460px;margin:24px auto 18px}
 .red svg{width:100%;height:100%}
 
 /* ---------- Pilares ---------- */
-.pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:70px}
-.pilar{background:var(--bg2);border-radius:26px;padding:40px 34px 44px;border:2px solid rgba(255,255,255,.06);box-shadow:0 26px 50px rgba(0,0,0,.25);height:640px}
+.pilares{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:54px}
+.pilar{position:relative;transition:transform 1s var(--suave-in),opacity .7s,filter .7s}
+.pilar .mod{font-family:var(--tit);font-weight:700;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:var(--suave);margin-bottom:6px}
+.pilares.zoom .pilar{opacity:.18;filter:blur(2px)}
+[data-pilares] .medio{transition:opacity .6s}
+[data-pilares]:has(.pilares.zoom) .medio{opacity:.15}
+.pilares.zoom .pilar.foco{opacity:1;filter:none;z-index:3;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.pilar{background:var(--bg2);border-radius:26px;padding:30px 30px 34px;border:2px solid rgba(255,255,255,.06);box-shadow:0 26px 50px rgba(0,0,0,.25);height:640px}
 .pilar svg{width:100%;height:170px;display:block}
 .pilar h3{font-size:34px;font-weight:700;text-transform:uppercase;margin:26px 0 18px;color:var(--naranja);line-height:1.15}
-.pilar p{font-size:27px;line-height:1.42;margin:0;color:var(--suave)}
+.pilar p{font-size:25px;line-height:1.4;margin:0;color:var(--suave)}
 .pilar p b{color:var(--ink);font-weight:600}
 
 /* ---------- Qué incluye ---------- */
@@ -187,6 +194,48 @@ b,strong{font-weight:700}
 .resumen{display:grid;grid-template-columns:1fr 1fr;gap:34px 60px;margin-top:90px}
 .resumen .item .t{font-size:46px}
 
+
+/* WhatsApp animado */
+.celu.wa{width:420px;padding:14px}
+.wa-pant{position:relative;border-radius:48px;overflow:hidden;background:#0b141a;aspect-ratio:390/800;display:flex;flex-direction:column}
+.wa-cab{display:flex;align-items:center;gap:14px;padding:62px 20px 14px;background:#1f2c34}
+.wa-av{width:46px;height:46px;border-radius:50%;background:var(--naranja);display:grid;place-items:center;font:700 22px var(--tit)}
+.wa-cab b{display:block;font:600 20px var(--txt)}.wa-cab small{font-size:15px;color:#8696a0}
+.wa-chat{flex:1;padding:18px 14px;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;background:#0b141a radial-gradient(circle at 30% 20%,rgba(255,255,255,.025) 0 2px,transparent 3px) 0 0/34px 34px}
+.wa-m{max-width:80%;padding:9px 12px 20px;border-radius:12px;font-size:19px;line-height:1.3;position:relative;opacity:0;transform:translateY(14px) scale(.96);transition:all .45s var(--resorte)}
+.wa-m.ver{opacity:1;transform:none}
+.wa-m small{position:absolute;right:10px;bottom:4px;font-size:12px;color:rgba(255,255,255,.55)}
+.wa-m.yo{align-self:flex-end;background:#005c4b;border-top-right-radius:3px}
+.wa-m.el{align-self:flex-start;background:#202c33;border-top-left-radius:3px}
+.wa-audio{display:flex;align-items:center;gap:10px;min-width:250px}
+.wa-audio .pl{width:0;height:0;border-left:14px solid #d1d7db;border-top:9px solid transparent;border-bottom:9px solid transparent}
+.wa-audio .ond{flex:1;height:26px;background:repeating-linear-gradient(90deg,#8fa0aa 0 3px,transparent 3px 7px);-webkit-mask:linear-gradient(90deg,#000,#000);clip-path:polygon(0 40%,8% 20%,16% 55%,24% 10%,32% 45%,40% 25%,48% 60%,56% 15%,64% 50%,72% 30%,80% 55%,88% 20%,100% 45%,100% 100%,0 100%)}
+.wa-audio .av2{width:38px;height:38px;border-radius:50%;background:var(--naranja);display:grid;place-items:center;font:700 16px var(--tit)}
+.wa-escribe{align-self:flex-start;background:#202c33;border-radius:12px;padding:12px 16px;display:flex;gap:6px;opacity:0;transition:opacity .3s}
+.wa-escribe.ver{opacity:1}
+.wa-escribe i{width:9px;height:9px;border-radius:50%;background:#8696a0;animation:pun 1s infinite}.wa-escribe i:nth-child(2){animation-delay:.15s}.wa-escribe i:nth-child(3){animation-delay:.3s}
+@keyframes pun{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+.wa-pie{display:flex;align-items:center;gap:12px;padding:12px 14px 26px;background:#0b141a}
+.wa-pie span{flex:1;background:#2a3942;border-radius:24px;padding:12px 18px;color:#8696a0;font-size:17px}.wa-pie i{width:46px;height:46px;border-radius:50%;background:#00a884}
+/* personalizado */
+.perso{display:grid;gap:30px;margin-top:64px}
+.pc{display:flex;align-items:center;gap:26px;font-family:var(--tit);font-weight:500;font-size:44px;line-height:1.3}
+.pc i{flex:none;width:22px;height:22px;border-radius:50%;background:var(--naranja);box-shadow:0 0 0 8px rgba(232,131,79,.18)}
+.pc b{color:var(--naranja);font-weight:700}
+/* resumen */
+.fichas{display:grid;grid-template-columns:repeat(4,1fr);gap:34px;margin-top:80px}
+.ficha{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:56px 30px;border-radius:30px;background:var(--bg2);border:2px solid rgba(255,255,255,.07);box-shadow:0 30px 60px rgba(0,0,0,.25)}
+.ficha svg{width:120px;height:120px;fill:none;stroke:var(--naranja);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.ficha b{font-family:var(--tit);font-weight:700;font-size:38px;line-height:1.15}
+.ficha span{font-size:28px;color:var(--suave)}
+.d.activa .ficha{animation:brilla 3.6s ease-in-out infinite}
+.d.activa .ficha:nth-child(2){animation-delay:.9s}.d.activa .ficha:nth-child(3){animation-delay:1.8s}.d.activa .ficha:nth-child(4){animation-delay:2.7s}
+@keyframes brilla{0%,30%,100%{border-color:rgba(255,255,255,.07)}12%{border-color:rgba(232,131,79,.8);box-shadow:0 30px 80px rgba(232,131,79,.25)}}
+/* cierre */
+.fin-cuerdas{position:absolute;inset:0;width:100%;height:100%;opacity:.5}
+.fin{position:relative}
+.trio{display:flex;align-items:center;gap:34px;margin-top:46px;font-family:var(--tit);font-weight:600;font-size:46px;letter-spacing:.06em;text-transform:uppercase}
+.trio i{width:12px;height:12px;border-radius:50%;background:var(--naranja)}
 /* ---------- Controles ---------- */
 #progreso{position:fixed;left:0;bottom:0;height:5px;background:var(--naranja);transition:width .5s var(--suave-in);z-index:5}
 #ctrl{position:fixed;right:22px;bottom:20px;display:flex;align-items:center;gap:10px;z-index:6;opacity:0;transition:opacity .4s}
@@ -207,15 +256,15 @@ body.oculto-cursor{cursor:none}
     <div>
       <div class="met en">MÉTODO</div>
       <div class="marca en r1">Ajuste Elástico</div>
-      <p class="lema en r2">Para aprender a improvisar con <b>Seguridad</b>, <b>Lenguaje</b> y una <b>Narrativa</b>.</p>
+      <p class="lema en r2">Para aprender a improvisar con <b>Control</b>, <b>Lenguaje</b> y <b>Narrativa</b>.</p>
     </div>
     <div class="cuerdas en r3"><svg viewBox="0 0 760 620" id="cuerdas"></svg></div>
   </div>
 </section>
 
 <!-- 2. Por qué se llama así -->
-<section class="d">
-  <div class="centro" style="justify-content:flex-start;padding-top:40px">
+<section class="d vc">
+  <div class="centro" style="height:auto">
     <h2 class="tit en">¿Por qué <span class="nar">Ajuste Elástico</span>?</h2>
     <p class="grande en r1" style="margin:70px 0 0">Porque la práctica de la improvisación<br>tiene que ser <span class="nar">ajustable</span>.</p>
     <p class="grande" data-paso="1" style="margin:20px 0 0">Tiene que ser <span class="nar">elástica</span>.</p>
@@ -224,7 +273,7 @@ body.oculto-cursor{cursor:none}
 </section>
 
 <!-- 3. El problema y el punto medio -->
-<section class="d" data-medidor>
+<section class="d vc" data-medidor>
   <h2 class="tit en" style="text-align:center">El mayor problema de la práctica</h2>
   <div class="medidor en r1" data-pos="nada">
     <div class="pista"></div><div class="zona"></div>
@@ -241,7 +290,7 @@ body.oculto-cursor{cursor:none}
 </section>
 
 <!-- 4. En ese lugar -->
-<section class="d">
+<section class="d vc">
   <h2 class="tit en" style="text-align:center">En ese punto medio</h2>
   <div class="tres">
     <div class="carta en r1"><div class="num">01</div><h3>Usás lo que <span class="nar">ya conocés</span></h3></div>
@@ -251,7 +300,7 @@ body.oculto-cursor{cursor:none}
 </section>
 
 <!-- 5. Variables -->
-<section class="d" data-faders>
+<section class="d vc" data-faders>
   <h2 class="tit en" style="text-align:center">Pero no con <span class="nar">todo liberado</span></h2>
   <div class="faders caos en r1">
     <div class="fader"><div class="riel"><div class="perilla"></div></div><svg class="cand" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2" fill="#9AA6C2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#9AA6C2" stroke-width="2.4" fill="none"/></svg><span>Armonía</span></div>
@@ -263,14 +312,14 @@ body.oculto-cursor{cursor:none}
   </div>
   <div class="leyenda-faders">
     <p class="medio en r2" data-solo="0">Todas las variables sueltas, al azar: <span class="nar">todo se vuelve muy difícil</span>.</p>
-    <p class="medio" data-paso="1">Nos enfocamos en <span class="nar">una sola cosa por vez</span>,<br>con parámetros que limitan y bajan la dificultad.</p>
+    <p class="medio" data-paso="1">Nos enfocamos en <span class="nar">una sola cosa por vez</span>, con parámetros<br>que limitan y regulan la dificultad momento a momento.</p>
   </div>
 </section>
 
 <!-- 6. Conectar de nuevas maneras -->
-<section class="d" data-red>
-  <div class="centro" style="justify-content:flex-start;padding-top:20px">
-    <p class="grande en">Así usás lo que <span class="nar">ya conocés</span><br>y lo conectás de <span class="nar">nuevas maneras</span>.</p>
+<section class="d vc" data-red>
+  <div class="centro" style="height:auto">
+    <p class="grande en" style="margin:0;font-size:56px">Practicás con información que <span class="nar">ya entendés</span>,<br>pero potenciándola: la <span class="nar" style="white-space:nowrap">conectás de nuevas maneras</span><br>en cada paso que das.</p>
     <div class="red en r1"><svg viewBox="0 0 1500 520" id="red"></svg></div>
     <p class="medio" data-paso="1" style="margin:0">Desarrollando tus capacidades como improvisador.</p>
   </div>
@@ -279,49 +328,48 @@ body.oculto-cursor{cursor:none}
 <!-- 7. Vamos de a poco -->
 <section class="d">
   <div class="centro">
-    <h2 class="tit en" style="font-size:110px">Vamos de a poco.</h2>
-    <p class="grande" data-paso="1" style="margin-top:50px">Trabajemos un rato sobre <span class="nar">cada parte</span>.</p>
-    <p class="medio" data-paso="2" style="margin-top:46px;color:var(--suave)">Va a haber que trabajar. ¿Qué querés? Es así.</p>
+    <h2 class="tit en" style="font-size:120px">Vamos de a poco.</h2>
   </div>
 </section>
 
-<!-- 8. Pilares -->
-<section class="d">
+<!-- 8. Los 4 módulos -->
+<section class="d vc" data-pilares>
   <h2 class="tit en" style="text-align:center"><span class="nar">¿Cómo</span> vamos a lograrlo?</h2>
+  <p class="medio en r1" style="text-align:center;margin:26px 0 0;color:var(--suave)">El programa tiene <span class="nar">4 módulos</span>.</p>
   <div class="pilares">
-    <div class="pilar en r1">
-      <svg viewBox="0 0 300 170"><g class="ic-arp" fill="none" stroke-width="7" stroke-linecap="round">
+    <div class="pilar en r1"><div class="mod">Módulo 1</div>
+      <svg viewBox="0 0 300 170"><g fill="none" stroke-width="7" stroke-linecap="round">
         <path d="M30 140 L90 100 L150 120 L210 60 L270 30" stroke="#E8834F"/>
         <circle cx="30" cy="140" r="14" fill="#F2F3F6" stroke="none"/><circle cx="90" cy="100" r="14" fill="#F2F3F6" stroke="none"/><circle cx="150" cy="120" r="14" fill="#F2F3F6" stroke="none"/><circle cx="210" cy="60" r="14" fill="#F2F3F6" stroke="none"/><circle cx="270" cy="30" r="14" fill="#E8834F" stroke="none"/></g></svg>
       <h3>Dominio de los arpegios</h3>
       <p><b>Conectar</b> la armonía en <b>tiempo real</b>, practicando <b>enlaces de arpegios en vivo</b>. Anticiparse a lo que viene para desarrollar <b>control y libertad</b> en cualquier <b>secuencia armónica</b>.</p>
     </div>
-    <div class="pilar en r2">
+    <div class="pilar en r2"><div class="mod">Módulo 2</div>
       <svg viewBox="0 0 300 170" id="adn"></svg>
       <h3>ADN del Jazz</h3>
       <p>Vamos a <b>Reconocer</b>, <b>Mecanizar</b> e <b>Integrar</b> los recursos fundamentales del <b>lenguaje del jazz</b> a tu música. <b>Transcribir</b> solos con una <b>profundidad distinta</b>, para <b>aprovecharlos</b> mucho, muuucho más que antes.</p>
     </div>
-    <div class="pilar en r3">
+    <div class="pilar en r3"><div class="mod">Módulo 3</div>
       <svg viewBox="0 0 300 170" id="ritmo"></svg>
       <h3>Laboratorio rítmico</h3>
       <p>Para que ganes <b>control y expresividad</b> al improvisar. <b>Conciencia rítmica</b> para saber de dónde venimos y hacia dónde vamos. Más <b>libertad</b> y <b>capacidad creativa</b> en lo rítmico.</p>
     </div>
-    <div class="pilar en r4">
+    <div class="pilar en r4"><div class="mod">Módulo 4</div>
       <svg viewBox="0 0 300 170"><path class="curva" d="M20 150 C 90 150, 110 40, 160 40 S 230 120, 280 20" fill="none" stroke="#E8834F" stroke-width="8" stroke-linecap="round"/><circle class="punta" r="13" fill="#F2F3F6"/></svg>
       <h3>Curva del solo</h3>
       <p>Darle <b>forma y dirección</b> a tus improvisaciones. Contar una idea musical, <b>sostenerla y transformarla</b> sin perder el hilo, para que tus solos <b>conecten</b> con vos y con quien escucha.</p>
     </div>
   </div>
+  <i data-paso="4" hidden></i>
 </section>
 
 <!-- 9. Qué incluye -->
-<section class="d">
+<section class="d vc">
   <h2 class="tit en"><span class="nar">¿Qué incluye</span> el programa?</h2>
   <div class="lista">
     <div class="item en r1"><div class="bola">1</div><div class="t">Aula virtual de Ajuste Elástico</div></div>
-    <div class="item en r2"><div class="bola">2</div><div class="t">Seguimiento de lunes a viernes por WhatsApp</div></div>
+    <div class="item en r2"><div class="bola">2</div><div class="t">Soporte por WhatsApp de lunes a viernes</div></div>
     <div class="item en r3"><div class="bola">3</div><div class="t">Sesiones en vivo</div></div>
-    <div class="item en r4"><div class="bola">4</div><div class="t">Plan de acción semanal<small>con videos y rutinas personalizadas</small></div></div>
   </div>
 </section>
 
@@ -333,7 +381,17 @@ body.oculto-cursor{cursor:none}
       <p class="medio en r1">Todo el material del programa está en el aula.</p>
       <p class="chico en r2">No es una lista de videos: <b style="color:var(--ink)">es un camino</b>. Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c1_camino.jpg" src="media/c1_camino.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1_camino.jpg" src="media/c1_camino.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+  </div>
+</section>
+
+<section class="d">
+  <div class="enc en"><div class="bola">1</div><h2>Aula virtual</h2></div>
+  <div class="aula">
+    <div class="txt">
+      <p class="medio en r1">Y en el mapa ves <span class="nar">el programa completo</span>, módulo por módulo.</p>
+    </div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c1b_mapa.jpg" src="media/c1b_mapa.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -344,7 +402,7 @@ body.oculto-cursor{cursor:none}
       <p class="medio en r1">En cada paso tenés la clase, el material y una pregunta: <span class="nar">¿cómo te fue?</span></p>
       <p class="chico en r2">Según lo que me contestes, el aula te dice qué hacer.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c2_paso.jpg" src="media/c2_paso.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c2_paso.jpg" src="media/c2_paso.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -355,7 +413,7 @@ body.oculto-cursor{cursor:none}
       <p class="medio en r1">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p>
       <p class="chico en r2">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p>
     </div>
-    <div class="compu ancho"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c3_animacion.jpg" src="media/c3_animacion.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu ancho"><div class="pant"><video muted playsinline preload="auto" poster="media/c3_animacion.jpg" src="media/c3_animacion.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -367,7 +425,7 @@ body.oculto-cursor{cursor:none}
       <span class="chip en r2"><i></i>Ir a esta parte del video</span><span class="chip en r2"><i></i>Ir a esta parte del doc</span>
       <p class="chico en r3">Así todo es progresivo y cumplís con cada cosa antes de ir a la siguiente.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c4_ir.jpg" src="media/c4_ir.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c4_ir.jpg" src="media/c4_ir.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -378,7 +436,7 @@ body.oculto-cursor{cursor:none}
       <p class="medio en r1">Cuando hay que mandarme un video, <span class="nar">lo grabás ahí mismo</span>…</p>
       <p class="chico en r2">…y me llega para darte la devolución.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c5_grabar.jpg" src="media/c5_grabar.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c5_grabar.jpg" src="media/c5_grabar.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -390,7 +448,7 @@ body.oculto-cursor{cursor:none}
       <p class="chico en r2">Para practicar donde te quede mejor.</p>
     </div>
     <div class="celu-grupo">
-      <div class="celu"><video muted loop playsinline preload="auto" poster="media/c6_celu.jpg" src="media/c6_celu.mp4"></video></div>
+      <div class="celu"><video muted playsinline preload="auto" poster="media/c6_celu.jpg" src="media/c6_celu.mp4"></video></div>
       <div class="app" data-paso="1"><img src="../iconos/icono-512.png" alt=""><span>Ajuste Elástico</span></div>
     </div>
   </div>
@@ -402,7 +460,7 @@ body.oculto-cursor{cursor:none}
     <div class="txt">
       <p class="medio en r1">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p>
     </div>
-    <div class="compu"><div class="pant"><video muted loop playsinline preload="auto" poster="media/c7_modulo.jpg" src="media/c7_modulo.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video muted playsinline preload="auto" poster="media/c7_modulo.jpg" src="media/c7_modulo.mp4"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
 </section>
 
@@ -415,9 +473,22 @@ body.oculto-cursor{cursor:none}
 </section>
 
 <!-- 2. WhatsApp -->
-<section class="d">
-  <div class="enc en"><div class="bola">2</div><h2>Seguimiento de lunes a viernes<small>por WhatsApp</small></h2></div>
-  <img class="foto en r1" src="media/whatsapp.jpg" alt="" style="height:760px">
+<section class="d" data-chat>
+  <div class="enc en"><div class="bola">2</div><h2>Soporte por WhatsApp<small>de lunes a viernes</small></h2></div>
+  <div class="celu-escena">
+    <div class="txt">
+      <p class="medio en r1" style="font-size:42px">Estoy todo el tiempo para <span class="nar">acompañarte y resolver tus dudas</span>.</p>
+      <p class="chico en r2">Para que completes las tareas tranquilo, sin frustración, y aproveches el método al máximo.</p>
+      <p class="chico en r3" style="color:var(--ink)">Para mí es un placer: lo que quiero es que lo puedas aprovechar.</p>
+    </div>
+    <div class="celu-grupo">
+      <div class="celu wa"><div class="wa-pant">
+        <div class="wa-cab"><span class="wa-av">A</span><div><b>Andy Kligman</b><small id="wa-estado">en línea</small></div></div>
+        <div class="wa-chat" id="wa-chat"></div>
+        <div class="wa-pie"><span>Mensaje</span><i></i></div>
+      </div></div>
+    </div>
+  </div>
 </section>
 
 <!-- 3. En vivo -->
@@ -432,20 +503,36 @@ body.oculto-cursor{cursor:none}
   </div>
 </section>
 
-<!-- 4. Plan semanal -->
-<section class="d">
-  <div class="enc en"><div class="bola">4</div><h2>Plan de acción semanal<small>con videos y rutinas personalizadas</small></h2></div>
-  <img class="foto en r1" src="media/plan.jpg" alt="" style="height:640px;margin-top:90px">
+<!-- Personalizado -->
+<section class="d vc">
+  <h2 class="tit en">El programa es <span class="nar">personalizado</span></h2>
+  <p class="grande en r1" style="margin-top:56px;font-size:54px">Seguimos un camino, pero yo estoy con vos todo el tiempo<br>y lo vamos <span class="nar">adaptando a tu caso</span>.</p>
+  <div class="perso">
+    <div class="pc" data-paso="1"><i></i><span>Si necesitás ir tranqui, <b>vamos tranqui</b>.</span></div>
+    <div class="pc" data-paso="2"><i></i><span>Si surgen dudas que no están en el programa, <b>lo charlamos</b> y lo vamos llevando.</span></div>
+    <div class="pc" data-paso="3"><i></i><span>La idea es que sea <b>la mejor experiencia educativa que hayas tenido</b>.</span></div>
+  </div>
 </section>
 
 <!-- Resumen -->
-<section class="d">
-  <h2 class="tit en">En resumen, <span class="nar">Ajuste Elástico</span> incluye:</h2>
-  <div class="resumen">
-    <div class="item en r1"><div class="bola">1</div><div class="t">Aula virtual</div></div>
-    <div class="item en r2"><div class="bola">2</div><div class="t">Seguimiento por WhatsApp</div></div>
-    <div class="item en r3"><div class="bola">3</div><div class="t">Sesiones en vivo</div></div>
-    <div class="item en r4"><div class="bola">4</div><div class="t">Plan de acción semanal</div></div>
+<section class="d vc">
+  <h2 class="tit en" style="text-align:center">En resumen, <span class="nar">Ajuste Elástico</span> incluye</h2>
+  <div class="fichas">
+    <div class="ficha en r1"><svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="5"/><path d="M2 52h60"/><circle cx="20" cy="29" r="4"/><path d="M24 29h10l6-6 8 0"/></svg><b>Aula virtual</b><span>Un camino paso a paso, para siempre</span></div>
+    <div class="ficha en r2"><svg viewBox="0 0 64 64"><path d="M32 6a26 26 0 0 0-22 40L6 58l12-4a26 26 0 1 0 14-48z"/><path d="M22 28h20M22 36h12"/></svg><b>Soporte por WhatsApp</b><span>De lunes a viernes</span></div>
+    <div class="ficha en r3"><svg viewBox="0 0 64 64"><rect x="4" y="14" width="40" height="36" rx="6"/><path d="M44 26l16-9v30l-16-9z"/></svg><b>Sesiones en vivo</b><span>Clases conmigo, 1 a 1</span></div>
+    <div class="ficha en r4"><svg viewBox="0 0 64 64"><circle cx="32" cy="22" r="10"/><path d="M12 56c2-12 10-18 20-18s18 6 20 18"/><path d="M46 8l4 4 8-8" /></svg><b>Personalizado</b><span>A tu ritmo, con tu caso</span></div>
+  </div>
+</section>
+
+<!-- Cierre -->
+<section class="d" data-fin>
+  <svg class="fin-cuerdas" viewBox="0 0 1920 1080" id="fincuerdas" preserveAspectRatio="none"></svg>
+  <div class="centro fin">
+    <div class="met en" style="font-family:var(--tit);font-size:64px;letter-spacing:.3em;font-weight:400">MÉTODO</div>
+    <div class="marca en r1" style="font-family:var(--tit);font-weight:800;font-size:150px;color:var(--naranja);text-transform:uppercase;line-height:1">Ajuste Elástico</div>
+    <div class="trio en r2"><span>Control</span><i></i><span>Lenguaje</span><i></i><span>Narrativa</span></div>
+    <p class="grande" data-paso="1" style="margin-top:80px">¿Arrancamos?</p>
   </div>
 </section>
 
@@ -459,7 +546,7 @@ body.oculto-cursor{cursor:none}
 
 <script>
 const D = [...document.querySelectorAll('.d')], esc = document.getElementById('escena');
-let i = 0, paso = 0;
+let i = 0, paso = 0, ultima = -1, tEntrada = performance.now();
 const pasosDe = d => Math.max(0, ...[...d.querySelectorAll('[data-paso]')].map(x => +x.dataset.paso));
 
 function ajustar() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); esc.style.transform = `scale(${k})`; }
@@ -475,8 +562,20 @@ function pintar() {
   if (m) { m.dataset.pos = ['nada', 'izq', 'der', 'centro'][paso] || 'centro'; m.classList.toggle('centro-ok', paso >= 3); }
   const f = d.querySelector('.faders');
   if (f) { f.classList.toggle('caos', paso === 0); f.classList.toggle('foco', paso >= 1); }
-  // videos
-  D.forEach((x, n) => x.querySelectorAll('video').forEach(v => { if (n === i) { if (v.paused) { v.currentTime = 0; v.play().catch(() => {}); } } else v.pause(); }));
+  // al entrar a una diapositiva: videos desde el principio (una sola vez, quedan en el último cuadro), red y chat de cero
+  const nueva = i !== ultima; ultima = i;
+  D.forEach((x, n) => x.querySelectorAll('video').forEach(v => { if (n === i) { if (nueva) { v.currentTime = 0; v.play().catch(() => {}); } } else v.pause(); }));
+  if (nueva) { tEntrada = performance.now(); if (d.hasAttribute('data-chat')) chat(); }
+  // los 4 módulos: zoom en uno por vez
+  const pil = d.querySelector('.pilares');
+  if (pil) {
+    const cs = [...pil.children]; pil.classList.toggle('zoom', paso > 0);
+    cs.forEach((c, k) => {
+      c.classList.toggle('foco', paso === k + 1);
+      if (paso === k + 1) { const W = pil.clientWidth, cx = c.offsetLeft + c.offsetWidth / 2; c.style.transform = `translate(${W / 2 - cx}px, 6px) scale(1.24)`; }
+      else c.style.transform = '';
+    });
+  }
   document.getElementById('progreso').style.width = (100 * (i + 1) / D.length) + '%';
   document.getElementById('num').textContent = `${i + 1} / ${D.length}`;
   history.replaceState(null, '', '#' + (i + 1));
@@ -516,7 +615,44 @@ const rnd = (a => () => (a = (a * 9301 + 49297) % 233280) / 233280)(7);
 for (let c = 0; c < 7; c++) for (let f = 0; f < 3; f++) nodos.push({ x: 110 + c * 213 + (rnd() - .5) * 120, y: 80 + f * 180 + (rnd() - .5) * 110 });
 const aristas = []; nodos.forEach((a, x) => nodos.forEach((b, y) => { if (y > x && Math.hypot(a.x - b.x, a.y - b.y) < 280) aristas.push([a, b]); }));
 const lineasRed = aristas.map(([a, b]) => { const l = mk('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: '#E8834F', 'stroke-width': 4, 'stroke-linecap': 'round' }, red); const L = Math.hypot(a.x - b.x, a.y - b.y); l.setAttribute('stroke-dasharray', L); l.setAttribute('stroke-dashoffset', L); l._L = L; return l; });
-nodos.forEach(n => n.el = mk('circle', { cx: n.x, cy: n.y, r: 16, fill: '#F2F3F6' }, red));
+aristas.sort((a, b) => (a[0].x + a[1].x) - (b[0].x + b[1].x));
+lineasRed.length = 0; red.innerHTML = '';
+aristas.forEach(([a, b], n) => { const l = mk('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, stroke: '#E8834F', 'stroke-width': 4, 'stroke-linecap': 'round' }, red); const L = Math.hypot(a.x - b.x, a.y - b.y); l.setAttribute('stroke-dasharray', L); l.setAttribute('stroke-dashoffset', L); l._L = L; lineasRed.push(l);
+  const t0 = n * 0.32; if (a.t0 === undefined) a.t0 = t0; if (b.t0 === undefined) b.t0 = t0 + 0.6; });
+nodos.forEach(n => n.el = mk('circle', { cx: n.x, cy: n.y, r: 10, fill: '#6E7FA6' }, red));
+const finc = document.getElementById('fincuerdas'), finLineas = [];
+for (let k = 0; k < 6; k++) finLineas.push(mk('path', { fill: 'none', stroke: k === 2 ? '#E8834F' : '#F2F3F6', 'stroke-width': 2 + (5 - k) * .9, opacity: k === 2 ? .8 : .35 }, finc));
+/* chat de WhatsApp */
+const CHAT = [
+  ['yo', 'Andy, una duda con los enlaces 🙏', 900],
+  ['yo', 'En el compás 7 me quedo sin notas para llegar al acorde que sigue', 1300],
+  ['esc', '', 1600],
+  ['el', 'Fijate de quedarte en la nota común y moverte recién en el último tiempo', 1500],
+  ['audio', '0:38', 1400],
+  ['yo', 'Ahhh ahí sale!! Gracias 🙌', 1700],
+  ['el', 'Joya! Vamo arriba 💪', 0]];
+let chatTimers = [];
+function chat() {
+  chatTimers.forEach(clearTimeout); chatTimers = [];
+  const box = document.getElementById('wa-chat'); box.innerHTML = '';
+  const hora = (k) => `10:${String(41 + k).padStart(2, '0')}`;
+  let t = 700, esc = null;
+  CHAT.forEach(([tipo, txt, espera], k) => {
+    chatTimers.push(setTimeout(() => {
+      if (esc) { esc.remove(); esc = null; }
+      let el;
+      if (tipo === 'esc') { el = document.createElement('div'); el.className = 'wa-escribe'; el.innerHTML = '<i></i><i></i><i></i>'; esc = el; document.getElementById('wa-estado').textContent = 'escribiendo…'; }
+      else {
+        document.getElementById('wa-estado').textContent = 'en línea';
+        el = document.createElement('div'); el.className = 'wa-m ' + (tipo === 'yo' ? 'yo' : 'el');
+        el.innerHTML = tipo === 'audio' ? `<div class="wa-audio"><span class="av2">A</span><span class="pl"></span><span class="ond"></span></div><small>${txt} · ${hora(k)}</small>` : `${txt}<small>${hora(k)}</small>`;
+      }
+      box.appendChild(el); requestAnimationFrame(() => el.classList.add('ver'));
+      while (box.children.length > 7) box.firstChild.remove();
+    }, t));
+    t += espera;
+  });
+}
 // ADN
 const adn = document.getElementById('adn'), hel = [];
 for (let k = 0; k < 12; k++) hel.push({ l: mk('line', { stroke: '#7FA0E0', 'stroke-width': 5, 'stroke-linecap': 'round' }, adn), a: mk('circle', { r: 9, fill: '#E8834F' }, adn), b: mk('circle', { r: 9, fill: '#F2F3F6' }, adn) });
@@ -538,10 +674,14 @@ function cuadro(now) {
     pinA.setAttribute('cx', x1); pinA.setAttribute('cy', 150); pinB.setAttribute('cx', x2); pinB.setAttribute('cy', 150);
   }
   if (d.contains(red)) {
-    const k = Math.min(1, Math.max(0, (t % 7) / 4.2));
-    lineasRed.forEach((l, n) => { const u = Math.min(1, Math.max(0, k * 1.6 - n / lineasRed.length * .6)); l.setAttribute('stroke-dashoffset', l._L * (1 - u)); l.setAttribute('opacity', .25 + .75 * u); });
-    nodos.forEach((n, m) => n.el.setAttribute('r', 13 + 4 * Math.sin(t * 2 + m)));
+    const te = (now - tEntrada) / 1000 - 0.8, paso1 = 0.32, dur = 0.7;   // una línea por vez, de izquierda a derecha
+    lineasRed.forEach((l, n) => { const u = Math.min(1, Math.max(0, (te - n * paso1) / dur)), e = 1 - Math.pow(1 - u, 3); l.setAttribute('stroke-dashoffset', l._L * (1 - e)); l.style.opacity = u > 0 ? 1 : 0; });
+    nodos.forEach((n, m) => { const on = n.t0 !== undefined && te > n.t0; n.el.setAttribute('r', on ? 15 + 3 * Math.sin(t * 2 + m) : 10); n.el.setAttribute('fill', on ? '#F2F3F6' : '#6E7FA6'); });
   }
+  if (d.contains(finc)) finLineas.forEach((l, k) => {
+    const y = 140 + k * 160, ciclo = (t * .6 + k * .41) % 4, amp = 60 * Math.exp(-ciclo * 1.2);
+    let s = `M 0 ${y}`; for (let x = 0; x <= 1920; x += 24) { const u = x / 1920; s += ` L ${x} ${y + amp * Math.sin(Math.PI * u) * Math.sin(t * (2 + k * .3) * 6 + k)}`; } l.setAttribute('d', s);
+  });
   if (d.contains(adn)) hel.forEach((h, k) => { const x = 22 + k * 23, f = t * 2.2 + k * .55, y1 = 85 + 52 * Math.sin(f), y2 = 85 - 52 * Math.sin(f);
     h.l.setAttribute('x1', x); h.l.setAttribute('x2', x); h.l.setAttribute('y1', y1); h.l.setAttribute('y2', y2); h.a.setAttribute('cx', x); h.a.setAttribute('cy', y1); h.b.setAttribute('cx', x); h.b.setAttribute('cy', y2);
     const z = Math.cos(f); h.a.setAttribute('r', 7 + 3 * z); h.b.setAttribute('r', 7 - 3 * z); });
