@@ -1103,7 +1103,7 @@ body.sin-scroll{overflow:hidden}
 .ev-arranco:not(.ev-sonando) .ev-play{background:rgba(9,13,24,.7)}
 .ev-fin .ev-txt::after{content:" de nuevo"}
 .ev-simple .ev-play,.ev-simple .ev-capa,.ev-simple .ev-barra{display:none}
-.ev-barra{position:absolute;left:0;right:0;bottom:0;z-index:4;height:5px;background:rgba(255,255,255,.18);pointer-events:none}
+.ev-barra{position:absolute;left:0;right:0;bottom:0;z-index:6;height:6px;background:rgba(255,255,255,.22);touch-action:none;cursor:pointer}
 .ev-barra i{display:block;height:100%;width:0;background:#E8834F;transition:width .25s linear}
 .llp-logo svg{height:72px;width:auto}
 .llp-vis.chico{width:min(300px,90%)}
@@ -1172,3 +1172,22 @@ body.sin-scroll{overflow:hidden}
    (si no, en el iPhone el video y la cruz quedan corridos y se ven tildes de los pasos por encima) */
 .ev-sube{transform:none!important;animation:none!important;filter:none!important;z-index:400!important}
 body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{visibility:hidden}
+
+/* barra para moverse en el video: zona de toque más grande que la línea */
+.ev-barra::before{content:"";position:absolute;left:0;right:0;bottom:0;height:30px}
+.ev-barra i{position:relative;pointer-events:none}
+.ev-barra b{display:none}
+.ev-arranco .ev-barra i::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:#E8834F;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+.ev-tiempo{position:absolute;left:10px;bottom:16px;z-index:6;padding:3px 8px;border-radius:6px;background:rgba(9,13,24,.72);color:#fff;font:700 13px var(--sans);display:none;pointer-events:none}
+.ev-arrastrando .ev-tiempo{display:block}
+.ev-agrandar{bottom:18px}
+/* Ver en YouTube: chiquito, abajo del video */
+.ev-en-yt{display:inline-flex;align-items:center;gap:6px;margin:8px auto 0;padding:4px 10px;border-radius:999px;color:#5A6478;font:600 13px var(--sans);text-decoration:none;border:1px solid rgba(58,79,122,.25)}
+.ev-en-yt svg{width:17px;height:17px;fill:#E33}
+.ev-en-yt:hover{color:#3A4F7A;border-color:#3A4F7A}
+.emb.ev-grande .ev-en-yt{position:fixed;left:12px;top:max(12px,env(safe-area-inset-top));z-index:6;margin:0;color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.12)}
+
+/* Mandar otro video, cuando ya mandó uno: chiquito, que no ocupe lugar */
+.otro-video{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:8px;font-size:14px;color:#5A6478}
+.otro-video .link{font-size:14px;padding:4px 0;cursor:pointer}
+.otro-video .link svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}

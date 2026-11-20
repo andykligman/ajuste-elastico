@@ -613,7 +613,8 @@ function embedHTML(e) {
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
       <button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button>
       <button class="ev-achicar" data-ev-grande aria-label="Achicar">✕</button>
-      <div class="ev-barra" data-ev-barra><i></i></div></div></div>`;
+      <div class="ev-barra" data-ev-barra><i></i><b></b></div><span class="ev-tiempo"></span></div>
+      <a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg>Ver en YouTube</a></div>`;
   }
   const src = e.tipo === 'ig' ? `https://www.instagram.com/reel/${esc(e.id)}/embed/` : `https://www.youtube-nocookie.com/embed/${esc(e.id)}?rel=0&playsinline=1`;
   return `<div class="emb emb-${e.tipo}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco"><iframe src="${src}" title="${esc(e.eti || 'Video')}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen; clipboard-write" allowfullscreen loading="lazy" scrolling="no"></iframe></div></div>`;
@@ -651,7 +652,7 @@ function montarVerticales() {
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
               evPlayers.forEach((o, el) => { if (el !== m && el.isConnected) try { o.pauseVideo(); } catch (_) {} });
               clearInterval(timer);
-              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
+              timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); if (!m._arrastre) barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
             } else clearInterval(timer);
             if (ev.data === S.ENDED) barra.style.width = '100%';
           },
@@ -686,6 +687,31 @@ function evGrande(emb, prender) {
 window.addEventListener('resize', () => { const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, true); });
 document.addEventListener('fullscreenchange', () => { const g = document.querySelector('.emb.ev-grande'); if (g && !document.fullscreenElement) evGrande(g, false); });
 document.addEventListener('keydown', ev => { const g = document.querySelector('.emb.ev-grande'); if (g && ev.key === 'Escape') evGrande(g, false); });
+// La barra naranja se puede tocar o arrastrar para ir a otro momento del video
+const evMmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, "0")}`;
+document.addEventListener('click', ev => {
+  const a = ev.target.closest && ev.target.closest('[data-ev-yt]'); if (!a) return;
+  const m = a.closest('.emb')?.querySelector('.emb-marco'), pl = m && evPlayers.get(m);
+  try { pl && pl.pauseVideo(); } catch (_) {}
+  const g = a.closest('.emb.ev-grande'); if (g) evGrande(g, false);
+});
+document.addEventListener('pointerdown', ev => {
+  const bar = ev.target.closest && ev.target.closest('.ev-barra'); if (!bar) return;
+  const m = bar.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl || !pl.getDuration) return;
+  const dur = pl.getDuration() || 0; if (!dur) return;
+  ev.preventDefault();
+  const i = bar.querySelector('i'), tiempo = m.querySelector('.ev-tiempo');
+  const frac = x => { const r = bar.getBoundingClientRect(); return Math.min(1, Math.max(0, (x - r.left) / r.width)); };
+  const mover = x => { const f = frac(x); i.style.transition = 'none'; i.style.width = (100 * f) + '%'; tiempo.textContent = `${evMmss(f * dur)} / ${evMmss(dur)}`; return f; };
+  m._arrastre = true; m.classList.add('ev-arrastrando'); let f = mover(ev.clientX);
+  const mv = e => { f = mover(e.clientX); };
+  const fin = () => {
+    document.removeEventListener('pointermove', mv); document.removeEventListener('pointerup', fin); document.removeEventListener('pointercancel', fin);
+    try { pl.seekTo(f * dur, true); } catch (_) {}
+    setTimeout(() => { m._arrastre = false; i.style.transition = ''; m.classList.remove('ev-arrastrando'); }, 400);
+  };
+  document.addEventListener('pointermove', mv); document.addEventListener('pointerup', fin); document.addEventListener('pointercancel', fin);
+}, { passive: false });
 function evAccion(b, d) {
   if (d.evGrande !== undefined) { const emb = b.closest('.emb'); evGrande(emb, !emb.classList.contains('ev-grande')); return; }
   const m = b.closest('.emb-marco'), pl = m && evPlayers.get(m); if (!pl) return;
@@ -705,13 +731,16 @@ function envioHTML(st, p) {
   const listaPend = pend.length ? `<p class="vid-pend"><span class="sp-anillo"></span>${pend.length === 1 ? 'Se está mandando tu video.' : 'Se están mandando tus videos.'} Podés seguir usando el aula; si la cerrás, se termina de mandar cuando la vuelvas a abrir.</p>` : '';
   const lista = vids.length ? `<ul class="vids">${vids.map((v, i) => `<li>${ICONO.check}<span>Video del ${fechaCorta(v.t)}${v.seg ? ' · ' + duracion(v.seg) : ''}</span>
       ${modo === 'admin-vista' ? `<button class="link" data-ver-video="${p.id}:${i}">${v.visto ? 'Ver' : 'Ver (nuevo)'}</button>` : ''}</li>`).join('')}</ul>` : '';
-  const botonesVideo = conVideo && modo !== 'admin-vista' && !(ok && !vids.length) ? `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>${vids.length ? 'Grabar otro video' : 'Grabar el video acá'}</button>
-      <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>` : '';
+  const yaMando = ok || vids.length || pend.length;
+  // si ya mandó (por acá o por WhatsApp), en vez de los botones grandes queda una fila chiquita para mandar otro
+  const botonesVideo = !conVideo || modo === 'admin-vista' ? '' : yaMando ? '' : `<button class="primario boton-grabar" data-grabar="${p.id}"><i></i>Grabar el video acá</button>
+      <label class="secundario boton subir-galeria">Subir uno que ya tengo<input type="file" accept="video/*" data-subir="${p.id}" hidden></label>`;
+  const otroVideo = conVideo && modo !== 'admin-vista' && yaMando ? `<div class="otro-video"><span>¿Querés mandarme otro?</span><button class="link" data-grabar="${p.id}">Grabar</button><label class="link">Subir de la galería<input type="file" accept="video/*" data-subir="${p.id}" hidden></label></div>` : '';
   return `<div class="envio ${ok ? 'envio-ok' : ''}">
     <p class="envio-t">${ok ? ICONO.check : ICONO.enviar}<strong>${ok && pend.length && !vids.length ? 'Mandándome tu video…' : ok ? `Listo, ya me lo mandaste` : `${p.entregaOpcional ? 'Podés mandarme' : 'Mandame'} ${esc(envia || 'el ' + p.entrega)}`}</strong></p>
     ${ok || !primerasEntregas(p.id) ? '' : `<p class="envio-c">${conVideo ? 'Grabalo acá mismo o mandámelo por WhatsApp.' : 'Mandámelo por WhatsApp.'} Así lo veo antes de la clase y te doy una devolución.</p>`}
     ${lista}${listaPend}
-    <div class="fila-botones">${botonesVideo}</div>
+    ${botonesVideo ? `<div class="fila-botones">${botonesVideo}</div>` : ''}${otroVideo}
     ${vids.length || pend.length ? '' : ok ? (modo === 'admin-vista' ? '' : `<button class="link cambiar-op" data-desenvio="${p.id}">No, todavía no lo mandé</button>`) : `<div class="fila-botones"><label class="envio-check"><input type="checkbox" data-envio="${p.id}" ${ok ? 'checked' : ''}><span>${conVideo ? 'Ya te lo mandé por WhatsApp' : 'Ya te lo mandé'}</span></label></div>`}
   </div>`;
 }
