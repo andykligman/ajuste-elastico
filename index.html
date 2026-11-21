@@ -1299,6 +1299,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .nodo-tit .nuevo{display:inline-block;justify-self:start;margin-top:4px;padding:2px 9px;border-radius:999px;background:#E8834F;color:#fff;font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;font-style:normal;vertical-align:3px;animation:nuevoLate 2.4s ease-in-out infinite}
 @keyframes nuevoLate{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.5)}50%{box-shadow:0 0 0 6px rgba(232,131,79,0)}}
 
+.ll-terminar{display:flex;justify-content:center;padding-top:8px}
+.boton-terminar{font-size:18px;padding:14px 28px}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -3243,6 +3246,9 @@ const cambiando = new Set();
 const recCerradas = new Set();   // recomendaciones que el alumno cerró con «Ok»   // pasos donde el alumno tocó «Cambiar respuesta»
 function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
+  // Link de la llamada: en el último video, en vez de la pregunta, un solo botón que cierra todo
+  if (esLlamada && p.id !== 'llt1' && PASOS_LLAMADA.every(x => x === p.id || hecho(st, x)))
+    return `<div class="pregunta ll-terminar"><button class="primario boton-terminar" data-terminar-llamada="${p.id}">Terminé de ver todo ✓</button></div>`;
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
   // Elegida cualquier opción: se cierran las opciones y queda el mensaje (o la recomendación) con «Cambiar respuesta»
@@ -4122,6 +4128,11 @@ function enlazarAlumno() {
     else if (d.recOk) { recCerradas.add(d.recOk); renderAlumno(); }
     else if (d.recAbrir) { recCerradas.delete(d.recAbrir); renderAlumno(); }
     else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
+    else if (d.terminarLlamada) {
+      const id = d.terminarLlamada; ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno();
+      const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, false);
+      renderAlumno(); setTimeout(finLlamada, 300);
+    }
     else if (d.vistoSeguir) {
       const id = d.vistoSeguir; if (!hecho(ST, id)) { ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno(); }
       const sig = siguienteDe(id); if (sig) abrirPaso(sig.id); else renderAlumno();

@@ -501,6 +501,9 @@ const cambiando = new Set();
 const recCerradas = new Set();   // recomendaciones que el alumno cerró con «Ok»   // pasos donde el alumno tocó «Cambiar respuesta»
 function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
+  // Link de la llamada: en el último video, en vez de la pregunta, un solo botón que cierra todo
+  if (esLlamada && p.id !== 'llt1' && PASOS_LLAMADA.every(x => x === p.id || hecho(st, x)))
+    return `<div class="pregunta ll-terminar"><button class="primario boton-terminar" data-terminar-llamada="${p.id}">Terminé de ver todo ✓</button></div>`;
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
   // Elegida cualquier opción: se cierran las opciones y queda el mensaje (o la recomendación) con «Cambiar respuesta»
@@ -1380,6 +1383,11 @@ function enlazarAlumno() {
     else if (d.recOk) { recCerradas.add(d.recOk); renderAlumno(); }
     else if (d.recAbrir) { recCerradas.delete(d.recAbrir); renderAlumno(); }
     else if (d.cambiar) { const id = d.cambiar, vids = ST.prog[id]?.videos; if (vids) ST.prog[id] = { videos: vids }; else delete ST.prog[id]; cambiando.delete(id); guardarAlumno(); renderAlumno(); }
+    else if (d.terminarLlamada) {
+      const id = d.terminarLlamada; ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno();
+      const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, false);
+      renderAlumno(); setTimeout(finLlamada, 300);
+    }
     else if (d.vistoSeguir) {
       const id = d.vistoSeguir; if (!hecho(ST, id)) { ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno(); }
       const sig = siguienteDe(id); if (sig) abrirPaso(sig.id); else renderAlumno();
