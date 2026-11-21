@@ -180,15 +180,22 @@ function manejar(d) {
         return { alumno: publico(a.datos, true) };
       }
       case 'admin.registro': {
-        // El código del link único; con nuevo: true se cambia y el link anterior deja de andar.
-        // tipo 'completo': otro link aparte, que entra con todos los módulos habilitados
+        // Un link por combinación de módulos (mods: '0', '01', '01234'…). El de solo Módulo 0 es el de siempre.
+        // Con nuevo: true se cambia el de esa combinación y el anterior deja de andar.
         validarPanel(d.clave);
         const p = PropertiesService.getScriptProperties();
-        const tipo = d.tipo === 'completo' ? 'completo' : '';
-        const clave = tipo ? 'REGISTRO_COMPLETO' : 'REGISTRO';
-        let c = p.getProperty(clave);
-        if (!c || d.nuevo) { c = nuevoToken().slice(0, 12); p.setProperty(clave, c); }
-        return { registro: c, tipo };
+        const mods = String(d.mods || '0').replace(/[^0-4]/g, '').split('').filter((x, i, v) => v.indexOf(x) === i).sort().join('') || '0';
+        let c;
+        if (mods === '0') {
+          c = p.getProperty('REGISTRO');
+          if (!c || d.nuevo) { c = nuevoToken().slice(0, 12); p.setProperty('REGISTRO', c); }
+        } else {
+          const mapa = JSON.parse(p.getProperty('REGISTROS') || '{}');
+          c = Object.keys(mapa).find(k => mapa[k] === mods);
+          if (c && d.nuevo) { delete mapa[c]; c = null; }
+          if (!c) { c = nuevoToken().slice(0, 12); mapa[c] = mods; p.setProperty('REGISTROS', JSON.stringify(mapa)); }
+        }
+        return { registro: c, mods };
       }
       case 'admin.invitar': {
         validarPanel(d.clave);
@@ -222,12 +229,13 @@ function hashClave(clave, sal) {
 }
 function nuevoToken() { return Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); }
 function validarClaveNueva(c) { if (!c || String(c).length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.'); }
-// Devuelve los módulos con los que entra: el link común, solo el 0; el de acceso completo, todos
+// Devuelve los módulos con los que entra el alumno según el link que usó
 function validarRegistro(c) {
   const p = PropertiesService.getScriptProperties(), v = String(c || '');
-  const r = p.getProperty('REGISTRO'), rc = p.getProperty('REGISTRO_COMPLETO');
+  const r = p.getProperty('REGISTRO');
   if (r && v === r) return '0';
-  if (rc && v === rc) return '01234';
+  const mapa = JSON.parse(p.getProperty('REGISTROS') || '{}');
+  if (v && mapa[v]) return mapa[v];
   throw new Error('Este link ya no funciona. Pedime uno nuevo por WhatsApp.');
 }
 function codigoNuevo(nombre) {
