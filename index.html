@@ -1654,6 +1654,24 @@ const STOPS = {
       ],
     },
   },
+  cierreFijo: {
+    // Guion para grabar: una nota de voz por frase, en este orden (audio/cierre-fijo/01.m4a, 02…). Sin audio avanza con el tiempo de lectura.
+    tipo: 'texto', titulo: 'Cierre de los ritmos fijos', audio: 'audio/cierre-fijo/', velocidad: 1,
+    sub: 'Lo que ya tenés para practicar ritmo, y cómo seguir.',
+    unidades: [],
+    tandas: [
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: 'Ya aprendiste a entrenar con **ritmos fijos**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Con un camino ordenado\nque te lleva del **cuerpo** a la guitarra:' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'escala', t: 'una sola nota, una escala, una escala más abierta,\ncambios de acorde con arpegios y con escalas.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'zona', t: 'No importa hasta dónde hayas llegado,\nni si estás más cómodo con unas cosas que con otras.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Ya tenés **un mapa de cómo practicar ritmo**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: 'Un ritmo de uno o dos compases,\n**sostenido durante mucho tiempo**…' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'ciclo', t: '…dejando que **las notas se adapten al ritmo**,\ny no al revés.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'cantar', t: 'Dejándonos influenciar por eso que viene de afuera\ny **haciéndolo nuestro**.' },
+      { sel: [-1, -1], pausa: true, grande: true, extra: 4000, boton: { t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo' }, t: 'Para que sigas practicando de acá en más,\nte dejo un **generador de ritmos fijos**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: 'Ahora le damos un cierre a los ritmos fijos\ny pasamos a **improvisar con unidades rítmicas**.' },
+    ],
+  },
   whatsapp: {
     tipo: 'texto', titulo: 'Cómo usar el acompañamiento por WhatsApp', audio: 'audio/whatsapp/',
     sub: 'Cuándo mandarme una consulta o un video, y por qué conviene hacerlo antes de que esté listo.',
@@ -2395,15 +2413,22 @@ const PROGRAMA = {
     },
     {
       id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
-      grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
       detalle: 'Tres ritmos nuevos:\n- **C**: desplazamiento en ciclo de 5 corcheas. Suena como un pulso dentro de otro pulso.\n- **D**: desplazamiento en ciclo de 3 corcheas, más corto que el anterior.\n- **E**: tierras y contratiempos con **mucho más espacio**. El silencio es parte del ritmo.\nTomate el tiempo que necesites para asimilarlos, por compás o borrando pedazos. Después improvisá con **tierras y contratiempos** usándolos como disparador: uno solo como clave, desordenando fragmentos, o eligiendo 2 o 3.\n# Grabate improvisando un buen rato y escuchá cuánto del material aparece',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
     },
     {
+      id: 'rfin', etapa: 'ritmo', sinVideo: true, soloVer: true,
+      titulo: 'Cierre de los ritmos fijos',
+      stop: 'cierreFijo',
+      progreso: [{ id: 'listo', label: 'Listo', nivel: 'listo' }],
+      recursos: [{ t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo', web: true }],
+    },
+    {
       id: 'r7', etapa: 'ritmo', entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
       video: { id: 'A4rxE6i5VwY' },
+      grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
       detalle: 'Ahora improvisamos con **una sola unidad rítmica, o muy pocas**: la idea es hacer mucho con poco.\n- Elegí 2 o 3 unidades y trabajá **una a la vez** con el cuerpo, usando el **entrenador rítmico**: en loop, en continuo o con Desplazamientos.\n- Después improvisá **solo con esa unidad**, sin mirar la pantalla y con el metrónomo. Grabala y mandámela.\n- Lo mismo con otra unidad, y después con **2 a la vez**.\n# Mandame una impro con un elemento y otra con dos',
       recursos: [
