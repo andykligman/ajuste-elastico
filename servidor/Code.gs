@@ -68,7 +68,7 @@ function manejar(d) {
       }
       /* ----- Link único para alumnos nuevos: se registran solos y Andy ajusta nivel y fecha ----- */
       case 'auth.registrar': {
-        validarRegistro(d.registro);
+        const mods = validarRegistro(d.registro);
         const nombre = String(d.nombre || '').trim().replace(/\s+/g, ' ');
         const email = normEmail(d.email);
         if (nombre.length < 2) throw new Error('Escribí tu nombre y apellido.');
@@ -76,7 +76,7 @@ function manejar(d) {
         validarClaveNueva(d.clave);
         if (buscarPor('email', email)) throw new Error('Ya hay una cuenta con ese email. Entrá con tu contraseña, o escribime por WhatsApp si no te acordás.');
         const al = { codigo: codigoNuevo(nombre), nombre, email, standard: '', nivel: 2, inicio: hoy(), clase: 0, claseFecha: '', pausa: false,
-                     nota: '', extras: [], prog: {}, probs: {}, act: hoy(), invitacion: '', modulos: '0', ajustar: '1' };
+                     nota: '', extras: [], prog: {}, probs: {}, act: hoy(), invitacion: '', modulos: mods, ajustar: '1' };
         al.sal = Utilities.getUuid();
         al.hash = hashClave(String(d.clave), al.sal);
         agregarFila(al);
@@ -180,12 +180,15 @@ function manejar(d) {
         return { alumno: publico(a.datos, true) };
       }
       case 'admin.registro': {
-        // El código del link único; con nuevo: true se cambia y el link anterior deja de andar
+        // El código del link único; con nuevo: true se cambia y el link anterior deja de andar.
+        // tipo 'completo': otro link aparte, que entra con todos los módulos habilitados
         validarPanel(d.clave);
         const p = PropertiesService.getScriptProperties();
-        let c = p.getProperty('REGISTRO');
-        if (!c || d.nuevo) { c = nuevoToken().slice(0, 12); p.setProperty('REGISTRO', c); }
-        return { registro: c };
+        const tipo = d.tipo === 'completo' ? 'completo' : '';
+        const clave = tipo ? 'REGISTRO_COMPLETO' : 'REGISTRO';
+        let c = p.getProperty(clave);
+        if (!c || d.nuevo) { c = nuevoToken().slice(0, 12); p.setProperty(clave, c); }
+        return { registro: c, tipo };
       }
       case 'admin.invitar': {
         validarPanel(d.clave);
@@ -219,9 +222,13 @@ function hashClave(clave, sal) {
 }
 function nuevoToken() { return Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); }
 function validarClaveNueva(c) { if (!c || String(c).length < 6) throw new Error('La contraseña tiene que tener al menos 6 caracteres.'); }
+// Devuelve los módulos con los que entra: el link común, solo el 0; el de acceso completo, todos
 function validarRegistro(c) {
-  const r = PropertiesService.getScriptProperties().getProperty('REGISTRO');
-  if (!r || String(c || '') !== r) throw new Error('Este link ya no funciona. Pedime uno nuevo por WhatsApp.');
+  const p = PropertiesService.getScriptProperties(), v = String(c || '');
+  const r = p.getProperty('REGISTRO'), rc = p.getProperty('REGISTRO_COMPLETO');
+  if (r && v === r) return '0';
+  if (rc && v === rc) return '01234';
+  throw new Error('Este link ya no funciona. Pedime uno nuevo por WhatsApp.');
 }
 function codigoNuevo(nombre) {
   const base = String(nombre || 'alumno').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '').slice(0, 8) || 'alumno';

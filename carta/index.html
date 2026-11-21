@@ -296,6 +296,9 @@ b,strong{font-weight:700}
 .pm-txt>*{transition:opacity .45s,transform .5s var(--suave-in)}
 .pm-txt>.rv:not(.vis),.escalera .es.rv:not(.vis){opacity:0;transform:translateY(14px)}
 .escalera{position:relative;height:470px}
+.pm-grid:has(.esc-ancha){grid-template-columns:1fr 800px;gap:40px}
+.esc-ancha .es{left:calc(var(--n) * 54px)}
+.pm-captura{display:block;width:100%;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.45);border:2px solid rgba(255,255,255,.08)}
 .escalera .es{position:absolute;left:calc(var(--n) * 62px);bottom:calc(var(--n) * 74px);display:flex;align-items:center;gap:16px;transition:opacity .45s,transform .5s var(--suave-in)}
 .escalera .es i{flex:none;width:58px;height:58px;border-radius:14px;background:var(--bg3);border:3px solid var(--naranja);background-image:repeating-linear-gradient(90deg,transparent 0 9px,rgba(232,131,79,.9) 9px 13px,transparent 13px 22px);background-size:44px 18px;background-repeat:no-repeat;background-position:center}
 .escalera .es span{font-family:var(--tit);font-weight:600;font-size:27px;white-space:nowrap}
@@ -761,15 +764,14 @@ const RICO = [
 `<div class="pm-tabs"><button class="on" data-t="a">Por qué el ritmo</button><button data-t="b">Cómo lo practicamos</button><button data-t="c">Entrenador rítmico</button></div>
 <div class="pm-hoja on" data-t="a"><div class="pm-grid"><div class="pm-txt">
 <p class="fuerte">El ritmo es una de las tres patas de la música… y <span class="nar">la que más relegada queda</span>.</p>
-<p>Casi no se practica con el foco puesto solo en él.</p>
-<p>Si sentís que <b>te repetís</b>, una de las causas más fundamentales es que <b>el ritmo de lo que tocás es siempre igual</b>.</p>
-<p>Sacamos el foco de las notas, los acordes y el lenguaje por un rato y nos concentramos en el ritmo: entender qué tocamos y <b>qué opciones tenemos para generar variabilidad</b>.</p>
-<p>Te hace sentir <b>mucho más en control</b> y te da un abanico mucho más amplio de herramientas para la <b>expresividad</b>.</p>
+<p>Si sentís que <b>te repetís</b>, muchas veces es porque <b>el ritmo de lo que tocás es siempre igual</b>.</p>
+<p>Por un rato sacamos el foco de las notas y el lenguaje y nos concentramos en <b>qué opciones rítmicas tenemos para variar</b>.</p>
+<p>Te da <b>mucho más control</b> y muchas más herramientas para la <b>expresividad</b>.</p>
 </div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-patas"><g font-family="Poppins" font-weight="700" font-size="28" text-anchor="middle"><circle cx="300" cy="110" r="88" fill="#2A3858" stroke="#B9C3DA" stroke-width="4"/><text x="300" y="120" fill="#F2F3F6">Melodía</text><circle cx="170" cy="330" r="88" fill="#2A3858" stroke="#B9C3DA" stroke-width="4"/><text x="170" y="340" fill="#F2F3F6">Armonía</text><circle id="pm-ritmo" cx="430" cy="330" r="88" fill="#2A3858" stroke="#5E6B88" stroke-width="4" stroke-dasharray="10 10"/><text id="pm-ritmo-t" x="430" y="340" fill="#7d8aa8">Ritmo</text></g></svg></div></div></div>
 <div class="pm-hoja" data-t="b"><div class="pm-grid"><div class="pm-txt">
 <p class="fuerte">Practicamos <span class="nar">ritmos fijos que van variando</span>.</p>
 <p>Cada ritmo lo llevamos por una escalera, siempre con <b>el mismo ritmo fijo</b>.</p>
-</div><div class="escalera">
+</div><div class="escalera esc-ancha">
 <div class="es" style="--n:0"><i></i><span>Con el cuerpo</span></div>
 <div class="es" style="--n:1"><i></i><span>Una sola nota en la guitarra</span></div>
 <div class="es" style="--n:2"><i></i><span>Una escala</span></div>
@@ -781,7 +783,7 @@ const RICO = [
 <p class="fuerte">Un <span class="nar">entrenador rítmico</span> diseñado y curado por mí.</p>
 <p>Te ayuda a mejorar tu capacidad de <b>generar muchas ideas nuevas con un elemento a la vez</b>…</p>
 <p>…y después a <b>combinarlos entre sí</b>.</p>
-</div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-entren"></svg></div></div></div>`,
+</div><div class="pm-dib"><img class="pm-captura" src="media/entrenador.jpg" alt="Entrenador rítmico de Ajuste Elástico"></div></div></div>`,
 `<div class="pm-tabs"><button class="on" data-t="a">El discurso</button><button data-t="b">Qué entrenamos</button><button data-t="c">El resultado</button></div>
 <div class="pm-hoja on" data-t="a"><div class="pm-txt" style="max-width:1200px">
 <p class="fuerte">El desarrollo de un solo y el discurso <span class="nar">no tienen por qué venir de la inspiración</span>.</p>
@@ -789,10 +791,9 @@ const RICO = [
 <p class="fuerte">Lo que hay que hacer es practicar <span class="nar">ejercicios diseñados</span> para mejorar tu capacidad discursiva.</p>
 </div></div>
 <div class="pm-hoja" data-t="b"><div class="pm-grid"><div class="pm-txt">
-<p class="fuerte">Estos ejercicios trabajan…</p>
-<p>…<b>la memoria</b>…</p>
-<p>…un <b>registro fino</b> de escuchar lo que estás tocando y recordarlo…</p>
-<p>…y herramientas para <b>variarlo, fragmentarlo y extenderlo</b>, desde el ritmo y desde las notas.</p>
+<p class="fuerte">Partimos de <span class="nar">una idea</span> y la hacemos crecer.</p>
+<p>Entrenás <b>la memoria y el oído</b>: registrar lo que acabás de tocar y poder volver a eso.</p>
+<p>Y herramientas concretas para <b>variar, fragmentar y extender</b> esa idea, desde el ritmo y desde las notas.</p>
 </div><div class="pm-dib"><svg viewBox="0 0 600 470" id="pm-motivo"></svg></div></div></div>
 <div class="pm-hoja" data-t="c"><div class="pm-grid"><div class="pm-txt">
 <p class="fuerte">Solos con <span class="nar">coherencia, dirección y claridad</span>.</p>

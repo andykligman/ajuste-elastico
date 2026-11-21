@@ -55,6 +55,7 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .registro-adm h2{font-size:18px}
 .registro-adm p{margin:4px 0 0;max-width:62ch}
 .registro-adm textarea{width:100%;margin:12px 0 10px}
+.registro-adm .reg-bloque+.reg-bloque{margin-top:18px;padding-top:16px;border-top:1px solid var(--linea)}
 .marca-ajustar{display:block;font-size:13px;color:var(--azul-txt);font-weight:600}
 .aviso-ajustar{display:flex;gap:14px;align-items:center;justify-content:space-between;margin:10px 0 14px;padding:12px 14px;border:1.5px solid var(--azul);border-radius:var(--radio-s);background:var(--azul-velo)}
 .aviso-ajustar p{margin:0}
@@ -4836,16 +4837,21 @@ function marcarModulo(prog, m) {
   const ps = pasosDelModulo(m), todo = ps.every(x => prog[x.id]?.hecho);
   ps.forEach(x => { if (todo) delete prog[x.id]; else if (!prog[x.id]?.hecho) prog[x.id] = { hecho: true, como: 'listo', t: hoyISO() }; });
 }
-let linkReg = '';   // link único para alumnos nuevos (se pide al servidor al tocar el botón)
+const linkReg = { '': '', completo: '' };   // links únicos para alumnos nuevos (se piden al servidor al tocar el botón)
 function registroAdmHTML() {
-  const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${linkReg}` : '';
-  return `<section class="registro-adm">
-    <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.</p></div>
-      ${linkReg ? '' : `<button class="secundario" data-adm="ver-registro">Ver el link</button>`}</div>
-    ${linkReg ? `<textarea id="msgReg" rows="5">${esc(msg)}</textarea>
-      <span class="fila-botones"><button class="secundario" data-adm="copiar-reg">Copiar mensaje</button><button class="secundario" data-adm="copiar-link">Copiar solo el link</button>
+  const bloque = (t, tit, txt) => {
+    const l = linkReg[t], msg = l ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${l}` : '';
+    return `<div class="reg-bloque">
+    <div class="reg-cab"><div><h2>${tit}</h2><p class="suave chico">${txt}</p></div>
+      ${l ? '' : `<button class="secundario" data-adm="ver-registro" data-tipo="${t}">Ver el link</button>`}</div>
+    ${l ? `<textarea rows="5" data-msg-reg="${t}">${esc(msg)}</textarea>
+      <span class="fila-botones"><button class="secundario" data-adm="copiar-reg" data-tipo="${t}">Copiar mensaje</button><button class="secundario" data-adm="copiar-link" data-tipo="${t}">Copiar solo el link</button>
       <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir en WhatsApp</a>
-      <button class="link suave" data-adm="nuevo-registro">Cambiar el link</button></span>` : ''}
+      <button class="link suave" data-adm="nuevo-registro" data-tipo="${t}">Cambiar el link</button></span>` : ''}</div>`;
+  };
+  return `<section class="registro-adm">
+    ${bloque('', 'Link para alumnos nuevos', 'El mismo para todos: cada uno pone su nombre, email y contraseña, y entra con el Módulo 0. Después le ajustás el nivel y la fecha de la llamada.')}
+    ${bloque('completo', 'Link con acceso completo', 'Igual que el de arriba, pero entra con todos los módulos habilitados (del 0 al 4). Es otro link: si lo cambiás, el de arriba sigue andando.')}
   </section>`;
 }
 const ICONO_PLAY = '<svg class="tv-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.55)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>';
@@ -5045,12 +5051,15 @@ function enlazarAdmin() {
     if (d.adm === 'nuevo') { elegido = '__nuevo'; renderAdmin(); }
     else if (d.adm === 'copiar') copiar($('#msg').value, b, 'Copiado');
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
-    else if (d.adm === 'copiar-reg') copiar($('#msgReg').value, b, 'Copiado');
-    else if (d.adm === 'copiar-link') copiar(linkReg, b, 'Copiado');
+    else if (d.adm === 'copiar-reg') copiar($(`[data-msg-reg="${b.dataset.tipo || ''}"]`).value, b, 'Copiado');
+    else if (d.adm === 'copiar-link') copiar(linkReg[b.dataset.tipo || ''], b, 'Copiado');
     else if (d.adm === 'ver-registro' || d.adm === 'nuevo-registro') {
       if (d.adm === 'nuevo-registro' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
       b.disabled = true; b.textContent = 'Un momento…';
-      try { const r = await llamar('admin.registro', { clave: claveAdmin, nuevo: d.adm === 'nuevo-registro' }); linkReg = linkRegistro(r.registro); renderAdmin(); if (d.adm === 'nuevo-registro') aviso('Listo: link nuevo. El anterior ya no funciona.'); }
+      const tipo = b.dataset.tipo || '';
+      try { const r = await llamar('admin.registro', { clave: claveAdmin, nuevo: d.adm === 'nuevo-registro', tipo });
+        if (tipo && r.tipo !== tipo) throw new Error('Para el link con acceso completo falta actualizar el servidor en Apps Script.');
+        linkReg[tipo] = linkRegistro(r.registro); renderAdmin(); if (d.adm === 'nuevo-registro') aviso('Listo: link nuevo. El anterior ya no funciona.'); }
       catch (e) { aviso(/Acción desconocida/.test(e.message) ? 'Falta actualizar el servidor en Apps Script.' : e.message, true); b.disabled = false; b.textContent = 'Ver el link'; }
     }
     else if (d.adm === 'ajustado' && a) { a.ajustar = ''; guardarAdm(a); $('.aviso-ajustar')?.remove(); }
