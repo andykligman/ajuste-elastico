@@ -1008,12 +1008,14 @@ function mapaHTML(st, e) {
           ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
           ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
-          ${pasos.length ? `<details class="mz-det" ${aca ? 'open' : ''}><summary>Los pasos</summary><ul class="mz-lista">${pasos.map(p => {
+          ${pasos.length ? `<div class="mz-det"><ul class="mz-lista">${pasos.map((p, j) => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
-            return `<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
+            // separados como en el aula: cada ejercitación (1, 2, 3…) con su título
+            const et = !etapasUnica(M.n) && (!j || pasos[j - 1].etapa !== p.etapa) ? PROGRAMA.etapas.find(x => x.id === p.etapa) : null;
+            return `${et ? `<li class="mz-etapa"><strong>${esc(et.titulo)}</strong><small>${esc(et.sub || '')}</small></li>` : ''}<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
               ? `<button class="mz-tilde" data-mapa-tilde="${p.id}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecho'}: ${esc(p.titulo)}"><i>${ok ? ICONO.check : ''}</i></button><button data-mapa-paso="${p.id}">${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}</button>`
               : `<span><i></i>${esc(p.titulo)}</span>`}</li>`;
-          }).join('')}</ul></details>` : ''}
+          }).join('')}</ul></div>` : ''}
         </div></li>`;
     }).join('')}</ol>
   </div>`;
