@@ -1318,6 +1318,27 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .mz-etapa strong{display:block;color:var(--mc);font-size:14px}
 .mz-etapa small{color:#9AA1AE;font-size:12.5px}
 .mz-lista li.mz-sep{padding:0;margin:6px 0}
+/* Recursos en columnas: cada video con su parte del doc abajo */
+.mat-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin:10px 0}
+.mat-col{display:grid;gap:8px;align-content:start}
+.mat-col .mat{width:100%;box-sizing:border-box}
+/* Las etapas de un proceso (reconocimiento → mecanización → integración) */
+.etapas-vis{display:flex;align-items:center;gap:6px;margin:4px 0 14px;flex-wrap:wrap}
+.ev-et{display:inline-flex;align-items:center;gap:9px;padding:10px 14px 10px 10px;border-radius:14px;background:var(--sup2);border:1.5px solid rgba(93,123,182,.45);font-weight:700;font-size:15px}
+.ev-et:nth-child(3){border-color:rgba(232,131,79,.55)}
+.ev-et:last-child{background:rgba(232,131,79,.14);border-color:#E8834F}
+.ev-et b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#5D7BB6;color:#fff;font-size:13px}
+.ev-et:last-child b{background:#E8834F}
+.ev-fl{width:18px;height:2px;background:linear-gradient(90deg,#5D7BB6,#E8834F);position:relative;flex:none}
+.ev-fl::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:#E8834F;border-right:0}
+.grupo-label h3{color:var(--mc,#E8834F);font-weight:700;font-size:14px}
+/* Botón dentro de una tanda de texto (p. ej. el video de AudioStretch) */
+.stop-boton{display:inline-flex;align-items:center;gap:12px;margin:22px auto 0;padding:12px 22px 12px 12px;border-radius:999px;background:#E8834F;color:#fff;text-decoration:none;font:700 16px var(--sans);box-shadow:0 10px 28px rgba(232,131,79,.35);animation:sb-late 1.6s ease-in-out infinite}
+.stop-boton .sb-play{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff}
+.stop-boton svg{width:18px;height:18px;fill:#E8834F;margin-left:3px}
+@keyframes sb-late{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@media (prefers-reduced-motion:reduce){.stop-boton{animation:none}}
+.stop-texto .stop-boton{display:flex;width:max-content;max-width:100%}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1717,7 +1738,7 @@ const STOPS = {
       { sel: [0, 5], t: 'Un repaso de la A a la D.' },
       { sel: [0, 9], t: 'Y el solo entero: **los 30 segundos**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'directo', t: 'Si en algún momento vuelve a aparecer una traba como en la B,\npartís ese fragmento en **los pedazos que necesites**.' },
-      { sel: [-1, -1], pausa: true, grande: true, t: 'O hasta podés pasar el dedo por la pantalla en la app\npara ir **nota x nota**.' },
+      { sel: [-1, -1], pausa: true, grande: true, extra: 4500, boton: { t: 'Cómo escuchar nota x nota en AudioStretch', url: 'https://www.youtube.com/shorts/CZ-87rYPIKY' }, t: 'O hasta podés pasar el dedo por la pantalla en la app\npara ir **nota x nota**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'control', t: 'Así, **no podés fallar**.' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: 'Otra cosa que sirve mucho es\n**contar los pulsos con los dedos**…' },
       { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: '…para recordar las entradas\nde las frases más inesperadas.' },
@@ -1805,6 +1826,7 @@ const PROGRAMA = {
     {
       id: 'p2', etapa: 'pre', entrega: 'video', envia: 'un video nombrando en voz alta los intervalos, sin tempo, en las 4 posiciones de las primeras 3 cuerdas para los 4 tipos de acorde.',
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
+      grupo: 'Intervalos por posición, en 4 tipos de acorde',
       titulo: 'Nombrar los intervalos en voz alta',
       detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas',
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
@@ -1884,6 +1906,7 @@ const PROGRAMA = {
     },
     {
       id: 'p5', etapa: 'pre',
+      grupo: 'Ejercitación Nº1: Enlaces de arpegios',
       titulo: 'Elegir el standard',
       detalle: 'Escribime por WhatsApp y elegimos juntos **el standard** con el que vas a trabajar',
       wa: { label: 'Escribime para elegir el standard', txt: 'Hola Andy! Escribo para que elijamos juntos el standard con el que voy a trabajar' },
@@ -2171,10 +2194,8 @@ const PROGRAMA = {
       titulo: 'Cromáticos ascendentes: Ejercitación 1 · Mecanización',
       detalle: 'Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo. En cada una buscá la nota **un semitono abajo**: esa es su aproximación. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n# El cromático en el aire, la nota de la escala en la tierra\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te **desafíe un poco**, aunque sea lenta, pero constante.',
       progreso: [
-        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
-        { id: 'lento', label: 'Me sale sin errores, pero lento', nivel: 'listo', resp: 'Está bien así: **lento pero constante**. Mandámelo a esa velocidad y de ahí vamos subiendo de a poco.' },
-        { id: 'errores', label: 'Tengo trabas o errores', nivel: 'casi', resp: 'Podés hacerlo **por partes**, de a dos cuerdas, e ir juntando de a poquito.\nMandámelo como te salga, no tiene que ser perfecto!' },
-        { id: 'traba', label: 'Me trabo o me pierdo', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
+        { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
+        { id: 'errores', label: 'Tengo trabas o errores', nivel: 'casi', wa: true, resp: 'Podés hacerlo **por partes**, de a dos cuerdas, e ir juntando de a poquito.\nMandámelo como te salga, no tiene que ser perfecto!' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: ['h.jdcef9tf1otq', 'Ejercitación 1'] }],
     },
@@ -2184,7 +2205,7 @@ const PROGRAMA = {
       titulo: 'Cromáticos ascendentes: Ejercitación 2 · Mecanización',
       detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a tónica, 2da y 3ra; desde la 2da, a 2da, 3ra y 4ta; desde la 3ra, a 3ra, 4ta y 5ta; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
-        { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
+        { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
         { id: 'algunas', label: 'Desde algunas notas me trabo', nivel: 'casi', resp: 'Tené solo dos cosas en la cabeza: **en qué nota arrancás** (decila en voz alta) y **qué nota se repite** (la 3ra o la 7ma).\nPodés practicar las líneas por grupos de cuerdas, de a 3 o 4 líneas como máximo, y después juntar las piezas. Lo que te confunda, revisalo sin tempo.' },
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: 'Bajá la velocidad o volvé a la Ejercitación Nº1 desde la nota donde te trabás, o escribime y lo resolvemos.' },
       ],
@@ -2233,7 +2254,9 @@ const PROGRAMA = {
     {
       id: 'n7', etapa: 'm2', entrega: 'video', entregaOpcional: true, envia: 'videos de tu proceso de mecanización o de integración! Mencioná el elemento en el video.', video: { id: 'M6jHqGGAF8w' }, hotmart: 'PeAgnBd1OW',
       titulo: 'Más elementos del lenguaje',
-      detalle: 'Elegí alguno de estos elementos y hacé el mismo proceso que con los cromáticos: **reconocimiento, mecanización e integración**.\nLa prioridad sigue siendo el solo.',
+      detalle: 'Elegí alguno de estos elementos y hacé el mismo proceso que con los cromáticos:',
+      etapasVis: ['Reconocimiento', 'Mecanización', 'Integración'],
+      nota2: 'La prioridad sigue siendo el solo.',
       panel: [
         { t: 'Cromático descendente', video: 'M6jHqGGAF8w' },
         { t: 'Auxiliar', video: 'pd8IgNbFJIo' },
@@ -2243,7 +2266,7 @@ const PROGRAMA = {
       pregunta: '¿Cómo venís con estos elementos?',
       progreso: [
         { id: 'trabajo', label: 'Estoy trabajando alguno', nivel: 'listo' },
-        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en tu solo, ese es **buen candidato para mecanizar**' },
+        { id: 'vistos', label: 'Miré los videos', nivel: 'listo', resp: 'Bien! Si alguno aparece en el solo que sacaste, ese es **buen candidato para mecanizar**' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: ['h.wuqwlhdguj6r', 'Entonces, recapitulando…'] }],
@@ -2255,14 +2278,14 @@ const PROGRAMA = {
       detalle: 'Mirá **el video** con **el doc al lado**. Todavía no hace falta tocar: en los pasos que siguen lo hacemos con **el solo que transcribiste**.',
       progreso: [
         { id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' },
-        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, resp: 'Ponete las pilas con el solo! 😛 Podés ir viendo el video igual.' },
+        { id: 'sinsolo', label: 'Todavía no tengo el solo en la guitarra', nivel: 'casi', saltea: true, wa: true, resp: 'Ponete las pilas con el solo! 😛 Podés ir viendo el video igual. Si algo te traba escribime así avanzamos!' },
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       recursos: [{ t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: [SEC_M2.combinacion, 'Combinación de elementos del lenguaje'] }],
     },
     {
       id: 'k2', etapa: 'm2', entrega: 'video', envia: 'un video explicando sobre qué acordes suena tu fragmento y en qué escala madre lo ubicás.',
-      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      video: { id: 'GrXVCxwRs6g', t: 353 }, videoTit: 'Video: Elegir frase y ubicar escala madre', hotmart: '0Ovo3xZN4j',
       stop: 'fragmento',
       titulo: 'Elegir el fragmento y ubicarlo en el solo',
       detalle: '1) Elegí **un fragmento chico** del solo, **de 4 a 8 notas**. Uno alcanza (dos como mucho).\n2) Fijate **en qué compases del solo** está sonando.\n3) Con eso, **sobre qué acordes** suena.\n4) Y con los acordes, **en qué escala madre** lo podés pensar: mayor, menor armónica o menor melódica.\n# Mandame un video contando sobre qué acordes suena y en qué escala madre lo ubicás\nTener clara la escala madre es lo que después te deja mover la frase por **todos los grados** de esa escala.',
@@ -2290,7 +2313,7 @@ const PROGRAMA = {
     },
     {
       id: 'k4', etapa: 'm2', entrega: 'video', envia: 'un video de la mecanización del fragmento por los grados de la escala, en una posición.',
-      video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
+      video: { id: 'GrXVCxwRs6g', t: 949 }, sinVerVideo: true, hotmart: '0Ovo3xZN4j',
       titulo: 'Mecanizar el fragmento',
       detalle: '1) **Reconocelo** sin metrónomo: movelo por **todos los grados** de la escala, dentro de **una posición**. Si lo anotaste nota x nota, bajale un número a todos los grados y así sucesivamente.\n2) **Mecanizalo** a tiempo real, todavía sin acordes: **una sola manera** de tocarlo y con el ritmo de la frase original.\n3) Los errores los corregís sin metrónomo, justo donde aparecen, y volvés a tempo.\n4) Cuando sale, **subí el tempo** para tener resto.\n# Con la oreja o adivinando, no: usá lo que escribiste',
       progreso: [
@@ -2298,8 +2321,10 @@ const PROGRAMA = {
         { id: 'cuesta', label: 'Me cuesta mucho', nivel: 'cuesta', resp: '**Partila todavía más**: mecanizá un pedacito más corto y después decidís si juntás todo o no. Igual que con la transcripción o los enlaces: menos información, más rápido y con menos frustración.' },
       ],
       recursos: [
-        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.5u84fu4gcxst', '2. Reconocimiento'] },
-        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.vj9synhvjvip', '3. Mecanización'] },
+        { t: 'Video: Ejemplo de reconocimiento y transposición', url: 'https://youtu.be/GrXVCxwRs6g?t=949', col: 1 },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.5u84fu4gcxst', '2. Reconocimiento'], col: 1 },
+        { t: 'Video: Mecanización', url: 'https://youtu.be/GrXVCxwRs6g?t=1254', col: 2 },
+        { t: 'Doc: Combinación de elementos del lenguaje', url: DOC_M2, sec: ['h.vj9synhvjvip', '3. Mecanización'], col: 2 },
       ],
     },
     {
@@ -2336,26 +2361,27 @@ const PROGRAMA = {
     {
       id: 'r1', etapa: 'ritmo', video: { id: '2iYdNyLkTIc' }, hotmart: 'y4bpGGbL7R',
       titulo: 'Introducción: entrenamiento rítmico',
-      detalle: 'Mirá el video de introducción al módulo.',
+      detalle: 'Mirá el video de introducción. En este módulo sacamos el foco de las notas por un rato y nos concentramos en el ritmo: primero con **ritmos fijos**, después **improvisando con tierras y contratiempos** y con **unidades rítmicas**.',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3 }],
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
+      grupo: 'Práctica con ritmos fijos',
       titulo: 'Ritmo A + ritmo al cuerpo',
-      detalle: 'Mirá el video y practicá el **ritmo A con el cuerpo**, como muestro ahí.',
+      detalle: 'Ritmo A: **contratiempos con swing**. El desafío es tocarlo sin que se mueva el pulso ni el swing.\nMirá el video y practicalo **con el cuerpo**, como muestro ahí.\n- **Cantá el ritmo** mientras lo marcás: la voz te confirma que es el correcto y te hace darte cuenta de lo que estás tocando.\n- No frenes nunca. Si te confundís, frená, repasá el ritmo y volvé a empezar.',
       recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
     },
     {
       id: 'r3', etapa: 'ritmo', video: { id: 'Y5o2rSOFpnQ' }, hotmart: '97B2PPYx7p',
       titulo: 'Ritmo B + cómo destrabar cualquier ritmo',
-      detalle: 'Mirá el video y practicá el **ritmo B** como muestro ahí.',
+      detalle: 'Ritmo B: a los contratiempos se suma **una tierra**. El desafío es dominar esa combinación.\nMirá el video: ahí te muestro también **cómo destrabar cualquier ritmo**. Practicalo con el cuerpo, cantándolo.\n- Si se traba, practicalo **de a un compás**, o borrá pedazos y después los juntás.',
       recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
     },
     {
       id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D',
       titulo: 'Ritmo A + aplicaciones varias al instrumento',
-      detalle: 'Mirá el video con el doc al lado y llevá el **ritmo A a la viola**.',
+      detalle: 'Ahora llevá el **ritmo A a la viola**. Mirá el video con el doc al lado.\n# El ritmo es fijo: las notas se adaptan al ritmo, no al revés\n- Arrancá con **una sola nota**: toda la atención queda en sostener el ritmo y en cómo lo articulás.\n- Después, **dentro de una escala**: primero con cosas que ya sabés, después con cosas nuevas.\n- Y por último, **sobre una progresión**: solo arpegios, o las escalas de cada acorde.\nSi te sale perfecto, subí la dificultad. Si los errores superan a los aciertos, bajá algo: tempo, progresión, material o nivel.',
       recursos: [
         { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: [SEC_M3.integracion, 'Integración de un ritmo al instrumento'] },
         { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.2i00i28i36lq', 'Reglas del ejercicio'] },
@@ -2364,13 +2390,14 @@ const PROGRAMA = {
     {
       id: 'r5', etapa: 'ritmo', video: { id: 'ersUb9-L1zA' }, hotmart: 'y4bp2dGy7R',
       titulo: 'Ritmo B: ejemplos en el instrumento',
-      detalle: 'Mirá el video y llevá el **ritmo B a la viola**, con los mismos niveles que el A.',
+      detalle: 'Lo mismo con el **ritmo B**, con los mismos niveles que el A: una nota, una escala, una progresión.\n- Hay ritmos más difíciles que otros: capaz con el B necesitás un nivel distinto que con el A.\n- **Cantá el ritmo** mientras tocás.\nSe busca que haya errores: eso muestra que estás al límite. La práctica funciona cuando estás concentrado pero no desbordado.',
       recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.p0dip9fimibq', 'Progresión de dificultad'] }],
     },
     {
       id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
+      grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
-      detalle: 'Mirá el video con el doc al lado.',
+      detalle: 'Tres ritmos nuevos:\n- **C**: desplazamiento en ciclo de 5 corcheas. Suena como un pulso dentro de otro pulso.\n- **D**: desplazamiento en ciclo de 3 corcheas, más corto que el anterior.\n- **E**: tierras y contratiempos con **mucho más espacio**. El silencio es parte del ritmo.\nTomate el tiempo que necesites para asimilarlos, por compás o borrando pedazos. Después improvisá con **tierras y contratiempos** usándolos como disparador: uno solo como clave, desordenando fragmentos, o eligiendo 2 o 3.\n# Grabate improvisando un buen rato y escuchá cuánto del material aparece',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
     },
@@ -2378,7 +2405,7 @@ const PROGRAMA = {
       id: 'r7', etapa: 'ritmo', entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
       video: { id: 'A4rxE6i5VwY' },
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
-      detalle: 'Mirá el video con el doc al lado y practicá con el **entrenador rítmico**: elegís las unidades y te arma improvisaciones para leer y cantar.',
+      detalle: 'Ahora improvisamos con **una sola unidad rítmica, o muy pocas**: la idea es hacer mucho con poco.\n- Elegí 2 o 3 unidades y trabajá **una a la vez** con el cuerpo, usando el **entrenador rítmico**: en loop, en continuo o con Desplazamientos.\n- Después improvisá **solo con esa unidad**, sin mirar la pantalla y con el metrónomo. Grabala y mandámela.\n- Lo mismo con otra unidad, y después con **2 a la vez**.\n# Mandame una impro con un elemento y otra con dos',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },
         { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
@@ -3037,7 +3064,7 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <div class="stop-pantalla">
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -3074,7 +3101,8 @@ function stopAccion(id, acc) {
   const espera = () => { const it = seq[e.i], txt = it.t.t || (it.finNo ? S.no.fin : S.no ? S.no.t : ''); return Math.min(5500, Math.max(1800, 900 + String(txt).length * 40)); };
   const sonar = luego => {
     const src = audioDe(S, e);
-    const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
+    const extra = (seq[e.i] && seq[e.i].t && seq[e.i].t.extra) || 0;   // tandas que se quedan un rato más en pantalla
+    const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms + extra); };
     if (!src) { despues(espera()); return; }
     stopAudio.src = audioMem.get(src) || src; stopAudio.defaultPlaybackRate = stopAudio.playbackRate = S.velocidad || 1.15;   // por defecto un poco más rápido, sin cambiar el tono; velocidad: 1 = normal
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
@@ -3242,22 +3270,27 @@ function panelHTML(p) {
 function materialHTML(p) {
   // El video de la consigna va primero como «Ver video»; los recursos que abren ese mismo video en el mismo minuto no se repiten
   const v = p.video;
-  const igual = r => v && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
+  const igual = r => v && !p.sinVerVideo && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
   const dup = (p.recursos || []).find(r => r.url && igual(r) && /ejemplo/i.test(r.t));   // «Ver ejemplo…» conserva su nombre
   const rs = (p.recursos || []).filter(r => r.url && !igual(r));
-  const verVideo = v ? { principal: true, t: dup ? dup.t : 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
+  const verVideo = v && !p.sinVerVideo ? { principal: true, t: dup ? dup.t : p.videoTit || 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
   if (verVideo) rs.unshift(verVideo);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
   /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
+  // Recursos en columnas (col: 1, 2…): video arriba y su parte del doc abajo, una columna al lado de la otra
+  const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
+  const sueltos = resto.filter(r => !r.col);
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
-  ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
-    const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${id ? `<img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">` : ''}${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
-    return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
-  }).join('')}</div>` : ''}`;
+  ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
+  ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
+}
+function recursoHTML(r) {
+  if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
+  const id = ytId(r.url);
+  if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}"><img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+  return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
 }
 function apoyoHTML(p, sel) {
   const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
@@ -3314,7 +3347,7 @@ const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buen
 /* «Escribime…» solo: en vez de recomendación, directo el cartel verde a WhatsApp */
 const soloEscribime = sel => !!(sel && sel.nivel === 'cuesta' && sel.resp && /escrib[ií]me/i.test(sel.resp) && sel.resp.length < 80);
 /* «No me sale», «me cuesta», «me trabo»…: siempre aparece el cartel verde para escribirme por WhatsApp */
-const pideAyuda = sel => !!(sel && (sel.nivel === 'cuesta' || /no me sale|me cuesta|me trab|me pierdo|no entiendo|dudas/i.test(sel.label || '')));
+const pideAyuda = sel => !!(sel && (sel.wa || sel.nivel === 'cuesta' || /no me sale|me cuesta|me trab|me pierdo|no entiendo|dudas/i.test(sel.label || '')));
 function respOMinimizada(sel, p) {
   if (soloEscribime(sel)) return waCartelHTML(p);
   const wa = pideAyuda(sel) ? waCartelHTML(p) : '';
@@ -3367,6 +3400,8 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
+    ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -3611,6 +3646,8 @@ function caminoHTML(st, e) {
     if (plegado(m)) return;
     if (x.et !== etapaPrev) cuerpo += `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>`;
     etapaPrev = x.et;
+    // dentro del módulo, separado por grupo o por video, igual que en el mapa
+    if (!esLlamada) { const sp = sepDe(m, x.p.id); if (sp && sp.tit) cuerpo += `<div class="etapa-label grupo-label"><h3>${esc(sp.tit)}</h3>${sp.sub ? `<p>${esc(sp.sub)}</p>` : ''}</div>`; }
     cuerpo += nodoHTML(st, e, x.p, x.n, x.total);
   });
   if (modPrev !== null) cuerpo += '</section>';
@@ -3639,6 +3676,8 @@ function bannerModulo(m, et, sub) {
 /* Separadores para listar los pasos de un módulo (mapa y panel): por ejercitación si el módulo tiene varias
    (Módulo 1: N1, N2, N3); si no, por video. Devuelve, para cada paso, null o { tit, sub, solo } */
 function separadoresPasos(pasos, m) {
+  // Grupos con nombre puestos a mano en el programa (grupo: '…' en el primer paso de cada uno)
+  if (pasos.some(p => p.grupo)) return pasos.map(p => p.grupo ? { tit: p.grupo, sub: '' } : null);
   if (!etapasUnica(m)) return pasos.map((p, j) => { if (j && pasos[j - 1].etapa === p.etapa) return null; const et = PROGRAMA.etapas.find(x => x.id === p.etapa); return { tit: et.titulo, sub: et.sub || '' }; });
   const vid = p => p.video && p.video.id;
   let actual = null; const grupos = [];
@@ -3646,6 +3685,12 @@ function separadoresPasos(pasos, m) {
   const r = pasos.map(() => null);
   grupos.forEach(g => { r[g.j] = g.n > 1 ? { tit: VIDEOS[g.v] || 'Video', sub: '' } : { tit: '', sub: '', solo: true }; });
   return r;
+}
+const _seps = {};
+function sepDe(m, id) {
+  if (!etapasUnica(m) && !pasosDelModulo(m).some(p => p.grupo)) return null;   // el Módulo 1 ya se separa por ejercitación
+  if (!_seps[m]) { const ps = pasosDelModulo(m).filter(p => !p.hojaDeRuta && !p.soloLlamada), r = separadoresPasos(ps, m); _seps[m] = {}; ps.forEach((p, j) => { _seps[m][p.id] = r[j]; }); }
+  return _seps[m][id] || null;
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
 
@@ -4514,6 +4559,8 @@ function verVideoAdmin(al, pasoId, i, alMarcar) {
   if (!v.visto) { v.visto = true; alMarcar && alMarcar(); }
 }
 function videosNuevos(al) { return Object.values(al.prog || {}).reduce((n, x) => n + (x.videos || []).filter(v => !v.visto).length, 0); }
+// Si abre el video de una tanda, la animación se pausa para que no siga sola mientras mira
+document.addEventListener('click', ev => { if (ev.target.closest('.stop-boton') && stopTimer) stopAccion(stopTimer.id, 'play'); }, true);
 
 // El logo vuelve al inicio de donde estás: la presentación en el link de la llamada, la demo en la demo,
 // el panel solo si sos admin, y si sos alumno tu propia aula (nunca la vista de prueba del admin)

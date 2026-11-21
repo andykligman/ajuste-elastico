@@ -252,7 +252,7 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <div class="stop-pantalla">
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -289,7 +289,8 @@ function stopAccion(id, acc) {
   const espera = () => { const it = seq[e.i], txt = it.t.t || (it.finNo ? S.no.fin : S.no ? S.no.t : ''); return Math.min(5500, Math.max(1800, 900 + String(txt).length * 40)); };
   const sonar = luego => {
     const src = audioDe(S, e);
-    const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms); };
+    const extra = (seq[e.i] && seq[e.i].t && seq[e.i].t.extra) || 0;   // tandas que se quedan un rato más en pantalla
+    const despues = ms => { if (luego && stopTimer) stopTimer.h = setTimeout(luego, ms + extra); };
     if (!src) { despues(espera()); return; }
     stopAudio.src = audioMem.get(src) || src; stopAudio.defaultPlaybackRate = stopAudio.playbackRate = S.velocidad || 1.15;   // por defecto un poco más rápido, sin cambiar el tono; velocidad: 1 = normal
     if (luego) { stopAudio.onended = () => despues(60); stopAudio.onerror = () => despues(espera()); }
@@ -457,22 +458,27 @@ function panelHTML(p) {
 function materialHTML(p) {
   // El video de la consigna va primero como «Ver video»; los recursos que abren ese mismo video en el mismo minuto no se repiten
   const v = p.video;
-  const igual = r => v && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
+  const igual = r => v && !p.sinVerVideo && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
   const dup = (p.recursos || []).find(r => r.url && igual(r) && /ejemplo/i.test(r.t));   // «Ver ejemplo…» conserva su nombre
   const rs = (p.recursos || []).filter(r => r.url && !igual(r));
-  const verVideo = v ? { principal: true, t: dup ? dup.t : 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
+  const verVideo = v && !p.sinVerVideo ? { principal: true, t: dup ? dup.t : p.videoTit || 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
   if (verVideo) rs.unshift(verVideo);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
   /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
   const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
+  // Recursos en columnas (col: 1, 2…): video arriba y su parte del doc abajo, una columna al lado de la otra
+  const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
+  const sueltos = resto.filter(r => !r.col);
   return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
-  ${resto.length ? `<div class="material">${resto.map(r => {
-    if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
-    const id = ytId(r.url);
-    if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}">${id ? `<img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">` : ''}${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
-    return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
-  }).join('')}</div>` : ''}`;
+  ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
+  ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
+}
+function recursoHTML(r) {
+  if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
+  const id = ytId(r.url);
+  if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}"><img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+  return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
 }
 function apoyoHTML(p, sel) {
   const ok = sel && sel.nivel === 'listo' && p.apoyo.textoListo;
@@ -529,7 +535,7 @@ const FESTEJOS = ['Bien ahí! A seguir así', 'Espectacular! Vamo arriba', 'Buen
 /* «Escribime…» solo: en vez de recomendación, directo el cartel verde a WhatsApp */
 const soloEscribime = sel => !!(sel && sel.nivel === 'cuesta' && sel.resp && /escrib[ií]me/i.test(sel.resp) && sel.resp.length < 80);
 /* «No me sale», «me cuesta», «me trabo»…: siempre aparece el cartel verde para escribirme por WhatsApp */
-const pideAyuda = sel => !!(sel && (sel.nivel === 'cuesta' || /no me sale|me cuesta|me trab|me pierdo|no entiendo|dudas/i.test(sel.label || '')));
+const pideAyuda = sel => !!(sel && (sel.wa || sel.nivel === 'cuesta' || /no me sale|me cuesta|me trab|me pierdo|no entiendo|dudas/i.test(sel.label || '')));
 function respOMinimizada(sel, p) {
   if (soloEscribime(sel)) return waCartelHTML(p);
   const wa = pideAyuda(sel) ? waCartelHTML(p) : '';
@@ -582,6 +588,8 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
+    ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
     ${p.ciclo ? `<div class="ciclo-paso" style="--rc:${MODULOS[MODULO_DE[p.etapa]].color}">${cicloHTML(p.ciclo, 0, p.id + '-ciclo')}</div>` : ''}
@@ -826,6 +834,8 @@ function caminoHTML(st, e) {
     if (plegado(m)) return;
     if (x.et !== etapaPrev) cuerpo += `<div class="etapa-label"><h3>${esc(x.et.titulo)}</h3><p>${esc(x.et.sub)}</p></div>`;
     etapaPrev = x.et;
+    // dentro del módulo, separado por grupo o por video, igual que en el mapa
+    if (!esLlamada) { const sp = sepDe(m, x.p.id); if (sp && sp.tit) cuerpo += `<div class="etapa-label grupo-label"><h3>${esc(sp.tit)}</h3>${sp.sub ? `<p>${esc(sp.sub)}</p>` : ''}</div>`; }
     cuerpo += nodoHTML(st, e, x.p, x.n, x.total);
   });
   if (modPrev !== null) cuerpo += '</section>';
@@ -854,6 +864,8 @@ function bannerModulo(m, et, sub) {
 /* Separadores para listar los pasos de un módulo (mapa y panel): por ejercitación si el módulo tiene varias
    (Módulo 1: N1, N2, N3); si no, por video. Devuelve, para cada paso, null o { tit, sub, solo } */
 function separadoresPasos(pasos, m) {
+  // Grupos con nombre puestos a mano en el programa (grupo: '…' en el primer paso de cada uno)
+  if (pasos.some(p => p.grupo)) return pasos.map(p => p.grupo ? { tit: p.grupo, sub: '' } : null);
   if (!etapasUnica(m)) return pasos.map((p, j) => { if (j && pasos[j - 1].etapa === p.etapa) return null; const et = PROGRAMA.etapas.find(x => x.id === p.etapa); return { tit: et.titulo, sub: et.sub || '' }; });
   const vid = p => p.video && p.video.id;
   let actual = null; const grupos = [];
@@ -861,6 +873,12 @@ function separadoresPasos(pasos, m) {
   const r = pasos.map(() => null);
   grupos.forEach(g => { r[g.j] = g.n > 1 ? { tit: VIDEOS[g.v] || 'Video', sub: '' } : { tit: '', sub: '', solo: true }; });
   return r;
+}
+const _seps = {};
+function sepDe(m, id) {
+  if (!etapasUnica(m) && !pasosDelModulo(m).some(p => p.grupo)) return null;   // el Módulo 1 ya se separa por ejercitación
+  if (!_seps[m]) { const ps = pasosDelModulo(m).filter(p => !p.hojaDeRuta && !p.soloLlamada), r = separadoresPasos(ps, m); _seps[m] = {}; ps.forEach((p, j) => { _seps[m][p.id] = r[j]; }); }
+  return _seps[m][id] || null;
 }
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
 
@@ -1729,3 +1747,5 @@ function verVideoAdmin(al, pasoId, i, alMarcar) {
   if (!v.visto) { v.visto = true; alMarcar && alMarcar(); }
 }
 function videosNuevos(al) { return Object.values(al.prog || {}).reduce((n, x) => n + (x.videos || []).filter(v => !v.visto).length, 0); }
+// Si abre el video de una tanda, la animación se pausa para que no siga sola mientras mira
+document.addEventListener('click', ev => { if (ev.target.closest('.stop-boton') && stopTimer) stopAccion(stopTimer.id, 'play'); }, true);
