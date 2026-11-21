@@ -1303,6 +1303,11 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .boton-terminar{display:block;width:100%;border:0;border-radius:14px;background:#E8834F;color:#fff;font:700 17px var(--sans);padding:16px 20px;cursor:pointer;box-shadow:0 8px 22px rgba(232,131,79,.28)}
 .boton-terminar:active{transform:scale(.98)}
 
+/* Franja que tapa el título de YouTube los primeros segundos de cada arranque (no se toca el iframe) */
+.ev-tit{position:absolute;left:0;right:0;top:0;height:max(72px,12%);z-index:2;pointer-events:none;opacity:0;transition:opacity .5s ease;background:linear-gradient(#000 0,#000 62%,rgba(0,0,0,0) 100%)}
+.ev-tit-on .ev-tit{opacity:1;transition:none}
+.ev-simple .ev-tit{display:none}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -3339,10 +3344,10 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${p.verYSeguir && !p.soloVer ? (sig ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>${hecho(st, p.id) ? 'Seguir' : 'Ya lo vi, siguiente'}</span>${ICONO.abajo}</button></div>` : '') : p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
+    ${p.verYSeguir && !p.soloVer ? (sig ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>${hecho(st, p.id) ? 'Seguir' : 'Ya lo vi, siguiente'}</span>${ICONO.abajo}</button></div>` : '') : p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${sel.embed ? '' : botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
-    ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) : ''}
+    ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) + (seguirAlLado ? botonSeguir : '') : ''}
     ${p.soloVer || p.verYSeguir || recPendiente ? '' : sel?.nivel === 'cuesta' && !cambiando.has(p.id) ? `<div class="seguir seguir-cuesta">${pideAyuda(sel) ? '' : escribimeHTML(p)}${sig ? `<button class="secundario" data-abrir="${sig.id}">Seguir igual</button>` : ''}</div>`
       : !seguirAlLado && respondido && sig ? `<div class="seguir">
         <button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button>
@@ -3361,6 +3366,7 @@ function embedHTML(e) {
     return `<div class="emb emb-vert" style="--rec:${rec.toFixed(4)};--k:${(fte / rec).toFixed(4)};--poster:${poster};--poster-alto:${alto}">${e.eti ? `<span class="emb-eti">${esc(e.eti)}</span>` : ''}<div class="emb-marco ev-nuevo" data-ev="${esc(e.id)}"><div class="ev-yt"><div></div></div>
       <button class="ev-capa ev-zona-izq" data-ev-salto="-15" aria-label="Volver 15 segundos"></button><button class="ev-capa ev-zona-med" data-ev-capa aria-label="Pausar"></button><button class="ev-capa ev-zona-der" data-ev-salto="15" aria-label="Adelantar 15 segundos"></button>
       <span class="ev-aviso-salto"></span>
+      <div class="ev-tit" aria-hidden="true"></div>
       <button class="ev-play" data-ev-play aria-label="Reproducir"><span class="spg-boton"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span><span class="ev-txt">Reproducir</span></button>
       <div class="ev-saltos"><button data-ev-salto="-15" aria-label="Volver 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg><b>15</b></button><button data-ev-salto="15" aria-label="Adelantar 15 segundos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg><b>15</b></button></div>
       <div class="ev-acciones"><a class="ev-en-yt" href="https://www.youtube.com/watch?v=${esc(e.id)}" target="_blank" rel="noopener" data-ev-yt aria-label="Ver en YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/></svg><span>Ver en YouTube</span></a><button class="ev-agrandar" data-ev-grande aria-label="Ver en grande"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ver en grande</span></button></div>
@@ -3401,6 +3407,9 @@ function montarVerticales() {
             clearTimeout(m._ver);
             if (ev.data === S.PLAYING) m._ver = setTimeout(() => m.classList.add('ev-ver'), 300);   // la tapa se va cuando ya arrancó: así no se ve el título de YouTube
             else if (ev.data !== S.BUFFERING) m.classList.remove('ev-ver');
+            // el título de YouTube aparece arriba unos segundos cada vez que arranca: lo tapa una franja (sin tocar el iframe)
+            if (ev.data === S.PLAYING && !m._titOn) { m._titOn = 1; m.classList.add('ev-tit-on'); clearTimeout(m._tit); m._tit = setTimeout(() => { m._titOn = 0; m.classList.remove('ev-tit-on'); }, 4500); }
+            if (ev.data === S.PAUSED || ev.data === S.ENDED) { clearTimeout(m._tit); m._titOn = 0; m.classList.remove('ev-tit-on'); }
             if (ev.data === S.PLAYING) {
               m.classList.add('ev-arranco');
               if (player && player.pauseVideo && !panelCerrado()) try { player.pauseVideo(); } catch (_) {}
