@@ -3383,7 +3383,9 @@ function montarVerticales() {
       let timer = 0;
       const barra = m.querySelector('.ev-barra i');
       const caja = m.querySelector('.ev-yt'), k = parseFloat(m.closest('.emb').style.getPropertyValue('--k')) || 1;
-      const ubicar = () => { const W = m.clientWidth; if (!W) return; caja.style.width = (W * k) + 'px'; caja.style.left = (-(k - 1) / 2 * W) + 'px'; caja.style.marginLeft = '0'; };
+      // el video se agranda un poco y se sube, así la franja de arriba (título de YouTube, "Ver más tarde", "Compartir") queda afuera del recuadro
+      const ubicar = () => { const W = m.clientWidth, H = m.clientHeight; if (!W || !H) return; const t = Math.round(Math.max(64, H * .1)), f = (H + t) / H, w = W * k * f;
+        caja.style.width = w + 'px'; caja.style.left = ((W - w) / 2) + 'px'; caja.style.marginLeft = '0'; caja.style.top = (-t) + 'px'; caja.style.bottom = 'auto'; caja.style.height = (H + t) + 'px'; };
       ubicar(); if (window.ResizeObserver) new ResizeObserver(ubicar).observe(m);
       const pl = new YT.Player(hueco, {
         videoId: id, host: 'https://www.youtube-nocookie.com',
@@ -3406,7 +3408,7 @@ function montarVerticales() {
               clearInterval(timer);
               timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); if (!m._arrastre) barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
             } else clearInterval(timer);
-            if (ev.data === S.ENDED) { barra.style.width = '100%'; videoLlamadaTermino(m); }
+            if (ev.data === S.ENDED) barra.style.width = '100%';
           },
         },
       });
@@ -3535,7 +3537,7 @@ function caminoHTML(st, e) {
     if (!moduloHabilitado(st, m)) { if (!bloq.includes(m)) bloq.push(m); return; }
     if (moduloCerradoPorClase(st, e, m)) { cerradas.push(et); return; }
     if (!pasos.length) { if (verTodo || !items.length) proximas.push(et); return; }
-    pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
+    pasos.filter(p => !(esLlamada && p.id === 'llt2' && st.prog.llt2?.auto)).forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));   // si ya vio el de Manu en el paso de Igna, no se lo muestro de nuevo
   });
   // el primer paso sin hacer lleva un cartelito de "Nuevo": a veces los pasos se parecen y así se nota que cambió
   pasoNuevo = (items.find(x => !hecho(st, x.p.id) && !(st.prog[x.p.id] || {}).op) || {}).p?.id || null;
