@@ -338,7 +338,7 @@ const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="tr
 const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
 const VIS_RITMO = {
   'rf-ritmos': () => compasSVG('RNCNNCRR', 18, 70, 138) + compasSVG('NNRNRRNC', 164, 70, 138, '', 5) + `<line class="vr-div" x1="160" y1="56" x2="160" y2="84"/>`,
-  'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30 M58 70 l-12 26 M58 70 l12 26"/><path class="vr-brazo i" d="M58 48 l-16 8 l10 -18"/><path class="vr-brazo d" d="M58 48 l16 8 l-10 -18"/></g><path class="vr-chispa" d="M56 22 l-4 -8 M62 22 l4 -8 M59 20 v-9"/>`
+  'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30"/><path d="M58 48 l-14 16 M58 48 l14 16"/><path class="vr-pierna i" d="M58 70 v26"/><path class="vr-pierna d" d="M58 70 v26"/></g>`
     + `<path class="vr-flecha" d="M108 60 H196 m-12 -10 l12 10 l-12 10"/><circle class="vr-viaje" cx="110" cy="60" r="5"/>` + guitarraSVG(250, 66, 'vibra'),
   'rf-escalera': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas']),
   'rf-donde': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas'], 'tenue') + `<g class="vr-pin"><circle cx="0" cy="0" r="7"/><path d="M-5 4 L0 14 L5 4"/></g>`,

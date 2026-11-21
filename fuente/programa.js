@@ -859,7 +859,6 @@ const PROGRAMA = {
       titulo: 'Introducción: entrenamiento rítmico',
       detalle: 'Mirá el video de introducción. En este módulo sacamos el foco de las notas por un rato y nos concentramos en el ritmo: primero con **ritmos fijos**, después **improvisando con tierras y contratiempos** y con **unidades rítmicas**.',
       verYSeguir: true,
-      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3 }],
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L', progreso: PROGRESO_RITMO,
@@ -899,7 +898,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
     },
     {
-      id: 'r6i', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG', progreso: PROGRESO_RITMO,
+      id: 'r6i', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg', t: 408 }, hotmart: 'LO0b9KRaeG', progreso: PROGRESO_RITMO,
       entrega: 'video', envia: 'un video improvisando un buen rato con tierras y contratiempos, usando los ritmos como disparador.',
       titulo: 'Improvisación con tiempos y contratiempos',
       detalle: 'Ahora improvisá con **tierras y contratiempos**, usando los ritmos del A al E como disparador:\n- Uno solo como **clave**: lo tenés en la cabeza pero cantás solo fragmentos, poniendo silencios donde no los hay.\n- **Desordenando** fragmentos de los ritmos.\n- O eligiendo **2 o 3 ritmos** y dejando que te disparen ideas.\nImprovisá durante un buen rato y grabate. Escuchate: ¿cuánto del material aparece? ¿Te repetís? Si pasa, volvé a basarte en un solo ritmo.\n# Mandame un video improvisando un buen rato con tierras y contratiempos',
@@ -913,7 +912,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo', web: true }],
     },
     {
-      id: 'r7', etapa: 'ritmo', progreso: PROGRESO_RITMO, entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
+      id: 'r7', etapa: 'ritmo', progreso: PROGRESO_RITMO, entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos (1 o 2 unidades rítmicas), contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
       video: { id: 'A4rxE6i5VwY' },
       grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
