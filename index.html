@@ -1462,6 +1462,11 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .vi-cur{position:absolute;width:22px;height:22px;margin:-6px 0 0 -6px;border-radius:50%;background:rgba(255,255,255,.35);border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5);opacity:0;animation:viCur 1.4s ease forwards;animation-delay:var(--d)}
 @keyframes viCur{0%{opacity:0;transform:translate(60px,50px)}40%{opacity:1;transform:none}55%{transform:scale(.7);background:rgba(232,131,79,.7)}70%,100%{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.vis-img *{animation:none!important;opacity:1!important}}
+/* Documento nuevo y el botón a su parte, en el mismo renglón */
+.doc-fila{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.doc-fila .doc-nuevo{flex:1 1 300px;margin:0}
+.doc-fila .mat-sec{flex:0 1 auto;margin:0}
+.doc-fila + .material{margin-top:10px}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -3515,11 +3520,15 @@ function materialHTML(p) {
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
   /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
-  const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
+  // Los botones a una parte de ese mismo doc van al lado de la tarjeta, en el mismo renglón
+  const alLado = n => rs.filter(r => r.sec && !r.col && r.url === n.url);
+  const enFila = new Set(nuevos.flatMap(alLado));
+  const resto = rs.filter(r => !nuevos.includes(r) && !enFila.has(r));
   // Recursos en columnas (col: 1, 2…): video arriba y su parte del doc abajo, una columna al lado de la otra
   const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
   const sueltos = resto.filter(r => !r.col);
-  return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
+  const tarjeta = r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`;
+  return `${nuevos.map(r => alLado(r).length ? `<div class="doc-fila">${tarjeta(r)}${alLado(r).map(recursoHTML).join('')}</div>` : tarjeta(r)).join('')}
   ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
   ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
 }

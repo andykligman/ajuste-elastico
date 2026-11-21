@@ -516,11 +516,15 @@ function materialHTML(p) {
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
   /* Un doc nuevo con sección: la tarjeta abre el doc entero y además va el botón a esa parte */
-  const resto = rs.filter(r => !nuevos.includes(r)).concat(nuevos.filter(r => r.sec));
+  // Los botones a una parte de ese mismo doc van al lado de la tarjeta, en el mismo renglón
+  const alLado = n => rs.filter(r => r.sec && !r.col && r.url === n.url);
+  const enFila = new Set(nuevos.flatMap(alLado));
+  const resto = rs.filter(r => !nuevos.includes(r) && !enFila.has(r));
   // Recursos en columnas (col: 1, 2…): video arriba y su parte del doc abajo, una columna al lado de la otra
   const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
   const sueltos = resto.filter(r => !r.col);
-  return `${nuevos.map(r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`).join('')}
+  const tarjeta = r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`;
+  return `${nuevos.map(r => alLado(r).length ? `<div class="doc-fila">${tarjeta(r)}${alLado(r).map(recursoHTML).join('')}</div>` : tarjeta(r)).join('')}
   ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
   ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
 }
