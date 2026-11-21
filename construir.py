@@ -6,3 +6,5 @@ js='\n'.join(open('fuente/'+f).read() for f in ['programa.js','motor.js','datos.
 js=js.replace("if (typeof module !== 'undefined') module.exports","if (typeof module !== 'undefined' && typeof window === 'undefined') module.exports")
 out=shell.replace('/*LOGO*/',logo).replace('/*JS*/',js)
 open('index.html','w').write(out); print(len(out))
+import subprocess
+subprocess.run(['node','herramientas/pasos_json.js'],check=True)

@@ -307,6 +307,27 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .grupo-dia>.sec-cuerpo{padding:4px 0 12px}
 .grupo-dia.inactivos>summary{opacity:.6;font-size:16px}
 .grupo-dia.inactivos .alumno-card{opacity:.6}
+
+  /* Propuestas de las clases (Tactiq) */
+  .prop-grupos { display: grid; gap: 14px; }
+  .prop-grupo { border: 1px solid var(--linea); border-radius: 12px; padding: 10px 14px; background: var(--sup2); }
+  .prop-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 6px; }
+  button.enlace { background: none; border: 0; padding: 0; color: var(--azul-txt); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font: inherit; box-shadow: none; }
+  .prop-grupo > button.enlace { margin-top: 6px; font-size: .85rem; }
+  .prop-bot button { font-size: 14px; padding: 6px 12px; }
+  .prop-bot .prop-si { background: var(--azul); border-color: var(--azul); color: #fff; }
+  .prop-bot .prop-si:hover { background: var(--azul-osc); }
+  .prop-cab .enlace { font-weight: 700; font-size: 1rem; }
+  .prop-lista { list-style: none; margin: 0; padding: 0; }
+  .prop { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--linea); transition: opacity .2s; }
+  .prop:first-child { border-top: 0; }
+  .prop-txt { display: grid; gap: 2px; min-width: 0; }
+  .prop-tipo { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--azul-txt); }
+  .prop-proxima .prop-tipo { color: #E8834F; }
+  .prop-traba .prop-tipo { color: var(--oxido-txt); }
+  .prop-consejo .prop-tipo { color: #B9A8F0; }
+  .prop-bot { display: flex; gap: 6px; flex-shrink: 0; }
+  .prop-yendo { opacity: .4; pointer-events: none; }
 </style>
 </head>
 <body>
