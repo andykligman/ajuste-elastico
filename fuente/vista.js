@@ -942,14 +942,48 @@ function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] =
 const INTRO_AUDIO = 'audio/intro/';   // 01.m4a, 02.m4a… una por frase; si falta, avanza con el tiempo de lectura
 const INTRO = [
   { t: '¡Bienvenido al aula de **Ajuste Elástico**!', ms: 2600 },
-  { t: 'El aula es un camino: vas **paso a paso**.', ms: 3000 },
-  { t: 'En cada paso tenés un **resumen cortito** de lo que hay que hacer.', ms: 3200 },
-  { t: 'Siempre podés ver **el video de la consigna**.', ms: 3000 },
-  { t: 'Y están **los documentos**: ahí está todo explicado en detalle. Leelos sí o sí, son tan importantes como los videos.', ms: 5500 },
-  { t: 'A veces hay **videos extra** que te ayudan a destrabar.', ms: 3000 },
-  { t: 'Cuando tenés clara la tarea, **me mandás el video** desde acá mismo.', ms: 4000 },
-  { t: 'Te doy una devolución y seguís con **el paso que viene** 😉', ms: 3500 },
+  { t: 'El aula es un camino: vas **paso a paso**, y te acompaña en cada uno.', ms: 4200 },
+  { t: 'Muchas veces te propone ver primero **el video completo** y leer **el documento**…', ms: 3800 },
+  { t: '…y después te separa las tareas **en pasos**, para que las hagas de a una.', ms: 3800 },
+  { t: 'Está pensado para que **no te pierdas**, no te frustres y avances de la mejor manera.', ms: 4000 },
+  { t: 'En cada paso tenés un botón que te lleva **al ejemplo o a la explicación** de esa tarea, en el minuto justo del video.', ms: 5800 },
+  { t: 'Y otro que te lleva a **la parte del documento** que habla de eso.', ms: 3200 },
+  { t: 'Conviene hacer cada tarea dentro de cada paso del aula: **así sale bien de una**.', ms: 4000 },
+  { t: 'Cuando la hacés, **me mandás un video** desde acá mismo o desde WhatsApp.', ms: 3600 },
+  { t: 'Con tu video vemos si **seguimos**, si **nos quedamos** o si sumamos **un paso intermedio** para que puedas destrabar.', ms: 5200 },
+  { t: 'En cada paso también te pregunto **cómo te fue**. Lo ideal es contestar, aunque no haya salido bien: según lo que marques, el aula te da un consejo o te dice cómo seguir.', ms: 8800 },
+  { t: 'Si después cambia, **podés modificar la respuesta**.', ms: 2600 },
+  { t: 'Incluso si te fue bien, sirve para tener **un registro** de cómo venís y entender cómo avanzar.', ms: 5200 },
+  { t: '¡Vamos **paso a paso**! 😉', ms: 2200 },
 ];
+/* Un cuadro por frase (la 1 es solo el texto grande). Se arma de nuevo en cada frase, así las animaciones arrancan de cero */
+function introCuadro(n) {
+  const nodo = (k, cls = '') => `<span class="ic-nodo ${cls}" style="--k:${k}"><b>${k}</b><i>${ICONO.check}</i></span>`;
+  const camino = (cls = '') => `<div class="ic-camino ${cls}"><span class="ic-linea"></span>${[1, 2, 3, 4].map(k => nodo(k)).join('')}<span class="ic-vos" aria-hidden="true"></span></div>`;
+  const barra = (cls = '') => `<div class="ic-barra ${cls}"><i></i><i></i><i></i><i></i><span class="ic-cabezal"></span></div>`;
+  const video = (cls = '') => `<div class="ic-video ${cls}"><span class="ic-play">${ICONO.video}</span>${barra()}</div>`;
+  const doc = (cls = '') => `<div class="ic-doc ${cls}"><span class="ic-hoja"><b>Paso 1</b><i></i><i></i><b>Paso 2</b><i></i><i></i><b class="ic-p3">Paso 3</b><i></i><i></i></span><span class="ic-hoja h2"></span><span class="ic-hoja h3"></span></div>`;
+  const C = {
+    2: () => camino('ic-acompana'),
+    3: () => `<div class="ic-fila">${video('ic-completo')}<span class="ic-y">+</span>${doc('ic-pasan')}</div><p class="ic-cap">1ª pasada: mirar y leer</p>`,
+    4: () => `<div class="ic-separa">${video('ic-partido')}<div class="ic-tareas">${[1, 2, 3, 4].map(k => `<span class="ic-tarea" style="--k:${k}"><b>${k}</b>Tarea ${k}</span>`).join('')}</div></div>`,
+    5: () => `<div class="ic-fila">${camino('ic-avanza')}<div class="ic-sin">${['Sin perderte', 'Sin frustrarte', 'Avanzando bien'].map((x, i) => `<span style="--k:${i}">${ICONO.check}${x}</span>`).join('')}</div></div>`,
+    6: () => `<div class="ic-col">${video('ic-salta')}<span class="ic-boton ic-b-vid">${ICONO.video}Ver ejemplo <small>desde 25:16</small><span class="ic-cursor"></span></span></div>`,
+    7: () => `<div class="ic-fila ic-centro"><span class="ic-boton ic-b-doc">${ICONO.doc}Ir a <b>Paso 3</b><span class="ic-cursor"></span></span><span class="ic-flecha"></span>${doc('ic-resalta')}</div>`,
+    8: () => `<div class="ic-paso"><p class="ic-paso-t">Paso 3 · Soltar la dirección melódica</p><div class="ic-mini">${ICONO.video}<span>Ejemplo · 25:16</span></div><div class="ic-mini">${ICONO.doc}<span>Ir a Paso 3</span></div><div class="ic-hago"><svg class="ic-guitarra" viewBox="-46 -62 150 92" aria-hidden="true">${guitarraSVG(0, 0, 'vibra')}</svg><span class="ic-ok">${ICONO.check}Hecho, de una</span></div></div>`,
+    9: () => `<div class="ic-col ic-envio"><span class="ic-grabar"><i></i>Grabar video</span><span class="ic-o">o</span><span class="ic-wa">${ICONO_WA}Por WhatsApp</span><span class="ic-mandado">${ICONO.check}Listo, ya me lo mandaste</span></div>`,
+    10: () => `<svg class="ic-rama" viewBox="0 0 320 170" aria-hidden="true">
+        <path class="r-base" d="M60 85 H110"/><circle class="r-nodo yo" cx="60" cy="85" r="15"/><text x="60" y="90">3</text>
+        <path class="r-op o1" d="M110 85 C150 85 170 30 230 30"/><circle class="r-nodo o1" cx="248" cy="30" r="15"/><text class="o1" x="248" y="35">4</text><text class="r-et o1" x="248" y="62">Seguimos</text>
+        <path class="r-op o2" d="M110 85 C140 85 150 120 120 132 C95 140 80 115 92 100"/><text class="r-et o2" x="140" y="160">Nos quedamos</text>
+        <path class="r-op o3" d="M110 85 H210"/><circle class="r-nodo r-mini o3" cx="222" cy="85" r="9"/><text class="r-et o3 r-izq" x="238" y="90">Paso intermedio</text></svg>`,
+    11: () => `<div class="ic-como"><p class="ic-preg">¿Cómo te fue?</p><span class="ic-op">Me salió bien</span><span class="ic-op ic-sel-casi">Me cuesta un poco</span><span class="ic-op">No me sale</span><div class="ic-consejo"><b>Consejo</b>Bajá a 2 cuerdas un ratito y después volvé a juntar.</div></div>`,
+    12: () => `<div class="ic-como ic-cambia"><p class="ic-preg">¿Cómo te fue?</p><span class="ic-op ic-op-bien">Me salió bien</span><span class="ic-op ic-op-casi">Me cuesta un poco</span><span class="ic-op">No me sale</span></div>`,
+    13: () => `<div class="ic-registro"><p class="ic-preg">Tu registro</p><div class="ic-linea-t">${['bien', 'casi', 'bien', 'bien', 'casi', 'bien', 'bien'].map((x, i) => `<span class="ic-r ${x}" style="--k:${i}"></span>`).join('')}</div><div class="ic-leyenda"><span class="bien">Me salió</span><span class="casi">Me costó un poco</span></div></div>`,
+    14: () => camino('ic-final'),
+  };
+  return C[n] ? `<div class="ic ic-${n}">${C[n]()}</div>` : '';
+}
 const audioIntro = new Audio(); audioIntro.preload = 'auto'; audioIntro.defaultPlaybackRate = 1.15; audioIntro.preservesPitch = true;
 /* Se marca en el progreso del alumno (prog.intro), así la ve una sola vez aunque entre desde otro dispositivo,
    y también la ven los alumnos que ya venían usando el aula */
@@ -964,17 +998,7 @@ function mostrarIntro() {
     <div class="logo-ae">${LOGO}</div>
     <p class="in-sobre">Cómo funciona el aula</p>
     <p class="in-texto" aria-live="polite"></p>
-    <div class="in-escena" data-s="1">
-      <div class="in-camino"><svg class="in-linea" aria-hidden="true"><line x1="50%" y1="0" x2="50%" y2="100%"/></svg>${[1, 2, 3, 4].map(nodo).join('')}</div>
-      <div class="in-tarjeta">
-        <div class="in-el" data-desde="2"><p class="in-tit">Nombrar los intervalos</p><span class="in-renglon" style="width:92%"></span><span class="in-renglon" style="width:74%"></span></div>
-        <div class="in-el in-vid" data-desde="3"><span class="in-play">${ICONO.video}</span><small>Video de la consigna</small></div>
-        <div class="in-el in-doc" data-desde="4"><span class="in-doc-ico">${ICONO.doc}</span><span><small>Documento</small><strong>Leelo antes de practicar</strong></span></div>
-        <div class="in-el in-aux" data-desde="5"><span>${ICONO.video}Ejemplo</span><span>${ICONO.video}Video extra</span></div>
-        <div class="in-el in-env" data-desde="6"><span class="in-grabar"><i></i>Grabar video</span><span class="in-mandado">${ICONO.check}Listo, ya me lo mandaste</span></div>
-        <div class="in-el in-seg" data-desde="7"><span>Seguir</span>${ICONO.abajo}</div>
-      </div>
-    </div>
+    <div class="in-escena" data-s="0"></div>
     <div class="in-ctrl">
       <button class="link suave" data-in="saltear">Saltear</button>
       <span class="in-puntos">${INTRO.map((_, i) => `<i data-p="${i + 1}"></i>`).join('')}</span>
@@ -985,10 +1009,7 @@ function mostrarIntro() {
   let s = 0, h = null;
   const ir = n => {
     s = n; clearTimeout(h);
-    const sc = s - 1;   // la frase 1 es la bienvenida; la escena arranca en la 2
-    esc_.dataset.s = sc;
-    el.querySelectorAll('.in-el').forEach(x => { const d = +x.dataset.desde; x.classList.toggle('on', d <= sc); x.classList.toggle('foco', d === sc); });
-    el.querySelectorAll('.in-nodo').forEach(x => { const k = +x.dataset.n, ahora = sc < 7 ? 2 : 3; x.classList.toggle('hecho', k < ahora); x.classList.toggle('ahora', k === ahora); });
+    esc_.dataset.s = s === 1 ? 0 : s; esc_.innerHTML = introCuadro(s);
     el.querySelectorAll('.in-puntos i').forEach(x => x.classList.toggle('on', +x.dataset.p <= s));
     txt.classList.remove('ver'); void txt.offsetWidth; txt.innerHTML = enLinea(INTRO[s - 1].t); txt.classList.add('ver');
     sig.textContent = s === INTRO.length ? 'Arrancar' : 'Siguiente';
@@ -996,7 +1017,7 @@ function mostrarIntro() {
     const yo = s, sigue = () => { if (s === yo && s < INTRO.length) ir(s + 1); };
     audioIntro.onended = audioIntro.onerror = null; audioIntro.pause();
     if (reduceMotion) return;
-    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=9'; audioIntro.playbackRate = 1.15;   // ?v=: que el navegador no use la versión vieja
+    audioIntro.src = INTRO_AUDIO + String(s).padStart(2, '0') + '.m4a?v=10'; audioIntro.playbackRate = 1.15;   // ?v=: que el navegador no use la versión vieja
     const t0 = Date.now();   // con audio, pasa al terminar, pero nunca antes del tiempo de lectura de la frase
     audioIntro.onended = () => { h = setTimeout(sigue, Math.max(300, INTRO[yo - 1].ms / 1.15 - (Date.now() - t0))); };
     audioIntro.onerror = () => { clearTimeout(h); h = setTimeout(sigue, INTRO[yo - 1].ms); };
