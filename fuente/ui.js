@@ -594,7 +594,7 @@ const TOTAL_ENCUENTROS = 16;
 function restoHTML(a) {
   const e = estado(a);
   const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
-  const etDe = p => PROGRAMA.etapas.find(et => et.id === p.etapa);
+  const sepsMod = {};
   return `${secAdm('clases', 'Clases y nivel', `<div class="ajustes form-admin">
     <div class="aj-fila">
       <label>Clases que ya tuvo
@@ -628,7 +628,8 @@ function restoHTML(a) {
       const m = MODULO_DE[p.etapa], todo = pasosDelModulo(m).every(x => a.prog[x.id]?.hecho);
       const ant = PROGRAMA.pasos[i - 1];
       const cab = !i || MODULO_DE[ant.etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}"><span>${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</span><button class="link suave" data-mod-tilde="${m}">${todo ? 'Desmarcar el módulo entero' : 'Marcar el módulo entero'}</button></li>` : '';
-      const sepEt = !etapasUnica(m) && (!i || ant.etapa !== p.etapa) ? `<li class="av-etapa">${esc(etDe(p).titulo)} <span class="suave">${esc(etDe(p).sub || '')}</span></li>` : '';
+      const dm = pasosDelModulo(m), jm = dm.indexOf(p), sp = jm >= 0 ? (sepsMod[m] = sepsMod[m] || separadoresPasos(dm, m))[jm] : null;
+      const sepEt = sp ? `<li class="av-etapa ${sp.solo ? 'av-sep' : ''}">${esc(sp.tit)} ${sp.sub ? `<span class="suave">${esc(sp.sub)}</span>` : ''}</li>` : '';
       return `${cab}${sepEt}<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><button class="av-tit" data-adm-tilde="${p.id}">${esc(p.titulo)}</button>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>`)}
 
   <div class="bloque links-adm">

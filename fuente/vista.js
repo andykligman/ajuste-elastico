@@ -851,6 +851,17 @@ function bannerModulo(m, et, sub) {
   if (obj && ST && hecho(ST, obj.id)) return `<div class="mod-banner mod-banner-chico"><h2>${esc(M.titulo)}</h2></div>`;
   return `<div class="mod-banner"><small>${esc(M.titulo)}</small><h2>${esc(M.nombre)}</h2>${sub || etapasUnica(m) ? `<p>${esc(sub || et.sub)}</p>` : ''}</div>`;
 }
+/* Separadores para listar los pasos de un módulo (mapa y panel): por ejercitación si el módulo tiene varias
+   (Módulo 1: N1, N2, N3); si no, por video. Devuelve, para cada paso, null o { tit, sub, solo } */
+function separadoresPasos(pasos, m) {
+  if (!etapasUnica(m)) return pasos.map((p, j) => { if (j && pasos[j - 1].etapa === p.etapa) return null; const et = PROGRAMA.etapas.find(x => x.id === p.etapa); return { tit: et.titulo, sub: et.sub || '' }; });
+  const vid = p => p.video && p.video.id;
+  let actual = null; const grupos = [];
+  pasos.forEach((p, j) => { const v = vid(p); if (v && v !== actual) { actual = v; grupos.push({ j, v, n: 1 }); } else if (grupos.length) grupos[grupos.length - 1].n++; });
+  const r = pasos.map(() => null);
+  grupos.forEach(g => { r[g.j] = g.n > 1 ? { tit: VIDEOS[g.v] || 'Video', sub: '' } : { tit: '', sub: '', solo: true }; });
+  return r;
+}
 function etapasUnica(m) { return PROGRAMA.etapas.filter(et => MODULO_DE[et.id] === m).length === 1; }
 
 
@@ -1008,14 +1019,14 @@ function mapaHTML(st, e) {
           ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
           ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
-          ${pasos.length ? `<div class="mz-det"><ul class="mz-lista">${pasos.map((p, j) => {
+          ${pasos.length ? `<div class="mz-det"><ul class="mz-lista">${(seps => pasos.map((p, j) => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
-            // separados como en el aula: cada ejercitación (1, 2, 3…) con su título
-            const et = !etapasUnica(M.n) && (!j || pasos[j - 1].etapa !== p.etapa) ? PROGRAMA.etapas.find(x => x.id === p.etapa) : null;
-            return `${et ? `<li class="mz-etapa"><strong>${esc(et.titulo)}</strong><small>${esc(et.sub || '')}</small></li>` : ''}<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
+            // separados como en el aula: por ejercitación (1, 2, 3…) o por video
+            const sp = seps[j];
+            return `${sp ? `<li class="mz-etapa ${sp.solo ? 'mz-sep' : ''}">${sp.tit ? `<strong>${esc(sp.tit)}</strong>` : ''}${sp.sub ? `<small>${esc(sp.sub)}</small>` : ''}</li>` : ''}<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
               ? `<button class="mz-tilde" data-mapa-tilde="${p.id}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecho'}: ${esc(p.titulo)}"><i>${ok ? ICONO.check : ''}</i></button><button data-mapa-paso="${p.id}">${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}</button>`
               : `<span><i></i>${esc(p.titulo)}</span>`}</li>`;
-          }).join('')}</ul></div>` : ''}
+          }).join(''))(separadoresPasos(pasos, M.n))}</ul></div>` : ''}
         </div></li>`;
     }).join('')}</ol>
   </div>`;

@@ -482,7 +482,7 @@ body.pausa #marca-pausa{opacity:1}
       <div class="at" data-k="5"><p class="medio">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p><p class="chico">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p></div>
       <div class="at" data-k="6"><p class="medio">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p></div>
     </div>
-    <div class="compu"><div class="pant"><video id="aula-video" muted playsinline preload="auto" poster="media/c9_aula.jpg?v=1" src="media/c9_aula.mp4?v=1"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video id="aula-video" muted playsinline preload="auto" poster="media/c9_aula.jpg?v=2" src="media/c9_aula.mp4?v=2"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
   <i data-paso="6" hidden></i>
 </section>
@@ -699,16 +699,25 @@ function chatAvanzar() {
   }
 }
 /* aula: un solo video, cada flecha reproduce el tramo siguiente y se frena */
-const MARCAS = [11.81, 17.14, 23.6, 32.99, 51.58, 71.9, 79.52];
-let aulaHasta = 0;
+const MARCAS = [11.81, 17.14, 23.6, 32.99, 44.1, 53.48, 61.98];
+let aulaHasta = 0, aulaRapido = 0;
+// Si pasás de diapositiva antes de que termine el tramo, el final del tramo anterior pasa rápido (o salta) y sigue con el nuevo
 function aulaPaso(d, nueva, adelante) {
   const v = document.getElementById('aula-video');
   d.querySelectorAll('.at').forEach(x => x.classList.toggle('on', +x.dataset.k === paso));
+  v.playbackRate = 1; aulaRapido = 0;
   if (nueva && paso === 0) { v.currentTime = 0; aulaHasta = MARCAS[0]; if (!pausado) v.play().catch(() => {}); return; }
-  if (nueva || !adelante) { v.pause(); v.currentTime = MARCAS[paso] - .05; aulaHasta = MARCAS[paso]; return; }
+  if (nueva || !adelante) { v.pause(); v.currentTime = Math.max(0, MARCAS[paso] - .05); aulaHasta = MARCAS[paso]; return; }
+  const ini = paso ? MARCAS[paso - 1] : 0, falta = ini - v.currentTime;
+  if (falta > 4 || v.currentTime > MARCAS[paso]) v.currentTime = Math.max(0, ini - .05);
+  else if (falta > .25) { aulaRapido = ini; v.playbackRate = 4; }
   aulaHasta = MARCAS[paso]; if (!pausado) v.play().catch(() => {});
 }
-function aulaCuadro() { const v = document.getElementById('aula-video'); if (!v.paused && v.currentTime >= aulaHasta - .03) v.pause(); }
+function aulaCuadro() {
+  const v = document.getElementById('aula-video');
+  if (aulaRapido && v.currentTime >= aulaRapido) { v.playbackRate = 1; aulaRapido = 0; }
+  if (!v.paused && v.currentTime >= aulaHasta - .03) v.pause();
+}
 /* el ciclo: fácil → reajuste → punto medio, una y otra vez */
 const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
 const resorte = u => 1 - Math.exp(-6 * u) * Math.cos(9 * u);
