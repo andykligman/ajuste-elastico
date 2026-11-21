@@ -4386,6 +4386,15 @@ function avisoModulo(m) {
   requestAnimationFrame(() => el.classList.add('visible'));
   setTimeout(() => { el.classList.remove('visible'); setTimeout(() => el.remove(), 500); }, 3200);
 }
+/* Mostrar u ocultar pasos sin que se mueva la pantalla: el paso abierto queda donde estaba */
+function sinSaltar(fn) {
+  const ancla = () => document.getElementById('n-' + abierto) || document.querySelector('.nodo.abierto');
+  const a0 = ancla(), y0 = a0 ? a0.getBoundingClientRect().top : null;
+  fn();
+  const a1 = ancla(); if (y0 === null || !a1) return;
+  const fijar = () => { const dy = a1.getBoundingClientRect().top - y0; if (Math.abs(dy) > 1) window.scrollBy(0, dy); };
+  fijar(); requestAnimationFrame(fijar);
+}
 function abrirPaso(id) {
   const cambio = id !== abierto;
   const mAntes = abierto && PASO[abierto] ? MODULO_DE[PASO[abierto].etapa] : null, mDespues = PASO[id] ? MODULO_DE[PASO[id].etapa] : null;
@@ -4461,18 +4470,18 @@ function enlazarAlumno() {
       ST.clase = (ST.clase || 0) + 1; ST.claseFecha = hoyISO(); guardarAlumno(); abierto = null; renderAlumno(true);
     } else if (d.accion === 'clase-no') { const c = $('#claseHecha'); if (c && c.classList.contains('pregunta-clase')) c.outerHTML = `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${(ST.clase || 0) + 1}</button></div>`; else renderAlumno(); }
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
-    else if (d.accion === 'ver-todo') { verTodo = true; renderAlumno(); }
+    else if (d.accion === 'ver-todo') sinSaltar(() => { verTodo = true; renderAlumno(); });
     else if (d.accion === 'mapa') abrirMapaZoom();
     else if (d.accion === 'intro') mostrarIntro();
     else if (d.accion === 'presentacion') { presEst.i = 0; renderLlamada(); }
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
     else if (d.accion === 'reiniciar-llamada') reiniciarLlamada(b);
-    else if (d.desplegar !== undefined) { desplegados.add(+d.desplegar); renderAlumno(); }
-    else if (d.plegar !== undefined) { desplegados.delete(+d.plegar); renderAlumno(); requestAnimationFrame(() => document.querySelector(`[data-desplegar="${d.plegar}"]`)?.scrollIntoView({ block: 'center' })); }
+    else if (d.desplegar !== undefined) sinSaltar(() => { desplegados.add(+d.desplegar); renderAlumno(); });
+    else if (d.plegar !== undefined) sinSaltar(() => { desplegados.delete(+d.plegar); renderAlumno(); });
     else if (d.irModulo !== undefined) { const ps = pasosDelModulo(+d.irModulo); const p = ps.find(x => !hecho(ST, x.id)) || ps[0]; if (p) abrirPaso(p.id); }
     else if (d.accion === 'instalar-app' && avisoInstalar) { avisoInstalar.prompt(); avisoInstalar.userChoice.finally(() => { avisoInstalar = null; renderAlumno(); }); }
     else if (d.accion === 'no-instalar') { try { localStorage.setItem('mapaAE_sinInstalar', '1'); } catch (e) {} renderAlumno(); }
-    else if (d.accion === 'ver-menos') { verTodo = false; renderAlumno(); requestAnimationFrame(() => irA(abierto)); }
+    else if (d.accion === 'ver-menos') sinSaltar(() => { verTodo = false; renderAlumno(); });
     else if (d.accion === 'salir') salir();
     else if (d.accion === 'volver-admin') { abierto = null; abrirAdmin(); }
   };
