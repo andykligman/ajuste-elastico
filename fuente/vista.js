@@ -252,7 +252,7 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <div class="stop-pantalla">
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton${tanda.boton.suave ? ' suave' : ''}" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.imgs ? imgsVis(tanda) : ''}${tanda.boton ? `<a class="stop-boton${tanda.boton.suave ? ' suave' : ''}" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -273,6 +273,7 @@ const audioDe = (S, e) => { const it = stopSeq(S)[e.i]; const dir = it.modo === 
 // apenas se toca Reproducir, bajo todos los audios del stop a memoria y los reproduzco desde ahí
 const audioMem = new Map();
 function precargarStop(S) {
+  (S.tandas || []).forEach(t => (t.imgs || []).forEach(f => { const im = new Image(); im.src = f.src; }));   // las capturas, para que no aparezcan a medio cargar
   const seq = stopSeq(S);
   seq.forEach((it, i) => {
     const url = audioDe(S, { i }); if (!url || audioMem.has(url)) return;
@@ -353,6 +354,19 @@ const VIS_RITMO = {
     + [[214, 'N'], [244, 'NN'], [282, 'NNN']].map(([x, u], i) => `<g class="vr-unidad" style="--k:${i}">${u.split('').map((_, j) => `<path class="vr-cab" d="M${x + j * 10 - 4} 78 L${x + j * 10 + 4} 68"/><line class="vr-plica" x1="${x + j * 10 + 4}" y1="68" x2="${x + j * 10 + 4}" y2="44"/>`).join('')}${u.length > 1 ? `<line class="vr-barra" x1="${x + 4}" y1="44" x2="${x + (u.length - 1) * 10 + 4}" y2="44"/>` : ''}</g>`).join(''),
   'rf-chau': () => `<path class="vr-flecha xl" d="M40 56 H270 m-18 -16 l18 16 l-18 16"/>`,
 };
+/* Capturas de pantalla animadas dentro de una tanda: imgs [{ src, marca: [x, y, w, h] en %, clic: true, ms }]
+   imgModo 'loop': las capturas se alternan (como si bajara la página); si no, van apareciendo una vez y queda la última */
+function imgsVis(t) {
+  const fs = t.imgs, loop = t.imgModo === 'loop', paso = 0.9;
+  let acc = 0;
+  const frames = fs.map((f, i) => {
+    const d = loop ? i * paso : acc; acc += (f.ms || 2200) / 1000;
+    const m = f.marca ? `<span class="vi-marca" style="left:${f.marca[0]}%;top:${f.marca[1]}%;width:${f.marca[2]}%;height:${f.marca[3]}%;--d:${d + .35}s"></span>` : '';
+    const c = f.clic && f.marca ? `<span class="vi-cur" style="left:${f.marca[0] + f.marca[2] / 2}%;top:${f.marca[1] + f.marca[3] / 2}%;--d:${d + .2}s"></span>` : '';
+    return `<span class="vi-f" style="--d:${d}s;z-index:${loop ? fs.length - i : i + 1}"><img src="${esc(f.src)}" alt="" loading="eager">${m}${c}</span>`;
+  });
+  return `<span class="vis-img ${loop ? 'vi-loop' : 'vi-una'} ${t.imgTenue ? 'vi-tenue' : ''}" style="--n:${fs.length}">${frames.join('')}</span>`;
+}
 function visGrande(v) {
   const cuerdas = (cls = k => '', extra = '') => [22, 48, 74].map((y, k) => `<line class="vg-cuerda ${cls(k)}" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k};stroke-width:${[1.6, 2.4, 3.4][k]}"/>`).join('') + extra;
   const caja = (x, cl, k) => `<rect class="vg-caja ${cl}" x="${x}" y="30" width="30" height="34" rx="5" style="--k:${k}"/>`;
