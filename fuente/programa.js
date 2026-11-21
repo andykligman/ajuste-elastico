@@ -146,7 +146,7 @@ const STOPS = {
       { sel: [-1, -1], pausa: true, grande: true, extra: 600, t: 'En cada paso, el aula te lleva a **la parte justa** del documento,\ncon el botón **«Ir a…»**.',
         imgs: [{ src: 'img/docs/aula-ir-a.jpg', marca: [6.3, 65.5, 33.2, 8.8], clic: true, ms: 2400 }, { src: 'img/docs/ir-a-doc.jpg', marca: [18.8, 34.6, 34, 6.2] }] },
       { sel: [-1, -1], pausa: true, grande: true, t: 'Así recorrés el video y el documento por partes,\ncada cosa en su momento.',
-        imgs: [{ src: 'img/docs/partes.jpg' }] },
+        imgs: [{ src: 'img/docs/partes.jpg?v=2' }] },
       { sel: [-1, -1], pausa: true, grande: true, t: 'Si un día lo querés usar directo en Drive,\nbuscar a mano es engorroso: **los documentos son largos**.', imgModo: 'loop',
         imgs: [{ src: 'img/docs/largo2.jpg' }, { src: 'img/docs/largo3.jpg' }, { src: 'img/docs/largo4.jpg' }, { src: 'img/docs/largo1.jpg' }] },
       { sel: [-1, -1], pausa: true, grande: true, extra: 500, t: 'Para eso está **la solapita de la izquierda**,\ncon todos los títulos.',
@@ -938,7 +938,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo', web: true }],
     },
     {
-      id: 'r7', etapa: 'ritmo', progreso: PROGRESO_RITMO, entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos (1 o 2 unidades rítmicas), contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
+      id: 'r7', etapa: 'ritmo', progreso: PROGRESO_RITMO, entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 unidades rítmicas, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
       video: { id: 'A4rxE6i5VwY' },
       grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',

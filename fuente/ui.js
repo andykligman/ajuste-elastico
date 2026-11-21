@@ -467,6 +467,27 @@ function renderAdmin() {
   urlAdmin();
 }
 
+/* Alumnos por día de clase, en el orden del día. Se reconocen por cómo empieza el nombre (sin tildes),
+   así los que todavía no se registraron entran solos cuando lo hagan. Para cambiarlo, editar acá. */
+const HORARIO = [
+  { id: 'lunes', titulo: 'Lunes', dia: 1, alumnos: ['antonio sanchez', 'fran', 'leonardo belli', 'ger gonzalez', 'juan manuel carrasco'] },
+  { id: 'martes', titulo: 'Martes', dia: 2, alumnos: ['ignacio lessa', 'matias otero', 'fito ulrich', "beto d'alessandro", 'luis'] },
+  { id: 'jueves', titulo: 'Jueves', dia: 4, alumnos: ['kelbin', 'nestor', 'juan francisco barbaro'] },
+];
+const INACTIVOS = ['manuel toma', 'rodrigo machuca'];
+function gruposDia(filas) {
+  const n = a => sinTildes(a.nombre).replace(/\s+/g, ' ').trim(), es = (a, pat) => n(a) === pat || n(a).startsWith(pat + ' ') || n(a) === pat;
+  const usados = new Set(), hoy = new Date().getDay();
+  const grupos = HORARIO.map(d => {
+    const fs = d.alumnos.flatMap(pat => filas.filter(f => !usados.has(f.a.codigo) && es(f.a, pat))).filter(f => { if (usados.has(f.a.codigo)) return false; usados.add(f.a.codigo); return true; });
+    return { id: d.id, titulo: d.titulo, hoy: d.dia === hoy, filas: fs };
+  }).filter(g => g.filas.length);
+  const inact = filas.filter(f => !usados.has(f.a.codigo) && INACTIVOS.some(pat => es(f.a, pat))); inact.forEach(f => usados.add(f.a.codigo));
+  const resto = filas.filter(f => !usados.has(f.a.codigo));
+  if (resto.length) grupos.push({ id: 'otros', titulo: 'Sin día asignado', filas: resto });
+  if (inact.length) grupos.push({ id: 'inactivos', titulo: 'Inactivos', filas: inact });
+  return grupos;
+}
 /* Inicio del panel: primero los videos para ver, después todos los alumnos */
 let buscaAdm = '';
 const sinTildes = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -486,7 +507,7 @@ function inicioAdmHTML() {
     </div>
     <section class="lista">
       <div class="lista-busca"><h2>${ICONO_ADM.alumnos}Alumnos <span class="suave chico">${LISTA.length}</span></h2><input type="search" id="buscaAlumno" placeholder="Buscar por nombre" autocomplete="off" value="${esc(buscaAdm)}" aria-label="Buscar alumno por nombre"></div>
-      <div class="alumnos-grid">${filas.map(({ a, e }) => {
+      ${gruposDia(filas).map(g => secAdm('dia-' + g.id, `${esc(g.titulo)} <span class="suave chico">${g.filas.length}</span>${g.hoy ? ' <span class="cuenta">hoy</span>' : ''}`, `<div class="alumnos-grid">${g.filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
           const ps = PROGRAMA.pasos.filter(p => !p.soloLlamada && !p.opcional), h = ps.filter(p => a.prog[p.id]?.hecho).length;
@@ -495,7 +516,7 @@ function inicioAdmHTML() {
             <span class="ac-datos"><span>${a.clase || 0}/${TOTAL_ENCUENTROS} clases</span><span>Nivel ${a.nivel}</span><span class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</span></span>
             <span class="ac-barra"><i style="width:${ps.length ? Math.round(h / ps.length * 100) : 0}%"></i></span>
             ${a.ajustar || nvid || nprob ? `<span class="ac-marcas">${a.ajustar ? `<span class="marca-ajustar">Nuevo: ajustá nivel y fecha</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</span>` : ''}
-          </button>`; }).join('') || '<p class="suave">Todavía no hay alumnos.</p>'}</div>
+          </button>`; }).join('')}</div>`, 'grupo-dia' + (g.id === 'inactivos' ? ' inactivos' : ''))).join('') || '<p class="suave">Todavía no hay alumnos.</p>'}
     </section>`;
 }
 function marcarModulo(prog, m) {
@@ -582,7 +603,7 @@ function mensajeAdmHTML(a, pasoVideo) {
   </div>`;
 }
 /* Secciones del panel de cada alumno: cerradas hasta que las abrís; se acuerda cuáles abriste */
-const admAbiertas = new Set(['videos-ver']);
+const admAbiertas = new Set(['videos-ver', 'clases', 'otros', 'dia-otros', ...HORARIO.filter(d => d.dia === new Date().getDay()).map(d => 'dia-' + d.id)]);
 function secAdm(id, titulo, contenido, cls = '') {
   return `<details class="sec-adm ${cls}" data-sec="${id}" ${admAbiertas.has(id) ? 'open' : ''}><summary><span>${titulo}</span></summary><div class="sec-cuerpo">${contenido}</div></details>`;
 }
@@ -695,7 +716,8 @@ function enlazarAdmin() {
   const a = LISTA.find(x => x.codigo === elegido);
   if (!root._secs) { root._secs = 1; root.addEventListener('toggle', ev => { const d = ev.target; if (d.dataset && d.dataset.sec) d.open ? admAbiertas.add(d.dataset.sec) : admAbiertas.delete(d.dataset.sec); }, true); }
   const bus = $('#buscaAlumno');
-  if (bus) bus.oninput = () => { buscaAdm = bus.value; const q = sinTildes(bus.value.trim()); root.querySelectorAll('[data-elegir]').forEach(tr => { tr.hidden = !!q && !tr.dataset.nombre.includes(q); }); };
+  if (bus) bus.oninput = () => { buscaAdm = bus.value; const q = sinTildes(bus.value.trim()); root.querySelectorAll('[data-elegir]').forEach(tr => { tr.hidden = !!q && !tr.dataset.nombre.includes(q); });
+    root.querySelectorAll('.grupo-dia').forEach(g => { const hay = [...g.querySelectorAll('[data-elegir]')].some(x => !x.hidden); if (q) { g.hidden = !hay; if (hay) g.open = true; } else g.hidden = false; }); };
   root.onclick = async ev => {
     const tr = ev.target.closest('[data-elegir]');
     if (tr) { elegido = tr.dataset.elegir; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
