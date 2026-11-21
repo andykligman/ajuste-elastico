@@ -1289,9 +1289,15 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ev-sonando .ev-acciones span{display:none}
 .ev-sonando .ev-acciones>*{padding:8px}
 .ev-simple .ev-acciones,.ev-simple .ev-saltos{display:none}
-.emb.ev-grande .ev-acciones{position:fixed;right:12px;bottom:max(20px,env(safe-area-inset-bottom))}
-.emb.ev-grande .ev-saltos{position:fixed;left:12px;bottom:max(20px,env(safe-area-inset-bottom))}
+.emb.ev-grande .ev-acciones{right:12px;bottom:26px}
+.emb.ev-grande .ev-saltos{left:12px;bottom:26px}
+.emb.ev-grande .ev-saltos button{width:52px;height:52px}
+.emb.ev-grande .ev-saltos svg{width:36px;height:36px}
 .emb.ev-grande .ev-agrandar{display:none}
+
+/* cartelito de paso nuevo */
+.nodo-tit .nuevo{display:inline-block;justify-self:start;margin-top:4px;padding:2px 9px;border-radius:999px;background:#E8834F;color:#fff;font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;font-style:normal;vertical-align:3px;animation:nuevoLate 2.4s ease-in-out infinite}
+@keyframes nuevoLate{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.5)}50%{box-shadow:0 0 0 6px rgba(232,131,79,0)}}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -3394,7 +3400,7 @@ function montarVerticales() {
               clearInterval(timer);
               timer = setInterval(() => { if (!m.isConnected) { clearInterval(timer); return; } try { if (pl.getCurrentTime() > 0.4) m.classList.add('ev-ver'); if (!m._arrastre) barra.style.width = (100 * pl.getCurrentTime() / (pl.getDuration() || 1)).toFixed(2) + '%'; } catch (_) {} }, 250);
             } else clearInterval(timer);
-            if (ev.data === S.ENDED) barra.style.width = '100%';
+            if (ev.data === S.ENDED) { barra.style.width = '100%'; videoLlamadaTermino(m); }
           },
         },
       });
@@ -3496,7 +3502,7 @@ function fechaCorta(f) { const [y, m, d] = String(f || '').split('-'); return d 
 function duracion(seg) { seg = Math.round(seg); return `${Math.floor(seg / 60)}:${String(seg % 60).padStart(2, '0')}`; }
 
 const OLAS = [0, 34, 68, 34];
-let verTodo = false;
+let verTodo = false, pasoNuevo = null;
 const desplegados = new Set();   // módulos anteriores que el alumno abrió al ver todos los pasos   // por defecto solo se ve el paso anterior, el actual y el siguiente
 function nodoHTML(st, e, p, n, total) {
   const pr = st.prog[p.id] || {};
@@ -3507,7 +3513,7 @@ function nodoHTML(st, e, p, n, total) {
   return `<section class="nodo est-${est} ${abiertoEste ? 'abierto' : ''}" id="n-${p.id}" style="--ola:${abiertoEste ? 0 : OLAS[total % OLAS.length]}px">
     <div class="nodo-fila">
       <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
-      <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
+      <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${p.id === pasoNuevo && !pr.hecho ? '<em class="nuevo">Nuevo</em>' : ''}${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
       ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
     </div>
     ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
@@ -3525,6 +3531,8 @@ function caminoHTML(st, e) {
     if (!pasos.length) { if (verTodo || !items.length) proximas.push(et); return; }
     pasos.forEach((p, i) => items.push({ et, p, n: i + 1, total: items.length + 1 }));
   });
+  // el primer paso sin hacer lleva un cartelito de "Nuevo": a veces los pasos se parecen y así se nota que cambió
+  pasoNuevo = (items.find(x => !hecho(st, x.p.id) && !(st.prog[x.p.id] || {}).op) || {}).p?.id || null;
   const idx = Math.max(0, items.findIndex(x => x.p.id === abierto));
   const desde = verTodo ? 0 : Math.max(0, idx - 1), hasta = verTodo ? items.length - 1 : Math.min(items.length - 1, idx + 1);
   // Los botones cuentan solo los pasos del módulo actual; los otros módulos se ven plegados
@@ -4064,6 +4072,14 @@ function puenteTestimonio() {
 }
 const WA_LLAMADA = 'Hola Andy! Ya vi todo lo de antes de la llamada. Te cuento qué me pareció: ';
 const waLlamada = cls => typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="${cls}" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(WA_LLAMADA)}" target="_blank" rel="noopener">${ICONO_WA}<span>Escribime por WhatsApp</span></a>` : '';
+// Link de la llamada: si termina de ver el último video, se marca solo y sale la pantalla final
+function videoLlamadaTermino(m) {
+  if (!esLlamada) return;
+  const nodo = m.closest('[id^="n-"]'); if (!nodo) return;
+  const id = nodo.id.slice(2);
+  if (id !== 'llt1' && !hecho(ST, id)) { ST.prog[id] = { hecho: true, como: 'listo', op: 'listo', t: hoyISO() }; guardarAlumno(); }
+  if (PASOS_LLAMADA.every(x => hecho(ST, x))) setTimeout(() => { const g = document.querySelector('.emb.ev-grande'); if (g) evGrande(g, false); renderAlumno(); finLlamada(); }, 700);
+}
 function finLlamada() {
   pantallaLlamada(`<div class="ll-logo llp-logo">${LOGO}</div>
     <svg class="llp-vis chico" viewBox="0 0 360 110" aria-hidden="true">${[0, 1, 2].map(k => `<path class="llp-cuerda" style="--k:${k}" d="M20 ${30 + k * 26} H340"/>`).join('')}${papelitos()}</svg>
