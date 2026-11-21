@@ -477,29 +477,25 @@ function inicioAdmHTML() {
   return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
-    ${registroAdmHTML()}
-    <section class="por-ver">
-      <h2>Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
-      ${nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
+    <div class="paneles-adm">
+      ${secAdm('videos-ver', `${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : '<span class="suave chico">ninguno</span>'}`, nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
           <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
           <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
-        </button>`).join('')}</div>` : `<p class="suave">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`}
-    </section>
+        </button>`).join('')}</div>` : `<p class="suave">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`, 'panel-videos')}
+      ${secAdm('registro', `${ICONO_ADM.link}Link para alumnos nuevos`, registroAdmHTML(), 'panel-link')}
+    </div>
     <section class="lista">
-      <div class="lista-busca"><h2>Alumnos</h2><input type="search" id="buscaAlumno" placeholder="Buscar por nombre" autocomplete="off" value="${esc(buscaAdm)}" aria-label="Buscar alumno por nombre"></div>
-      <table>
-        <thead><tr><th>Alumno</th><th>Próxima</th><th>Estado</th><th>Nivel</th><th>Último movimiento</th></tr></thead>
-        <tbody>${filas.map(({ a, e }) => {
+      <div class="lista-busca"><h2>${ICONO_ADM.alumnos}Alumnos <span class="suave chico">${LISTA.length}</span></h2><input type="search" id="buscaAlumno" placeholder="Buscar por nombre" autocomplete="off" value="${esc(buscaAdm)}" aria-label="Buscar alumno por nombre"></div>
+      <div class="alumnos-grid">${filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
-          return `<tr data-elegir="${esc(a.codigo)}" data-nombre="${esc(sinTildes(a.nombre))}" tabindex="0" ${buscaAdm && !sinTildes(a.nombre).includes(sinTildes(buscaAdm)) ? 'hidden' : ''}>
-            <td><strong>${esc(a.nombre)}</strong>${a.ajustar ? `<span class="marca-ajustar">Nuevo: ajustá nivel y fecha</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob" title="Pasos donde marcó que le cuesta">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</td>
-            <td class="nw">${e.k <= 4 ? 'Clase ' + e.k : 'Módulo 2'}</td>
-            <td><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></td>
-            <td>${a.nivel}</td>
-            <td class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</td>
-          </tr>`; }).join('') || '<tr><td colspan="5" class="suave">Todavía no hay alumnos.</td></tr>'}</tbody>
-      </table>
+          const ps = PROGRAMA.pasos.filter(p => !p.soloLlamada && !p.opcional), h = ps.filter(p => a.prog[p.id]?.hecho).length;
+          return `<button class="alumno-card t-${e.tipo}" data-elegir="${esc(a.codigo)}" data-nombre="${esc(sinTildes(a.nombre))}" ${buscaAdm && !sinTildes(a.nombre).includes(sinTildes(buscaAdm)) ? 'hidden' : ''}>
+            <span class="ac-cab"><strong>${esc(a.nombre)}</strong><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></span>
+            <span class="ac-datos"><span>${a.clase || 0}/${TOTAL_ENCUENTROS} clases</span><span>Nivel ${a.nivel}</span><span class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</span></span>
+            <span class="ac-barra"><i style="width:${ps.length ? Math.round(h / ps.length * 100) : 0}%"></i></span>
+            ${a.ajustar || nvid || nprob ? `<span class="ac-marcas">${a.ajustar ? `<span class="marca-ajustar">Nuevo: ajustá nivel y fecha</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</span>` : ''}
+          </button>`; }).join('') || '<p class="suave">Todavía no hay alumnos.</p>'}</div>
     </section>`;
 }
 function marcarModulo(prog, m) {
@@ -510,7 +506,7 @@ let linkReg = '', modsReg = '0';   // link para alumnos nuevos: primero elegís 
 function registroAdmHTML() {
   const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${linkReg}` : '';
   return `<section class="registro-adm">
-    <div class="reg-cab"><div><h2>Link para alumnos nuevos</h2><p class="suave chico">¿Con qué módulos entra? Elegilos y armo el link. Cada alumno pone su nombre, email y contraseña. Después le ajustás el nivel y la fecha de la llamada.</p></div></div>
+    <div class="reg-cab"><div><p class="suave chico">¿Con qué módulos entra? Elegilos y armo el link. Cada alumno pone su nombre, email y contraseña. Después le ajustás el nivel y la fecha de la llamada.</p></div></div>
     <div class="reg-mods">${MODULOS.map(m => `<label class="reg-mod" style="--c:${m.color}"><input type="checkbox" data-reg-mod="${m.n}" ${modsReg.includes(String(m.n)) ? 'checked' : ''}><span>${m.n === 0 ? 'Módulo 0' : 'Módulo ' + m.n}<small>${esc(m.nombre)}</small></span></label>`).join('')}</div>
     ${linkReg ? `<p class="chico reg-para">Link para entrar con: <b>${modsReg.length === 1 ? 'Módulo ' + modsReg : 'Módulos ' + modsReg.split('').join(', ').replace(/, (\d)$/, ' y $1')}</b></p>
       <textarea id="msgReg" rows="5">${esc(msg)}</textarea>
@@ -550,7 +546,7 @@ function alumnoAdmHTML(a) {
   <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   ${a.ajustar ? `<div class="aviso-ajustar"><p><strong>Se registró solo con el link.</strong> Ajustale el nivel y la fecha de la llamada de bienvenida (abajo).</p><button class="secundario" data-adm="ajustado">Ya está</button></div>` : ''}
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
-  ${secAdm('videos', `Videos y mensaje${videosNuevos(a) ? ` <span class="cuenta">${videosNuevos(a)}</span>` : ''}`, `<section class="revision" id="revision">${revisionHTML(a)}</section>`)}
+  ${secAdm('videos', `${ICONO_ADM.video}Videos y mensaje${videosNuevos(a) ? ` <span class="cuenta">${videosNuevos(a)}</span>` : ''}`, `<section class="revision" id="revision">${revisionHTML(a)}</section>`)}
   <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
 }
 function videoActual(a) {
@@ -586,51 +582,48 @@ function mensajeAdmHTML(a, pasoVideo) {
   </div>`;
 }
 /* Secciones del panel de cada alumno: cerradas hasta que las abrís; se acuerda cuáles abriste */
-const admAbiertas = new Set();
-function secAdm(id, titulo, contenido) {
-  return `<details class="sec-adm" data-sec="${id}" ${admAbiertas.has(id) ? 'open' : ''}><summary><span>${titulo}</span></summary><div class="sec-cuerpo">${contenido}</div></details>`;
+const admAbiertas = new Set(['videos-ver']);
+function secAdm(id, titulo, contenido, cls = '') {
+  return `<details class="sec-adm ${cls}" data-sec="${id}" ${admAbiertas.has(id) ? 'open' : ''}><summary><span>${titulo}</span></summary><div class="sec-cuerpo">${contenido}</div></details>`;
 }
+const ICONO_ADM = {
+  video: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="13" height="13" rx="3"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
+  link: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.3 1.3"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.3-1.3"/></svg>',
+  alumnos: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.6c2.8-.3 5 1.4 5.5 4.4"/></svg>',
+};
 const TOTAL_ENCUENTROS = 16;
+const avModAdm = {};   // qué módulo está mirando en «Clases y avance», por alumno
 function restoHTML(a) {
   const e = estado(a);
   const probs = Object.entries(a.probs || {}).flatMap(([pid, l]) => l.map(q => ({ pid, q: (PASO[pid].problemas || []).find(x => x.id === q) })).filter(x => x.q));
   const sepsMod = {};
-  return `${secAdm('clases', 'Clases y nivel', `<div class="ajustes form-admin">
-    <div class="aj-fila">
-      <label>Clases que ya tuvo
-        <span class="contador"><button data-clase="${Math.max(0, (a.clase || 0) - 1)}" aria-label="Una menos" ${a.clase > 0 ? '' : 'disabled'}>−</button><b>${a.clase || 0}<small> de ${TOTAL_ENCUENTROS}</small></b><button data-clase="${Math.min(TOTAL_ENCUENTROS, (a.clase || 0) + 1)}" aria-label="Una más" ${(a.clase || 0) < TOTAL_ENCUENTROS ? '' : 'disabled'}>+</button></span></label>
-      <label>Nivel
-        <span class="segmentado">${[1, 2, 3].map(n => `<button data-nivel="${n}" class="${a.nivel === n ? 'sel' : ''}" aria-pressed="${a.nivel === n}">${n}</button>`).join('')}</span></label>
+  // módulo que se muestra en «Clases y avance»: el elegido, o el del próximo paso que le falta
+  const mSel = avModAdm[a.codigo] ?? (() => { const f = PROGRAMA.pasos.find(p => !a.prog[p.id]?.hecho && !p.opcional); return f ? MODULO_DE[f.etapa] : 0; })();
+  const pasosM = pasosDelModulo(mSel).filter(p => !p.soloLlamada), seps = separadoresPasos(pasosM, mSel);
+  const hechos = m => { const ps = pasosDelModulo(m).filter(p => !p.soloLlamada); return [ps.filter(p => a.prog[p.id]?.hecho).length, ps.length]; };
+  return `${secAdm('clases', `Clases y avance <span class="suave chico">${a.clase || 0} de ${TOTAL_ENCUENTROS} clases</span>`, `<div class="av-cab">
+      <span class="contador" title="Clases que ya tuvo"><button data-clase="${Math.max(0, (a.clase || 0) - 1)}" aria-label="Una clase menos" ${a.clase > 0 ? '' : 'disabled'}>−</button><b>${a.clase || 0}<small> de ${TOTAL_ENCUENTROS} clases</small></b><button data-clase="${Math.min(TOTAL_ENCUENTROS, (a.clase || 0) + 1)}" aria-label="Una clase más" ${(a.clase || 0) < TOTAL_ENCUENTROS ? '' : 'disabled'}>+</button></span>
+      <span class="nivel-chip" title="Nivel (el alumno no lo ve)"><button data-nivel="${Math.max(1, a.nivel - 1)}" aria-label="Bajar nivel" ${a.nivel > 1 ? '' : 'disabled'}>‹</button>Nivel ${a.nivel}<button data-nivel="${Math.min(3, a.nivel + 1)}" aria-label="Subir nivel" ${a.nivel < 3 ? '' : 'disabled'}>›</button></span>
     </div>
-    <div class="aj-fila">
-      <label>Fecha de la última clase<input type="date" data-campo="claseFecha" value="${esc(a.claseFecha || '')}"></label>
-      <label>Fecha de la llamada<input type="date" data-campo="inicio" value="${esc(a.inicio || '')}"></label>
+    <div class="av-tabs" role="tablist">${MODULOS.map(m => { const [h, t] = hechos(m.n); return `<button role="tab" class="av-tab ${m.n === mSel ? 'sel' : ''} ${h === t && t ? 'completo' : ''}" style="--mc:${m.color}" data-av-mod="${m.n}" aria-selected="${m.n === mSel}"><b>M${m.n}</b><small>${h}/${t}</small><i style="--p:${t ? h / t : 0}"></i></button>`; }).join('')}</div>
+    <div class="av-lista" style="--mc:${MODULOS[mSel].color}">
+      <div class="av-lista-cab"><span>${esc(MODULOS[mSel].nombre)}</span><button class="link suave" data-mod-tilde="${mSel}">${pasosM.every(x => a.prog[x.id]?.hecho) ? 'Desmarcar todo' : 'Marcar todo'}</button></div>
+      ${pasosM.map((p, j) => { const pr = a.prog[p.id], ok = !!(pr && pr.hecho), sp = seps[j];
+        return `${sp && sp.tit ? `<div class="av-grupo">${esc(sp.tit)}</div>` : sp ? '<div class="av-grupo-linea"></div>' : ''}<button class="av-paso ${ok ? 'ok como-' + (pr.como || 'listo') : ''}" data-adm-tilde="${p.id}" aria-pressed="${ok}"><i aria-hidden="true">${ok ? '✓' : ''}</i><span>${esc(p.titulo)}</span>${ok && pr.envio ? '<em title="Mandó video">🎥</em>' : ''}</button>`; }).join('')}
     </div>
-    <label class="check"><input type="checkbox" data-campo="pausa" ${a.pausa ? 'checked' : ''}> En pausa (sin apuro, por ejemplo si se demora el pago)</label>
-  </div>`)}
+    <details class="av-mas"><summary>Fechas y pausa</summary>
+      <div class="aj-fila"><label>Fecha de la última clase<input type="date" data-campo="claseFecha" value="${esc(a.claseFecha || '')}"></label>
+      <label>Fecha de la llamada<input type="date" data-campo="inicio" value="${esc(a.inicio || '')}"></label></div>
+      <label class="check"><input type="checkbox" data-campo="pausa" ${a.pausa ? 'checked' : ''}> En pausa (sin apuro, por ejemplo si se demora el pago)</label>
+    </details>`)}
 
   ${secAdm('acceso', 'Acceso', accesoHTML(a))}
 
-  ${secAdm('modulos', `Módulos <span class="suave chico">${MODULOS.filter(m => moduloHabilitado(a, m.n)).map(m => m.n).join(', ')}</span>`, `<div class="modulos-adm">${MODULOS.map(m => { const on = moduloHabilitado(a, m.n); return `<button class="mod-tg ${on ? 'on' : ''}" data-modulo="${m.n}" aria-pressed="${on}">
+  ${secAdm('modulos', `Acceso a módulos <span class="suave chico">${MODULOS.filter(m => moduloHabilitado(a, m.n)).map(m => m.n).join(', ')}</span>`, `<div class="modulos-adm">${MODULOS.map(m => { const on = moduloHabilitado(a, m.n); return `<button class="mod-tg ${on ? 'on' : ''}" data-modulo="${m.n}" aria-pressed="${on}">
       <span class="mod-sw" aria-hidden="true"><i></i></span><span><strong>${m.titulo}</strong><small>${m.sub}</small></span></button>`; }).join('')}</div>
     <p class="suave chico">Lo que está apagado no aparece en su aula: ve un candado con «Te lo habilito cuando llegue el momento».</p>`)}
 
-  ${secAdm('nota', `Nota${a.nota ? ' <span class="punto-sec"></span>' : ''}`, `<label class="bloque"><span class="suave chico">La ve en su aula y va al final del mensaje</span>
-    <textarea data-campo="nota" rows="3">${esc(a.nota || '')}</textarea></label>`)}
-
-  ${secAdm('tareas', `Tareas personalizadas${(a.extras || []).length ? ` <span class="suave chico">${a.extras.length}</span>` : ''}`, `<ul class="extras-adm">${(a.extras || []).map(x => `<li class="${x.hecho ? 'hecha' : ''}"><button class="mini-nodo" data-extra-tilde="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="Marcar como hecha"></button><span><strong>${esc(x.titulo)}</strong>${x.detalle ? ` <span class="suave">${esc(x.detalle)}</span>` : ''}</span><button class="link suave" data-quitar="${esc(x.id)}">Quitar</button></li>`).join('') || '<li class="suave">Ninguna por ahora.</li>'}</ul>
-    <form id="formExtra" class="fila-extra"><input name="titulo" placeholder="Tarea (ej: repasar el compás 7 en 2 cuerdas)" required><input name="detalle" placeholder="Detalle (opcional)"><button class="secundario">Agregar</button></form>`)}
-
   ${probs.length ? secAdm('probs', `Problemas que marcó <span class="suave chico">${probs.length}</span>`, `<ul class="probs-adm">${probs.map(x => `<li><span class="suave">${esc(PASO[x.pid].titulo)}:</span> ${esc(x.q.q)}</li>`).join('')}</ul>`) : ''}
-
-  ${secAdm('avance', 'Avance', `<p class="suave chico">Tocá un paso para marcarlo como hecho (o para desmarcarlo).</p>
-    <ul class="avance-adm">${PROGRAMA.pasos.map((p, i) => { const pr = a.prog[p.id]; const est = pr && pr.hecho ? (pr.como || 'listo') : 'pendiente';
-      const m = MODULO_DE[p.etapa], todo = pasosDelModulo(m).every(x => a.prog[x.id]?.hecho);
-      const ant = PROGRAMA.pasos[i - 1];
-      const cab = !i || MODULO_DE[ant.etapa] !== m ? `<li class="av-mod" style="--mc:${MODULOS[m].color}"><span>${esc(MODULOS[m].titulo)} · ${esc(MODULOS[m].nombre)}</span><button class="link suave" data-mod-tilde="${m}">${todo ? 'Desmarcar el módulo entero' : 'Marcar el módulo entero'}</button></li>` : '';
-      const dm = pasosDelModulo(m), jm = dm.indexOf(p), sp = jm >= 0 ? (sepsMod[m] = sepsMod[m] || separadoresPasos(dm, m))[jm] : null;
-      const sepEt = sp ? `<li class="av-etapa ${sp.solo ? 'av-sep' : ''}">${esc(sp.tit)} ${sp.sub ? `<span class="suave">${esc(sp.sub)}</span>` : ''}</li>` : '';
-      return `${cab}${sepEt}<li class="est-${est}"><button class="mini-nodo" data-adm-tilde="${p.id}" aria-pressed="${!!(pr && pr.hecho)}" aria-label="Marcar ${esc(p.titulo)}"></button><button class="av-tit" data-adm-tilde="${p.id}">${esc(p.titulo)}</button>${pr && pr.hecho ? (p.tipo === 'standard' && a.standard ? `<span class="como como-listo">${esc(a.standard)}</span>` : (opcionElegida(a, p) && !p.sinProgreso ? `<span class="como como-${est}">${esc(opcionElegida(a, p).label)}</span>` : '')) : e.faltan.includes(p.id) ? '<span class="chip">Le falta</span>' : ''}</li>`; }).join('')}</ul>`)}
 
   <div class="bloque links-adm">
     <button class="secundario" data-adm="ver">Ver su aula</button>
@@ -702,9 +695,9 @@ function enlazarAdmin() {
   const a = LISTA.find(x => x.codigo === elegido);
   if (!root._secs) { root._secs = 1; root.addEventListener('toggle', ev => { const d = ev.target; if (d.dataset && d.dataset.sec) d.open ? admAbiertas.add(d.dataset.sec) : admAbiertas.delete(d.dataset.sec); }, true); }
   const bus = $('#buscaAlumno');
-  if (bus) bus.oninput = () => { buscaAdm = bus.value; const q = sinTildes(bus.value.trim()); root.querySelectorAll('tr[data-elegir]').forEach(tr => { tr.hidden = !!q && !tr.dataset.nombre.includes(q); }); };
+  if (bus) bus.oninput = () => { buscaAdm = bus.value; const q = sinTildes(bus.value.trim()); root.querySelectorAll('[data-elegir]').forEach(tr => { tr.hidden = !!q && !tr.dataset.nombre.includes(q); }); };
   root.onclick = async ev => {
-    const tr = ev.target.closest('tr[data-elegir]');
+    const tr = ev.target.closest('[data-elegir]');
     if (tr) { elegido = tr.dataset.elegir; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
     const wa = ev.target.closest('a[data-wa]');
     if (wa && $('#msg')) { wa.href = 'https://wa.me/?text=' + encodeURIComponent($('#msg').value); return; }
@@ -756,11 +749,14 @@ function enlazarAdmin() {
       guardarAdm(a); refrescarMensaje(a);
     }
     else if (d.clase) { a.clase = +d.clase; if (a.clase > 0 && !a.claseFecha) a.claseFecha = hoyISO(); guardarAdm(a); }
+    else if (d.avMod !== undefined && a) { avModAdm[a.codigo] = +d.avMod; $('#detResto').innerHTML = restoHTML(a); }
     else if (d.modTilde !== undefined && a) { marcarModulo(a.prog, +d.modTilde); guardarAdm(a); }
     else if (d.extraTilde) { const x = (a.extras || []).find(y => y.id === d.extraTilde); if (x) { x.hecho = !x.hecho; guardarAdm(a); refrescarMensaje(a); } }
     else if (d.quitar) { a.extras = a.extras.filter(x => x.id !== d.quitar); guardarAdm(a); refrescarMensaje(a); }
     else if (d.admTilde) {
-      const id = d.admTilde; if (a.prog[id] && a.prog[id].hecho) delete a.prog[id]; else a.prog[id] = { hecho: true, como: 'listo', t: hoyISO() };
+      const id = d.admTilde, pr = a.prog[id];
+      if (pr && pr.hecho) { if (pr.videos && pr.videos.length) pr.hecho = false; else delete a.prog[id]; }   // los videos que mandó no se pierden
+      else a.prog[id] = Object.assign(pr || {}, { hecho: true, como: (pr && pr.como) || 'listo', t: hoyISO() });
       guardarAdm(a);
     }
     else if (d.accion === 'salir') salir();

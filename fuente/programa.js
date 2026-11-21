@@ -948,6 +948,21 @@ const PROGRAMA = {
         { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
       ],
     },
+    {
+      id: 'r8', etapa: 'ritmo', opcional: true, sinVideo: true, entrega: 'video', entregaOpcional: true,
+      envia: 'una impro con las unidades nuevas. Contá en el video cuáles son.',
+      titulo: 'Si llegás: otras unidades rítmicas',
+      detalle: 'Si llegás, hacé lo mismo con **2 o 3 unidades rítmicas distintas** de las que ya trabajaste: primero una a la vez con el cuerpo y el entrenador, después improvisando solo con esa, y después combinándolas.\nSi no llegás, pasá a lo que sigue nomás, no pasa nada 😉',
+      progreso: [
+        { id: 'listo', label: 'Lo hice con otras unidades', nivel: 'listo' },
+        { id: 'sigo', label: 'No llegué, sigo con lo que viene', nivel: 'listo', saltea: true },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
+      ],
+      recursos: [
+        { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },
+        { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
+      ],
+    },
   ],
 
   /* Lo que se espera tener ANTES de cada clase, por nivel.

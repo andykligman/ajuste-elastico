@@ -255,6 +255,53 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .mod-sw i{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .15s}
 .mod-tg.on .mod-sw{background:#34C759}
 .mod-tg.on .mod-sw i{transform:translateX(16px)}
+
+/* ---- Panel: inicio en paneles ---- */
+.ico-adm{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.85}
+.paneles-adm{display:grid;gap:12px;margin:8px 0 22px}
+.sec-adm.panel-videos>summary,.sec-adm.panel-link>summary{font-size:17px;padding:16px 20px}
+.sec-adm.panel-videos{border-color:rgba(232,131,79,.35)}
+.sec-adm.panel-videos .ico-adm{color:#E8834F}
+.sec-adm.panel-link .ico-adm{color:#7F9BD3}
+.lista-busca h2{display:flex;align-items:center;gap:8px}
+.alumnos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:14px}
+.alumno-card{display:grid;gap:10px;text-align:left;padding:16px 18px;border-radius:16px;background:var(--sup);border:1px solid var(--linea);color:inherit;font:inherit;cursor:pointer;transition:transform .15s,border-color .15s}
+.alumno-card:hover{transform:translateY(-2px);border-color:rgba(127,155,211,.6)}
+.alumno-card[hidden]{display:none}
+.ac-cab{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.ac-cab strong{font-size:17px;line-height:1.25}
+.ac-datos{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px}
+.ac-barra{height:5px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.ac-barra i{display:block;height:100%;background:linear-gradient(90deg,#5D7BB6,#E8834F);border-radius:3px}
+.ac-marcas{display:flex;flex-wrap:wrap;gap:6px}
+.ac-marcas>span{margin:0}
+/* ---- Ficha: clases y avance ---- */
+.av-cab{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:2px 0 14px}
+.nivel-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 6px;border-radius:999px;background:var(--sup2);border:1px solid var(--linea);font-weight:700;font-size:14px}
+.nivel-chip button{width:26px;height:26px;border-radius:50%;border:0;background:transparent;color:inherit;font-size:17px;cursor:pointer;opacity:.7}
+.nivel-chip button:disabled{opacity:.2;cursor:default}
+.av-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.av-tab{position:relative;display:grid;justify-items:center;gap:1px;padding:9px 4px 11px;border-radius:12px;border:1.5px solid var(--linea);background:var(--sup2);color:inherit;cursor:pointer;overflow:hidden}
+.av-tab b{font-size:15px}
+.av-tab small{font-size:12px;opacity:.7}
+.av-tab i{position:absolute;left:0;bottom:0;height:3px;width:calc(var(--p)*100%);background:var(--mc)}
+.av-tab.sel{border-color:var(--mc);background:color-mix(in srgb,var(--mc) 16%,var(--sup2))}
+.av-tab.completo small{color:#3FA56B;opacity:1}
+.av-lista{margin-top:12px;border-left:3px solid var(--mc);padding-left:12px;display:grid;gap:2px}
+.av-lista-cab{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:6px}
+.av-grupo{font-size:12.5px;font-weight:700;color:var(--mc);margin:10px 0 2px;text-transform:uppercase;letter-spacing:.04em}
+.av-grupo-linea{height:1px;background:var(--linea);margin:6px 0}
+.av-paso{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:7px 8px;border:0;border-radius:9px;background:transparent;color:inherit;font:inherit;font-size:14.5px;cursor:pointer}
+.av-paso:hover{background:var(--sup2)}
+.av-paso i{display:grid;place-items:center;width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(255,255,255,.3);font-style:normal;font-size:12px;font-weight:800;flex:none}
+.av-paso.ok i{background:#3FA56B;border-color:#3FA56B;color:#fff}
+.av-paso.ok.como-casi i{background:#E8834F;border-color:#E8834F}
+.av-paso.ok.como-cuesta i{background:#C25B4A;border-color:#C25B4A}
+.av-paso.ok span{opacity:.75}
+.av-paso em{margin-left:auto;font-style:normal;font-size:13px}
+.av-mas{margin-top:14px;font-size:14px}
+.av-mas summary{cursor:pointer;opacity:.75}
+.av-mas .aj-fila{margin:10px 0}
 </style>
 </head>
 <body>
