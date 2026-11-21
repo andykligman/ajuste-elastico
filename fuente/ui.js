@@ -122,11 +122,12 @@ function reiniciarLlamada(b) {
   }
   const cod = codPrueba();
   ['mapaAE_intro_' + cod, 'mapaAE_modVistos_' + cod].forEach(k => guardarLocal(k, null));
-  try { ['mapaAE_llamada_aula', 'mapaAE_llamada_paso', 'mapaAE_llamada_pres'].forEach(k => localStorage.removeItem(k)); localStorage.removeItem(clavePrueba()); } catch (e) {}
-  presEst.i = 0;
+  // vuelve al arranque del aula: la presentación no se repite
+  try { presAudio.pause(); clearTimeout(presEst.timer); presEst.timer = null; } catch (e) {}
+  try { localStorage.setItem('mapaAE_llamada_paso', ''); localStorage.removeItem(clavePrueba()); } catch (e) {}
   ST = Object.assign(alumnoVacio('Invitado', 2, hoyISO()), { codigo: cod, modulos: '0' });
-  abierto = null; document.querySelectorAll('.ll-puente').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
-  renderLlamada(); window.scrollTo(0, 0);
+  abierto = null; document.querySelectorAll('.ll-puente,.ll-final').forEach(x => x.remove()); document.body.classList.remove('sin-scroll');
+  modo = 'admin-prueba'; renderAlumno(true); window.scrollTo(0, 0);
 }
 function reiniciarPrueba() {
   const cod = codPrueba();
@@ -148,7 +149,7 @@ function barra(nombre) {
   return `<header class="barra">
     <a class="marca" href="${esc(inicioMarca())}" aria-label="Ajuste Elástico, ir al inicio">${LOGO}</a>
     <div class="barra-der">
-      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button><button class="link" data-accion="reiniciar-llamada" title="Borrar el avance y empezar de cero, con la presentación">Reiniciar</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
+      ${esLlamada && modo === 'admin-prueba' ? `<button class="link" data-accion="presentacion">Presentación</button><button class="link" data-accion="reiniciar-llamada" title="Borrar el avance y volver al primer paso (sin repetir la presentación)">Reiniciar</button>` : modo === 'admin-prueba' ? `<span class="chip-prueba"><span class="solo-pc">Vista de </span>prueba</span><button class="link" data-accion="reiniciar-prueba" title="Volver a empezar como alumno nuevo, con la animación de bienvenida">Reiniciar</button>` : ''}
       ${modo.startsWith('admin-') && !esDemo ? `<button class="link" data-accion="volver-admin"><span class="solo-pc">Volver al </span>panel</button>` : ''}
       ${modo.startsWith('admin-') ? '' : `<span class="firma">Andy Kligman</span>`}
       ${modo === 'admin' && nombre ? `<button class="link suave" data-accion="salir">Salir</button>` : ''}
