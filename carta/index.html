@@ -474,15 +474,15 @@ body.pausa #marca-pausa{opacity:1}
   <div class="enc en"><h2>Aula virtual</h2></div>
   <div class="aula">
     <div class="txt aula-txt">
-      <div class="at" data-k="0"><p class="medio">Todo el material del programa está en el aula.</p><p class="chico">No es una lista de videos: <b style="color:var(--ink)">es un camino</b>. Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p></div>
-      <div class="at" data-k="1"><p class="medio">En cada paso tenés la clase, el material y una pregunta: <span class="nar">¿cómo te fue?</span></p></div>
-      <div class="at" data-k="2"><p class="medio">Un mismo video puede tener varias ejercitaciones. El aula te acompaña para que <span class="nar">las surfees</span>.</p><span class="chip"><i></i>Ir a esta parte del video</span><span class="chip"><i></i>Ir a esta parte del doc</span><p class="chico">Naturalmente, y haciendo cada paso en el momento adecuado.</p></div>
-      <div class="at" data-k="3"><p class="medio">Según lo que contestes, el aula <span class="nar">te da consejos</span> y te marca el camino a seguir.</p><p class="chico">O te sugiere que me consultes si te trabaste.</p></div>
+      <div class="at" data-k="0"><p class="medio">Todo el material está en el aula. No es una lista de videos: <span class="nar">es un camino</span>.</p><p class="chico">Vas paso a paso y siempre sabés de dónde venís y hacia dónde vas.</p></div>
+      <div class="at" data-k="1"><p class="medio">En cada paso tenés <span class="nar">la clase y el material</span>.</p><p class="chico">Por cada video suele haber más de una ejercitación.</p></div>
+      <div class="at" data-k="2"><p class="medio">El aula te lleva a <span class="nar">la parte del video y del PDF</span> que necesitás.</p><span class="chip"><i></i>Ir a esta parte del video</span><span class="chip"><i></i>Ir a esta parte del doc</span><p class="chico">Así lo recorrés por partes y hacés cada tarea en el momento adecuado, antes de pasar a la siguiente.</p></div>
+      <div class="at" data-k="3"><p class="medio">Y una pregunta: <span class="nar">¿cómo te fue?</span> Según lo que contestes, el aula te da un consejo y te marca el camino a seguir.</p><p class="chico">Si te trabaste, te da un consejo para ayudarte. Y si no alcanza, siempre te sugiere que me escribas.</p></div>
       <div class="at" data-k="4"><p class="medio">A medida que hacés las tareas, me mandás <span class="nar">videos tuyos</span> ejecutándolas.</p><p class="chico">Los grabás ahí mismo y te devuelvo qué está bien y en qué hacer foco.</p></div>
       <div class="at" data-k="5"><p class="medio">Hago hincapié en algunas cosas con <span class="nar">animaciones</span>…</p><p class="chico">…para que los detalles que hacen que la práctica funcione bien queden grabados en tu memoria.</p></div>
       <div class="at" data-k="6"><p class="medio">Y a medida que avanzás, <span class="nar">se van abriendo los módulos</span>.</p></div>
     </div>
-    <div class="compu"><div class="pant"><video id="aula-video" muted playsinline preload="auto" poster="media/c8_aula.jpg?v=2" src="media/c8_aula.mp4?v=2"></video><div class="brillo"></div></div><div class="base"></div></div>
+    <div class="compu"><div class="pant"><video id="aula-video" muted playsinline preload="auto" poster="media/c9_aula.jpg?v=1" src="media/c9_aula.mp4?v=1"></video><div class="brillo"></div></div><div class="base"></div></div>
   </div>
   <i data-paso="6" hidden></i>
 </section>
@@ -699,7 +699,7 @@ function chatAvanzar() {
   }
 }
 /* aula: un solo video, cada flecha reproduce el tramo siguiente y se frena */
-const MARCAS = [2.5, 7.81, 14.01, 21.55, 39.92, 59.33, 66.82];
+const MARCAS = [11.81, 17.14, 23.6, 32.99, 51.58, 71.9, 79.52];
 let aulaHasta = 0;
 function aulaPaso(d, nueva, adelante) {
   const v = document.getElementById('aula-video');
