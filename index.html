@@ -1333,12 +1333,114 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ev-fl::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:#E8834F;border-right:0}
 .grupo-label h3{color:var(--mc,#E8834F);font-weight:700;font-size:14px}
 /* Botón dentro de una tanda de texto (p. ej. el video de AudioStretch) */
-.stop-boton{display:inline-flex;align-items:center;gap:12px;margin:22px auto 0;padding:12px 22px 12px 12px;border-radius:999px;background:#E8834F;color:#fff;text-decoration:none;font:700 16px var(--sans);box-shadow:0 10px 28px rgba(232,131,79,.35);animation:sb-late 1.6s ease-in-out infinite}
+.stop-boton{display:inline-flex;align-items:center;gap:12px;margin:22px auto 0;padding:12px 22px 12px 12px;border-radius:999px;background:#5D7BB6;color:#fff;text-decoration:none;font:700 16px var(--sans);box-shadow:0 10px 28px rgba(93,123,182,.35);animation:sb-late 1.6s ease-in-out infinite}
+.stop-boton.suave{background:transparent;border:1.5px solid #5D7BB6;color:#A9BEE8;box-shadow:none;animation:none;font-size:14px;padding:8px 16px 8px 8px}
+.stop-boton.suave .sb-play{width:28px;height:28px;background:#5D7BB6}
+.stop-boton.suave svg{fill:#fff;width:13px;height:13px}
 .stop-boton .sb-play{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff}
-.stop-boton svg{width:18px;height:18px;fill:#E8834F;margin-left:3px}
+.stop-boton svg{width:18px;height:18px;fill:#5D7BB6;margin-left:3px}
 @keyframes sb-late{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
 @media (prefers-reduced-motion:reduce){.stop-boton{animation:none}}
 .stop-texto .stop-boton{display:flex;width:max-content;max-width:100%}
+/* ---- Cierre de los ritmos fijos: dibujos ---- */
+.vg-rf-ritmos,.vg-rf-cuerpo,.vg-rf-escalera,.vg-rf-donde,.vg-rf-mapa,.vg-rf-compases,.vg-rf-redoblante,.vg-rf-nuestro,.vg-rf-generador,.vg-rf-seguimos,.vg-rf-chau{width:min(440px,92%)}
+.vr-linea{stroke:#5a5b61;stroke-width:1.6}
+.vr-div{stroke:#8a8b90;stroke-width:1.6}
+.vr-cab{stroke:var(--tinta);stroke-width:5;stroke-linecap:round}
+.vr-plica,.vr-barra{stroke:var(--tinta);stroke-width:2;stroke-linecap:round}
+.vr-barra{stroke-width:5}
+.vr-gancho{fill:none;stroke:var(--tinta);stroke-width:2;stroke-linecap:round}
+.vr-sil{fill:none;stroke:#9DA2AC;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.vr-nota{opacity:0;animation:vrEntra .45s ease forwards;animation-delay:calc(var(--k)*.22s)}
+.vr-nota.tenue,.vr-nota.loop{opacity:1;animation:none}
+.vr-nota.tenue .vr-cab,.vr-nota.tenue .vr-plica,.vr-nota.tenue .vr-barra{stroke:#6a6b71}
+@keyframes vrEntra{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.vr-cursor{fill:rgba(232,131,79,.28);animation:vrCursor 3.2s linear infinite;animation-delay:2s;opacity:0}
+@keyframes vrCursor{0%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(284px)}}
+/* cuerpo → guitarra */
+.vr-persona circle,.vr-persona path{fill:none;stroke:var(--tinta);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.vr-brazo{transform-box:view-box;transform-origin:58px 48px;animation:vrAplauso .5s ease-in-out infinite alternate}
+.vr-brazo.d{animation-name:vrAplausoD}
+@keyframes vrAplauso{from{transform:rotate(-8deg)}to{transform:rotate(6deg)}}
+@keyframes vrAplausoD{from{transform:rotate(8deg)}to{transform:rotate(-6deg)}}
+.vr-chispa{fill:none;stroke:#E8834F;stroke-width:2.4;stroke-linecap:round;animation:vgParpadeo .5s ease-in-out infinite alternate}
+.vr-flecha{fill:none;stroke:#8a8b90;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.vr-flecha.xl{stroke:var(--naranja);stroke-width:5;stroke-dasharray:300;stroke-dashoffset:300;animation:vgDibuja 1.2s .2s ease forwards}
+.vr-viaje{fill:var(--naranja);animation:vrViaje 1.8s ease-in-out infinite}
+@keyframes vrViaje{0%{transform:none;opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(84px);opacity:0}}
+.vr-guit .vr-cuerpo{fill:#3A4F7A;stroke:var(--azul);stroke-width:2}
+.vr-guit .vr-boca{fill:#16213A}
+.vr-guit .vr-mango{stroke:#C9A27A;stroke-width:7;stroke-linecap:round}
+.vr-guit .vr-cuerdas{stroke:var(--tinta);stroke-width:1;opacity:.8}
+.vr-guit.vibra .vr-cuerdas{animation:vgVibra .3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+/* escalera */
+.vr-pelda{stroke:var(--azul);stroke-width:5;stroke-linecap:round}
+.vr-etq{font:700 12px var(--sans);fill:var(--tinta);text-anchor:middle}
+.vr-mini{font:600 10.5px var(--sans);fill:var(--gris);text-anchor:middle}
+.vr-esc{opacity:0;animation:vrEntra .5s ease forwards;animation-delay:calc(var(--k)*.7s)}
+.vr-esc.tenue{opacity:.45;animation:none}
+.vr-pin circle,.vr-pin path{fill:var(--naranja)}
+.vr-pin{animation:vrSalta 4.8s ease-in-out infinite}
+@keyframes vrSalta{0%,18%{transform:translate(49px,78px)}25%,43%{transform:translate(125px,56px)}50%,68%{transform:translate(201px,34px)}75%,93%{transform:translate(277px,12px)}100%{transform:translate(49px,78px)}}
+.vr-pin.fijo{animation:none}
+/* mapa */
+.vr-mapa{fill:#22304A;stroke:var(--azul);stroke-width:2.4;stroke-linejoin:round}
+.vr-pliegue{stroke:#3A4F7A;stroke-width:2}
+.vr-ruta{fill:none;stroke:var(--naranja);stroke-width:3;stroke-dasharray:6 7;stroke-linecap:round;animation:vrRuta 2.4s linear infinite}
+@keyframes vrRuta{to{stroke-dashoffset:-26}}
+.vr-cruz path{stroke:var(--tinta);stroke-width:3;stroke-linecap:round}
+/* compases en loop */
+.vr-rep{stroke:var(--tinta);stroke-width:2.4}
+.vr-rep-p{fill:var(--tinta)}
+.vr-vuelta{fill:none;stroke:var(--naranja);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:6 6;animation:vrRuta 1.6s linear infinite}
+.vr-nota.loop{animation:vrLoop 2.6s linear infinite;animation-delay:calc(var(--k)*.26s)}
+@keyframes vrLoop{0%,8%{opacity:1}4%{opacity:.35}}
+.vr-nota.loop .vr-cab{animation:vrBrilla 2.6s linear infinite;animation-delay:calc(var(--k)*.26s)}
+@keyframes vrBrilla{0%,10%{stroke:var(--naranja)}12%,100%{stroke:var(--tinta)}}
+/* nota → redoblante */
+.vr-notita ellipse{fill:var(--tinta)}
+.vr-notita path{fill:none;stroke:var(--tinta);stroke-width:3;stroke-linecap:round}
+.vr-notita{animation:vrVaAlTambor 2.4s ease-in infinite}
+@keyframes vrVaAlTambor{0%{transform:none;opacity:1}70%{transform:translateX(150px) translateY(-26px) scale(.7);opacity:1}76%,100%{transform:translateX(160px) translateY(-26px) scale(.6);opacity:0}}
+.vr-parche{fill:#EDEEF0;stroke:var(--azul);stroke-width:2.4}
+.vr-tambor{fill:#3A4F7A;stroke:var(--azul);stroke-width:2.4}
+.vr-tensor{fill:none;stroke:#A9BEE8;stroke-width:1.6;opacity:.8}
+.vr-redo{transform-box:fill-box;transform-origin:center;animation:vrGolpe 2.4s ease infinite}
+@keyframes vrGolpe{0%,70%{transform:none}74%{transform:scale(1.05,.95)}80%,100%{transform:none}}
+.vr-golpe path{stroke:var(--naranja);stroke-width:3;stroke-linecap:round;opacity:0;animation:vrChis 2.4s ease infinite}
+@keyframes vrChis{0%,70%{opacity:0}74%{opacity:1}90%,100%{opacity:0}}
+/* hacerlo nuestro */
+.vr-centro{fill:#22304A;stroke:var(--azul);stroke-width:3;animation:vrLlenar 5s ease infinite}
+@keyframes vrLlenar{0%,30%{fill:#22304A;stroke:var(--azul)}60%,100%{fill:#E8834F;stroke:#E8834F}}
+.vr-vos{font:800 16px var(--display);fill:var(--tinta);text-anchor:middle}
+.vr-llega{fill:none;stroke:var(--azul);stroke-width:3;stroke-linecap:round;stroke-dasharray:4 7;opacity:0;animation:vrLlega 5s ease infinite;animation-delay:calc(var(--k)*.25s)}
+@keyframes vrLlega{0%{opacity:0;stroke-dashoffset:40}20%,60%{opacity:1;stroke-dashoffset:0}80%,100%{opacity:0}}
+/* generador */
+.vr-pantalla{fill:#16213A;stroke:#3A4F7A;stroke-width:2.4}
+.vr-gen-btn{fill:var(--azul);animation:vrBoton 3.6s ease infinite}
+@keyframes vrBoton{0%,8%{transform:none}4%{transform:scale(.94)}}
+.vr-gen-btn{transform-box:fill-box;transform-origin:center}
+.vr-gen-txt{font:700 11px var(--sans);fill:#fff;text-anchor:middle}
+.vr-gen-r{opacity:0;animation:vrTurno 10.8s ease infinite;animation-delay:calc(var(--k)*3.6s)}
+.vr-gen-r .vr-nota{opacity:1;animation:none}
+@keyframes vrTurno{0%{opacity:0}4%,30%{opacity:1}34%,100%{opacity:0}}
+/* cierre → unidades */
+.vr-check{fill:none;stroke:#3FA56B;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:44;animation:vgDibuja .6s .5s ease forwards}
+.vr-unidad{opacity:0;animation:vrEntra .5s ease forwards;animation-delay:calc(1.2s + var(--k)*.45s)}
+.vr-unidad .vr-cab,.vr-unidad .vr-plica,.vr-unidad .vr-barra{stroke:var(--naranja)}
+
+.vg-rf-ritmos,.vg-rf-compases{width:min(560px,96%)}
+.vr-guit .vr-clavijero{fill:#C9A27A}
+.vr-guit .vr-mango{fill:#C9A27A;stroke:none}
+.vr-guit .vr-cuerpo{fill:#3A4F7A;stroke:var(--azul);stroke-width:2}
+@keyframes vrSalta{0%,18%{transform:translate(49px,62px)}25%,43%{transform:translate(125px,40px)}50%,68%{transform:translate(201px,18px)}75%,93%{transform:translate(277px,-4px)}100%{transform:translate(49px,62px)}}
+/* Cartel al cambiar de módulo */
+.aviso-modulo{position:fixed;left:50%;top:22px;z-index:900;transform:translate(-50%,-20px);opacity:0;transition:opacity .4s,transform .45s cubic-bezier(.2,.9,.3,1.2);display:grid;justify-items:center;gap:2px;padding:14px 28px;border-radius:18px;background:#16213A;border:2px solid var(--mc);box-shadow:0 18px 50px rgba(0,0,0,.5);pointer-events:none;text-align:center}
+.aviso-modulo.visible{opacity:1;transform:translate(-50%,0)}
+.aviso-modulo small{font:600 12px var(--sans);color:var(--gris);text-transform:uppercase;letter-spacing:.12em}
+.aviso-modulo strong{font:800 22px var(--display);color:var(--mc)}
+.aviso-modulo span{font:600 15px var(--sans);color:var(--tinta)}
+.grupo-label{background:transparent;padding-left:0}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -1609,6 +1711,11 @@ const PROGRESO_SIMPLE = [
   { id: 'listo', label: 'Listo, lo hice', nivel: 'listo' },
   { id: 'duda', label: 'No entiendo una parte', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
 ];
+// Módulo de ritmo: me sale o no me sale (y si no, que me escriban)
+const PROGRESO_RITMO = [
+  { id: 'listo', label: 'Me sale', nivel: 'listo' },
+  { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!' },
+];
 const PROGRESO_BASE = [
   { id: 'listo', label: 'Ya me sale', nivel: 'listo' },
   { id: 'casi', label: 'Me sale, con algunos errores', nivel: 'casi' },
@@ -1655,21 +1762,21 @@ const STOPS = {
     },
   },
   cierreFijo: {
-    // Guion para grabar: una nota de voz por frase, en este orden (audio/cierre-fijo/01.m4a, 02…). Sin audio avanza con el tiempo de lectura.
     tipo: 'texto', titulo: 'Cierre de los ritmos fijos', audio: 'audio/cierre-fijo/', velocidad: 1,
     sub: 'Lo que ya tenés para practicar ritmo, y cómo seguir.',
     unidades: [],
     tandas: [
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: 'Ya aprendiste a entrenar con **ritmos fijos**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Con un camino ordenado\nque te lleva del **cuerpo** a la guitarra:' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'escala', t: 'una sola nota, una escala, una escala más abierta,\ncambios de acorde con arpegios y con escalas.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'zona', t: 'No importa hasta dónde hayas llegado,\nni si estás más cómodo con unas cosas que con otras.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'camino', t: 'Ya tenés **un mapa de cómo practicar ritmo**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'contar', t: 'Un ritmo de uno o dos compases,\n**sostenido durante mucho tiempo**…' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'ciclo', t: '…dejando que **las notas se adapten al ritmo**,\ny no al revés.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'cantar', t: 'Dejándonos influenciar por eso que viene de afuera\ny **haciéndolo nuestro**.' },
-      { sel: [-1, -1], pausa: true, grande: true, extra: 4000, boton: { t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo' }, t: 'Para que sigas practicando de acá en más,\nte dejo un **generador de ritmos fijos**.' },
-      { sel: [-1, -1], pausa: true, grande: true, vis: 'avanzar', t: 'Ahora le damos un cierre a los ritmos fijos\ny pasamos a **improvisar con unidades rítmicas**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-ritmos', t: 'Ya aprendiste a entrenar con **ritmos fijos**,' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-cuerpo', t: 'con un camino ordenado\nque te lleva **del cuerpo a la guitarra**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-escalera', t: 'Una sola nota, una escala más abierta,\ncambios de acorde con arpegios\ny cambios de acorde con escalas.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-donde', t: 'No importa hasta dónde hayas llegado\nni si estás más cómodo con unas cosas que con otras.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-mapa', t: 'Ya tenés **un mapa** de cómo practicar ritmo.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-compases', t: 'Un ritmo de 1 o 2 compases,\n**sostenido durante mucho tiempo**,' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-redoblante', t: 'dejando que **las notas se adapten al ritmo**\ny no al revés.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-nuestro', t: 'Dejándonos influenciar por eso que viene de afuera\ny **haciéndolo nuestro**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-generador', t: 'Para que sigas practicando de acá en más,\nte dejo un **generador de ritmos fijos**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-seguimos', t: 'Ahora le damos un cierre a los ritmos fijos\ny pasamos a **improvisar con unidades rítmicas**.' },
+      { sel: [-1, -1], pausa: true, grande: true, vis: 'rf-chau', boton: { t: 'Generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo', suave: true }, t: '**Nos vemos en lo que viene.**' },
     ],
   },
   whatsapp: {
@@ -2384,38 +2491,47 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3 }],
     },
     {
-      id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L',
+      id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video marcando el ritmo A con el cuerpo y cantándolo.',
       grupo: 'Práctica con ritmos fijos',
       titulo: 'Ritmo A + ritmo al cuerpo',
-      detalle: 'Ritmo A: **contratiempos con swing**. El desafío es tocarlo sin que se mueva el pulso ni el swing.\nMirá el video y practicalo **con el cuerpo**, como muestro ahí.\n- **Cantá el ritmo** mientras lo marcás: la voz te confirma que es el correcto y te hace darte cuenta de lo que estás tocando.\n- No frenes nunca. Si te confundís, frená, repasá el ritmo y volvé a empezar.',
-      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
+      detalle: 'Ritmo A: **contratiempos con swing**. El desafío es tocarlo sin que se mueva el pulso ni el swing.\nMirá el video y practicalo **con el cuerpo**, como muestro ahí.\n- **Cantá el ritmo** mientras lo marcás: la voz te confirma que es el correcto y te hace darte cuenta de lo que estás tocando.\n- No frenes nunca. Si te confundís, frená, repasá el ritmo y volvé a empezar.\n# Mandame un video marcando el ritmo A con el cuerpo y cantándolo',
     },
     {
-      id: 'r3', etapa: 'ritmo', video: { id: 'Y5o2rSOFpnQ' }, hotmart: '97B2PPYx7p',
+      id: 'r3', etapa: 'ritmo', video: { id: 'Y5o2rSOFpnQ' }, hotmart: '97B2PPYx7p', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video marcando el ritmo B con el cuerpo y cantándolo.',
       titulo: 'Ritmo B + cómo destrabar cualquier ritmo',
-      detalle: 'Ritmo B: a los contratiempos se suma **una tierra**. El desafío es dominar esa combinación.\nMirá el video: ahí te muestro también **cómo destrabar cualquier ritmo**. Practicalo con el cuerpo, cantándolo.\n- Si se traba, practicalo **de a un compás**, o borrá pedazos y después los juntás.',
-      recursos: [{ t: 'Doc: Módulo 3 - Entrenamiento rítmico', url: DOC_M3, sec: ['h.fh6p94n1dqno', 'Los ritmos A y B'] }],
+      detalle: 'Ritmo B: a los contratiempos se suma **una tierra**. El desafío es dominar esa combinación.\nMirá el video: ahí te muestro también **cómo destrabar cualquier ritmo**. Practicalo con el cuerpo, cantándolo.\n- Si se traba, practicalo **de a un compás**, o borrá pedazos y después los juntás.\n# Mandame un video marcando el ritmo B con el cuerpo y cantándolo',
     },
     {
-      id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D',
+      id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video tocando el ritmo A en la viola, en el nivel en el que estés (una nota, una escala o una progresión).',
       titulo: 'Ritmo A + aplicaciones varias al instrumento',
-      detalle: 'Ahora llevá el **ritmo A a la viola**. Mirá el video con el doc al lado.\n# El ritmo es fijo: las notas se adaptan al ritmo, no al revés\n- Arrancá con **una sola nota**: toda la atención queda en sostener el ritmo y en cómo lo articulás.\n- Después, **dentro de una escala**: primero con cosas que ya sabés, después con cosas nuevas.\n- Y por último, **sobre una progresión**: solo arpegios, o las escalas de cada acorde.\nSi te sale perfecto, subí la dificultad. Si los errores superan a los aciertos, bajá algo: tempo, progresión, material o nivel.',
+      detalle: 'Ahora llevá el **ritmo A a la viola**. Mirá el video con el doc al lado.\n# El ritmo es fijo: las notas se adaptan al ritmo, no al revés\n- Arrancá con **una sola nota**: toda la atención queda en sostener el ritmo y en cómo lo articulás.\n- Después, **dentro de una escala**: primero con cosas que ya sabés, después con cosas nuevas.\n- Y por último, **sobre una progresión**: solo arpegios, o las escalas de cada acorde.\nSi te sale perfecto, subí la dificultad. Si los errores superan a los aciertos, modificá algo: tempo, longitud de la progresión, material usado (1 o 2 notas por acorde, arpegio completo, superposición, escala completa).\n# Mandame un video tocando el ritmo A en la viola, en el nivel en el que estés',
       recursos: [
         { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: [SEC_M3.integracion, 'Integración de un ritmo al instrumento'] },
         { t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.2i00i28i36lq', 'Reglas del ejercicio'] },
       ],
     },
     {
-      id: 'r5', etapa: 'ritmo', video: { id: 'ersUb9-L1zA' }, hotmart: 'y4bp2dGy7R',
+      id: 'r5', etapa: 'ritmo', video: { id: 'ersUb9-L1zA' }, hotmart: 'y4bp2dGy7R', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video tocando el ritmo B en la viola, en el nivel en el que estés.',
       titulo: 'Ritmo B: ejemplos en el instrumento',
-      detalle: 'Lo mismo con el **ritmo B**, con los mismos niveles que el A: una nota, una escala, una progresión.\n- Hay ritmos más difíciles que otros: capaz con el B necesitás un nivel distinto que con el A.\n- **Cantá el ritmo** mientras tocás.\nSe busca que haya errores: eso muestra que estás al límite. La práctica funciona cuando estás concentrado pero no desbordado.',
+      detalle: 'Lo mismo con el **ritmo B**, con los mismos niveles que el A: una nota, una escala, una progresión.\n- Hay ritmos más difíciles que otros: capaz con el B necesitás un nivel distinto que con el A.\n- **Cantá el ritmo** mientras tocás.\nSe busca que haya errores: eso muestra que estás al límite. La práctica funciona cuando estás concentrado pero no desbordado.\n# Mandame un video tocando el ritmo B en la viola, en el nivel en el que estés',
       recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3, sec: ['h.p0dip9fimibq', 'Progresión de dificultad'] }],
     },
     {
-      id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG',
-      titulo: 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
-      detalle: 'Tres ritmos nuevos:\n- **C**: desplazamiento en ciclo de 5 corcheas. Suena como un pulso dentro de otro pulso.\n- **D**: desplazamiento en ciclo de 3 corcheas, más corto que el anterior.\n- **E**: tierras y contratiempos con **mucho más espacio**. El silencio es parte del ritmo.\nTomate el tiempo que necesites para asimilarlos, por compás o borrando pedazos. Después improvisá con **tierras y contratiempos** usándolos como disparador: uno solo como clave, desordenando fragmentos, o eligiendo 2 o 3.\n# Grabate improvisando un buen rato y escuchá cuánto del material aparece',
-      verYSeguir: true,
+      id: 'r6', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video marcando los ritmos C, D y E con el cuerpo y cantándolos.',
+      titulo: 'Ritmos C, D y E',
+      detalle: 'Tres ritmos fijos nuevos:\n- **C**: desplazamiento en ciclo de 5 corcheas. Suena como un pulso dentro de otro pulso.\n- **D**: desplazamiento en ciclo de 3 corcheas, más corto que el anterior.\n- **E**: tierras y contratiempos con **mucho más espacio**. El silencio es parte del ritmo.\nTomate el tiempo que necesites para asimilarlos: por compás, o borrando pedazos y después juntándolos.\n# Mandame un video marcando los ritmos C, D y E con el cuerpo y cantándolos',
+      recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
+    },
+    {
+      id: 'r6i', etapa: 'ritmo', video: { id: 'CHKJyTSdmIg' }, hotmart: 'LO0b9KRaeG', progreso: PROGRESO_RITMO,
+      entrega: 'video', envia: 'un video improvisando un buen rato con tierras y contratiempos, usando los ritmos como disparador.',
+      titulo: 'Improvisación con tiempos y contratiempos',
+      detalle: 'Ahora improvisá con **tierras y contratiempos**, usando los ritmos del A al E como disparador:\n- Uno solo como **clave**: lo tenés en la cabeza pero cantás solo fragmentos, poniendo silencios donde no los hay.\n- **Desordenando** fragmentos de los ritmos.\n- O eligiendo **2 o 3 ritmos** y dejando que te disparen ideas.\nImprovisá durante un buen rato y grabate. Escuchate: ¿cuánto del material aparece? ¿Te repetís? Si pasa, volvé a basarte en un solo ritmo.\n# Mandame un video improvisando un buen rato con tierras y contratiempos',
       recursos: [{ t: 'Doc: Ritmos C, D y E + improvisación con tiempos y contratiempos', url: DOC_M3, sec: [SEC_M3.ritmos, 'Ritmos C, D y E'] }],
     },
     {
@@ -2426,7 +2542,7 @@ const PROGRAMA = {
       recursos: [{ t: 'Abrir el generador de ritmos fijos', url: 'https://ritmo.ajuste-elastico.com/#fijo', web: true }],
     },
     {
-      id: 'r7', etapa: 'ritmo', entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
+      id: 'r7', etapa: 'ritmo', progreso: PROGRESO_RITMO, entrega: 'video', envia: 'un video improvisando con el cuerpo o con la guitarra: elegí 1 o 2 elementos, contá en el video cuáles son y hacé una improvisación buscando hacer mucho con poco.',
       video: { id: 'A4rxE6i5VwY' },
       grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
@@ -3089,7 +3205,7 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <div class="stop-pantalla">
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton${tanda.boton.suave ? ' suave' : ''}" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -3155,6 +3271,41 @@ function stopAccion(id, acc) {
   pintar();
 }
 /* Dibujitos animados para los cuadros de solo texto, mientras hablo */
+/* ---- Dibujos del cierre de los ritmos fijos: escritura rítmica (cabezas en barra, como en el generador) ---- */
+// Un compás de 8 corcheas: N nota, C sigue sonando, R silencio (igual que el generador). x0..x0+w, línea en y.
+function compasSVG(cel, x0, y, w, cls = '', k0 = 0) {
+  const c = cel.split(''); for (let i = 0; i < 8; i++) { if (c[i] !== 'N') continue; let j = i + 1; if (i % 2 === 0 && c[j] === 'C') j++; while (c[j] === 'C') { c[j] = 'R'; j++; } }
+  const sx = w / 8, X = i => x0 + 6 + i * sx; let o = `<line class="vr-linea" x1="${x0}" y1="${y}" x2="${x0 + w}" y2="${y}"/>`, k = k0;
+  const cabeza = (x, n) => `<g class="vr-nota ${cls}" style="--k:${n}"><path class="vr-cab" d="M${x - 4} ${y + 5} L${x + 4} ${y - 5}"/><line class="vr-plica" x1="${x + 4}" y1="${y - 5}" x2="${x + 4}" y2="${y - 30}"/>`;
+  for (let p = 0; p < 4; p++) {
+    const a = c[2 * p], b = c[2 * p + 1], xa = X(2 * p), xb = X(2 * p + 1);
+    if (a === 'N' && b === 'N') { o += cabeza(xa, k++) + cabeza(xb, k++).replace('<g', '<g data-x') + `</g><line class="vr-barra" x1="${xa + 4}" y1="${y - 30}" x2="${xb + 4}" y2="${y - 30}"/></g>`; continue; }
+    if (a === 'N' && b === 'C') { o += cabeza(xa, k++) + '</g>'; continue; }
+    if (a === 'N') { o += cabeza(xa, k++) + `<path class="vr-gancho" d="M${xa + 4} ${y - 30} q9 6 6 16"/></g>`; o += `<path class="vr-sil" d="M${xb - 3} ${y - 8} q3 3 7 -1 l-5 13"/>`; continue; }
+    if (b === 'N') { o += `<path class="vr-sil" d="M${xa - 3} ${y - 8} q3 3 7 -1 l-5 13"/>` + cabeza(xb, k++) + `<path class="vr-gancho" d="M${xb + 4} ${y - 30} q9 6 6 16"/></g>`; continue; }
+    o += `<path class="vr-sil" d="M${xa + 2} ${y - 14} l5 6 l-5 5 l5 7 q-6 -2 -3 4"/>`;
+  }
+  return o;
+}
+const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="translate(${x} ${y}) rotate(-28)"><rect class="vr-mango" x="20" y="-4" width="58" height="8" rx="2"/><rect class="vr-clavijero" x="76" y="-6" width="14" height="12" rx="3"/><ellipse class="vr-cuerpo" cx="-16" cy="0" rx="22" ry="20"/><ellipse class="vr-cuerpo" cx="10" cy="0" rx="16" ry="14"/><circle class="vr-boca" cx="0" cy="0" r="6"/><path class="vr-cuerdas" d="M-30 -2 H82 M-30 2 H82"/></g>`;
+const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
+const VIS_RITMO = {
+  'rf-ritmos': () => compasSVG('RNCNNCRR', 18, 70, 138) + compasSVG('NNRNRRNC', 164, 70, 138, '', 5) + `<line class="vr-div" x1="160" y1="56" x2="160" y2="84"/>`,
+  'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30 M58 70 l-12 26 M58 70 l12 26"/><path class="vr-brazo i" d="M58 48 l-16 8 l10 -18"/><path class="vr-brazo d" d="M58 48 l16 8 l-10 -18"/></g><path class="vr-chispa" d="M56 22 l-4 -8 M62 22 l4 -8 M59 20 v-9"/>`
+    + `<path class="vr-flecha" d="M108 60 H196 m-12 -10 l12 10 l-12 10"/><circle class="vr-viaje" cx="110" cy="60" r="5"/>` + guitarraSVG(250, 66, 'vibra'),
+  'rf-escalera': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas']),
+  'rf-donde': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas'], 'tenue') + `<g class="vr-pin"><circle cx="0" cy="0" r="7"/><path d="M-5 4 L0 14 L5 4"/></g>`,
+  'rf-mapa': () => `<path class="vr-mapa" d="M60 22 L120 12 L180 22 L240 12 V92 L180 102 L120 92 L60 102 Z"/><path class="vr-pliegue" d="M120 12 V92 M180 22 V102"/><path class="vr-ruta" d="M78 86 C 100 60, 130 84, 150 58 S 196 40, 218 30"/><g class="vr-cruz"><path d="M84 32 l10 10 M94 32 l-10 10"/></g><g class="vr-pin fijo" transform="translate(218 30)"><circle cx="0" cy="-10" r="7"/><path d="M-5 -6 L0 4 L5 -6"/></g>`,
+  'rf-compases': () => `<path class="vr-rep" d="M14 40 v40 M19 40 v40"/><circle class="vr-rep-p" cx="25" cy="54" r="2.4"/><circle class="vr-rep-p" cx="25" cy="66" r="2.4"/>` + compasSVG('NCRNNNRN', 36, 74, 122, 'loop') + `<line class="vr-div" x1="162" y1="58" x2="162" y2="88"/>` + compasSVG('RNNCRNNC', 170, 74, 118, 'loop', 5) + `<circle class="vr-rep-p" cx="296" cy="54" r="2.4"/><circle class="vr-rep-p" cx="296" cy="66" r="2.4"/><path class="vr-rep" d="M302 40 v40 M307 40 v40"/><path class="vr-vuelta" d="M296 30 C 260 6, 70 6, 30 30 m6 -10 l-6 10 l11 1"/>`,
+  'rf-redoblante': () => `<g class="vr-notita"><ellipse cx="62" cy="76" rx="9" ry="7" transform="rotate(-20 62 76)"/><path d="M70 73 V30 q14 6 12 20"/></g><path class="vr-flecha" d="M100 62 H178 m-12 -10 l12 10 l-12 10"/>`
+    + `<g class="vr-redo"><ellipse class="vr-parche" cx="250" cy="44" rx="44" ry="12"/><path class="vr-tambor" d="M206 44 V82 a44 12 0 0 0 88 0 V44"/><path class="vr-tensor" d="M218 54 l10 24 l10 -24 l10 24 l10 -24 l10 24 l10 -24 l10 24"/></g><g class="vr-golpe"><path d="M250 26 v-12 M232 30 l-8 -9 M268 30 l8 -9"/></g>`,
+  'rf-nuestro': () => `<circle class="vr-centro" cx="160" cy="56" r="26"/><text class="vr-vos" x="160" y="62">vos</text>` + [[20, 18], [20, 96], [300, 18], [300, 96], [160, 4]].map(([x, y], i) => `<path class="vr-llega" style="--k:${i}" d="M${x} ${y} L${160 + (x - 160) * .32} ${56 + (y - 56) * .32}"/>`).join(''),
+  'rf-generador': () => `<rect class="vr-pantalla" x="40" y="8" width="240" height="96" rx="12"/><rect class="vr-gen-btn" x="58" y="20" width="76" height="20" rx="10"/><text class="vr-gen-txt" x="96" y="34">Generar</text>`
+    + ['RNCNNCRR', 'NCRNRNNC', 'RNNNRRNC'].map((r, i) => `<g class="vr-gen-r" style="--k:${i}">${compasSVG(r, 58, 88, 204)}</g>`).join(''),
+  'rf-seguimos': () => compasSVG('RNCNNCRR', 16, 74, 104, 'tenue') + `<path class="vr-check" d="M54 18 l8 8 l14 -16"/><path class="vr-flecha larga" d="M132 58 H196 m-12 -10 l12 10 l-12 10"/>`
+    + [[214, 'N'], [244, 'NN'], [282, 'NNN']].map(([x, u], i) => `<g class="vr-unidad" style="--k:${i}">${u.split('').map((_, j) => `<path class="vr-cab" d="M${x + j * 10 - 4} 78 L${x + j * 10 + 4} 68"/><line class="vr-plica" x1="${x + j * 10 + 4}" y1="68" x2="${x + j * 10 + 4}" y2="44"/>`).join('')}${u.length > 1 ? `<line class="vr-barra" x1="${x + 4}" y1="44" x2="${x + (u.length - 1) * 10 + 4}" y2="44"/>` : ''}</g>`).join(''),
+  'rf-chau': () => `<path class="vr-flecha xl" d="M40 56 H270 m-18 -16 l18 16 l-18 16"/>`,
+};
 function visGrande(v) {
   const cuerdas = (cls = k => '', extra = '') => [22, 48, 74].map((y, k) => `<line class="vg-cuerda ${cls(k)}" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k};stroke-width:${[1.6, 2.4, 3.4][k]}"/>`).join('') + extra;
   const caja = (x, cl, k) => `<rect class="vg-caja ${cl}" x="${x}" y="30" width="30" height="34" rx="5" style="--k:${k}"/>`;
@@ -3205,6 +3356,7 @@ function visGrande(v) {
     [0, 1, 2, 3].forEach(g => { const x = 24 + g * 74, y = 82 - g * 16; s += `<path class="vg-motivo" d="M${x} ${y} l14 -10 l14 6 l14 -14" style="--k:${g}"/>`; });
   }
   else if (v === 'ciclo') s = '<circle class="vg-ciclo" cx="160" cy="48" r="32"/><circle class="vg-viaja" cx="160" cy="16" r="6"/><path class="vg-flecha" d="M186 30 l8 -2 l-1 8"/>';
+  else if (VIS_RITMO[v]) s = VIS_RITMO[v]();
   return s ? `<svg class="vis-grande vg-${v}" viewBox="0 0 320 112" aria-hidden="true">${s}</svg>` : '';
 }
 function stopCifrado(S, enSel, est) {
@@ -4012,6 +4164,8 @@ function dibujarCamino() {
   const cam = $('#camino'); if (!cam) return;
   const svg = cam.querySelector('.trazo');
   const base = cam.getBoundingClientRect(), z = cam.currentCSSZoom || 1;   // en la llamada la vista va con zoom en la compu
+  // los títulos de grupo van alineados con el título del paso que sigue, así no quedan encima de la línea
+  cam.querySelectorAll('.grupo-label').forEach(g => { let n = g.nextElementSibling; while (n && !n.querySelector('.nodo-tit')) n = n.nextElementSibling; const t = n && n.querySelector('.nodo-tit'); if (!t) return; g.style.marginLeft = '0px'; const dx = (t.getBoundingClientRect().left - g.getBoundingClientRect().left) / z; g.style.marginLeft = Math.max(0, dx) + 'px'; });
   const centro = el => { const r = el.getBoundingClientRect(); return [(r.left - base.left + r.width / 2) / z, (r.top - base.top + r.height / 2) / z]; };
   const puntos = [...cam.querySelectorAll('.punto')].map(centro);
   const meta = cam.querySelector('.meta span'); if (meta) puntos.push(centro(meta));
@@ -4221,8 +4375,20 @@ function finLlamada() {
     <p class="llp-txt">Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</p>
     ${waLlamada('pl-entrenar llp-ir llp-wa')}`, 'Listo 👋', null, true);
 }
+function avisoModulo(m) {
+  // Al cambiar de módulo (cuando la pantalla grande ya se vio antes): un cartel que se va solo
+  document.querySelector('.aviso-modulo')?.remove();
+  const M = MODULOS[m], el = document.createElement('div');
+  el.className = 'aviso-modulo'; el.style.setProperty('--mc', M.color); el.setAttribute('role', 'status');
+  el.innerHTML = `<small>Estás en el</small><strong>${esc(M.titulo)}</strong><span>${esc(M.nombre)}</span>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('visible'));
+  setTimeout(() => { el.classList.remove('visible'); setTimeout(() => el.remove(), 500); }, 3200);
+}
 function abrirPaso(id) {
   const cambio = id !== abierto;
+  const mAntes = abierto && PASO[abierto] ? MODULO_DE[PASO[abierto].etapa] : null, mDespues = PASO[id] ? MODULO_DE[PASO[id].etapa] : null;
+  if (cambio && mAntes !== null && mDespues !== mAntes && mDespues > 0 && moduloVisto(mDespues) && !esLlamada) setTimeout(() => avisoModulo(mDespues), 350);
   if (esLlamada && cambio && id === 'llt1' && !hecho(ST, 'llt1')) puenteTestimonio();
   verTodo = false;
   if (cambio) { animVistas.delete(id); animVistas.delete(id + '-ciclo'); }   // la animación del paso se repite cada vez que se entra

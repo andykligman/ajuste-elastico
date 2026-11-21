@@ -1255,9 +1255,111 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ev-fl::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:#E8834F;border-right:0}
 .grupo-label h3{color:var(--mc,#E8834F);font-weight:700;font-size:14px}
 /* Botón dentro de una tanda de texto (p. ej. el video de AudioStretch) */
-.stop-boton{display:inline-flex;align-items:center;gap:12px;margin:22px auto 0;padding:12px 22px 12px 12px;border-radius:999px;background:#E8834F;color:#fff;text-decoration:none;font:700 16px var(--sans);box-shadow:0 10px 28px rgba(232,131,79,.35);animation:sb-late 1.6s ease-in-out infinite}
+.stop-boton{display:inline-flex;align-items:center;gap:12px;margin:22px auto 0;padding:12px 22px 12px 12px;border-radius:999px;background:#5D7BB6;color:#fff;text-decoration:none;font:700 16px var(--sans);box-shadow:0 10px 28px rgba(93,123,182,.35);animation:sb-late 1.6s ease-in-out infinite}
+.stop-boton.suave{background:transparent;border:1.5px solid #5D7BB6;color:#A9BEE8;box-shadow:none;animation:none;font-size:14px;padding:8px 16px 8px 8px}
+.stop-boton.suave .sb-play{width:28px;height:28px;background:#5D7BB6}
+.stop-boton.suave svg{fill:#fff;width:13px;height:13px}
 .stop-boton .sb-play{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff}
-.stop-boton svg{width:18px;height:18px;fill:#E8834F;margin-left:3px}
+.stop-boton svg{width:18px;height:18px;fill:#5D7BB6;margin-left:3px}
 @keyframes sb-late{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
 @media (prefers-reduced-motion:reduce){.stop-boton{animation:none}}
 .stop-texto .stop-boton{display:flex;width:max-content;max-width:100%}
+/* ---- Cierre de los ritmos fijos: dibujos ---- */
+.vg-rf-ritmos,.vg-rf-cuerpo,.vg-rf-escalera,.vg-rf-donde,.vg-rf-mapa,.vg-rf-compases,.vg-rf-redoblante,.vg-rf-nuestro,.vg-rf-generador,.vg-rf-seguimos,.vg-rf-chau{width:min(440px,92%)}
+.vr-linea{stroke:#5a5b61;stroke-width:1.6}
+.vr-div{stroke:#8a8b90;stroke-width:1.6}
+.vr-cab{stroke:var(--tinta);stroke-width:5;stroke-linecap:round}
+.vr-plica,.vr-barra{stroke:var(--tinta);stroke-width:2;stroke-linecap:round}
+.vr-barra{stroke-width:5}
+.vr-gancho{fill:none;stroke:var(--tinta);stroke-width:2;stroke-linecap:round}
+.vr-sil{fill:none;stroke:#9DA2AC;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.vr-nota{opacity:0;animation:vrEntra .45s ease forwards;animation-delay:calc(var(--k)*.22s)}
+.vr-nota.tenue,.vr-nota.loop{opacity:1;animation:none}
+.vr-nota.tenue .vr-cab,.vr-nota.tenue .vr-plica,.vr-nota.tenue .vr-barra{stroke:#6a6b71}
+@keyframes vrEntra{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.vr-cursor{fill:rgba(232,131,79,.28);animation:vrCursor 3.2s linear infinite;animation-delay:2s;opacity:0}
+@keyframes vrCursor{0%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(284px)}}
+/* cuerpo → guitarra */
+.vr-persona circle,.vr-persona path{fill:none;stroke:var(--tinta);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.vr-brazo{transform-box:view-box;transform-origin:58px 48px;animation:vrAplauso .5s ease-in-out infinite alternate}
+.vr-brazo.d{animation-name:vrAplausoD}
+@keyframes vrAplauso{from{transform:rotate(-8deg)}to{transform:rotate(6deg)}}
+@keyframes vrAplausoD{from{transform:rotate(8deg)}to{transform:rotate(-6deg)}}
+.vr-chispa{fill:none;stroke:#E8834F;stroke-width:2.4;stroke-linecap:round;animation:vgParpadeo .5s ease-in-out infinite alternate}
+.vr-flecha{fill:none;stroke:#8a8b90;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.vr-flecha.xl{stroke:var(--naranja);stroke-width:5;stroke-dasharray:300;stroke-dashoffset:300;animation:vgDibuja 1.2s .2s ease forwards}
+.vr-viaje{fill:var(--naranja);animation:vrViaje 1.8s ease-in-out infinite}
+@keyframes vrViaje{0%{transform:none;opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(84px);opacity:0}}
+.vr-guit .vr-cuerpo{fill:#3A4F7A;stroke:var(--azul);stroke-width:2}
+.vr-guit .vr-boca{fill:#16213A}
+.vr-guit .vr-mango{stroke:#C9A27A;stroke-width:7;stroke-linecap:round}
+.vr-guit .vr-cuerdas{stroke:var(--tinta);stroke-width:1;opacity:.8}
+.vr-guit.vibra .vr-cuerdas{animation:vgVibra .3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+/* escalera */
+.vr-pelda{stroke:var(--azul);stroke-width:5;stroke-linecap:round}
+.vr-etq{font:700 12px var(--sans);fill:var(--tinta);text-anchor:middle}
+.vr-mini{font:600 10.5px var(--sans);fill:var(--gris);text-anchor:middle}
+.vr-esc{opacity:0;animation:vrEntra .5s ease forwards;animation-delay:calc(var(--k)*.7s)}
+.vr-esc.tenue{opacity:.45;animation:none}
+.vr-pin circle,.vr-pin path{fill:var(--naranja)}
+.vr-pin{animation:vrSalta 4.8s ease-in-out infinite}
+@keyframes vrSalta{0%,18%{transform:translate(49px,78px)}25%,43%{transform:translate(125px,56px)}50%,68%{transform:translate(201px,34px)}75%,93%{transform:translate(277px,12px)}100%{transform:translate(49px,78px)}}
+.vr-pin.fijo{animation:none}
+/* mapa */
+.vr-mapa{fill:#22304A;stroke:var(--azul);stroke-width:2.4;stroke-linejoin:round}
+.vr-pliegue{stroke:#3A4F7A;stroke-width:2}
+.vr-ruta{fill:none;stroke:var(--naranja);stroke-width:3;stroke-dasharray:6 7;stroke-linecap:round;animation:vrRuta 2.4s linear infinite}
+@keyframes vrRuta{to{stroke-dashoffset:-26}}
+.vr-cruz path{stroke:var(--tinta);stroke-width:3;stroke-linecap:round}
+/* compases en loop */
+.vr-rep{stroke:var(--tinta);stroke-width:2.4}
+.vr-rep-p{fill:var(--tinta)}
+.vr-vuelta{fill:none;stroke:var(--naranja);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:6 6;animation:vrRuta 1.6s linear infinite}
+.vr-nota.loop{animation:vrLoop 2.6s linear infinite;animation-delay:calc(var(--k)*.26s)}
+@keyframes vrLoop{0%,8%{opacity:1}4%{opacity:.35}}
+.vr-nota.loop .vr-cab{animation:vrBrilla 2.6s linear infinite;animation-delay:calc(var(--k)*.26s)}
+@keyframes vrBrilla{0%,10%{stroke:var(--naranja)}12%,100%{stroke:var(--tinta)}}
+/* nota → redoblante */
+.vr-notita ellipse{fill:var(--tinta)}
+.vr-notita path{fill:none;stroke:var(--tinta);stroke-width:3;stroke-linecap:round}
+.vr-notita{animation:vrVaAlTambor 2.4s ease-in infinite}
+@keyframes vrVaAlTambor{0%{transform:none;opacity:1}70%{transform:translateX(150px) translateY(-26px) scale(.7);opacity:1}76%,100%{transform:translateX(160px) translateY(-26px) scale(.6);opacity:0}}
+.vr-parche{fill:#EDEEF0;stroke:var(--azul);stroke-width:2.4}
+.vr-tambor{fill:#3A4F7A;stroke:var(--azul);stroke-width:2.4}
+.vr-tensor{fill:none;stroke:#A9BEE8;stroke-width:1.6;opacity:.8}
+.vr-redo{transform-box:fill-box;transform-origin:center;animation:vrGolpe 2.4s ease infinite}
+@keyframes vrGolpe{0%,70%{transform:none}74%{transform:scale(1.05,.95)}80%,100%{transform:none}}
+.vr-golpe path{stroke:var(--naranja);stroke-width:3;stroke-linecap:round;opacity:0;animation:vrChis 2.4s ease infinite}
+@keyframes vrChis{0%,70%{opacity:0}74%{opacity:1}90%,100%{opacity:0}}
+/* hacerlo nuestro */
+.vr-centro{fill:#22304A;stroke:var(--azul);stroke-width:3;animation:vrLlenar 5s ease infinite}
+@keyframes vrLlenar{0%,30%{fill:#22304A;stroke:var(--azul)}60%,100%{fill:#E8834F;stroke:#E8834F}}
+.vr-vos{font:800 16px var(--display);fill:var(--tinta);text-anchor:middle}
+.vr-llega{fill:none;stroke:var(--azul);stroke-width:3;stroke-linecap:round;stroke-dasharray:4 7;opacity:0;animation:vrLlega 5s ease infinite;animation-delay:calc(var(--k)*.25s)}
+@keyframes vrLlega{0%{opacity:0;stroke-dashoffset:40}20%,60%{opacity:1;stroke-dashoffset:0}80%,100%{opacity:0}}
+/* generador */
+.vr-pantalla{fill:#16213A;stroke:#3A4F7A;stroke-width:2.4}
+.vr-gen-btn{fill:var(--azul);animation:vrBoton 3.6s ease infinite}
+@keyframes vrBoton{0%,8%{transform:none}4%{transform:scale(.94)}}
+.vr-gen-btn{transform-box:fill-box;transform-origin:center}
+.vr-gen-txt{font:700 11px var(--sans);fill:#fff;text-anchor:middle}
+.vr-gen-r{opacity:0;animation:vrTurno 10.8s ease infinite;animation-delay:calc(var(--k)*3.6s)}
+.vr-gen-r .vr-nota{opacity:1;animation:none}
+@keyframes vrTurno{0%{opacity:0}4%,30%{opacity:1}34%,100%{opacity:0}}
+/* cierre → unidades */
+.vr-check{fill:none;stroke:#3FA56B;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:44;animation:vgDibuja .6s .5s ease forwards}
+.vr-unidad{opacity:0;animation:vrEntra .5s ease forwards;animation-delay:calc(1.2s + var(--k)*.45s)}
+.vr-unidad .vr-cab,.vr-unidad .vr-plica,.vr-unidad .vr-barra{stroke:var(--naranja)}
+
+.vg-rf-ritmos,.vg-rf-compases{width:min(560px,96%)}
+.vr-guit .vr-clavijero{fill:#C9A27A}
+.vr-guit .vr-mango{fill:#C9A27A;stroke:none}
+.vr-guit .vr-cuerpo{fill:#3A4F7A;stroke:var(--azul);stroke-width:2}
+@keyframes vrSalta{0%,18%{transform:translate(49px,62px)}25%,43%{transform:translate(125px,40px)}50%,68%{transform:translate(201px,18px)}75%,93%{transform:translate(277px,-4px)}100%{transform:translate(49px,62px)}}
+/* Cartel al cambiar de módulo */
+.aviso-modulo{position:fixed;left:50%;top:22px;z-index:900;transform:translate(-50%,-20px);opacity:0;transition:opacity .4s,transform .45s cubic-bezier(.2,.9,.3,1.2);display:grid;justify-items:center;gap:2px;padding:14px 28px;border-radius:18px;background:#16213A;border:2px solid var(--mc);box-shadow:0 18px 50px rgba(0,0,0,.5);pointer-events:none;text-align:center}
+.aviso-modulo.visible{opacity:1;transform:translate(-50%,0)}
+.aviso-modulo small{font:600 12px var(--sans);color:var(--gris);text-transform:uppercase;letter-spacing:.12em}
+.aviso-modulo strong{font:800 22px var(--display);color:var(--mc)}
+.aviso-modulo span{font:600 15px var(--sans);color:var(--tinta)}
+.grupo-label{background:transparent;padding-left:0}

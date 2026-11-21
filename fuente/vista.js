@@ -252,7 +252,7 @@ function stopInner(id) {
       ${S.audio ? `<button class="stop-son ${stopSonido ? '' : 'off'}" data-stop-acc="sonido" data-stop-id="${id}" aria-pressed="${stopSonido}">${stopSonido ? '🔊 Con sonido' : '🔇 Sin sonido'}</button>` : ''}
     </div>
     <div class="stop-pantalla">
-    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
+    <p class="stop-texto ${tanda.zoom ? 'zoom' : ''} ${tanda.malo || (no && it.finNo && !tanda.t) ? 'malo' : ''} ${tanda.grande ? 'grande' : ''}" aria-live="polite"><span class="stop-num">${tanda.pausa ? '' : `Tanda ${nro} de ${delModo.length}`}</span><span class="stop-frase" key="${i}">${String(texto).split('\n').map(enLinea).join('<br>')}</span>${tanda.grande && tanda.vis ? visGrande(tanda.vis) : ''}${tanda.boton ? `<a class="stop-boton${tanda.boton.suave ? ' suave' : ''}" href="${esc(tanda.boton.url)}" target="_blank" rel="noopener"><span class="sb-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg></span><span>${esc(tanda.boton.t)}</span></a>` : ''}</p>
     ${tanda.grande ? '' : `<div class="stop-dibujo ${no ? 'modo-no' : ''}">${dibujo}</div>`}
     ${(S.contar || tanda.veces) && !tanda.grande ? `<p class="stop-cap">${esc(S.contar || 'Veces que practicaste cada cuerda')}</p>
     <div class="stop-veces ${no ? 'modo-no' : ''}" style="grid-template-columns:${S.tipo === 'ola' ? anchosOla(S).map(x => x.toFixed(3) + 'fr').join(' ') : `repeat(${n},1fr)`}">${veces.map((x, k) => `<span class="${estadoU[k]}" style="--v:${(x / max).toFixed(2)}"><b>${x}</b><small>${esc(S.unidades[k])}</small></span>`).join('')}</div>` : ''}
@@ -318,6 +318,41 @@ function stopAccion(id, acc) {
   pintar();
 }
 /* Dibujitos animados para los cuadros de solo texto, mientras hablo */
+/* ---- Dibujos del cierre de los ritmos fijos: escritura rítmica (cabezas en barra, como en el generador) ---- */
+// Un compás de 8 corcheas: N nota, C sigue sonando, R silencio (igual que el generador). x0..x0+w, línea en y.
+function compasSVG(cel, x0, y, w, cls = '', k0 = 0) {
+  const c = cel.split(''); for (let i = 0; i < 8; i++) { if (c[i] !== 'N') continue; let j = i + 1; if (i % 2 === 0 && c[j] === 'C') j++; while (c[j] === 'C') { c[j] = 'R'; j++; } }
+  const sx = w / 8, X = i => x0 + 6 + i * sx; let o = `<line class="vr-linea" x1="${x0}" y1="${y}" x2="${x0 + w}" y2="${y}"/>`, k = k0;
+  const cabeza = (x, n) => `<g class="vr-nota ${cls}" style="--k:${n}"><path class="vr-cab" d="M${x - 4} ${y + 5} L${x + 4} ${y - 5}"/><line class="vr-plica" x1="${x + 4}" y1="${y - 5}" x2="${x + 4}" y2="${y - 30}"/>`;
+  for (let p = 0; p < 4; p++) {
+    const a = c[2 * p], b = c[2 * p + 1], xa = X(2 * p), xb = X(2 * p + 1);
+    if (a === 'N' && b === 'N') { o += cabeza(xa, k++) + cabeza(xb, k++).replace('<g', '<g data-x') + `</g><line class="vr-barra" x1="${xa + 4}" y1="${y - 30}" x2="${xb + 4}" y2="${y - 30}"/></g>`; continue; }
+    if (a === 'N' && b === 'C') { o += cabeza(xa, k++) + '</g>'; continue; }
+    if (a === 'N') { o += cabeza(xa, k++) + `<path class="vr-gancho" d="M${xa + 4} ${y - 30} q9 6 6 16"/></g>`; o += `<path class="vr-sil" d="M${xb - 3} ${y - 8} q3 3 7 -1 l-5 13"/>`; continue; }
+    if (b === 'N') { o += `<path class="vr-sil" d="M${xa - 3} ${y - 8} q3 3 7 -1 l-5 13"/>` + cabeza(xb, k++) + `<path class="vr-gancho" d="M${xb + 4} ${y - 30} q9 6 6 16"/></g>`; continue; }
+    o += `<path class="vr-sil" d="M${xa + 2} ${y - 14} l5 6 l-5 5 l5 7 q-6 -2 -3 4"/>`;
+  }
+  return o;
+}
+const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="translate(${x} ${y}) rotate(-28)"><rect class="vr-mango" x="20" y="-4" width="58" height="8" rx="2"/><rect class="vr-clavijero" x="76" y="-6" width="14" height="12" rx="3"/><ellipse class="vr-cuerpo" cx="-16" cy="0" rx="22" ry="20"/><ellipse class="vr-cuerpo" cx="10" cy="0" rx="16" ry="14"/><circle class="vr-boca" cx="0" cy="0" r="6"/><path class="vr-cuerdas" d="M-30 -2 H82 M-30 2 H82"/></g>`;
+const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
+const VIS_RITMO = {
+  'rf-ritmos': () => compasSVG('RNCNNCRR', 18, 70, 138) + compasSVG('NNRNRRNC', 164, 70, 138, '', 5) + `<line class="vr-div" x1="160" y1="56" x2="160" y2="84"/>`,
+  'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30 M58 70 l-12 26 M58 70 l12 26"/><path class="vr-brazo i" d="M58 48 l-16 8 l10 -18"/><path class="vr-brazo d" d="M58 48 l16 8 l-10 -18"/></g><path class="vr-chispa" d="M56 22 l-4 -8 M62 22 l4 -8 M59 20 v-9"/>`
+    + `<path class="vr-flecha" d="M108 60 H196 m-12 -10 l12 10 l-12 10"/><circle class="vr-viaje" cx="110" cy="60" r="5"/>` + guitarraSVG(250, 66, 'vibra'),
+  'rf-escalera': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas']),
+  'rf-donde': () => escalonesSVG(['1 nota', 'escala abierta', 'acordes · arpegios', 'acordes · escalas'], 'tenue') + `<g class="vr-pin"><circle cx="0" cy="0" r="7"/><path d="M-5 4 L0 14 L5 4"/></g>`,
+  'rf-mapa': () => `<path class="vr-mapa" d="M60 22 L120 12 L180 22 L240 12 V92 L180 102 L120 92 L60 102 Z"/><path class="vr-pliegue" d="M120 12 V92 M180 22 V102"/><path class="vr-ruta" d="M78 86 C 100 60, 130 84, 150 58 S 196 40, 218 30"/><g class="vr-cruz"><path d="M84 32 l10 10 M94 32 l-10 10"/></g><g class="vr-pin fijo" transform="translate(218 30)"><circle cx="0" cy="-10" r="7"/><path d="M-5 -6 L0 4 L5 -6"/></g>`,
+  'rf-compases': () => `<path class="vr-rep" d="M14 40 v40 M19 40 v40"/><circle class="vr-rep-p" cx="25" cy="54" r="2.4"/><circle class="vr-rep-p" cx="25" cy="66" r="2.4"/>` + compasSVG('NCRNNNRN', 36, 74, 122, 'loop') + `<line class="vr-div" x1="162" y1="58" x2="162" y2="88"/>` + compasSVG('RNNCRNNC', 170, 74, 118, 'loop', 5) + `<circle class="vr-rep-p" cx="296" cy="54" r="2.4"/><circle class="vr-rep-p" cx="296" cy="66" r="2.4"/><path class="vr-rep" d="M302 40 v40 M307 40 v40"/><path class="vr-vuelta" d="M296 30 C 260 6, 70 6, 30 30 m6 -10 l-6 10 l11 1"/>`,
+  'rf-redoblante': () => `<g class="vr-notita"><ellipse cx="62" cy="76" rx="9" ry="7" transform="rotate(-20 62 76)"/><path d="M70 73 V30 q14 6 12 20"/></g><path class="vr-flecha" d="M100 62 H178 m-12 -10 l12 10 l-12 10"/>`
+    + `<g class="vr-redo"><ellipse class="vr-parche" cx="250" cy="44" rx="44" ry="12"/><path class="vr-tambor" d="M206 44 V82 a44 12 0 0 0 88 0 V44"/><path class="vr-tensor" d="M218 54 l10 24 l10 -24 l10 24 l10 -24 l10 24 l10 -24 l10 24"/></g><g class="vr-golpe"><path d="M250 26 v-12 M232 30 l-8 -9 M268 30 l8 -9"/></g>`,
+  'rf-nuestro': () => `<circle class="vr-centro" cx="160" cy="56" r="26"/><text class="vr-vos" x="160" y="62">vos</text>` + [[20, 18], [20, 96], [300, 18], [300, 96], [160, 4]].map(([x, y], i) => `<path class="vr-llega" style="--k:${i}" d="M${x} ${y} L${160 + (x - 160) * .32} ${56 + (y - 56) * .32}"/>`).join(''),
+  'rf-generador': () => `<rect class="vr-pantalla" x="40" y="8" width="240" height="96" rx="12"/><rect class="vr-gen-btn" x="58" y="20" width="76" height="20" rx="10"/><text class="vr-gen-txt" x="96" y="34">Generar</text>`
+    + ['RNCNNCRR', 'NCRNRNNC', 'RNNNRRNC'].map((r, i) => `<g class="vr-gen-r" style="--k:${i}">${compasSVG(r, 58, 88, 204)}</g>`).join(''),
+  'rf-seguimos': () => compasSVG('RNCNNCRR', 16, 74, 104, 'tenue') + `<path class="vr-check" d="M54 18 l8 8 l14 -16"/><path class="vr-flecha larga" d="M132 58 H196 m-12 -10 l12 10 l-12 10"/>`
+    + [[214, 'N'], [244, 'NN'], [282, 'NNN']].map(([x, u], i) => `<g class="vr-unidad" style="--k:${i}">${u.split('').map((_, j) => `<path class="vr-cab" d="M${x + j * 10 - 4} 78 L${x + j * 10 + 4} 68"/><line class="vr-plica" x1="${x + j * 10 + 4}" y1="68" x2="${x + j * 10 + 4}" y2="44"/>`).join('')}${u.length > 1 ? `<line class="vr-barra" x1="${x + 4}" y1="44" x2="${x + (u.length - 1) * 10 + 4}" y2="44"/>` : ''}</g>`).join(''),
+  'rf-chau': () => `<path class="vr-flecha xl" d="M40 56 H270 m-18 -16 l18 16 l-18 16"/>`,
+};
 function visGrande(v) {
   const cuerdas = (cls = k => '', extra = '') => [22, 48, 74].map((y, k) => `<line class="vg-cuerda ${cls(k)}" x1="20" y1="${y}" x2="300" y2="${y}" style="--k:${k};stroke-width:${[1.6, 2.4, 3.4][k]}"/>`).join('') + extra;
   const caja = (x, cl, k) => `<rect class="vg-caja ${cl}" x="${x}" y="30" width="30" height="34" rx="5" style="--k:${k}"/>`;
@@ -368,6 +403,7 @@ function visGrande(v) {
     [0, 1, 2, 3].forEach(g => { const x = 24 + g * 74, y = 82 - g * 16; s += `<path class="vg-motivo" d="M${x} ${y} l14 -10 l14 6 l14 -14" style="--k:${g}"/>`; });
   }
   else if (v === 'ciclo') s = '<circle class="vg-ciclo" cx="160" cy="48" r="32"/><circle class="vg-viaja" cx="160" cy="16" r="6"/><path class="vg-flecha" d="M186 30 l8 -2 l-1 8"/>';
+  else if (VIS_RITMO[v]) s = VIS_RITMO[v]();
   return s ? `<svg class="vis-grande vg-${v}" viewBox="0 0 320 112" aria-hidden="true">${s}</svg>` : '';
 }
 function stopCifrado(S, enSel, est) {
@@ -1175,6 +1211,8 @@ function dibujarCamino() {
   const cam = $('#camino'); if (!cam) return;
   const svg = cam.querySelector('.trazo');
   const base = cam.getBoundingClientRect(), z = cam.currentCSSZoom || 1;   // en la llamada la vista va con zoom en la compu
+  // los títulos de grupo van alineados con el título del paso que sigue, así no quedan encima de la línea
+  cam.querySelectorAll('.grupo-label').forEach(g => { let n = g.nextElementSibling; while (n && !n.querySelector('.nodo-tit')) n = n.nextElementSibling; const t = n && n.querySelector('.nodo-tit'); if (!t) return; g.style.marginLeft = '0px'; const dx = (t.getBoundingClientRect().left - g.getBoundingClientRect().left) / z; g.style.marginLeft = Math.max(0, dx) + 'px'; });
   const centro = el => { const r = el.getBoundingClientRect(); return [(r.left - base.left + r.width / 2) / z, (r.top - base.top + r.height / 2) / z]; };
   const puntos = [...cam.querySelectorAll('.punto')].map(centro);
   const meta = cam.querySelector('.meta span'); if (meta) puntos.push(centro(meta));
@@ -1384,8 +1422,20 @@ function finLlamada() {
     <p class="llp-txt">Escribime un mensaje por WhatsApp y contame qué te pareció todo esto 😉</p>
     ${waLlamada('pl-entrenar llp-ir llp-wa')}`, 'Listo 👋', null, true);
 }
+function avisoModulo(m) {
+  // Al cambiar de módulo (cuando la pantalla grande ya se vio antes): un cartel que se va solo
+  document.querySelector('.aviso-modulo')?.remove();
+  const M = MODULOS[m], el = document.createElement('div');
+  el.className = 'aviso-modulo'; el.style.setProperty('--mc', M.color); el.setAttribute('role', 'status');
+  el.innerHTML = `<small>Estás en el</small><strong>${esc(M.titulo)}</strong><span>${esc(M.nombre)}</span>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('visible'));
+  setTimeout(() => { el.classList.remove('visible'); setTimeout(() => el.remove(), 500); }, 3200);
+}
 function abrirPaso(id) {
   const cambio = id !== abierto;
+  const mAntes = abierto && PASO[abierto] ? MODULO_DE[PASO[abierto].etapa] : null, mDespues = PASO[id] ? MODULO_DE[PASO[id].etapa] : null;
+  if (cambio && mAntes !== null && mDespues !== mAntes && mDespues > 0 && moduloVisto(mDespues) && !esLlamada) setTimeout(() => avisoModulo(mDespues), 350);
   if (esLlamada && cambio && id === 'llt1' && !hecho(ST, 'llt1')) puenteTestimonio();
   verTodo = false;
   if (cambio) { animVistas.delete(id); animVistas.delete(id + '-ciclo'); }   // la animación del paso se repite cada vez que se entra
