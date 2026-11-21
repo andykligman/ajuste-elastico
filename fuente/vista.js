@@ -502,8 +502,8 @@ const recCerradas = new Set();   // recomendaciones que el alumno cerró con «O
 function preguntaHTML(st, p) {
   if (p.tipo === 'standard') return standardHTML(st);
   // Link de la llamada: en el último video, en vez de la pregunta, un solo botón que cierra todo
-  if (esLlamada && p.id !== 'llt1' && PASOS_LLAMADA.every(x => x === p.id || hecho(st, x)))
-    return `<div class="pregunta ll-terminar"><button class="primario boton-terminar" data-terminar-llamada="${p.id}">Terminé de ver todo ✓</button></div>`;
+  if (esLlamada && p.id === (st.prog.llt2?.auto ? 'llfin' : 'llt2'))   // solo en el último video: Manu, o la bienvenida si a Manu ya lo vio en el paso de Igna
+    return `<div class="pregunta ll-terminar"><button class="boton-terminar" data-terminar-llamada="${p.id}">Terminé de ver todo ✓</button></div>`;
   const sel = opcionElegida(st, p);
   const ayuda = ayudaPara(p, sel);
   // Elegida cualquier opción: se cierran las opciones y queda el mensaje (o la recomendación) con «Cambiar respuesta»
@@ -638,9 +638,7 @@ function montarVerticales() {
       let timer = 0;
       const barra = m.querySelector('.ev-barra i');
       const caja = m.querySelector('.ev-yt'), k = parseFloat(m.closest('.emb').style.getPropertyValue('--k')) || 1;
-      // el video se agranda un poco y se sube, así la franja de arriba (título de YouTube, "Ver más tarde", "Compartir") queda afuera del recuadro
-      const ubicar = () => { const W = m.clientWidth, H = m.clientHeight; if (!W || !H) return; const t = Math.round(Math.max(64, H * .1)), f = (H + t) / H, w = W * k * f;
-        caja.style.width = w + 'px'; caja.style.left = ((W - w) / 2) + 'px'; caja.style.marginLeft = '0'; caja.style.top = (-t) + 'px'; caja.style.bottom = 'auto'; caja.style.height = (H + t) + 'px'; };
+      const ubicar = () => { const W = m.clientWidth; if (!W) return; caja.style.width = (W * k) + 'px'; caja.style.left = (-(k - 1) / 2 * W) + 'px'; caja.style.marginLeft = '0'; };
       ubicar(); if (window.ResizeObserver) new ResizeObserver(ubicar).observe(m);
       const pl = new YT.Player(hueco, {
         videoId: id, host: 'https://www.youtube-nocookie.com',

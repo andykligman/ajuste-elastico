@@ -1226,5 +1226,6 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .nodo-tit .nuevo{display:inline-block;justify-self:start;margin-top:4px;padding:2px 9px;border-radius:999px;background:#E8834F;color:#fff;font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;font-style:normal;vertical-align:3px;animation:nuevoLate 2.4s ease-in-out infinite}
 @keyframes nuevoLate{0%,100%{box-shadow:0 0 0 0 rgba(232,131,79,.5)}50%{box-shadow:0 0 0 6px rgba(232,131,79,0)}}
 
-.ll-terminar{display:flex;justify-content:center;padding-top:8px}
-.boton-terminar{font-size:18px;padding:14px 28px}
+.ll-terminar{padding-top:4px}
+.boton-terminar{display:block;width:100%;border:0;border-radius:14px;background:#E8834F;color:#fff;font:700 17px var(--sans);padding:16px 20px;cursor:pointer;box-shadow:0 8px 22px rgba(232,131,79,.28)}
+.boton-terminar:active{transform:scale(.98)}
