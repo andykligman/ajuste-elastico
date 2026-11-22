@@ -333,6 +333,25 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
   .prop-resumen summary { cursor: pointer; color: var(--azul-txt); }
   .prop-resumen .cl-texto { padding: 6px 0 0; }
   .prop-grupo .fila-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* Solapas del panel: Alumnos / Llamadas */
+  .tabs-adm { display: flex; gap: 6px; margin: 0 0 18px; border-bottom: 1px solid var(--linea); }
+  .tabs-adm button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0; border-bottom: 3px solid transparent; background: none; color: var(--gris); font: 600 16px var(--sans); cursor: pointer; margin-bottom: -1px; }
+  .tabs-adm button[aria-selected="true"] { color: var(--tinta); border-bottom-color: var(--naranja); }
+  .ll-adm-lista { display: grid; gap: 12px; margin-top: 12px; }
+  .ll-adm { padding: 14px 16px; border: 1px solid var(--linea); border-radius: var(--radio-m); background: var(--sup); }
+  .ll-adm.completo { border-left: 3px solid #5BD49A; }
+  .ll-adm-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+  .ll-adm-cab strong { font-size: 18px; }
+  .ll-adm-cab .ll-borrar { margin-left: auto; }
+  .ll-adm-pres { margin: 6px 0 8px; font-size: 15px; color: var(--gris); }
+  .ll-adm-pres.ok { color: var(--azul-txt); }
+  .ll-adm-pasos { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 6px; padding: 0; list-style: none; }
+  .ll-adm-pasos li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 5px; border-radius: 999px; background: var(--sup2); border: 1px solid var(--linea); font-size: 14px; color: var(--gris); }
+  .ll-adm-pasos i { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 2px solid #4A4D55; }
+  .ll-adm-pasos i svg { width: 11px; height: 11px; }
+  .ll-adm-pasos li.ok { color: var(--tinta); }
+  .ll-adm-pasos li.ok i { background: #5BD49A; border-color: #5BD49A; color: #0d0e10; }
+  .ll-adm-pasos li.aca { border-color: var(--naranja); color: var(--tinta); }
 </style>
 </head>
 <body>

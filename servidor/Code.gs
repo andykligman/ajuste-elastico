@@ -92,6 +92,9 @@ function manejar(d) {
       }
       case 'auth.salir': borrarSesion(d.token); return { ok: true };
 
+      /* ----- Link de la llamada: cada prospecto avisa hasta dónde llegó (sin cuenta) ----- */
+      case 'llamada.guardar': return guardarLlamada(d);
+
       /* ----- Alumnos: su mapa ----- */
       case 'alumno.get': { const a = publico(alumnoDeSesion(d.token).datos); a.clases = clasesDe(a.codigo); return { alumno: a }; }
       case 'alumno.guardar': {
@@ -138,7 +141,13 @@ function manejar(d) {
         validarPanel(d.clave);
         { const cl = leerClases();
           return { alumnos: todos().map(x => { const a = publico(x.datos, true); a.clases = cl.filter(c => c.codigo === a.codigo && c.estado === 'publicada').map(paraAlumno); return a; }),
-                   propuestas: propuestasPendientes(), borradores: cl.filter(c => c.estado === 'borrador') }; }
+                   propuestas: propuestasPendientes(), borradores: cl.filter(c => c.estado === 'borrador'), llamadas: leerLlamadas() }; }
+      case 'admin.llamadaBorrar': {
+        validarPanel(d.clave);
+        const l = leerLlamadas().find(x => x.id === String(d.id));
+        if (l) SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_LLAMADAS).deleteRow(l._fila);
+        return { ok: true };
+      }
       case 'admin.clase': {
         // Publicar (o no) el resumen de una clase en el aula del alumno
         validarPanel(d.clave);
@@ -590,4 +599,29 @@ function relacionar(key, resumen, nombreArch, pasos, alumnos, codigoFijo) {
     pasos: (j.pasos || []).filter(id => existe(id) && !(al && al.prog[id] && al.prog[id].hecho)),
     consejos: (j.consejos || []).map(x => ({ paso: existe(x.paso) ? x.paso : '', situacion: x.situacion || '', consejo: x.consejo || '' })).filter(x => x.consejo),
   };
+}
+
+/* =====================================================================
+   LINK DE LA LLAMADA: quién entró y hasta dónde llegó
+   ===================================================================== */
+const HOJA_LLAMADAS = 'Llamadas';
+const LLAMADA_COLS = ['id', 'nombre', 'inicio', 'act', 'pres', 'presTotal', 'paso', 'prog'];
+const PASOS_LLAMADA = ['p2', 'p3', 'p3c', 'p4', 'llt1', 'llfin', 'llt2'];
+function leerLlamadas() {
+  return leerHoja(HOJA_LLAMADAS, LLAMADA_COLS).map(l => { try { l.prog = JSON.parse(l.prog || '{}'); } catch (e) { l.prog = {}; } return l; })
+    .sort((a, b) => String(b.act).localeCompare(String(a.act)));
+}
+function guardarLlamada(d) {
+  const id = String(d.id || '');
+  if (!/^[a-z0-9]{8,24}$/.test(id)) throw new Error('Link inválido');
+  const nombre = String(d.nombre || '').trim().replace(/\s+/g, ' ').slice(0, 80);
+  if (nombre.length < 2) throw new Error('Falta el nombre');
+  const prog = {}; PASOS_LLAMADA.forEach(k => { const x = (d.prog || {})[k]; if (x && x.hecho) prog[k] = { hecho: true, t: String(x.t || '').slice(0, 10) }; });
+  const sh = hojaCon(HOJA_LLAMADAS, LLAMADA_COLS);
+  const ya = leerLlamadas().find(x => x.id === id);
+  const ahora = Utilities.formatDate(new Date(), ZONA, "yyyy-MM-dd'T'HH:mm");
+  const o = { id, nombre, inicio: ya ? ya.inicio : ahora, act: ahora, pres: Math.max(Number(d.pres) || 0, ya ? Number(ya.pres) || 0 : 0),
+              presTotal: Number(d.presTotal) || 0, paso: PASOS_LLAMADA.includes(d.paso) ? d.paso : (d.paso === 'aula' ? 'aula' : ''), prog: JSON.stringify(prog) };
+  sh.getRange(ya ? ya._fila : sh.getLastRow() + 1, 1, 1, LLAMADA_COLS.length).setNumberFormat('@').setValues([LLAMADA_COLS.map(k => String(o[k]))]);
+  return { ok: true };
 }

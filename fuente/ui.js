@@ -11,11 +11,13 @@ const esLlamada = params.has('llamada');            // quienes tienen la llamada
 const esDemo = params.has('demo') || esLlamada;
 const clavePrueba = () => esLlamada ? 'mapaAE_llamada' : esDemo ? 'mapaAE_demo' : 'mapaAE_prueba';
 const codPrueba = () => esLlamada ? '__llamada' : esDemo ? '__demo' : '__prueba';
+let vistaAdm = params.has('llamadas') ? 'llamadas' : 'alumnos';   // solapa del panel
 let DESTINO = params.has('admin') ? { alumno: params.get('alumno'), ver: params.get('ver'), prueba: params.has('prueba'), paso: params.get('paso') } : null;
 function urlAdmin() {
-  if (modo === 'admin') nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
+  if (modo === 'admin' && !(vistaAdm === 'llamadas' && !elegido)) nav(elegido && elegido !== '__nuevo' ? `?admin&alumno=${encodeURIComponent(elegido)}` : '?admin');
   else if (modo === 'admin-vista') nav(`?admin&ver=${encodeURIComponent(ST.codigo)}${abierto ? '&paso=' + abierto : ''}`);
-  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); if (esLlamada) { localStorage.setItem('mapaAE_llamada_aula', '1'); localStorage.setItem('mapaAE_llamada_paso', abierto || ''); } } catch (e) {} }
+  else if (modo === 'admin-prueba') { nav(`${esLlamada ? '?llamada&aula' : esDemo ? '?demo' : '?admin&prueba'}${abierto ? '&paso=' + abierto : ''}`); try { localStorage.setItem(clavePrueba(), JSON.stringify(ST)); if (esLlamada) { localStorage.setItem('mapaAE_llamada_aula', '1'); localStorage.setItem('mapaAE_llamada_paso', abierto || ''); } } catch (e) {} if (esLlamada) reportarLlamada(); }
+  else if (modo === 'admin' && vistaAdm === 'llamadas' && !elegido) nav('?admin&llamadas');
 }
 function aplicarDestino() {
   const d = DESTINO; if (!d) return false; DESTINO = null;
@@ -23,6 +25,7 @@ function aplicarDestino() {
   if (d.prueba) {
     let guardado = null; try { guardado = JSON.parse(localStorage.getItem(clavePrueba()) || 'null'); } catch (e) {}
     ST = guardado || Object.assign(alumnoVacio(esLlamada ? 'Invitado' : 'Alumno de prueba', 2, hoyISO()), { codigo: codPrueba(), ...(esLlamada ? { modulos: '0' } : {}) });
+    if (esLlamada && QUIEN) ST.nombre = QUIEN.nombre;
     modo = 'admin-prueba'; abierto = d.paso; renderAlumno(true); return true;
   }
   if (d.alumno && LISTA.some(x => x.codigo === d.alumno)) elegido = d.alumno;
@@ -247,7 +250,44 @@ function presVis(v, paso) {
   return `<svg class="pl-vis" viewBox="0 0 ${W} ${H}" aria-hidden="true">${s}</svg>`;
 }
 const presEst = { i: (() => { try { return Math.max(0, +localStorage.getItem('mapaAE_llamada_pres') || 0); } catch (e) { return 0; } })(), visto: false, timer: null };
-const guardarPres = () => { try { localStorage.setItem('mapaAE_llamada_pres', String(presEst.i)); } catch (e) {} };
+const guardarPres = () => { try { localStorage.setItem('mapaAE_llamada_pres', String(presEst.i)); } catch (e) {} reportarLlamada(); };
+/* Quién es el que entró al link de la llamada (nombre y apellido), y su avance para el panel */
+let QUIEN = esLlamada ? leerLocal('mapaAE_llamada_quien') : null;
+let timerLlamada = null;
+function reportarLlamada() {
+  if (!esLlamada || !QUIEN) return;
+  clearTimeout(timerLlamada);
+  timerLlamada = setTimeout(() => {
+    const enAula = modo === 'admin-prueba';
+    llamar('llamada.guardar', { id: QUIEN.id, nombre: QUIEN.nombre, pres: enAula ? PRES_LLAMADA.length : presEst.i + (presEst.visto ? 1 : 0),
+      presTotal: PRES_LLAMADA.length, paso: enAula ? (abierto || 'aula') : '', prog: enAula && ST ? ST.prog : (leerLocal(clavePrueba()) || {}).prog || {} }).catch(() => {});
+  }, 1200);
+}
+function pedirNombreLlamada(luego) {
+  modo = 'llamada';
+  app().innerHTML = `<main class="llamada-full"><div class="pl-pantalla ll-nombre">
+    <div class="ll-logo">${LOGO}</div>
+    <form class="ll-form" novalidate>
+      <h1>¿Cómo te llamás?</h1>
+      <p>Tu nombre y apellido, así sé que sos vos 😉</p>
+      <label><span>Nombre</span><input name="nombre" autocomplete="given-name" autocapitalize="words" required></label>
+      <label><span>Apellido</span><input name="apellido" autocomplete="family-name" autocapitalize="words" required></label>
+      <p class="ll-error" role="alert"></p>
+      <button class="pl-entrenar" type="submit">Seguir →</button>
+    </form><span></span></div></main>`;
+  const f = app().querySelector('form');
+  f.onsubmit = ev => {
+    ev.preventDefault();
+    const n = f.nombre.value.trim().replace(/\s+/g, ' '), a = f.apellido.value.trim().replace(/\s+/g, ' ');
+    if (n.length < 2 || a.length < 2) { f.querySelector('.ll-error').textContent = 'Poné tu nombre y tu apellido.'; (n.length < 2 ? f.nombre : f.apellido).focus(); return; }
+    const cap = t => t.replace(/(^|\s)(\p{L})/gu, (m, e, l) => e + l.toUpperCase());
+    QUIEN = { id: Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 8), nombre: cap(n) + ' ' + cap(a) };
+    guardarLocal('mapaAE_llamada_quien', QUIEN);
+    try { const st = JSON.parse(localStorage.getItem(clavePrueba()) || 'null'); if (st) { st.nombre = QUIEN.nombre; localStorage.setItem(clavePrueba(), JSON.stringify(st)); } } catch (e) {}
+    reportarLlamada(); luego();
+  };
+  setTimeout(() => f.nombre.focus(), 300);
+}
 const presUrl = i => `audio/llamada/${String(i + 1).padStart(2, '0')}.m4a?v=5`;
 const presAudio = new Audio(); presAudio.preload = 'auto'; presAudio.defaultPlaybackRate = 1; presAudio.preservesPitch = true;
 function presHTML() {
@@ -408,7 +448,7 @@ function salir() {
 
 /* ---------------- Panel de Andy ---------------- */
 let LISTA = [];
-let PROPUESTAS = [], BORRADORES = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
+let PROPUESTAS = [], BORRADORES = [], LLAMADAS = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
 let elegido = null;
 
 function pedirClave(error) {
@@ -426,11 +466,11 @@ function pedirClave(error) {
 async function abrirAdmin() {
   modo = 'admin'; document.getElementById('consulta')?.remove();
   const copia = leerLocal('mapaAE_lista');
-  if (!PROPUESTAS.length && !BORRADORES.length) { const g = leerLocal('mapaAE_prop') || {}; PROPUESTAS = g.p || []; BORRADORES = g.b || []; }
+  if (!PROPUESTAS.length && !BORRADORES.length) { const g = leerLocal('mapaAE_prop') || {}; PROPUESTAS = g.p || []; BORRADORES = g.b || []; LLAMADAS = g.l || []; }
   if (copia && !LISTA.length) { LISTA = copia; if (!aplicarDestino()) renderAdmin(); }        // al instante, con lo último que se vio
   else if (LISTA.length) renderAdmin();
   let nueva;
-  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; BORRADORES = r.borradores || []; guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES }); }
+  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; BORRADORES = r.borradores || []; LLAMADAS = r.llamadas || []; guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES, l: LLAMADAS }); }
   catch (e) {
     if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave('Clave incorrecta. Probá de nuevo.'); }
     else if (!LISTA.length) renderEntrada(e.message);
@@ -494,13 +534,44 @@ function gruposDia(filas) {
 /* Inicio del panel: primero los videos para ver, después todos los alumnos */
 let buscaAdm = '';
 const sinTildes = t => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const PASOS_LL_ADM = [['p2', 'Intervalos'], ['p3', 'A tempo'], ['p3c', 'Cuerdas'], ['p4', 'Skipping'], ['llt1', 'Testimonio Igna'], ['llfin', 'Bienvenida'], ['llt2', 'Testimonio Manu']];
+function tabsAdmHTML() {
+  const hoy = hoyISO(), nHoy = LLAMADAS.filter(l => String(l.act).startsWith(hoy)).length;
+  return `<div class="tabs-adm" role="tablist">
+    <button role="tab" data-vista-adm="alumnos" aria-selected="${vistaAdm === 'alumnos'}">${ICONO_ADM.alumnos}Alumnos</button>
+    <button role="tab" data-vista-adm="llamadas" aria-selected="${vistaAdm === 'llamadas'}">${ICONO_ADM.llamada}Llamadas ${nHoy ? `<span class="cuenta">${nHoy} hoy</span>` : `<span class="suave chico">${LLAMADAS.length}</span>`}</button></div>`;
+}
+function cuandoLl(f) {
+  const [d, h] = String(f || '').split('T'); if (!d) return '';
+  const n = diasDesde(d);
+  return (n === 0 ? 'hoy' : n === 1 ? 'ayer' : n < 7 ? `hace ${n} días` : fechaCorta(d)) + (h && n < 2 ? ' ' + h : '');
+}
+function llamadasAdmHTML() {
+  const filas = LLAMADAS.map(l => {
+    const pr = l.prog || {}, hechos = PASOS_LL_ADM.filter(([id]) => pr[id] && pr[id].hecho).length;
+    const pres = +l.pres || 0, presT = +l.presTotal || 0;
+    const presTxt = !pres ? 'No arrancó la presentación' : presT && pres >= presT ? 'Vio la presentación' : `Presentación: ${pres} de ${presT || '?'} frases`;
+    return `<article class="ll-adm ${hechos === PASOS_LL_ADM.length ? 'completo' : ''}">
+      <div class="ll-adm-cab"><strong>${esc(l.nombre)}</strong><span class="suave chico">entró ${esc(cuandoLl(l.inicio))} · último movimiento ${esc(cuandoLl(l.act))}</span>
+        <button class="link suave chico ll-borrar" data-ll-borrar="${esc(l.id)}">Borrar</button></div>
+      <p class="ll-adm-pres ${pres && presT && pres >= presT ? 'ok' : ''}">${presTxt}</p>
+      <ol class="ll-adm-pasos">${PASOS_LL_ADM.map(([id, t]) => `<li class="${pr[id] && pr[id].hecho ? 'ok' : ''} ${l.paso === id && !(pr[id] && pr[id].hecho) ? 'aca' : ''}"><i>${pr[id] && pr[id].hecho ? ICONO.check : ''}</i><span>${t}</span></li>`).join('')}</ol>
+      <p class="suave chico">${hechos} de ${PASOS_LL_ADM.length} pasos${l.paso && l.paso !== 'aula' && !(pr[l.paso] && pr[l.paso].hecho) ? ` · está en «${esc((PASOS_LL_ADM.find(x => x[0] === l.paso) || [, l.paso])[1])}»` : ''}</p>
+    </article>`;
+  }).join('');
+  return `<div class="lista-cab"><h1>Panel</h1></div>${tabsAdmHTML()}
+    <p class="suave">Los que entraron al link de la llamada (${esc(location.origin)}/?llamada) y hasta dónde llegaron. Lo más reciente arriba.</p>
+    ${filas ? `<div class="ll-adm-lista">${filas}</div>` : '<p class="suave">Todavía no entró nadie desde que se pide el nombre.</p>'}`;
+}
 function inicioAdmHTML() {
+  if (vistaAdm === 'llamadas') return llamadasAdmHTML();
   const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
   const nuevos = LISTA.flatMap(a => todosLosVideos(a).filter(x => !x.v.visto).map(x => ({ ...x, a })))
     .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
   return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
+    ${tabsAdmHTML()}
     <div class="paneles-adm">
       ${PROPUESTAS.length + BORRADORES.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length + BORRADORES.length}</span>`, propuestasHTML(PROPUESTAS, BORRADORES, true), 'panel-prop') : ''}
       ${secAdm('videos-ver', `${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : '<span class="suave chico">ninguno</span>'}`, nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
@@ -665,6 +736,7 @@ async function resolverProp(id, decision, b) {
   } catch (e) { if (li) li.classList.remove('prop-yendo'); aviso(e.message, true); return false; }
 }
 const ICONO_ADM = {
+  llamada: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h3l1.5 4-2 1.3a10 10 0 0 0 5.2 5.2l1.3-2 4 1.5v3a2 2 0 0 1-2 2A15.5 15.5 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></svg>',
   clase: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v10H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg>',
   video: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="13" height="13" rx="3"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
   link: '<svg class="ico-adm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.3 1.3"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.3-1.3"/></svg>',
@@ -784,6 +856,14 @@ function enlazarAdmin() {
     const b = ev.target.closest('button'); if (!b) return;
     const d = b.dataset;
     if (d.adm === 'prueba') { reiniciarPrueba(); return; }
+    if (d.vistaAdm) { vistaAdm = d.vistaAdm; renderAdmin(); return; }
+    if (d.llBorrar) {
+      if (!b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿Seguro? Tocá de nuevo'; return; }
+      b.closest('.ll-adm').classList.add('prop-yendo');
+      try { await llamar('admin.llamadaBorrar', { clave: claveAdmin, id: d.llBorrar }); LLAMADAS = LLAMADAS.filter(x => x.id !== d.llBorrar); renderAdmin(); }
+      catch (e) { aviso(e.message, true); renderAdmin(); }
+      return;
+    }
     if (d.prop) { b.disabled = true; if (await resolverProp(d.prop, d.decision, b)) renderAdmin(); else b.disabled = false; return; }
     if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
     if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
@@ -896,6 +976,7 @@ window.addEventListener('resize', () => {
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
   // link de la llamada: si ya había entrado al aula en este aparato, vuelve al paso donde quedó (no a la presentación)
+  if (esLlamada && !QUIEN) { pedirNombreLlamada(() => { if (params.has('aula')) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); } else inicio(); }); return; }
   if (esLlamada && !params.has('aula')) {
     let ya = null, paso = null; try { ya = localStorage.getItem('mapaAE_llamada_aula'); paso = localStorage.getItem('mapaAE_llamada_paso'); } catch (e) {}
     if (ya) { DESTINO = { prueba: true, paso: paso || null }; nav('?llamada&aula'); aplicarDestino(); return; }
