@@ -385,7 +385,7 @@ function unirPasos(actual, cambios) {
    - los pasos que en la clase quedaron hechos, para que el alumno los marque si quiere;
    - consejos que podrían sumarse al aula, que quedan como propuesta para Andy (nunca van solos al aula).
    El resumen queda como borrador en el panel: lo publicás con un toque (si editaste el Doc, se publica lo editado).
-   Corre lunes, martes, jueves y viernes a las 21. Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY y ejecutar `instalarRevisionClases`.
+   Corre todos los días a las 12, 15, 18 y 21. Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY y ejecutar `instalarRevisionClases`.
    Para probar con los últimos resúmenes sin esperar: `probarRevisionClases`.
    ===================================================================== */
 const CARPETA_RESUMENES = '1RvyO8DVeurj2Nasp4okHhR2TvfQnR7hZ';
@@ -464,15 +464,15 @@ function resolverPropuesta(id, decision) {
 /* ----- Revisión automática ----- */
 function instalarRevisionClases() {
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'revisarClases').forEach(t => ScriptApp.deleteTrigger(t));
-  // lunes, martes, jueves y viernes a las 21 (hora del proyecto: Configuración → Zona horaria, Buenos Aires)
-  [ScriptApp.WeekDay.MONDAY, ScriptApp.WeekDay.TUESDAY, ScriptApp.WeekDay.THURSDAY, ScriptApp.WeekDay.FRIDAY]
-    .forEach(dia => ScriptApp.newTrigger('revisarClases').timeBased().onWeekDay(dia).atHour(21).nearMinute(0).create());
+  // todos los días a las 12, 15, 18 y 21 (hora del proyecto: Configuración → Zona horaria, Buenos Aires).
+  // Mirar la carpeta no gasta tokens: solo se usa la API cuando hay un resumen nuevo.
+  [12, 15, 18, 21].forEach(h => ScriptApp.newTrigger('revisarClases').timeBased().everyDays(1).atHour(h).nearMinute(0).create());
   // los resúmenes que ya estaban quedan como vistos (para traer algunos viejos: probarRevisionClases)
   const it = DriveApp.getFolderById(CARPETA_RESUMENES).getFiles(), vistas = [];
   while (it.hasNext()) vistas.push(it.next().getId());
   PropertiesService.getScriptProperties().setProperty('CLASES_VISTAS', JSON.stringify(vistas.slice(-400)));
   hojaCon(HOJA_CLASES, CLASE_COLS); hojaCon(HOJA_PROPUESTAS, PROP_COLS);
-  Logger.log('Listo: lunes, martes, jueves y viernes a las 21 reviso los resúmenes nuevos. Había ' + vistas.length + ' y los dejé como vistos.');
+  Logger.log('Listo: todos los días a las 12, 15, 18 y 21 reviso los resúmenes nuevos. Había ' + vistas.length + ' y los dejé como vistos.');
 }
 function probarRevisionClases() { revisarClases(3, true); }
 
