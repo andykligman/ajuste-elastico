@@ -1611,6 +1611,36 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ic-rama .r-izq{text-anchor:start}
 .ic-ok{white-space:nowrap}
 
+/* Las clases: resumen + tareas con botón al paso */
+.clase-card{margin:22px 0 0;padding:16px 18px 14px;border:1px solid var(--linea);border-left:3px solid var(--azul);border-radius:var(--radio-m);background:var(--sup)}
+.cl-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cl-cab h2{margin:0;font:600 21px var(--display)}
+.cl-sub{margin:12px 0 4px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--azul-txt)}
+.cl-lista{margin:0;padding:0;list-style:none}
+.cl-lista li{display:flex;gap:6px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--linea)}
+.cl-lista li:first-child{border-top:0}
+.cl-tilde{flex:none;padding:2px 4px 2px 0;background:none;border:0;cursor:pointer;color:inherit}
+.cl-tilde i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:2px solid #4A4D55}
+.cl-tilde i svg{width:15px;height:15px}
+.cl-lista li.ok .cl-tilde i{border-color:#5BD49A;background:#5BD49A;color:#0d0e10}
+.cl-lista li.ok .cl-txt{color:var(--gris);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
+.cl-tarea{display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding-top:2px;min-width:0}.cl-txt{display:block}
+.cl-ir{padding:7px 13px;border-radius:999px;border:1.5px solid var(--azul);background:var(--azul-velo);color:var(--azul-txt);font:600 14.5px var(--sans);cursor:pointer;text-align:left}
+.cl-ir:hover{background:var(--azul-claro)}
+.cl-nota{font-size:13px;color:var(--naranja);font-weight:600}
+.cl-sug{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--azul-velo)}
+.cl-sug p{margin:0 0 8px;font-size:15px}
+.cl-sug button{display:inline-flex;align-items:center;gap:6px;margin:0 6px 6px 0;font-size:14px}
+.cl-sug button svg{width:15px;height:15px}
+.cl-resumen{margin-top:10px}
+.cl-resumen summary{cursor:pointer;color:var(--azul-txt);font-weight:600;font-size:15px;padding:4px 0}
+.cl-texto{font-size:16px}
+.cl-texto p{margin:8px 0}
+.cl-texto .destacado{margin-top:16px;font:600 17px var(--display);color:var(--azul-txt)}
+.cl-todas{display:block;margin-top:8px}
+.cl-todas-lista{max-width:760px;margin:0 auto;padding:4px clamp(16px,4vw,40px) 60px}
+@media (max-width:560px){.clase-card{padding:14px 14px 12px}.cl-cab h2{font-size:19px}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -1862,6 +1892,11 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .prop-consejo .prop-tipo { color: #B9A8F0; }
   .prop-bot { display: flex; gap: 6px; flex-shrink: 0; }
   .prop-yendo { opacity: .4; pointer-events: none; }
+  .prop-cab select { padding: 6px 10px; border: 1.5px solid var(--naranja); border-radius: 8px; background: var(--sup); font-size: 15px; }
+  .prop-resumen { margin: 6px 0 10px; font-size: 15px; }
+  .prop-resumen summary { cursor: pointer; color: var(--azul-txt); }
+  .prop-resumen .cl-texto { padding: 6px 0 0; }
+  .prop-grupo .fila-botones { display: flex; gap: 8px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -4292,7 +4327,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Tus clases</span></button>` : ''}</span></p>
       <h1>${esLlamada ? 'Hola!' : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
@@ -4300,6 +4335,7 @@ function vistaHTML(st, e, animar) {
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
+    ${(st.clases || []).length && !esLlamada ? claseHTML(st, st.clases[0], true) : ''}
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Te dejé</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
@@ -4358,6 +4394,63 @@ function mapaHTML(st, e) {
         </div></li>`;
     }).join('')}</ol>
   </div>`;
+}
+/* ----- Las clases: el resumen que te dejé, con las tareas conectadas a los pasos del aula ----- */
+const ICONO_CLASES = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z M8 10h8M8 13.5h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
+function claseHTML(st, c, enInicio) {
+  const hechas = claseMarcas(st, c);
+  const sugeridos = (c.pasos || []).filter(id => PASO[id] && !hecho(st, id));
+  const tareas = (c.tareas || []).map((t, i) => {
+    const ok = hechas.includes(i), p = t.paso && PASO[t.paso];
+    const ir = p ? (pasoHabilitado(st, p.id) ? `<button class="cl-ir" data-ir-paso="${esc(p.id)}">Ir al paso: ${esc(p.titulo)} ›</button>` : `<span class="cl-nota">Es del ${esc(MODULOS[MODULO_DE[p.etapa]]?.titulo || 'módulo que viene')}: te lo abro cuando arranquemos</span>`)
+      : `<span class="cl-nota">Para trabajar por tu cuenta</span>`;
+    return `<li class="${ok ? 'ok' : ''}"><button class="cl-tilde" data-clase-tarea="${esc(c.id)}:${i}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecha'}"><i>${ok ? ICONO.check : ''}</i></button>
+      <div class="cl-tarea"><span class="cl-txt">${enLinea(t.texto)}</span>${ir}</div></li>`;
+  }).join('');
+  return `<section class="clase-card${enInicio ? ' en-inicio' : ''}">
+    <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
+    ${tareas ? `<p class="cl-sub">${c === st.clases[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
+    ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
+    ${c.resumen ? `<details class="cl-resumen"><summary>Ver el resumen completo</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>` : ''}
+    ${enInicio && st.clases.length > 1 ? `<button class="link suave cl-todas" data-accion="clases">Ver todas tus clases (${st.clases.length})</button>` : ''}
+  </section>`;
+}
+function clasesHTML(st) {
+  return `<div class="mapa-zoom clases-zoom" role="dialog" aria-modal="true" aria-label="Tus clases">
+    <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Tus clases</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar">✕</button></div>
+    <div class="cl-todas-lista">${(st.clases || []).map(c => claseHTML(st, c, false)).join('')}</div></div>`;
+}
+function abrirClases() {
+  cerrarMapaZoom();
+  document.body.insertAdjacentHTML('beforeend', clasesHTML(ST));
+  document.body.classList.add('con-mapa');
+  const el = document.querySelector('.clases-zoom');
+  el.onclick = ev => { const b = ev.target.closest('button'); if (!b) return; if (b.dataset.accion === 'cerrar-mapa') cerrarMapaZoom(); else accionClase(b.dataset); };
+  el.querySelector('.mz-cerrar').focus();
+}
+function refrescarClases() {
+  const el = document.querySelector('.clases-zoom'); if (!el) return;
+  const top = el.scrollTop, abiertos = [...el.querySelectorAll('details')].map(d => d.open);
+  const tmp = document.createElement('div'); tmp.innerHTML = clasesHTML(ST);
+  el.innerHTML = tmp.firstElementChild.innerHTML;
+  el.querySelectorAll('details').forEach((d, i) => { d.open = !!abiertos[i]; });
+  el.scrollTop = top;
+}
+// devuelve true si era un botón de las clases
+function accionClase(d) {
+  if (d.irPaso) { cerrarMapaZoom(); abrirPaso(d.irPaso); return true; }
+  if (d.claseTarea) {
+    const [id, i] = d.claseTarea.split(':'), k = 'cl-' + id, pr = ST.prog[k] || { hechas: [] };
+    const l = new Set(pr.hechas || []); l.has(+i) ? l.delete(+i) : l.add(+i);
+    ST.prog[k] = { hechas: [...l].sort((a, b) => a - b), t: hoyISO() };
+    guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
+  }
+  if (d.claseHecho) {
+    const id = d.claseHecho; ST.prog[id] = Object.assign({}, ST.prog[id], { hecho: true, como: 'listo', t: hoyISO(), origen: 'clase' });
+    guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
+  }
+  return false;
 }
 function abrirMapaZoom() {
   const { e } = recomendaciones(ST, 1);
@@ -4740,6 +4833,7 @@ function enlazarAlumno() {
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined || d.evSalto !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
+    if (accionClase(d)) return;
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {
@@ -4792,6 +4886,7 @@ function enlazarAlumno() {
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') sinSaltar(() => { verTodo = true; renderAlumno(); });
     else if (d.accion === 'mapa') abrirMapaZoom();
+    else if (d.accion === 'clases') abrirClases();
     else if (d.accion === 'intro') mostrarIntro();
     else if (d.accion === 'presentacion') { presEst.i = 0; renderLlamada(); }
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();
@@ -5354,7 +5449,7 @@ function salir() {
 
 /* ---------------- Panel de Andy ---------------- */
 let LISTA = [];
-let PROPUESTAS = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
+let PROPUESTAS = [], BORRADORES = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
 let elegido = null;
 
 function pedirClave(error) {
@@ -5372,11 +5467,11 @@ function pedirClave(error) {
 async function abrirAdmin() {
   modo = 'admin'; document.getElementById('consulta')?.remove();
   const copia = leerLocal('mapaAE_lista');
-  if (!PROPUESTAS.length) PROPUESTAS = leerLocal('mapaAE_prop') || [];
+  if (!PROPUESTAS.length && !BORRADORES.length) { const g = leerLocal('mapaAE_prop') || {}; PROPUESTAS = g.p || []; BORRADORES = g.b || []; }
   if (copia && !LISTA.length) { LISTA = copia; if (!aplicarDestino()) renderAdmin(); }        // al instante, con lo último que se vio
   else if (LISTA.length) renderAdmin();
   let nueva;
-  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; guardarLocal('mapaAE_prop', PROPUESTAS); }
+  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; BORRADORES = r.borradores || []; guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES }); }
   catch (e) {
     if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave('Clave incorrecta. Probá de nuevo.'); }
     else if (!LISTA.length) renderEntrada(e.message);
@@ -5394,7 +5489,7 @@ async function abrirAdmin() {
   if (modo === 'admin-vista' && stIntacto) { const n = LISTA.find(x => x.codigo === ST.codigo); if (n) { ST = clonar(n); renderAlumno(); } return; }
   if (modo !== 'admin') return;
   if (!elegido || elegido === '__nuevo') renderAdmin();
-  else if (PROPUESTAS.some(p => p.codigo === elegido) && !$('#propAlumno')) renderAdmin();
+  else if ([...PROPUESTAS, ...BORRADORES].some(p => p.codigo === elegido) && !$('#propAlumno')) renderAdmin();
   else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
   else { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(LISTA.find(a => a.codigo === elegido)); enlazarAdmin(); } }
 }
@@ -5448,7 +5543,7 @@ function inicioAdmHTML() {
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     <div class="paneles-adm">
-      ${PROPUESTAS.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length}</span>`, propuestasHTML(PROPUESTAS, true), 'panel-prop') : ''}
+      ${PROPUESTAS.length + BORRADORES.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length + BORRADORES.length}</span>`, propuestasHTML(PROPUESTAS, BORRADORES, true), 'panel-prop') : ''}
       ${secAdm('videos-ver', `${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : '<span class="suave chico">ninguno</span>'}`, nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
           <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
           <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
@@ -5517,7 +5612,8 @@ function alumnoAdmHTML(a) {
   <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   ${a.ajustar ? `<div class="aviso-ajustar"><p><strong>Se registró solo con el link.</strong> Ajustale el nivel y la fecha de la llamada de bienvenida (abajo).</p><button class="secundario" data-adm="ajustado">Ya está</button></div>` : ''}
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
-  ${PROPUESTAS.some(p => p.codigo === a.codigo) ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.filter(p => p.codigo === a.codigo).length}</span>`, propuestasHTML(PROPUESTAS.filter(p => p.codigo === a.codigo), false), 'panel-prop')}</div>` : ''}
+  ${(() => { const P = PROPUESTAS.filter(p => p.codigo === a.codigo), B = BORRADORES.filter(c => c.codigo === a.codigo);
+    return P.length + B.length ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}De las clases <span class="cuenta">${P.length + B.length}</span>`, propuestasHTML(P, B, false), 'panel-prop')}</div>` : ''; })()}
   ${secAdm('videos', `${ICONO_ADM.video}Videos y mensaje${videosNuevos(a) ? ` <span class="cuenta">${videosNuevos(a)}</span>` : ''}`, `<section class="revision" id="revision">${revisionHTML(a)}</section>`)}
   <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
 }
@@ -5559,31 +5655,52 @@ function secAdm(id, titulo, contenido, cls = '') {
   return `<details class="sec-adm ${cls}" data-sec="${id}" ${admAbiertas.has(id) ? 'open' : ''}><summary><span>${titulo}</span></summary><div class="sec-cuerpo">${contenido}</div></details>`;
 }
 /* Propuestas que salen de las transcripciones de Tactiq: nada se aplica solo */
-const TIPO_PROP = {
-  clase: ['Clase', 'Sumar'], paso: ['Paso hecho', 'Marcar'], proxima: ['Para la próxima', 'Dejarle en el aula'],
-  traba: ['Se trabó en', 'Visto'], consejo: ['Consejo para el aula', 'Lo vemos'],
-};
-function propuestasHTML(lista, conNombre) {
+const TIPO_PROP = { clase: ['Clase', 'Sumar'], consejo: ['Consejo para el aula', 'Lo vemos'] };
+// un resumen de clase listo para publicar en el aula del alumno
+function borradorHTML(c, conNombre) {
+  const t = c.datos || {};
+  const quien = c.codigo ? (conNombre ? `<button class="enlace" data-elegir="${esc(c.codigo)}" data-nombre="${esc(sinTildes(c.nombre))}">${esc(c.nombre)}</button>` : '')
+    : `<select data-clase-de="${esc(c.id)}" aria-label="¿De quién es esta clase?"><option value="">¿De quién es? (${esc(c.nombre)})</option>${LISTA.map(a => `<option value="${esc(a.codigo)}">${esc(a.nombre)}</option>`).join('')}</select>`;
+  return `<div class="prop-grupo">
+    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))} · <a href="https://docs.google.com/document/d/${esc(c.doc)}/edit" target="_blank" rel="noopener">editar el resumen</a></span></div>
+    <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : 'Para trabajar (sin paso)'}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
+      ${(t.pasos || []).length ? `<li class="prop"><div class="prop-txt"><span class="prop-tipo">Le ofrece marcar como hechos</span><span>${t.pasos.filter(id => PASO[id]).map(id => esc(PASO[id].titulo)).join(' · ')}</span></div></li>` : ''}</ul>
+    <details class="prop-resumen"><summary>Ver el resumen</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>
+    <div class="fila-botones"><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
+  </div>`;
+}
+function propuestasHTML(lista, borradores, conNombre) {
   const grupos = {};
   lista.forEach(p => { const k = p.codigo || p.nombre; (grupos[k] = grupos[k] || []).push(p); });
-  return `<div class="prop-grupos">${Object.values(grupos).map(g => `<div class="prop-grupo">
+  return `<div class="prop-grupos">${borradores.map(c => borradorHTML(c, conNombre)).join('')}${Object.values(grupos).map(g => `<div class="prop-grupo">
     ${conNombre ? `<div class="prop-cab">${g[0].codigo ? `<button class="enlace" data-elegir="${esc(g[0].codigo)}" data-nombre="${esc(sinTildes(g[0].nombre))}">${esc(g[0].nombre)}</button>` : `<strong>${esc(g[0].nombre)}</strong>`}
-      <span class="suave chico">clase del ${esc(fechaCorta(g[0].fecha))}${g[0].archivo ? ` · <a href="${esc(g[0].archivo)}" target="_blank" rel="noopener">transcripción</a>` : ''}</span></div>` : ''}
+      <span class="suave chico">clase del ${esc(fechaCorta(g[0].fecha))}</span></div>` : ''}
     <ul class="prop-lista">${g.map(p => { const t = TIPO_PROP[p.tipo] || [p.tipo, 'Aplicar'];
-      return `<li class="prop prop-${esc(p.tipo)}"><div class="prop-txt"><span class="prop-tipo">${t[0]}${p.paso && PASO[p.paso] && p.tipo !== 'paso' ? ' · ' + esc(PASO[p.paso].titulo) : ''}</span>
+      return `<li class="prop prop-${esc(p.tipo)}"><div class="prop-txt"><span class="prop-tipo">${t[0]}${p.paso && PASO[p.paso] ? ' · ' + esc(PASO[p.paso].titulo) : ''}</span>
         <span>${esc(p.tipo === 'clase' ? 'Sumar esta clase al contador' : p.texto)}</span>${p.detalle ? `<small class="suave">${p.tipo === 'consejo' ? 'Cuándo: ' : ''}${esc(p.detalle)}</small>` : ''}</div>
         <span class="prop-bot">${p.codigo || p.tipo === 'consejo' ? `<button class="secundario prop-si" data-prop="${esc(p.id)}" data-decision="${p.tipo === 'consejo' ? 'consejo' : 'aplicar'}">${t[1]}</button>` : ''}<button class="secundario" data-prop="${esc(p.id)}" data-decision="descartar" title="Descartar" aria-label="Descartar">✕</button></span></li>`; }).join('')}</ul>
-    ${g.length > 1 && g[0].codigo ? `<button class="enlace chico" data-prop-todo="${esc(g[0].codigo)}">Aplicar todo lo de ${esc(g[0].nombre.split(' ')[0])} (menos consejos)</button>` : ''}
   </div>`).join('')}</div>
-  <p class="suave chico">Sale de las transcripciones de Tactiq. Los consejos no van directo al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde y cómo sumarlos.</p>`;
+  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, editá el resumen en el Doc y después publicalo: se publica lo editado. Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
 }
-function fechaCorta(f) { const m = String(f || '').match(/(\d{4})-(\d\d)-(\d\d)/); return m ? `${+m[3]}/${+m[2]}` : f; }
+async function resolverBorrador(id, decision, b) {
+  const c = BORRADORES.find(x => x.id === id); if (!c) return;
+  const g = b.closest('.prop-grupo'), sel = g && g.querySelector('[data-clase-de]');
+  const codigo = c.codigo || (sel && sel.value) || '';
+  if (decision === 'publicar' && !codigo) { aviso('Elegí de quién es esta clase', true); return; }
+  g.classList.add('prop-yendo'); b.textContent = decision === 'publicar' ? 'Publicando…' : '…';
+  try {
+    const r = await llamar('admin.clase', { clave: claveAdmin, id, decision, codigo: c.codigo ? '' : codigo });
+    BORRADORES = BORRADORES.filter(x => x.id !== id); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES });
+    if (r.clase) { const a = LISTA.find(x => x.codigo === r.clase.codigo); if (a) { delete r.clase.codigo; a.clases = [r.clase, ...(a.clases || []).filter(x => x.id !== r.clase.id)].sort((x, y) => String(y.fecha).localeCompare(String(x.fecha))); } }
+    renderAdmin();
+  } catch (e) { g.classList.remove('prop-yendo'); aviso(e.message, true); }
+}
 async function resolverProp(id, decision, b) {
   const p = PROPUESTAS.find(x => x.id === id); if (!p) return;
   const li = b && b.closest('li'); if (li) li.classList.add('prop-yendo');
   try {
     const r = await llamar('admin.propuesta', { clave: claveAdmin, id, decision });
-    PROPUESTAS = PROPUESTAS.filter(x => x.id !== id); guardarLocal('mapaAE_prop', PROPUESTAS);
+    PROPUESTAS = PROPUESTAS.filter(x => x.id !== id); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES });
     if (r.alumno) { const i = LISTA.findIndex(x => x.codigo === r.alumno.codigo); if (i >= 0) { LISTA[i] = r.alumno; ORIG[r.alumno.codigo] = clonar(r.alumno); } }
     return true;
   } catch (e) { if (li) li.classList.remove('prop-yendo'); aviso(e.message, true); return false; }
@@ -5709,11 +5826,8 @@ function enlazarAdmin() {
     const d = b.dataset;
     if (d.adm === 'prueba') { reiniciarPrueba(); return; }
     if (d.prop) { b.disabled = true; if (await resolverProp(d.prop, d.decision, b)) renderAdmin(); else b.disabled = false; return; }
-    if (d.propTodo) {
-      b.textContent = 'Aplicando…'; b.disabled = true;
-      for (const p of PROPUESTAS.filter(x => x.codigo === d.propTodo && x.tipo !== 'consejo')) await resolverProp(p.id, 'aplicar', null);
-      renderAdmin(); return;
-    }
+    if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
+    if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }

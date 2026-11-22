@@ -93,7 +93,7 @@ function manejar(d) {
       case 'auth.salir': borrarSesion(d.token); return { ok: true };
 
       /* ----- Alumnos: su mapa ----- */
-      case 'alumno.get': return { alumno: publico(alumnoDeSesion(d.token).datos) };
+      case 'alumno.get': { const a = publico(alumnoDeSesion(d.token).datos); a.clases = clasesDe(a.codigo); return { alumno: a }; }
       case 'alumno.guardar': {
         const a = alumnoDeSesion(d.token);
         const c = d.cambios || {};
@@ -136,7 +136,14 @@ function manejar(d) {
       /* ----- Panel de Andy ----- */
       case 'admin.lista':
         validarPanel(d.clave);
-        return { alumnos: todos().map(x => publico(x.datos, true)), propuestas: propuestasPendientes() };
+        { const cl = leerClases();
+          return { alumnos: todos().map(x => { const a = publico(x.datos, true); a.clases = cl.filter(c => c.codigo === a.codigo && c.estado === 'publicada').map(paraAlumno); return a; }),
+                   propuestas: propuestasPendientes(), borradores: cl.filter(c => c.estado === 'borrador') }; }
+      case 'admin.clase': {
+        // Publicar (o no) el resumen de una clase en el aula del alumno
+        validarPanel(d.clave);
+        return resolverClase(d.id, d.decision, d.codigo);
+      }
       case 'admin.propuesta': {
         // Aplicar o descartar una propuesta que salió de la transcripción de una clase
         validarPanel(d.clave);
@@ -370,142 +377,212 @@ function unirPasos(actual, cambios) {
 
 
 /* =====================================================================
-   CLASES → PROPUESTAS PARA EL PANEL
-   Cada hora mira las transcripciones nuevas de Tactiq (carpeta «Clases - Transcripciones») y le pide a Claude,
-   por la API, qué pasos del aula se trabajaron, qué quedó para la próxima, dónde se trabó el alumno y qué consejos
-   tuyos podrían sumarse al aula. Nada se aplica solo: queda en la hoja «Propuestas» y lo decidís desde el panel.
-   Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY (la misma clave de los resúmenes) y ejecutar
-   `instalarRevisionClases`. Para probar con las últimas clases sin esperar: `probarRevisionClases`.
+   CLASES EN EL AULA
+   Parte de los resúmenes que ya arma el proyecto «Resúmenes de clases AE» (carpeta «Clases - Resúmenes»).
+   Por cada resumen nuevo, Claude (por la API) lo relaciona con los pasos del aula:
+   - cada tarea de «Para la semana que viene» con el paso que le corresponde (en el aula sale un botón que lleva ahí),
+     o sin paso, como algo para trabajar;
+   - los pasos que en la clase quedaron hechos, para que el alumno los marque si quiere;
+   - consejos que podrían sumarse al aula, que quedan como propuesta para Andy (nunca van solos al aula).
+   El resumen queda como borrador en el panel: lo publicás con un toque (si editaste el Doc, se publica lo editado).
+   Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY y ejecutar `instalarRevisionClases`.
+   Para probar con los últimos resúmenes sin esperar: `probarRevisionClases`.
    ===================================================================== */
-const CARPETA_TRANSCRIPCIONES = '1HC4Il8coXTn7MOeJ6frV0CdxSY7qEr_m';
-const HOJA_PROPUESTAS = 'Propuestas';
-const PROP_COLS = ['id', 'fecha', 'codigo', 'nombre', 'tipo', 'paso', 'texto', 'detalle', 'estado', 'archivo'];
+const CARPETA_RESUMENES = '1RvyO8DVeurj2Nasp4okHhR2TvfQnR7hZ';
+const PUBLICAR_SOLO = false;   // true: el resumen aparece en el aula del alumno sin pasar por el panel
+const AVISAR_POR_MAIL = true;  // te avisa por mail cuando hay clases para revisar
 const MODELO_CLASES = 'claude-sonnet-5-5';
 const URL_PASOS = 'https://aula.ajuste-elastico.com/pasos.json';
-const AVISAR_POR_MAIL = true;   // te manda un mail cuando hay propuestas nuevas
+const HOJA_CLASES = 'Clases';
+const CLASE_COLS = ['id', 'codigo', 'nombre', 'fecha', 'doc', 'resumen', 'datos', 'estado', 'creada'];
+const HOJA_PROPUESTAS = 'Propuestas';
+const PROP_COLS = ['id', 'fecha', 'codigo', 'nombre', 'tipo', 'paso', 'texto', 'detalle', 'estado', 'archivo'];
 
-function hojaPropuestas() {
+/* ----- Hojas ----- */
+function hojaCon(nombre, cols) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sh = ss.getSheetByName(HOJA_PROPUESTAS);
-  if (!sh) { sh = ss.insertSheet(HOJA_PROPUESTAS); sh.getRange(1, 1, 1, PROP_COLS.length).setValues([PROP_COLS]).setFontWeight('bold'); sh.setFrozenRows(1); }
+  let sh = ss.getSheetByName(nombre);
+  if (!sh) { sh = ss.insertSheet(nombre); sh.getRange(1, 1, 1, cols.length).setValues([cols]).setFontWeight('bold'); sh.setFrozenRows(1); }
   return sh;
 }
-function propuestasPendientes() {
-  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(HOJA_PROPUESTAS);
+function leerHoja(nombre, cols) {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nombre);
   if (!sh) return [];
-  const v = sh.getDataRange().getValues(), out = [];
-  for (let i = 1; i < v.length; i++) {
-    const o = {}; PROP_COLS.forEach((k, j) => { o[k] = v[i][j] instanceof Date ? Utilities.formatDate(v[i][j], ZONA, 'yyyy-MM-dd') : String(v[i][j]); });
-    if (o.estado === 'pendiente') out.push(o);
-  }
-  return out;
+  return sh.getDataRange().getValues().slice(1).map((r, i) => {
+    const o = { _fila: i + 2 }; cols.forEach((k, j) => { o[k] = r[j] instanceof Date ? Utilities.formatDate(r[j], ZONA, 'yyyy-MM-dd') : String(r[j]); });
+    return o;
+  }).filter(o => o.id);
+}
+function leerClases() {
+  return leerHoja(HOJA_CLASES, CLASE_COLS).map(c => { try { c.datos = JSON.parse(c.datos || '{}'); } catch (e) { c.datos = {}; } return c; })
+    .sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+}
+function guardarClase(c) {
+  const sh = hojaCon(HOJA_CLASES, CLASE_COLS);
+  const fila = c._fila || sh.getLastRow() + 1;
+  const o = Object.assign({}, c, { datos: JSON.stringify(c.datos || {}) });
+  sh.getRange(fila, 1, 1, CLASE_COLS.length).setNumberFormat('@').setValues([CLASE_COLS.map(k => o[k] == null ? '' : String(o[k]))]);
+  c._fila = fila;
+}
+function paraAlumno(c) { return { id: c.id, fecha: c.fecha, resumen: c.resumen, tareas: c.datos.tareas || [], pasos: c.datos.pasos || [] }; }
+function clasesDe(codigo) { return leerClases().filter(c => c.codigo === codigo && c.estado === 'publicada').map(paraAlumno); }
+function propuestasPendientes() { return leerHoja(HOJA_PROPUESTAS, PROP_COLS).filter(o => o.estado === 'pendiente').map(o => { delete o._fila; return o; }); }
+
+/* ----- Panel: publicar resúmenes y resolver propuestas ----- */
+function resolverClase(id, decision, codigo) {
+  const c = leerClases().find(x => x.id === String(id));
+  if (!c) throw new Error('Esa clase ya no está');
+  if (codigo) { const a = buscarPor('codigo', codigo); if (!a) throw new Error('No encuentro a ese alumno'); c.codigo = codigo; c.nombre = a.datos.nombre; }
+  if (decision === 'publicar') {
+    if (!c.codigo) throw new Error('Elegí de quién es esta clase');
+    // si editaste el Doc, se publica lo editado (y se vuelve a relacionar con los pasos)
+    const txt = textoDoc(c.doc);
+    if (txt && txt !== c.resumen) {
+      c.resumen = txt;
+      const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+      if (key) { try { const r = relacionar(key, txt, c.nombre, JSON.parse(UrlFetchApp.fetch(URL_PASOS).getContentText()), todos().map(x => x.datos), c.codigo); c.datos = { tareas: r.tareas, pasos: r.pasos }; } catch (e) { Logger.log(e); } }
+    }
+    c.estado = 'publicada';
+  } else c.estado = 'descartada';
+  guardarClase(c);
+  return { ok: true, clase: c.estado === 'publicada' ? Object.assign(paraAlumno(c), { codigo: c.codigo }) : null };
 }
 function resolverPropuesta(id, decision) {
-  const sh = hojaPropuestas(), v = sh.getDataRange().getValues();
-  const i = v.findIndex((r, k) => k > 0 && String(r[0]) === String(id));
-  if (i < 0) throw new Error('Esa propuesta ya no está');
-  const o = {}; PROP_COLS.forEach((k, j) => { o[k] = String(v[i][j]); });
+  const o = leerHoja(HOJA_PROPUESTAS, PROP_COLS).find(x => x.id === String(id));
+  if (!o) throw new Error('Esa propuesta ya no está');
   let estado = 'descartada', alumno = null;
-  if (decision === 'aplicar') {
-    const a = buscarPor('codigo', o.codigo);
-    if (!a) throw new Error('No encuentro a ese alumno');
-    const al = a.datos;
-    if (o.tipo === 'paso') { const pr = al.prog[o.paso] || {}; if (!pr.hecho) al.prog[o.paso] = Object.assign(pr, { hecho: true, como: pr.como || 'listo', t: o.fecha || hoy(), origen: 'clase' }); }
-    else if (o.tipo === 'clase') { al.clase = Math.min(16, (Number(al.clase) || 0) + 1); al.claseFecha = o.fecha || hoy(); }
-    else if (o.tipo === 'proxima') { al.extras = (al.extras || []).concat([{ id: 'c' + Date.now(), titulo: o.texto, detalle: o.detalle || '', hecho: false }]); }
-    escribir(a.fila, al); alumno = publico(al, true);
-    estado = o.tipo === 'consejo' ? 'para-sumar' : 'aplicada';   // los consejos los suma Claude al aula cuando se lo pidas
-  } else if (decision === 'consejo') estado = 'para-sumar';
-  sh.getRange(i + 1, PROP_COLS.indexOf('estado') + 1).setValue(estado);
+  if (decision === 'aplicar' && o.tipo === 'clase') {
+    const a = buscarPor('codigo', o.codigo); if (!a) throw new Error('No encuentro a ese alumno');
+    a.datos.clase = Math.min(16, (Number(a.datos.clase) || 0) + 1); a.datos.claseFecha = o.fecha || hoy();
+    escribir(a.fila, a.datos); alumno = publico(a.datos, true); estado = 'aplicada';
+  } else if (decision === 'consejo' || (decision === 'aplicar' && o.tipo === 'consejo')) estado = 'para-sumar';   // los suma Claude al aula cuando se lo pidas
+  else if (decision === 'aplicar') estado = 'aplicada';
+  hojaCon(HOJA_PROPUESTAS, PROP_COLS).getRange(o._fila, PROP_COLS.indexOf('estado') + 1).setValue(estado);
   return { ok: true, estado, alumno };
 }
 
+/* ----- Revisión automática ----- */
 function instalarRevisionClases() {
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'revisarClases').forEach(t => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('revisarClases').timeBased().everyHours(1).create();
-  // las clases que ya estaban quedan como vistas, para no gastar en el pasado
-  const it = DriveApp.getFolderById(CARPETA_TRANSCRIPCIONES).getFiles(), vistas = [];
+  // los resúmenes que ya estaban quedan como vistos (para traer algunos viejos: probarRevisionClases)
+  const it = DriveApp.getFolderById(CARPETA_RESUMENES).getFiles(), vistas = [];
   while (it.hasNext()) vistas.push(it.next().getId());
   PropertiesService.getScriptProperties().setProperty('CLASES_VISTAS', JSON.stringify(vistas.slice(-400)));
-  hojaPropuestas();
-  Logger.log('Listo: cada hora reviso las transcripciones nuevas. Ya había ' + vistas.length + ' y las dejé como vistas.');
+  hojaCon(HOJA_CLASES, CLASE_COLS); hojaCon(HOJA_PROPUESTAS, PROP_COLS);
+  Logger.log('Listo: cada hora reviso los resúmenes nuevos. Había ' + vistas.length + ' y los dejé como vistos.');
 }
-function probarRevisionClases() { revisarClases(3, true); }   // procesa las 3 últimas aunque ya estén vistas
+function probarRevisionClases() { revisarClases(3, true); }
 
 function revisarClases(cuantas, forzar) {
   const props = PropertiesService.getScriptProperties();
   const key = props.getProperty('ANTHROPIC_API_KEY');
   if (!key) throw new Error('Falta la propiedad ANTHROPIC_API_KEY');
   const vistas = JSON.parse(props.getProperty('CLASES_VISTAS') || '[]');
-  const it = DriveApp.getFolderById(CARPETA_TRANSCRIPCIONES).getFiles(), nuevas = [];
+  const it = DriveApp.getFolderById(CARPETA_RESUMENES).getFiles(), nuevas = [];
   while (it.hasNext()) {
     const f = it.next();
-    if (f.getName().indexOf('🎸') < 0) continue;
+    if (f.getMimeType() !== MimeType.GOOGLE_DOCS) continue;
     if (!forzar && vistas.indexOf(f.getId()) >= 0) continue;
-    if (Date.now() - f.getLastUpdated().getTime() < 10 * 60 * 1000) continue;   // Tactiq todavía la está escribiendo
+    if (Date.now() - f.getLastUpdated().getTime() < 5 * 60 * 1000) continue;   // todavía se está escribiendo
     nuevas.push(f);
   }
   nuevas.sort((a, b) => b.getDateCreated() - a.getDateCreated());
   const lote = nuevas.slice(0, cuantas || 6);
   if (!lote.length) return;
-  const pasos = JSON.parse(UrlFetchApp.fetch(URL_PASOS, { muteHttpExceptions: true }).getContentText() || '[]');
+  const pasos = JSON.parse(UrlFetchApp.fetch(URL_PASOS).getContentText());
   const alumnos = todos().map(x => x.datos);
-  const nuevasProps = [];
+  const existentes = leerClases(), aviso = [];
   lote.forEach(f => {
     try {
-      const texto = f.getMimeType() === MimeType.GOOGLE_DOCS ? DocumentApp.openById(f.getId()).getBody().getText() : f.getBlob().getDataAsString();
-      if (texto.length > 400) nuevasProps.push.apply(nuevasProps, analizarClase(key, f, texto, pasos, alumnos));
+      const resumen = textoDoc(f.getId());
+      if (resumen.length < 200) return;
+      const nombreArch = f.getName().replace(/^Resumen\s*-\s*/i, '');
+      const fecha = (f.getName().match(/\d{4}-\d{2}-\d{2}/) || [Utilities.formatDate(f.getDateCreated(), ZONA, 'yyyy-MM-dd')])[0];
+      const r = relacionar(key, resumen, nombreArch, pasos, alumnos, null);
+      const al = alumnos.find(a => a.codigo === r.codigo) || null;
+      const c = existentes.find(x => x.doc === f.getId()) || { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), creada: hoy() };
+      Object.assign(c, { codigo: al ? al.codigo : '', nombre: al ? al.nombre : nombreArch.replace(/\s*-\s*\d{4}-\d{2}-\d{2}.*/, ''), fecha, doc: f.getId(), resumen,
+        datos: { tareas: r.tareas, pasos: r.pasos }, estado: c.estado === 'publicada' ? 'publicada' : (PUBLICAR_SOLO && al ? 'publicada' : 'borrador') });
+      guardarClase(c);
+      const props_ = [];
+      if (al && c.creada === hoy()) props_.push({ tipo: 'clase', texto: 'Sumar la clase del ' + fecha });
+      (r.consejos || []).forEach(x => props_.push({ tipo: 'consejo', paso: x.paso || '', texto: x.consejo, detalle: x.situacion || '' }));
+      if (props_.length) {
+        const sh = hojaCon(HOJA_PROPUESTAS, PROP_COLS);
+        sh.getRange(sh.getLastRow() + 1, 1, props_.length, PROP_COLS.length).setNumberFormat('@').setValues(props_.map(o => {
+          const fila = Object.assign({ id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), fecha, codigo: c.codigo, nombre: c.nombre, estado: 'pendiente', archivo: f.getUrl() }, o);
+          return PROP_COLS.map(k => fila[k] || '');
+        }));
+      }
+      aviso.push(c.nombre + (c.estado === 'publicada' ? ' (ya publicada)' : ''));
       if (vistas.indexOf(f.getId()) < 0) vistas.push(f.getId());
     } catch (e) { Logger.log('Error con ' + f.getName() + ': ' + e); }
   });
   props.setProperty('CLASES_VISTAS', JSON.stringify(vistas.slice(-400)));
-  if (nuevasProps.length) {
-    const sh = hojaPropuestas();
-    sh.getRange(sh.getLastRow() + 1, 1, nuevasProps.length, PROP_COLS.length).setNumberFormat('@').setValues(nuevasProps.map(o => PROP_COLS.map(k => o[k] || '')));
-    if (AVISAR_POR_MAIL) {
-      const porAlumno = {}; nuevasProps.forEach(o => { porAlumno[o.nombre || 'Sin identificar'] = (porAlumno[o.nombre || 'Sin identificar'] || 0) + 1; });
-      MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'Aula AE: ' + nuevasProps.length + ' cosas para revisar de las clases',
-        'Salieron de las clases:\n\n' + Object.keys(porAlumno).map(n => '- ' + n + ': ' + porAlumno[n]).join('\n') + '\n\nRevisalas en el panel: ' + ORIGENES[0] + '/?admin');
-    }
-  }
+  if (AVISAR_POR_MAIL && aviso.length) MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'Aula AE: clases para revisar',
+    'Ya están en el panel:\n\n' + aviso.map(n => '- ' + n).join('\n') + '\n\n' + ORIGENES[0] + '/?admin');
 }
 
-function analizarClase(key, archivo, transcripcion, pasos, alumnos) {
+/* El resumen del Doc, como texto con **negritas**, # títulos y listas, para mostrarlo en el aula */
+function textoDoc(id) {
+  if (!id) return '';
+  const body = DocumentApp.openById(id).getBody(), out = [];
+  for (let i = 0; i < body.getNumChildren(); i++) {
+    const el = body.getChild(i), t = el.getType();
+    if (t !== DocumentApp.ElementType.PARAGRAPH && t !== DocumentApp.ElementType.LIST_ITEM) continue;
+    const txt = el.asText(), plano = txt.getText();
+    if (!plano.trim()) { out.push(''); continue; }
+    let s = '', idx = txt.getTextAttributeIndices();
+    idx.forEach((ini, k) => {
+      const fin = k + 1 < idx.length ? idx[k + 1] : plano.length, trozo = plano.slice(ini, fin);
+      s += txt.isBold(ini) && trozo.trim() ? trozo.replace(/^(\s*)(.*?)(\s*)$/, '$1**$2**$3') : trozo;
+    });
+    s = s.replace(/\*\*\*\*/g, '');
+    const h = t === DocumentApp.ElementType.PARAGRAPH ? el.asParagraph().getHeading() : null;
+    if (h && h !== DocumentApp.ParagraphHeading.NORMAL) { out.push('# ' + plano.trim()); continue; }
+    if (t === DocumentApp.ElementType.LIST_ITEM) {
+      const li = el.asListItem(), num = [DocumentApp.GlyphType.NUMBER, DocumentApp.GlyphType.LATIN_LOWER, DocumentApp.GlyphType.ROMAN_LOWER].indexOf(li.getGlyphType()) >= 0;
+      if (num) { let n = 1; for (let j = i - 1; j >= 0 && body.getChild(j).getType() === DocumentApp.ElementType.LIST_ITEM && body.getChild(j).asListItem().getListId() === li.getListId(); j--) n++; s = n + ') ' + s; }
+      else s = '- ' + s;
+    }
+    out.push(s);
+  }
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/* Claude relaciona el resumen con los pasos del aula */
+function relacionar(key, resumen, nombreArch, pasos, alumnos, codigoFijo) {
   const lista = alumnos.map(a => {
     const hechos = Object.keys(a.prog || {}).filter(id => a.prog[id] && a.prog[id].hecho);
-    return a.codigo + ' | ' + a.nombre + ' | clases: ' + (a.clase || 0) + ' | pasos hechos: ' + (hechos.join(', ') || 'ninguno');
+    return a.codigo + ' | ' + a.nombre + ' | pasos hechos: ' + (hechos.join(', ') || 'ninguno');
   }).join('\n');
-  const catalogo = pasos.map(p => p.id + ' | M' + p.modulo + ' | ' + p.titulo + (p.consigna ? ' — ' + p.consigna : '')).join('\n');
+  const catalogo = pasos.map(p => p.id + ' | Módulo ' + p.modulo + ' | ' + p.titulo + (p.consigna ? ' — ' + p.consigna : '')).join('\n');
   const sistema = [
-    'Sos el asistente de Andy Kligman, profesor de improvisación en guitarra jazz (programa Ajuste Elástico). Leés la transcripción de una clase 1 a 1 y proponés cambios para el panel del aula virtual. Andy revisa todo antes de aplicarlo, así que sé preciso y no inventes: solo lo que se dice en la clase.',
-    'Devolvé SOLO un JSON válido, sin texto alrededor, con esta forma:',
-    '{"codigo": "código del alumno o null si no podés identificarlo", "pasos_hechos": [{"id": "id del paso", "evidencia": "frase corta de la clase que lo muestra"}], "para_la_proxima": ["tarea concreta que Andy le pidió para la próxima clase, en voz de Andy, corta, con voseo rioplatense"], "trabas": [{"paso": "id o null", "problema": "qué le costó", "lo_que_dijo_andy": "la devolución o solución que dio Andy"}], "consejos": [{"paso": "id o null", "situacion": "cuándo sirve (ej: si se traba en el cambio de acorde)", "consejo": "el consejo, en palabras de Andy, corto"}]}',
+    'Ayudás a Andy Kligman, profesor de improvisación en guitarra jazz (programa Ajuste Elástico). Te paso el resumen de una clase 1 a 1 y el catálogo de pasos de su aula virtual. Tenés que relacionar lo que dice el resumen con los pasos del aula. No inventes nada que no esté en el resumen.',
+    'Devolvé SOLO un JSON válido, sin texto alrededor:',
+    '{"codigo": "código del alumno o null", "tareas": [{"texto": "...", "paso": "id o null"}], "pasos": ["id", ...], "consejos": [{"paso": "id o null", "situacion": "...", "consejo": "..."}]}',
     'Reglas:',
-    '- codigo: identificá al alumno por el nombre del archivo, por quién habla en la transcripción y por la lista de alumnos. Si dudás entre dos, null.',
-    '- pasos_hechos: solo pasos del catálogo que el alumno ya hizo o que quedaron claramente trabajados y resueltos en la clase. No repitas los que ya figuran como hechos. Si no hay evidencia clara, no lo pongas.',
-    '- para_la_proxima: lo que Andy le dejó para practicar. Nada de logística ("te mando un video"). Como mucho 4.',
-    '- trabas: dificultades concretas que aparecieron y cómo las resolvió Andy. Como mucho 3.',
-    '- consejos: solo explicaciones de Andy que servirían a OTROS alumnos en el mismo paso (generales, no personales). Como mucho 2. Si no hay, lista vacía.',
-    '- Cifrado de acordes en notación americana (Gmaj7, E-7, G7b9).',
+    '- codigo: identificá al alumno por el nombre del archivo y la lista. Si dudás entre dos, null.',
+    '- tareas: una por cada ejercicio de «Para la semana que viene» (o la sección de tareas que tenga), en el mismo orden. "texto" es la tarea tal cual está en el resumen, sin el número del principio y sin cambiar palabras (podés sacar asteriscos sueltos que no cierren). "paso": el id del paso del aula donde se trabaja eso, solo si coincide claramente con su consigna; si es una variante o algo que el aula no tiene, null. Si la sección empieza con una frase general (cambio de módulo, algo en stand by) va como primera tarea con paso null.',
+    '- pasos: ids de pasos del catálogo que por lo que dice el resumen el alumno ya tiene resueltos (lo dejó atrás, ya lo domina, pasa a lo siguiente). No pongas los que ya figuran como hechos ni los que son tarea para la semana. Si no hay evidencia clara, lista vacía.',
+    '- consejos: como mucho 2 explicaciones de Andy (de «Problemas y devoluciones» o «Ideas para llevarse») que servirían a OTROS alumnos en un paso del aula. Cortas, en sus palabras, voseo. Si no hay, lista vacía.',
   ].join('\n');
-  const usuario = 'Archivo: ' + archivo.getName() + ' (' + Utilities.formatDate(archivo.getDateCreated(), ZONA, 'yyyy-MM-dd') + ')\n\nALUMNOS:\n' + lista + '\n\nCATÁLOGO DE PASOS DEL AULA:\n' + catalogo + '\n\nTRANSCRIPCIÓN:\n' + transcripcion.slice(0, 120000);
+  const usuario = 'Archivo: ' + nombreArch + '\n' + (codigoFijo ? 'El alumno es: ' + codigoFijo + '\n' : '') + '\nALUMNOS:\n' + lista + '\n\nCATÁLOGO DE PASOS DEL AULA:\n' + catalogo + '\n\nRESUMEN DE LA CLASE:\n' + resumen;
   const r = UrlFetchApp.fetch('https://api.anthropic.com/v1/messages', {
     method: 'post', contentType: 'application/json', muteHttpExceptions: true,
     headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-    payload: JSON.stringify({ model: MODELO_CLASES, max_tokens: 2500, system: sistema, messages: [{ role: 'user', content: usuario }] }),
+    payload: JSON.stringify({ model: MODELO_CLASES, max_tokens: 3000, system: sistema, messages: [{ role: 'user', content: usuario }] }),
   });
   if (r.getResponseCode() !== 200) throw new Error('API ' + r.getResponseCode() + ': ' + r.getContentText().slice(0, 300));
   const txt = JSON.parse(r.getContentText()).content.map(c => c.text || '').join('');
   const j = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
-  const al = alumnos.find(a => a.codigo === j.codigo) || null;
-  const fecha = Utilities.formatDate(archivo.getDateCreated(), ZONA, 'yyyy-MM-dd');
-  const base = { fecha, codigo: al ? al.codigo : '', nombre: al ? al.nombre : archivo.getName().replace('🎸', '').trim() + ' (sin identificar)', estado: 'pendiente', archivo: archivo.getUrl() };
-  const out = [], idp = () => 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const existe = id => pasos.some(p => p.id === id);
-  if (al) out.push(Object.assign({}, base, { id: idp(), tipo: 'clase', texto: 'Sumar la clase del ' + fecha }));
-  (j.pasos_hechos || []).forEach(x => { if (existe(x.id) && !(al && al.prog[x.id] && al.prog[x.id].hecho)) out.push(Object.assign({}, base, { id: idp(), tipo: 'paso', paso: x.id, texto: (pasos.find(p => p.id === x.id) || {}).titulo, detalle: x.evidencia || '' })); });
-  (j.para_la_proxima || []).forEach(t => out.push(Object.assign({}, base, { id: idp(), tipo: 'proxima', texto: t })));
-  (j.trabas || []).forEach(x => out.push(Object.assign({}, base, { id: idp(), tipo: 'traba', paso: existe(x.paso) ? x.paso : '', texto: x.problema, detalle: x.lo_que_dijo_andy || '' })));
-  (j.consejos || []).forEach(x => out.push(Object.assign({}, base, { id: idp(), tipo: 'consejo', paso: existe(x.paso) ? x.paso : '', texto: x.consejo, detalle: x.situacion || '' })));
-  return out;
+  const al = alumnos.find(a => a.codigo === (codigoFijo || j.codigo));
+  return {
+    codigo: al ? al.codigo : null,
+    tareas: (j.tareas || []).filter(t => t && t.texto).map(t => ({ texto: String(t.texto).trim(), paso: existe(t.paso) ? t.paso : null })),
+    pasos: (j.pasos || []).filter(id => existe(id) && !(al && al.prog[id] && al.prog[id].hecho)),
+    consejos: (j.consejos || []).map(x => ({ paso: existe(x.paso) ? x.paso : '', situacion: x.situacion || '', consejo: x.consejo || '' })).filter(x => x.consejo),
+  };
 }

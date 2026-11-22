@@ -408,7 +408,7 @@ function salir() {
 
 /* ---------------- Panel de Andy ---------------- */
 let LISTA = [];
-let PROPUESTAS = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
+let PROPUESTAS = [], BORRADORES = [];   // lo que salió de las transcripciones de las clases, para aplicar o descartar
 let elegido = null;
 
 function pedirClave(error) {
@@ -426,11 +426,11 @@ function pedirClave(error) {
 async function abrirAdmin() {
   modo = 'admin'; document.getElementById('consulta')?.remove();
   const copia = leerLocal('mapaAE_lista');
-  if (!PROPUESTAS.length) PROPUESTAS = leerLocal('mapaAE_prop') || [];
+  if (!PROPUESTAS.length && !BORRADORES.length) { const g = leerLocal('mapaAE_prop') || {}; PROPUESTAS = g.p || []; BORRADORES = g.b || []; }
   if (copia && !LISTA.length) { LISTA = copia; if (!aplicarDestino()) renderAdmin(); }        // al instante, con lo último que se vio
   else if (LISTA.length) renderAdmin();
   let nueva;
-  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; guardarLocal('mapaAE_prop', PROPUESTAS); }
+  try { const r = await llamar('admin.lista', { clave: claveAdmin }); nueva = r.alumnos; PROPUESTAS = r.propuestas || []; BORRADORES = r.borradores || []; guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES }); }
   catch (e) {
     if (/Clave incorrecta/.test(e.message)) { guardarClaveAdmin(''); LISTA = []; pedirClave('Clave incorrecta. Probá de nuevo.'); }
     else if (!LISTA.length) renderEntrada(e.message);
@@ -448,7 +448,7 @@ async function abrirAdmin() {
   if (modo === 'admin-vista' && stIntacto) { const n = LISTA.find(x => x.codigo === ST.codigo); if (n) { ST = clonar(n); renderAlumno(); } return; }
   if (modo !== 'admin') return;
   if (!elegido || elegido === '__nuevo') renderAdmin();
-  else if (PROPUESTAS.some(p => p.codigo === elegido) && !$('#propAlumno')) renderAdmin();
+  else if ([...PROPUESTAS, ...BORRADORES].some(p => p.codigo === elegido) && !$('#propAlumno')) renderAdmin();
   else if (!LISTA.some(a => a.codigo === elegido)) { elegido = null; renderAdmin(); }
   else { const r = $('#detResto'); if (r) { r.innerHTML = restoHTML(LISTA.find(a => a.codigo === elegido)); enlazarAdmin(); } }
 }
@@ -502,7 +502,7 @@ function inicioAdmHTML() {
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     <div class="paneles-adm">
-      ${PROPUESTAS.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length}</span>`, propuestasHTML(PROPUESTAS, true), 'panel-prop') : ''}
+      ${PROPUESTAS.length + BORRADORES.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length + BORRADORES.length}</span>`, propuestasHTML(PROPUESTAS, BORRADORES, true), 'panel-prop') : ''}
       ${secAdm('videos-ver', `${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : '<span class="suave chico">ninguno</span>'}`, nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
           <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
           <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
@@ -571,7 +571,8 @@ function alumnoAdmHTML(a) {
   <div class="det-cab"><h2>${esc(a.nombre)}</h2><span class="estado-chip t-${e.tipo}">${etiquetaAdmin(e)}</span></div>
   ${a.ajustar ? `<div class="aviso-ajustar"><p><strong>Se registró solo con el link.</strong> Ajustale el nivel y la fecha de la llamada de bienvenida (abajo).</p><button class="secundario" data-adm="ajustado">Ya está</button></div>` : ''}
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
-  ${PROPUESTAS.some(p => p.codigo === a.codigo) ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.filter(p => p.codigo === a.codigo).length}</span>`, propuestasHTML(PROPUESTAS.filter(p => p.codigo === a.codigo), false), 'panel-prop')}</div>` : ''}
+  ${(() => { const P = PROPUESTAS.filter(p => p.codigo === a.codigo), B = BORRADORES.filter(c => c.codigo === a.codigo);
+    return P.length + B.length ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}De las clases <span class="cuenta">${P.length + B.length}</span>`, propuestasHTML(P, B, false), 'panel-prop')}</div>` : ''; })()}
   ${secAdm('videos', `${ICONO_ADM.video}Videos y mensaje${videosNuevos(a) ? ` <span class="cuenta">${videosNuevos(a)}</span>` : ''}`, `<section class="revision" id="revision">${revisionHTML(a)}</section>`)}
   <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
 }
@@ -613,31 +614,52 @@ function secAdm(id, titulo, contenido, cls = '') {
   return `<details class="sec-adm ${cls}" data-sec="${id}" ${admAbiertas.has(id) ? 'open' : ''}><summary><span>${titulo}</span></summary><div class="sec-cuerpo">${contenido}</div></details>`;
 }
 /* Propuestas que salen de las transcripciones de Tactiq: nada se aplica solo */
-const TIPO_PROP = {
-  clase: ['Clase', 'Sumar'], paso: ['Paso hecho', 'Marcar'], proxima: ['Para la próxima', 'Dejarle en el aula'],
-  traba: ['Se trabó en', 'Visto'], consejo: ['Consejo para el aula', 'Lo vemos'],
-};
-function propuestasHTML(lista, conNombre) {
+const TIPO_PROP = { clase: ['Clase', 'Sumar'], consejo: ['Consejo para el aula', 'Lo vemos'] };
+// un resumen de clase listo para publicar en el aula del alumno
+function borradorHTML(c, conNombre) {
+  const t = c.datos || {};
+  const quien = c.codigo ? (conNombre ? `<button class="enlace" data-elegir="${esc(c.codigo)}" data-nombre="${esc(sinTildes(c.nombre))}">${esc(c.nombre)}</button>` : '')
+    : `<select data-clase-de="${esc(c.id)}" aria-label="¿De quién es esta clase?"><option value="">¿De quién es? (${esc(c.nombre)})</option>${LISTA.map(a => `<option value="${esc(a.codigo)}">${esc(a.nombre)}</option>`).join('')}</select>`;
+  return `<div class="prop-grupo">
+    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))} · <a href="https://docs.google.com/document/d/${esc(c.doc)}/edit" target="_blank" rel="noopener">editar el resumen</a></span></div>
+    <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : 'Para trabajar (sin paso)'}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
+      ${(t.pasos || []).length ? `<li class="prop"><div class="prop-txt"><span class="prop-tipo">Le ofrece marcar como hechos</span><span>${t.pasos.filter(id => PASO[id]).map(id => esc(PASO[id].titulo)).join(' · ')}</span></div></li>` : ''}</ul>
+    <details class="prop-resumen"><summary>Ver el resumen</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>
+    <div class="fila-botones"><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
+  </div>`;
+}
+function propuestasHTML(lista, borradores, conNombre) {
   const grupos = {};
   lista.forEach(p => { const k = p.codigo || p.nombre; (grupos[k] = grupos[k] || []).push(p); });
-  return `<div class="prop-grupos">${Object.values(grupos).map(g => `<div class="prop-grupo">
+  return `<div class="prop-grupos">${borradores.map(c => borradorHTML(c, conNombre)).join('')}${Object.values(grupos).map(g => `<div class="prop-grupo">
     ${conNombre ? `<div class="prop-cab">${g[0].codigo ? `<button class="enlace" data-elegir="${esc(g[0].codigo)}" data-nombre="${esc(sinTildes(g[0].nombre))}">${esc(g[0].nombre)}</button>` : `<strong>${esc(g[0].nombre)}</strong>`}
-      <span class="suave chico">clase del ${esc(fechaCorta(g[0].fecha))}${g[0].archivo ? ` · <a href="${esc(g[0].archivo)}" target="_blank" rel="noopener">transcripción</a>` : ''}</span></div>` : ''}
+      <span class="suave chico">clase del ${esc(fechaCorta(g[0].fecha))}</span></div>` : ''}
     <ul class="prop-lista">${g.map(p => { const t = TIPO_PROP[p.tipo] || [p.tipo, 'Aplicar'];
-      return `<li class="prop prop-${esc(p.tipo)}"><div class="prop-txt"><span class="prop-tipo">${t[0]}${p.paso && PASO[p.paso] && p.tipo !== 'paso' ? ' · ' + esc(PASO[p.paso].titulo) : ''}</span>
+      return `<li class="prop prop-${esc(p.tipo)}"><div class="prop-txt"><span class="prop-tipo">${t[0]}${p.paso && PASO[p.paso] ? ' · ' + esc(PASO[p.paso].titulo) : ''}</span>
         <span>${esc(p.tipo === 'clase' ? 'Sumar esta clase al contador' : p.texto)}</span>${p.detalle ? `<small class="suave">${p.tipo === 'consejo' ? 'Cuándo: ' : ''}${esc(p.detalle)}</small>` : ''}</div>
         <span class="prop-bot">${p.codigo || p.tipo === 'consejo' ? `<button class="secundario prop-si" data-prop="${esc(p.id)}" data-decision="${p.tipo === 'consejo' ? 'consejo' : 'aplicar'}">${t[1]}</button>` : ''}<button class="secundario" data-prop="${esc(p.id)}" data-decision="descartar" title="Descartar" aria-label="Descartar">✕</button></span></li>`; }).join('')}</ul>
-    ${g.length > 1 && g[0].codigo ? `<button class="enlace chico" data-prop-todo="${esc(g[0].codigo)}">Aplicar todo lo de ${esc(g[0].nombre.split(' ')[0])} (menos consejos)</button>` : ''}
   </div>`).join('')}</div>
-  <p class="suave chico">Sale de las transcripciones de Tactiq. Los consejos no van directo al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde y cómo sumarlos.</p>`;
+  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, editá el resumen en el Doc y después publicalo: se publica lo editado. Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
 }
-function fechaCorta(f) { const m = String(f || '').match(/(\d{4})-(\d\d)-(\d\d)/); return m ? `${+m[3]}/${+m[2]}` : f; }
+async function resolverBorrador(id, decision, b) {
+  const c = BORRADORES.find(x => x.id === id); if (!c) return;
+  const g = b.closest('.prop-grupo'), sel = g && g.querySelector('[data-clase-de]');
+  const codigo = c.codigo || (sel && sel.value) || '';
+  if (decision === 'publicar' && !codigo) { aviso('Elegí de quién es esta clase', true); return; }
+  g.classList.add('prop-yendo'); b.textContent = decision === 'publicar' ? 'Publicando…' : '…';
+  try {
+    const r = await llamar('admin.clase', { clave: claveAdmin, id, decision, codigo: c.codigo ? '' : codigo });
+    BORRADORES = BORRADORES.filter(x => x.id !== id); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES });
+    if (r.clase) { const a = LISTA.find(x => x.codigo === r.clase.codigo); if (a) { delete r.clase.codigo; a.clases = [r.clase, ...(a.clases || []).filter(x => x.id !== r.clase.id)].sort((x, y) => String(y.fecha).localeCompare(String(x.fecha))); } }
+    renderAdmin();
+  } catch (e) { g.classList.remove('prop-yendo'); aviso(e.message, true); }
+}
 async function resolverProp(id, decision, b) {
   const p = PROPUESTAS.find(x => x.id === id); if (!p) return;
   const li = b && b.closest('li'); if (li) li.classList.add('prop-yendo');
   try {
     const r = await llamar('admin.propuesta', { clave: claveAdmin, id, decision });
-    PROPUESTAS = PROPUESTAS.filter(x => x.id !== id); guardarLocal('mapaAE_prop', PROPUESTAS);
+    PROPUESTAS = PROPUESTAS.filter(x => x.id !== id); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES });
     if (r.alumno) { const i = LISTA.findIndex(x => x.codigo === r.alumno.codigo); if (i >= 0) { LISTA[i] = r.alumno; ORIG[r.alumno.codigo] = clonar(r.alumno); } }
     return true;
   } catch (e) { if (li) li.classList.remove('prop-yendo'); aviso(e.message, true); return false; }
@@ -763,11 +785,8 @@ function enlazarAdmin() {
     const d = b.dataset;
     if (d.adm === 'prueba') { reiniciarPrueba(); return; }
     if (d.prop) { b.disabled = true; if (await resolverProp(d.prop, d.decision, b)) renderAdmin(); else b.disabled = false; return; }
-    if (d.propTodo) {
-      b.textContent = 'Aplicando…'; b.disabled = true;
-      for (const p of PROPUESTAS.filter(x => x.codigo === d.propTodo && x.tipo !== 'consejo')) await resolverProp(p.id, 'aplicar', null);
-      renderAdmin(); return;
-    }
+    if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
+    if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }

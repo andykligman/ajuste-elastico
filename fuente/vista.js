@@ -1057,7 +1057,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button></span></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Tus clases</span></button>` : ''}</span></p>
       <h1>${esLlamada ? 'Hola!' : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
@@ -1065,6 +1065,7 @@ function vistaHTML(st, e, animar) {
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
+    ${(st.clases || []).length && !esLlamada ? claseHTML(st, st.clases[0], true) : ''}
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Te dejé</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
@@ -1123,6 +1124,63 @@ function mapaHTML(st, e) {
         </div></li>`;
     }).join('')}</ol>
   </div>`;
+}
+/* ----- Las clases: el resumen que te dejé, con las tareas conectadas a los pasos del aula ----- */
+const ICONO_CLASES = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z M8 10h8M8 13.5h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
+function claseHTML(st, c, enInicio) {
+  const hechas = claseMarcas(st, c);
+  const sugeridos = (c.pasos || []).filter(id => PASO[id] && !hecho(st, id));
+  const tareas = (c.tareas || []).map((t, i) => {
+    const ok = hechas.includes(i), p = t.paso && PASO[t.paso];
+    const ir = p ? (pasoHabilitado(st, p.id) ? `<button class="cl-ir" data-ir-paso="${esc(p.id)}">Ir al paso: ${esc(p.titulo)} ›</button>` : `<span class="cl-nota">Es del ${esc(MODULOS[MODULO_DE[p.etapa]]?.titulo || 'módulo que viene')}: te lo abro cuando arranquemos</span>`)
+      : `<span class="cl-nota">Para trabajar por tu cuenta</span>`;
+    return `<li class="${ok ? 'ok' : ''}"><button class="cl-tilde" data-clase-tarea="${esc(c.id)}:${i}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecha'}"><i>${ok ? ICONO.check : ''}</i></button>
+      <div class="cl-tarea"><span class="cl-txt">${enLinea(t.texto)}</span>${ir}</div></li>`;
+  }).join('');
+  return `<section class="clase-card${enInicio ? ' en-inicio' : ''}">
+    <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
+    ${tareas ? `<p class="cl-sub">${c === st.clases[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
+    ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
+    ${c.resumen ? `<details class="cl-resumen"><summary>Ver el resumen completo</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>` : ''}
+    ${enInicio && st.clases.length > 1 ? `<button class="link suave cl-todas" data-accion="clases">Ver todas tus clases (${st.clases.length})</button>` : ''}
+  </section>`;
+}
+function clasesHTML(st) {
+  return `<div class="mapa-zoom clases-zoom" role="dialog" aria-modal="true" aria-label="Tus clases">
+    <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Tus clases</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar">✕</button></div>
+    <div class="cl-todas-lista">${(st.clases || []).map(c => claseHTML(st, c, false)).join('')}</div></div>`;
+}
+function abrirClases() {
+  cerrarMapaZoom();
+  document.body.insertAdjacentHTML('beforeend', clasesHTML(ST));
+  document.body.classList.add('con-mapa');
+  const el = document.querySelector('.clases-zoom');
+  el.onclick = ev => { const b = ev.target.closest('button'); if (!b) return; if (b.dataset.accion === 'cerrar-mapa') cerrarMapaZoom(); else accionClase(b.dataset); };
+  el.querySelector('.mz-cerrar').focus();
+}
+function refrescarClases() {
+  const el = document.querySelector('.clases-zoom'); if (!el) return;
+  const top = el.scrollTop, abiertos = [...el.querySelectorAll('details')].map(d => d.open);
+  const tmp = document.createElement('div'); tmp.innerHTML = clasesHTML(ST);
+  el.innerHTML = tmp.firstElementChild.innerHTML;
+  el.querySelectorAll('details').forEach((d, i) => { d.open = !!abiertos[i]; });
+  el.scrollTop = top;
+}
+// devuelve true si era un botón de las clases
+function accionClase(d) {
+  if (d.irPaso) { cerrarMapaZoom(); abrirPaso(d.irPaso); return true; }
+  if (d.claseTarea) {
+    const [id, i] = d.claseTarea.split(':'), k = 'cl-' + id, pr = ST.prog[k] || { hechas: [] };
+    const l = new Set(pr.hechas || []); l.has(+i) ? l.delete(+i) : l.add(+i);
+    ST.prog[k] = { hechas: [...l].sort((a, b) => a - b), t: hoyISO() };
+    guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
+  }
+  if (d.claseHecho) {
+    const id = d.claseHecho; ST.prog[id] = Object.assign({}, ST.prog[id], { hecho: true, como: 'listo', t: hoyISO(), origen: 'clase' });
+    guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
+  }
+  return false;
 }
 function abrirMapaZoom() {
   const { e } = recomendaciones(ST, 1);
@@ -1505,6 +1563,7 @@ function enlazarAlumno() {
     if (d.stopAcc) { stopAccion(d.stopId, d.stopAcc); return; }
     if (d.evCapa !== undefined || d.evPlay !== undefined || d.evGrande !== undefined || d.evSalto !== undefined) { evAccion(b, d); return; }
     if (d.plegar) { barraPlegada = d.plegar === 'cerrar'; guardarLS('ae-barra', barraPlegada ? 'plegada' : 'abierta'); renderAlumno(); return; }
+    if (accionClase(d)) return;
     if (d.abrir) abrirPaso(d.abrir);
     else if (d.seek) { if (b.classList.contains('seek-activo') && !panelCerrado()) { cerrarPanel(); return; } const [id, t] = d.seek.split(':'); seekActivar(b); abrirPanel(); asegurarYT(() => ponerVideo(id, +t || 0, true)); }
     else if (d.seg) {
@@ -1557,6 +1616,7 @@ function enlazarAlumno() {
     else if (d.accion === 'deshacer-clase') { ST.clase = Math.max(0, ST.clase - 1); guardarAlumno(); renderAlumno(); }
     else if (d.accion === 'ver-todo') sinSaltar(() => { verTodo = true; renderAlumno(); });
     else if (d.accion === 'mapa') abrirMapaZoom();
+    else if (d.accion === 'clases') abrirClases();
     else if (d.accion === 'intro') mostrarIntro();
     else if (d.accion === 'presentacion') { presEst.i = 0; renderLlamada(); }
     else if (d.accion === 'reiniciar-prueba') reiniciarPrueba();

@@ -1532,3 +1532,33 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (prefers-reduced-motion:reduce){.ic *{animation-duration:.01s!important;animation-delay:0s!important}}
 .ic-rama .r-izq{text-anchor:start}
 .ic-ok{white-space:nowrap}
+
+/* Las clases: resumen + tareas con botón al paso */
+.clase-card{margin:22px 0 0;padding:16px 18px 14px;border:1px solid var(--linea);border-left:3px solid var(--azul);border-radius:var(--radio-m);background:var(--sup)}
+.cl-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.cl-cab h2{margin:0;font:600 21px var(--display)}
+.cl-sub{margin:12px 0 4px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--azul-txt)}
+.cl-lista{margin:0;padding:0;list-style:none}
+.cl-lista li{display:flex;gap:6px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--linea)}
+.cl-lista li:first-child{border-top:0}
+.cl-tilde{flex:none;padding:2px 4px 2px 0;background:none;border:0;cursor:pointer;color:inherit}
+.cl-tilde i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:2px solid #4A4D55}
+.cl-tilde i svg{width:15px;height:15px}
+.cl-lista li.ok .cl-tilde i{border-color:#5BD49A;background:#5BD49A;color:#0d0e10}
+.cl-lista li.ok .cl-txt{color:var(--gris);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.25)}
+.cl-tarea{display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding-top:2px;min-width:0}.cl-txt{display:block}
+.cl-ir{padding:7px 13px;border-radius:999px;border:1.5px solid var(--azul);background:var(--azul-velo);color:var(--azul-txt);font:600 14.5px var(--sans);cursor:pointer;text-align:left}
+.cl-ir:hover{background:var(--azul-claro)}
+.cl-nota{font-size:13px;color:var(--naranja);font-weight:600}
+.cl-sug{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--azul-velo)}
+.cl-sug p{margin:0 0 8px;font-size:15px}
+.cl-sug button{display:inline-flex;align-items:center;gap:6px;margin:0 6px 6px 0;font-size:14px}
+.cl-sug button svg{width:15px;height:15px}
+.cl-resumen{margin-top:10px}
+.cl-resumen summary{cursor:pointer;color:var(--azul-txt);font-weight:600;font-size:15px;padding:4px 0}
+.cl-texto{font-size:16px}
+.cl-texto p{margin:8px 0}
+.cl-texto .destacado{margin-top:16px;font:600 17px var(--display);color:var(--azul-txt)}
+.cl-todas{display:block;margin-top:8px}
+.cl-todas-lista{max-width:760px;margin:0 auto;padding:4px clamp(16px,4vw,40px) 60px}
+@media (max-width:560px){.clase-card{padding:14px 14px 12px}.cl-cab h2{font-size:19px}}
