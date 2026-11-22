@@ -385,7 +385,7 @@ function unirPasos(actual, cambios) {
    - los pasos que en la clase quedaron hechos, para que el alumno los marque si quiere;
    - consejos que podrían sumarse al aula, que quedan como propuesta para Andy (nunca van solos al aula).
    El resumen queda como borrador en el panel: lo publicás con un toque (si editaste el Doc, se publica lo editado).
-   Corre todos los días a las 12, 15, 18 y 21. Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY y ejecutar `instalarRevisionClases`.
+   Corre cada hora, de 10 a 20:30. Instalación (una vez): Propiedades del script → ANTHROPIC_API_KEY y ejecutar `instalarRevisionClases`.
    Para probar con los últimos resúmenes sin esperar: `probarRevisionClases`.
    ===================================================================== */
 const CARPETA_RESUMENES = '1RvyO8DVeurj2Nasp4okHhR2TvfQnR7hZ';
@@ -464,19 +464,22 @@ function resolverPropuesta(id, decision) {
 /* ----- Revisión automática ----- */
 function instalarRevisionClases() {
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'revisarClases').forEach(t => ScriptApp.deleteTrigger(t));
-  // todos los días a las 12, 15, 18 y 21 (hora del proyecto: Configuración → Zona horaria, Buenos Aires).
+  // cada hora; revisarClases solo trabaja de 10 a 20:30 (hora de Buenos Aires).
   // Mirar la carpeta no gasta tokens: solo se usa la API cuando hay un resumen nuevo.
-  [12, 15, 18, 21].forEach(h => ScriptApp.newTrigger('revisarClases').timeBased().everyDays(1).atHour(h).nearMinute(0).create());
+  ScriptApp.newTrigger('revisarClases').timeBased().everyHours(1).create();
   // los resúmenes que ya estaban quedan como vistos (para traer algunos viejos: probarRevisionClases)
   const it = DriveApp.getFolderById(CARPETA_RESUMENES).getFiles(), vistas = [];
   while (it.hasNext()) vistas.push(it.next().getId());
   PropertiesService.getScriptProperties().setProperty('CLASES_VISTAS', JSON.stringify(vistas.slice(-400)));
   hojaCon(HOJA_CLASES, CLASE_COLS); hojaCon(HOJA_PROPUESTAS, PROP_COLS);
-  Logger.log('Listo: todos los días a las 12, 15, 18 y 21 reviso los resúmenes nuevos. Había ' + vistas.length + ' y los dejé como vistos.');
+  Logger.log('Listo: cada hora, de 10 a 20:30, reviso los resúmenes nuevos. Había ' + vistas.length + ' y los dejé como vistos.');
 }
 function probarRevisionClases() { revisarClases(3, true); }
 
 function revisarClases(cuantas, forzar) {
+  if (typeof cuantas !== 'number') cuantas = 0;   // el disparador automático pasa un evento, no un número
+  const hhmm = Number(Utilities.formatDate(new Date(), ZONA, 'HHmm'));
+  if (!forzar && (hhmm < 1000 || hhmm > 2030)) return;   // solo de 10 a 20:30
   const props = PropertiesService.getScriptProperties();
   const key = props.getProperty('ANTHROPIC_API_KEY');
   if (!key) throw new Error('Falta la propiedad ANTHROPIC_API_KEY');
