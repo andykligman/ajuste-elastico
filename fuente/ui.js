@@ -513,7 +513,7 @@ function renderAdmin() {
 /* Alumnos por día de clase, en el orden del día. Se reconocen por cómo empieza el nombre (sin tildes),
    así los que todavía no se registraron entran solos cuando lo hagan. Para cambiarlo, editar acá. */
 const HORARIO = [
-  { id: 'lunes', titulo: 'Lunes', dia: 1, alumnos: ['antonio sanchez', 'fran', 'leonardo belli', 'ger gonzalez', 'juan manuel carrasco'] },
+  { id: 'lunes', titulo: 'Lunes', dia: 1, alumnos: ['antonio sanchez', 'francisco arregui', 'fran', 'leonardo belli', 'ger gonzalez', 'juan manuel carrasco'] },
   { id: 'martes', titulo: 'Martes', dia: 2, alumnos: ['ignacio lessa', 'matias otero', 'fito ulrich', "beto d'alessandro", 'luis'] },
   { id: 'jueves', titulo: 'Jueves', dia: 4, alumnos: ['kelbin', 'nestor', 'juan francisco barbaro'] },
 ];

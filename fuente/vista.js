@@ -1129,6 +1129,19 @@ function mapaHTML(st, e) {
 const ICONO_CLASES = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z M8 10h8M8 13.5h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
 // de la clase más nueva a la más vieja, por la fecha de la clase
 const clasesOrdenadas = st => [...(st.clases || [])].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+// Los nombres de pasos entre «…» llevan al paso, si ya lo tiene abierto
+const normTit = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/&[a-z0-9#]+;/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+function conLinksPasos(html, st) {
+  return html.replace(/«([^»<]+)»/g, (m, t) => {
+    const p = PROGRAMA.pasos.find(x => normTit(x.titulo) === normTit(t));
+    return p && pasoHabilitado(st, p.id) ? `<button class="cl-paso" data-ir-paso="${esc(p.id)}">${t}</button>` : m;
+  });
+}
+// El resumen sin el título de arriba ni las tareas (las tareas ya están en la lista de arriba)
+function resumenSinTareas(t) {
+  return String(t || '').split(/^#{1,2} *Para la semana que viene.*$/m)[0]
+    .replace(/^#{1,2} *(Problemas y devoluciones|Resumen de la clase) *$/gm, '').replace(/^## /gm, '# ').trim();
+}
 const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
 function claseHTML(st, c, enInicio) {
   const hechas = claseMarcas(st, c);
@@ -1138,14 +1151,14 @@ function claseHTML(st, c, enInicio) {
     const ir = p ? (pasoHabilitado(st, p.id) ? `<button class="cl-ir" data-ir-paso="${esc(p.id)}">Ir al paso: ${esc(p.titulo)} ›</button>` : `<span class="cl-nota">Es del ${esc(MODULOS[MODULO_DE[p.etapa]]?.titulo || 'módulo que viene')}: te lo abro cuando arranquemos</span>`)
       : '';
     return `<li class="${ok ? 'ok' : ''}"><button class="cl-tilde" data-clase-tarea="${esc(c.id)}:${i}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecha'}"><i>${ok ? ICONO.check : ''}</i></button>
-      <div class="cl-tarea"><span class="cl-txt">${enLinea(t.texto)}</span>${ir}</div></li>`;
+      <div class="cl-tarea"><span class="cl-txt">${conLinksPasos(enLinea(t.texto), st)}</span>${ir}</div></li>`;
   }).join('');
   return `<section class="clase-card${enInicio ? ' en-inicio' : ''}">
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
     ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
     ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
-    ${c.resumen ? `<details class="cl-resumen"><summary>Ver el resumen completo</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>` : ''}
+    ${resumenSinTareas(c.resumen) ? `<div class="cl-resumen"><p class="cl-sub">Resumen de la clase</p><div class="cl-texto">${conLinksPasos(textoHTML(resumenSinTareas(c.resumen)), st)}</div></div>` : ''}
     ${enInicio ? `<button class="link suave cl-todas" data-accion="clases">Ver todos los resúmenes de clase (${st.clases.length})</button>` : ''}
   </section>`;
 }

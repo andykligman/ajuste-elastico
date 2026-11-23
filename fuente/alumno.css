@@ -1555,7 +1555,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .cl-sug button{display:inline-flex;align-items:center;gap:6px;margin:0 6px 6px 0;font-size:14px}
 .cl-sug button svg{width:15px;height:15px}
 .cl-resumen{margin-top:10px}
-.cl-resumen summary{cursor:pointer;color:var(--azul-txt);font-weight:600;font-size:15px;padding:4px 0}
+.cl-resumen{border-top:1px solid var(--linea, rgba(0,0,0,.08));padding-top:6px}
+.cl-paso{display:inline;padding:0;border:0;background:none;color:var(--azul-txt);font:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cl-paso:hover{color:var(--naranja)}
 .cl-texto{font-size:16px}
 .cl-texto p{margin:8px 0}
 .cl-texto .destacado{margin-top:16px;font:600 17px var(--display);color:var(--azul-txt)}
