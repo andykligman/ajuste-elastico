@@ -699,7 +699,7 @@ body.con-mapa{overflow:hidden}
 .in-doc.on{opacity:.85}.in-doc.on.foco{opacity:1}.in-escena[data-s="7"] .in-doc.on{opacity:.85}
 .hero-botones{margin-left:auto;display:flex;gap:8px}
 .hero-botones .boton-mapa{margin-left:0}
-@media (max-width:560px){.hero-botones .boton-mapa{padding:6px 11px;font-size:13px}.hero-botones .boton-mapa span{display:none}.hero-botones .boton-mapa:last-child::after{content:'Mapa'}}
+@media (max-width:560px){.hero-botones .boton-mapa{padding:6px 11px;font-size:13px}.hero-botones .boton-mapa span{display:none}.hero-botones .boton-mapa[data-accion="mapa"]::after{content:'Mapa'}.hero-botones .boton-mapa[data-accion="clases"]::after{content:'Clases'}}
 .mod-banner-chico{padding-top:14px;padding-bottom:2px}.mod-banner-chico h2{font-size:17px;color:var(--mc)}.mod-banner-chico::before{top:19px}
 .in-escena{transition:opacity .6s ease}.in-escena[data-s="0"]{opacity:0}
 .in-escena[data-s="0"]{display:none}.in-caja:has(.in-escena[data-s="0"]) .in-texto{font-size:clamp(30px,7.5vw,42px);min-height:0;margin:10px 0 30px}
@@ -1537,6 +1537,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .clase-card{margin:22px 0 0;padding:16px 18px 14px;border:1px solid var(--linea);border-left:3px solid var(--azul);border-radius:var(--radio-m);background:var(--sup)}
 .cl-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .cl-cab h2{margin:0;font:600 21px var(--display)}
+.cl-nuevo{display:inline-block;margin:0 0 6px;padding:3px 10px;border-radius:999px;background:var(--naranja);color:#fff;font:700 12px var(--sans);letter-spacing:.05em;text-transform:uppercase}
+.clase-card.es-nueva{border-color:var(--naranja);border-left-color:var(--naranja);box-shadow:0 0 0 3px color-mix(in srgb, var(--naranja) 18%, transparent)}
+.boton-mapa .punto-nuevo{display:inline-block!important;width:8px;height:8px;border-radius:50%;background:var(--naranja);margin-left:-2px}
 .cl-sub{margin:12px 0 4px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--azul-txt)}
 .cl-lista{margin:0;padding:0;list-style:none}
 .cl-lista li{display:flex;gap:6px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--linea)}

@@ -1057,7 +1057,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Resúmenes de clase</span></button>` : ''}</span></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Resúmenes de clase</span>${hayClaseNueva(st) ? '<i class="punto-nuevo" aria-label="Nuevo"></i>' : ''}</button>` : ''}</span></p>
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
@@ -1142,6 +1142,24 @@ function resumenSinTareas(t) {
   return String(t || '').split(/^#{1,2} *Para la semana que viene.*$/m)[0]
     .replace(/^#{1,2} *(Problemas y devoluciones|Resumen de la clase) *$/gm, '').replace(/^## /gm, '# ').trim();
 }
+// «Nuevo resumen de clase»: hasta que el alumno lo ve en pantalla un ratito (se guarda en su avance, así vale en todos sus dispositivos)
+const claseVista = (st, c) => !!(st.prog['cl-' + c.id] || {}).visto;
+const hayClaseNueva = st => { const c = clasesOrdenadas(st)[0]; return !!c && !claseVista(st, c); };
+let obsClase = null;
+function vigilarClaseNueva() {
+  if (obsClase) { obsClase.disconnect(); obsClase = null; }
+  const el = document.querySelector('.clase-card.es-nueva'); if (!el || modo !== 'alumno' || !('IntersectionObserver' in window)) return;
+  let t = null;
+  obsClase = new IntersectionObserver(([en]) => {
+    clearTimeout(t);
+    if (en.isIntersecting) t = setTimeout(() => {
+      const c = clasesOrdenadas(ST)[0]; if (!c || claseVista(ST, c)) return;
+      const k = 'cl-' + c.id; ST.prog[k] = Object.assign({}, ST.prog[k] || { hechas: [] }, { visto: true, t: hoyISO() });
+      obsClase && obsClase.disconnect(); obsClase = null; guardarAlumno();   // el cartel se va en el próximo render
+    }, 2500);
+  }, { threshold: 0.5 });
+  obsClase.observe(el);
+}
 const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
 function claseHTML(st, c, enInicio) {
   const hechas = claseMarcas(st, c);
@@ -1153,7 +1171,8 @@ function claseHTML(st, c, enInicio) {
     return `<li class="${ok ? 'ok' : ''}"><button class="cl-tilde" data-clase-tarea="${esc(c.id)}:${i}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecha'}"><i>${ok ? ICONO.check : ''}</i></button>
       <div class="cl-tarea"><span class="cl-txt">${conLinksPasos(enLinea(t.texto), st)}</span>${ir}</div></li>`;
   }).join('');
-  return `<section class="clase-card${enInicio ? ' en-inicio' : ''}">
+  const nueva = enInicio && !claseVista(st, c);
+  return `<section class="clase-card${enInicio ? ' en-inicio' : ''}${nueva ? ' es-nueva' : ''}">${nueva ? '<span class="cl-nuevo">Nuevo resumen de clase</span>' : ''}
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
     ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
@@ -1169,6 +1188,7 @@ function clasesHTML(st) {
 }
 function abrirClases() {
   cerrarMapaZoom();
+  if (modo === 'alumno' && hayClaseNueva(ST)) { const c = clasesOrdenadas(ST)[0], k = 'cl-' + c.id; ST.prog[k] = Object.assign({}, ST.prog[k] || { hechas: [] }, { visto: true, t: hoyISO() }); guardarAlumno(); }
   document.body.insertAdjacentHTML('beforeend', clasesHTML(ST));
   document.body.classList.add('con-mapa');
   const el = document.querySelector('.clases-zoom');
@@ -1189,7 +1209,7 @@ function accionClase(d) {
   if (d.claseTarea) {
     const [id, i] = d.claseTarea.split(':'), k = 'cl-' + id, pr = ST.prog[k] || { hechas: [] };
     const l = new Set(pr.hechas || []); l.has(+i) ? l.delete(+i) : l.add(+i);
-    ST.prog[k] = { hechas: [...l].sort((a, b) => a - b), t: hoyISO() };
+    ST.prog[k] = Object.assign({}, pr, { hechas: [...l].sort((a, b) => a - b), t: hoyISO() });
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
   }
   if (d.claseSacar) { sacarClase(d.claseSacar); return true; }
@@ -1489,6 +1509,7 @@ function renderAlumno(animar) {
   // si toca «Pasaste al módulo», que salga ya, antes de que arranquen las animaciones de abajo
   if (!introPendiente && !document.querySelector('.pase-modulo') && celebracionPendiente()) quizasCelebrar();
   requestAnimationFrame(activarAnimaciones);
+  requestAnimationFrame(vigilarClaseNueva);
   consultaHTML();
   if (!playerVid) {
     const v = (PASO[abierto] && PASO[abierto].video) || [...ORDEN].reverse().map(id => PASO[id].video).find(Boolean) || { id: 'TylWJrfPxu0' };
