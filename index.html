@@ -4362,7 +4362,7 @@ function quizasCelebrar() {
 function vistaHTML(st, e, animar) {
   const extrasPend = (st.extras || []).filter(x => !x.hecho);
   return `<header class="hero">
-      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Tus clases</span></button>` : ''}</span></p>
+      <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Resúmenes de clase</span></button>` : ''}</span></p>
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
@@ -4370,7 +4370,7 @@ function vistaHTML(st, e, animar) {
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
-    ${(st.clases || []).length && !esLlamada ? claseHTML(st, st.clases[0], true) : ''}
+    ${(st.clases || []).length && !esLlamada ? claseHTML(st, clasesOrdenadas(st)[0], true) : ''}
     ${st.nota ? `<blockquote class="nota"><p>${esc(st.nota).replace(/\n/g, '<br>')}</p><cite>Andy</cite></blockquote>` : ''}
     ${extrasPend.length ? `<section class="de-andy"><h2>Te dejé</h2>${extrasPend.map(x => `
       <label class="extra"><input type="checkbox" data-extra="${esc(x.id)}"><span><strong>${esc(x.titulo)}</strong>${x.detalle ? `<br><span class="suave">${esc(x.detalle)}</span>` : ''}</span></label>`).join('')}</section>` : ''}
@@ -4432,6 +4432,8 @@ function mapaHTML(st, e) {
 }
 /* ----- Las clases: el resumen que te dejé, con las tareas conectadas a los pasos del aula ----- */
 const ICONO_CLASES = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z M8 10h8M8 13.5h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+// de la clase más nueva a la más vieja, por la fecha de la clase
+const clasesOrdenadas = st => [...(st.clases || [])].sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
 const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
 function claseHTML(st, c, enInicio) {
   const hechas = claseMarcas(st, c);
@@ -4445,17 +4447,17 @@ function claseHTML(st, c, enInicio) {
   }).join('');
   return `<section class="clase-card${enInicio ? ' en-inicio' : ''}">
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
-    ${tareas ? `<p class="cl-sub">${c === st.clases[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
+    ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
     ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
     ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
     ${c.resumen ? `<details class="cl-resumen"><summary>Ver el resumen completo</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>` : ''}
-    ${enInicio && st.clases.length > 1 ? `<button class="link suave cl-todas" data-accion="clases">Ver todas tus clases (${st.clases.length})</button>` : ''}
+    ${enInicio ? `<button class="link suave cl-todas" data-accion="clases">Ver todos los resúmenes de clase (${st.clases.length})</button>` : ''}
   </section>`;
 }
 function clasesHTML(st) {
-  return `<div class="mapa-zoom clases-zoom" role="dialog" aria-modal="true" aria-label="Tus clases">
-    <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Tus clases</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar">✕</button></div>
-    <div class="cl-todas-lista">${(st.clases || []).map(c => claseHTML(st, c, false)).join('')}</div></div>`;
+  return `<div class="mapa-zoom clases-zoom" role="dialog" aria-modal="true" aria-label="Resúmenes de clase">
+    <div class="mz-cab"><div><small>${esc(PROGRAMA.programa)}</small><h2>Resúmenes de clase</h2></div><button class="mz-cerrar" data-accion="cerrar-mapa" aria-label="Cerrar">✕</button></div>
+    <div class="cl-todas-lista">${clasesOrdenadas(st).map(c => claseHTML(st, c, false)).join('')}</div></div>`;
 }
 function abrirClases() {
   cerrarMapaZoom();
@@ -5908,6 +5910,7 @@ async function guardarCambiosAdm(codigo) {
 }
 function aplicarLocal(destino, fresco, local) {
   const r = clonar(fresco);
+  if (!('clases' in r) && destino.clases) r.clases = destino.clases;   // el servidor no las manda al guardar: que no se pierdan
   ['prog', 'probs'].forEach(k => { if (local[k + 'Cambios']) r[k] = aplicarPasos(r[k], local[k + 'Cambios']); delete local[k + 'Cambios']; });
   Object.keys(destino).forEach(k => delete destino[k]);
   Object.assign(destino, r, local);

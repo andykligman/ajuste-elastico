@@ -820,6 +820,7 @@ async function guardarCambiosAdm(codigo) {
 }
 function aplicarLocal(destino, fresco, local) {
   const r = clonar(fresco);
+  if (!('clases' in r) && destino.clases) r.clases = destino.clases;   // el servidor no las manda al guardar: que no se pierdan
   ['prog', 'probs'].forEach(k => { if (local[k + 'Cambios']) r[k] = aplicarPasos(r[k], local[k + 'Cambios']); delete local[k + 'Cambios']; });
   Object.keys(destino).forEach(k => delete destino[k]);
   Object.assign(destino, r, local);
