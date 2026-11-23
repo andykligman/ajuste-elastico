@@ -693,7 +693,7 @@ function borradorHTML(c, conNombre) {
     : `<select data-clase-de="${esc(c.id)}" aria-label="¿De quién es esta clase?"><option value="">¿De quién es? (${esc(c.nombre)})</option>${LISTA.map(a => `<option value="${esc(a.codigo)}">${esc(a.nombre)}</option>`).join('')}</select>`;
   return `<div class="prop-grupo">
     <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))} · <a href="https://docs.google.com/document/d/${esc(c.doc)}/edit" target="_blank" rel="noopener">editar el resumen</a></span></div>
-    <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : 'Para trabajar (sin paso)'}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
+    <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : ''}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
       ${(t.pasos || []).length ? `<li class="prop"><div class="prop-txt"><span class="prop-tipo">Le ofrece marcar como hechos</span><span>${t.pasos.filter(id => PASO[id]).map(id => esc(PASO[id].titulo)).join(' · ')}</span></div></li>` : ''}</ul>
     <details class="prop-resumen"><summary>Ver el resumen</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>
     <div class="fila-botones"><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>

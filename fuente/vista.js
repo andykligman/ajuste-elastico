@@ -1134,7 +1134,7 @@ function claseHTML(st, c, enInicio) {
   const tareas = (c.tareas || []).map((t, i) => {
     const ok = hechas.includes(i), p = t.paso && PASO[t.paso];
     const ir = p ? (pasoHabilitado(st, p.id) ? `<button class="cl-ir" data-ir-paso="${esc(p.id)}">Ir al paso: ${esc(p.titulo)} ›</button>` : `<span class="cl-nota">Es del ${esc(MODULOS[MODULO_DE[p.etapa]]?.titulo || 'módulo que viene')}: te lo abro cuando arranquemos</span>`)
-      : `<span class="cl-nota">Para trabajar por tu cuenta</span>`;
+      : '';
     return `<li class="${ok ? 'ok' : ''}"><button class="cl-tilde" data-clase-tarea="${esc(c.id)}:${i}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecha'}"><i>${ok ? ICONO.check : ''}</i></button>
       <div class="cl-tarea"><span class="cl-txt">${enLinea(t.texto)}</span>${ir}</div></li>`;
   }).join('');
@@ -1142,6 +1142,7 @@ function claseHTML(st, c, enInicio) {
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === st.clases[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
     ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
+    ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
     ${c.resumen ? `<details class="cl-resumen"><summary>Ver el resumen completo</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>` : ''}
     ${enInicio && st.clases.length > 1 ? `<button class="link suave cl-todas" data-accion="clases">Ver todas tus clases (${st.clases.length})</button>` : ''}
   </section>`;
@@ -1176,11 +1177,25 @@ function accionClase(d) {
     ST.prog[k] = { hechas: [...l].sort((a, b) => a - b), t: hoyISO() };
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
   }
+  if (d.claseSacar) { sacarClase(d.claseSacar); return true; }
   if (d.claseHecho) {
     const id = d.claseHecho; ST.prog[id] = Object.assign({}, ST.prog[id], { hecho: true, como: 'listo', t: hoyISO(), origen: 'clase' });
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
   }
   return false;
+}
+async function sacarClase(id) {
+  if (modo !== 'admin-vista') return;
+  const b = document.querySelector(`[data-clase-sacar="${CSS.escape(id)}"]`);
+  // dos toques: el primero pide confirmar
+  if (b && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo para sacarlo'; setTimeout(() => { if (b.isConnected) { delete b.dataset.seguro; b.textContent = 'Sacar este resumen de su aula'; } }, 4000); return; }
+  if (b) b.textContent = 'Sacando…';
+  try {
+    await llamar('admin.clase', { clave: claveAdmin, id, decision: 'descartar' });
+    ST.clases = (ST.clases || []).filter(c => c.id !== id);
+    const a = LISTA.find(x => x.codigo === ST.codigo); if (a) a.clases = (a.clases || []).filter(c => c.id !== id);
+    cerrarMapaZoom(); sinSaltar(() => renderAlumno()); aviso('Listo, ya no lo ve');
+  } catch (e) { aviso(e.message, true); }
 }
 function abrirMapaZoom() {
   const { e } = recomendaciones(ST, 1);
