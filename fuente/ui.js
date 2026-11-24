@@ -410,6 +410,7 @@ function abrirMapa(alumno) {
   if (TOKEN) guardarLocal('mapaAE_alumno', { token: TOKEN, alumno, base: BASE });
   nav(location.pathname);
   renderAlumno(true);
+  volverDondeEstaba();
   setTimeout(quizasCelebrar, 400);
   reanudarSubidas();   // si quedó un video a medio mandar, sigue solo
 }
@@ -975,6 +976,41 @@ window.addEventListener('resize', () => {
   if ((anchoPrevio < 600) !== (window.innerWidth < 600) && ST && modo !== 'admin') renderAlumno();
   anchoPrevio = window.innerWidth;
 });
+
+/* ---------- Actualización sola (app del celu) ----------
+   Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
+   (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
+const VERSION_AULA = '__VERSION_AULA__';
+let ultimoChequeo = 0;
+function sePuedeRecargar() {
+  if (gr) return false;                                  // grabador abierto
+  if (typeof subiendo !== 'undefined' && subiendo && !subiendo.error) return false;   // video subiendo
+  if (typeof timerGuardar !== 'undefined' && $('#aviso') && /Guardando/.test($('#aviso').textContent || '')) return false;
+  if (typeof pendientesAdm !== 'undefined' && pendientesAdm.size) return false;
+  if (document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName) && document.activeElement.value) return false;   // escribiendo algo
+  return true;
+}
+async function chequearVersion() {
+  if (VERSION_AULA.startsWith('__') || Date.now() - ultimoChequeo < 15000) return;
+  ultimoChequeo = Date.now();
+  try {
+    const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const { v } = await r.json();
+    if (!v || v === VERSION_AULA || !sePuedeRecargar()) return;
+    try { sessionStorage.setItem('mapaAE_volver', JSON.stringify({ paso: modo === 'alumno' ? abierto : null, y: window.scrollY, v })); } catch (e) {}
+    location.reload();
+  } catch (e) {}
+}
+function volverDondeEstaba() {   // después de una recarga por actualización
+  let d = null; try { d = JSON.parse(sessionStorage.getItem('mapaAE_volver') || 'null'); sessionStorage.removeItem('mapaAE_volver'); } catch (e) {}
+  if (!d) return;
+  if (d.paso && modo === 'alumno' && PASO[d.paso] && d.paso !== abierto) abrirPaso(d.paso);
+  if (d.y) setTimeout(() => window.scrollTo(0, d.y), 60);
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') chequearVersion(); });
+window.addEventListener('pageshow', e => { if (e.persisted) chequearVersion(); });
+window.addEventListener('focus', () => chequearVersion());
 
 (function inicio() {
   // La app instalada abre la dirección pelada: si en este aparato está la clave del panel y no hay alumno, vuelve al panel
