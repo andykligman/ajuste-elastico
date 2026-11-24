@@ -4473,7 +4473,6 @@ function vigilarClaseNueva() {
 const claseMarcas = (st, c) => (st.prog['cl-' + c.id] || {}).hechas || [];
 function claseHTML(st, c, enInicio) {
   const hechas = claseMarcas(st, c);
-  const sugeridos = (c.pasos || []).filter(id => PASO[id] && !hecho(st, id));
   const tareas = (c.tareas || []).map((t, i) => {
     const ok = hechas.includes(i), p = t.paso && PASO[t.paso];
     const ir = p ? (pasoHabilitado(st, p.id) ? `<button class="cl-ir" data-ir-paso="${esc(p.id)}">Ir al paso: ${esc(p.titulo)} ›</button>` : `<span class="cl-nota">Es del ${esc(MODULOS[MODULO_DE[p.etapa]]?.titulo || 'módulo que viene')}: te lo abro cuando arranquemos</span>`)
@@ -4485,7 +4484,6 @@ function claseHTML(st, c, enInicio) {
   return `<section class="clase-card${enInicio ? ' en-inicio' : ''}${nueva ? ' es-nueva' : ''}">${nueva ? '<span class="cl-nuevo">Nuevo resumen de clase</span>' : ''}
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
-    ${sugeridos.length ? `<div class="cl-sug"><p>En la clase vimos que esto ya lo tenés. ¿Lo marcamos como hecho?</p>${sugeridos.map(id => `<button class="secundario" data-clase-hecho="${esc(id)}">${ICONO.check}${esc(PASO[id].titulo)}</button>`).join('')}</div>` : ''}
     ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
     ${resumenSinTareas(c.resumen) ? `<div class="cl-resumen"><p class="cl-sub">Resumen de la clase</p><div class="cl-texto">${conLinksPasos(textoHTML(resumenSinTareas(c.resumen)), st)}</div></div>` : ''}
     ${enInicio ? `<button class="link suave cl-todas" data-accion="clases">Ver todos los resúmenes de clase (${st.clases.length})</button>` : ''}
@@ -6109,7 +6107,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '68d7bb2972';
+const VERSION_AULA = 'a3742a7839';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
