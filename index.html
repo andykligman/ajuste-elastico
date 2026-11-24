@@ -5852,6 +5852,7 @@ async function resolverBorrador(id, decision, b) {
     BORRADORES = BORRADORES.filter(x => x.id !== id); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES });
     if (r.clase) { const a = LISTA.find(x => x.codigo === r.clase.codigo); if (a) { delete r.clase.codigo; a.clases = [r.clase, ...(a.clases || []).filter(x => x.id !== r.clase.id)].sort((x, y) => String(y.fecha).localeCompare(String(x.fecha))); } }
     renderAdmin();
+    if (decision === 'publicar') aviso({ enviado: 'Publicado y le llegó por mail', 'no quiere': 'Publicado (no quiere el mail)', 'sin email': 'Publicado (no tiene email cargado)', error: 'Publicado, pero el mail no salió' }[r.mail] || 'Publicado en su aula');
   } catch (e) { g.classList.remove('prop-yendo'); aviso(e.message, true); }
 }
 async function resolverProp(id, decision, b) {
@@ -5891,10 +5892,11 @@ function restoHTML(a) {
       ${pasosM.map((p, j) => { const pr = a.prog[p.id], ok = !!(pr && pr.hecho), sp = seps[j];
         return `${sp && sp.tit ? `<div class="av-grupo">${esc(sp.tit)}</div>` : sp ? '<div class="av-grupo-linea"></div>' : ''}<button class="av-paso ${ok ? 'ok como-' + (pr.como || 'listo') : ''}" data-adm-tilde="${p.id}" aria-pressed="${ok}"><i aria-hidden="true">${ok ? '✓' : ''}</i><span>${esc(p.titulo)}</span>${ok && pr.envio ? '<em title="Mandó video">🎥</em>' : ''}</button>`; }).join('')}
     </div>
-    <details class="av-mas"><summary>Fechas y pausa</summary>
+    <details class="av-mas"><summary>Fechas, pausa y mail</summary>
       <div class="aj-fila"><label>Fecha de la última clase<input type="date" data-campo="claseFecha" value="${esc(a.claseFecha || '')}"></label>
       <label>Fecha de la llamada<input type="date" data-campo="inicio" value="${esc(a.inicio || '')}"></label></div>
       <label class="check"><input type="checkbox" data-campo="pausa" ${a.pausa ? 'checked' : ''}> En pausa (sin apuro, por ejemplo si se demora el pago)</label>
+      <label class="check"><input type="checkbox" data-campo="sinMail" ${a.sinMail ? 'checked' : ''}> No mandarle el resumen de clase por mail (le llega solo al aula)</label>
     </details>`)}
 
   ${secAdm('acceso', 'Acceso', accesoHTML(a))}

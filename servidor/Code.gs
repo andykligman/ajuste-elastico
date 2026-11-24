@@ -15,7 +15,7 @@ const ZONA = 'America/Argentina/Buenos_Aires';
 const HOJA = 'Alumnos';
 const HOJA_SESIONES = 'Sesiones';
 const COLUMNAS = ['codigo', 'nombre', 'email', 'standard', 'nivel', 'inicio', 'clase', 'claseFecha', 'pausa', 'nota',
-                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion', 'modulos', 'ajustar'];
+                  'extras', 'prog', 'probs', 'act', 'hash', 'sal', 'invitacion', 'modulos', 'ajustar', 'sinMail'];
 const JSON_COLS = ['extras', 'prog', 'probs'];
 const PRIVADAS = ['hash', 'sal', 'invitacion'];      // nunca salen de la planilla
 const DIAS_SESION = 180;
@@ -322,7 +322,7 @@ function deFila(r) {
     let v = r[i];
     if (JSON_COLS.includes(k)) { try { v = v ? JSON.parse(v) : (k === 'extras' ? [] : {}); } catch (e) { v = k === 'extras' ? [] : {}; } }
     else if (k === 'nivel' || k === 'clase') v = Number(v) || (k === 'nivel' ? 2 : 0);
-    else if (k === 'pausa') v = v === true || v === 'TRUE' || v === 'true';
+    else if (k === 'pausa' || k === 'sinMail') v = v === true || v === 'TRUE' || v === 'true';
     else if (v instanceof Date) v = Utilities.formatDate(v, ZONA, 'yyyy-MM-dd');
     else v = v === null || v === undefined ? '' : String(v);
     o[k] = v;
@@ -454,7 +454,9 @@ function resolverClase(id, decision, codigo) {
     c.estado = 'publicada';
   } else c.estado = 'descartada';
   guardarClase(c);
-  return { ok: true, clase: c.estado === 'publicada' ? Object.assign(paraAlumno(c), { codigo: c.codigo }) : null };
+  let mail = '';
+  if (c.estado === 'publicada') { try { mail = mandarResumenPorMail(c); } catch (e) { mail = 'error'; Logger.log('Mail del resumen: ' + e); } }
+  return { ok: true, mail, clase: c.estado === 'publicada' ? Object.assign(paraAlumno(c), { codigo: c.codigo }) : null };
 }
 function resolverPropuesta(id, decision) {
   const o = leerHoja(HOJA_PROPUESTAS, PROP_COLS).find(x => x.id === String(id));
@@ -536,6 +538,66 @@ function revisarClases(cuantas, forzar) {
   props.setProperty('CLASES_VISTAS', JSON.stringify(vistas.slice(-400)));
   if (AVISAR_POR_MAIL && aviso.length) MailApp.sendEmail(Session.getEffectiveUser().getEmail(), 'Aula AE: clases para revisar',
     'Ya están en el panel:\n\n' + aviso.map(n => '- ' + n).join('\n') + '\n\n' + ORIGENES[0] + '/?admin');
+}
+
+/* ----- Mail con el resumen al alumno (al publicar) -----
+   Le llega una vez por clase. Si un alumno no lo quiere, en el panel: «No mandarle el resumen por mail». */
+const MAIL_RESUMENES = true;
+function mandarResumenPorMail(c) {
+  if (!MAIL_RESUMENES) return 'apagado';
+  if (c.datos && c.datos.mail) return 'ya';
+  const a = buscarPor('codigo', c.codigo); if (!a) return '';
+  const al = a.datos;
+  if (al.sinMail) return 'no quiere';
+  if (!al.email) return 'sin email';
+  // su carpeta de Drive (donde quedan los videos que manda desde el aula), compartida con él para ver
+  let carpeta = '';
+  try {
+    const f = carpetaAlumno(al);
+    if (!f.getViewers().concat(f.getEditors()).some(u => normEmail(u.getEmail()) === al.email)) f.addViewer(al.email);
+    carpeta = f.getUrl();
+  } catch (e) { Logger.log('No pude compartir la carpeta con ' + al.email + ': ' + e); }
+  const nombre = String(al.nombre || '').split(' ')[0];
+  const fecha = Utilities.formatDate(new Date(c.fecha + 'T12:00:00'), ZONA, 'dd/MM');
+  const aula = ORIGENES[0];
+  const AZ = '#3A4F7A', NA = '#E8834F', GR = '#5b6470';
+  const tareas = (c.datos.tareas || []).map(t => '<li style="margin:0 0 8px">' + mdLinea(t.texto) + '</li>').join('');
+  const resumen = mdBloque(String(c.resumen || '').split(/^#{1,2} *Para la semana que viene.*$/m)[0].replace(/^#{1,2} *(Problemas y devoluciones|Resumen de la clase) *$/gm, ''));
+  const boton = (href, txt, col) => '<a href="' + href + '" style="display:inline-block;margin:0 8px 8px 0;padding:10px 16px;border-radius:999px;background:' + col + ';color:#fff;text-decoration:none;font-weight:600">' + txt + '</a>';
+  const html = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1d232b;max-width:600px">'
+    + '<p>¡Hola ' + esc_(nombre) + '! Te dejo el resumen de la clase del ' + fecha + '.</p>'
+    + '<p>También lo tenés en el aula: aparece arriba de todo, en la tarjeta naranja que dice <b>«Nuevo resumen de clase»</b>. Y en el botón <b>«Resúmenes de clase»</b> están todos los de las clases anteriores.</p>'
+    // así se ve en el aula
+    + '<div style="margin:14px 0 18px;padding:12px 14px;border:1px solid #e3e6ea;border-radius:12px;background:#f6f7f9">'
+    +   '<div style="font-size:12px;color:' + GR + ';margin-bottom:8px">Así lo vas a ver en el aula:</div>'
+    +   '<div style="background:#fff;border:2px solid ' + NA + ';border-radius:10px;padding:10px 12px">'
+    +     '<span style="display:inline-block;padding:2px 9px;border-radius:999px;background:' + NA + ';color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em">NUEVO RESUMEN DE CLASE</span>'
+    +     '<div style="font-weight:700;font-size:17px;margin:6px 0 2px">Para esta semana</div>'
+    +     '<div style="font-size:13px;color:' + GR + '">Las tareas, para tildar cuando las hacés, y abajo el resumen de la clase</div>'
+    +   '</div>'
+    + '</div>'
+    + boton(aula, 'Entrar al aula', AZ) + (carpeta ? boton(carpeta, 'Tu carpeta de Drive', NA) : '')
+    + (carpeta ? '<p style="font-size:13px;color:' + GR + ';margin-top:2px">En tu carpeta de Drive quedan los videos que me mandás desde el aula.</p>' : '')
+    + (tareas ? '<h3 style="color:' + AZ + ';margin:22px 0 8px">Para la semana que viene</h3><ol style="padding-left:20px;margin:0">' + tareas + '</ol>' : '')
+    + (resumen ? '<h3 style="color:' + AZ + ';margin:22px 0 8px">Resumen de la clase</h3>' + resumen : '')
+    + '<p style="margin-top:26px;font-size:13px;color:' + GR + '">Si preferís no recibir este mail, avisame y te llega solo al aula.</p>'
+    + '<p>Andy</p></div>';
+  const texto = 'Hola ' + nombre + '! Te dejo el resumen de la clase del ' + fecha + '.\n\nTambién lo tenés en el aula, arriba de todo: ' + aula
+    + (carpeta ? '\nTu carpeta de Drive: ' + carpeta : '') + '\n\n' + String(c.resumen || '').replace(/\*\*/g, '')
+    + '\n\nSi preferís no recibir este mail, avisame y te llega solo al aula.\n\nAndy';
+  MailApp.sendEmail({ to: al.email, subject: 'Resumen de la clase del ' + fecha, body: texto, htmlBody: html, name: 'Andy Kligman' });
+  c.datos = Object.assign({}, c.datos, { mail: hoy() });
+  guardarClase(c);
+  return 'enviado';
+}
+function esc_(t) { return String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
+function mdLinea(t) { return esc_(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+function mdBloque(t) {
+  return String(t).split(/\n{2,}/).map(p => p.trim()).filter(Boolean).map(p => {
+    const h = p.match(/^#{1,3} +(.*)$/);
+    if (h) return '<h3 style="color:#3A4F7A;margin:18px 0 6px">' + mdLinea(h[1]) + '</h3>';
+    return '<p style="margin:0 0 12px">' + p.split('\n').map(mdLinea).join('<br>') + '</p>';
+  }).join('');
 }
 
 /* El resumen del Doc, como texto con **negritas**, # títulos y listas, para mostrarlo en el aula */
