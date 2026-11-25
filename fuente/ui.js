@@ -561,18 +561,9 @@ function filasLlamadasHTML(lista, conBorrar) {
     </article>`;
   }).join('');
 }
-let linkNoe = '';   // link sin clave para que Noe vea solo esta solapa
-function linkLlamadasNoe(c) { const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('seguimiento', c); return u.toString(); }
 function llamadasAdmHTML() {
   const filas = filasLlamadasHTML(LLAMADAS, true);
   return `<div class="lista-cab"><h1>Panel</h1></div>${tabsAdmHTML()}
-    <section class="caja-adm caja-link caja-noe"><h2>${ICONO_ADM.link}Link para Noe</h2>
-      ${linkNoe ? `<p class="suave chico">Ve solo esta lista, sin clave y sin poder borrar nada.</p>
-        <span class="fila-botones"><button class="secundario chico" data-adm="copiar-noe">Copiar link</button>
-        <a class="secundario boton chico" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Noe, acá podés ver quiénes entraron al link de la llamada y hasta dónde llegaron:\n\n' + linkNoe)}">WhatsApp</a></span>
-        <button class="link suave chico" data-adm="nuevo-noe">Cambiar el link</button>`
-      : `<p class="suave chico">Un link para que vea esta lista, sin clave y sin poder borrar nada.</p><button class="secundario chico" data-adm="ver-noe">Armar el link</button>`}
-    </section>
     <p class="suave">Los que entraron al link de la llamada (${esc(location.origin)}/?llamada) y hasta dónde llegaron. Lo más reciente arriba.</p>
     ${filas ? `<div class="ll-adm-lista">${filas}</div>` : '<p class="suave">Todavía no entró nadie desde que se pide el nombre.</p>'}`;
 }
@@ -593,6 +584,7 @@ async function renderSeguimiento(codigo) {
   }
   clearTimeout(segTimer); segTimer = setTimeout(() => { if (document.visibilityState === 'visible') renderSeguimiento(codigo); }, 60000);
 }
+let propGrande = false;   // «Resúmenes de clase» abierto en grande
 function inicioAdmHTML() {
   if (vistaAdm === 'llamadas') return llamadasAdmHTML();
   const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
@@ -614,7 +606,7 @@ function inicioAdmHTML() {
       </section>
       <div class="tablero-der">
         <section class="caja-adm caja-link">${registroAdmHTML()}</section>
-        ${nProp ? `<section class="caja-adm caja-prop"><h2>${ICONO_ADM.clase}De las clases <span class="cuenta">${nProp}</span></h2><div class="caja-scroll">${propuestasHTML(PROPUESTAS, BORRADORES, true)}</div></section>` : ''}
+        ${nProp ? `<section class="caja-adm caja-prop ${propGrande ? 'grande' : ''}"><h2>${ICONO_ADM.clase}Resúmenes de clase <span class="cuenta">${nProp}</span><button class="link suave chico prop-agrandar" data-adm="agrandar-prop">${propGrande ? '✕ Achicar' : 'Agrandar'}</button></h2><div class="caja-scroll">${propuestasHTML(PROPUESTAS, BORRADORES, true)}</div></section>` : ''}
       </div>
     </div>
     <section class="lista">
@@ -691,7 +683,7 @@ function alumnoAdmHTML(a) {
   ${a.ajustar ? `<div class="aviso-ajustar"><p><strong>Se registró solo con el link.</strong> Ajustale el nivel y la fecha de la llamada de bienvenida (abajo).</p><button class="secundario" data-adm="ajustado">Ya está</button></div>` : ''}
   <p class="suave">${esc(bajadaEstado(a, e))} ${e.pre ? `Lleva ${e.d} días desde la llamada.` : a.claseFecha ? `Tuvo la clase ${a.clase} ${haceTanto(a.claseFecha)}.` : ''}</p>
   ${(() => { const P = PROPUESTAS.filter(p => p.codigo === a.codigo), B = BORRADORES.filter(c => c.codigo === a.codigo);
-    return P.length + B.length ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}De las clases <span class="cuenta">${P.length + B.length}</span>`, propuestasHTML(P, B, false), 'panel-prop')}</div>` : ''; })()}
+    return P.length + B.length ? `<div id="propAlumno">${secAdm('prop-alumno', `${ICONO_ADM.clase}Resúmenes de clase <span class="cuenta">${P.length + B.length}</span>`, propuestasHTML(P, B, false), 'panel-prop')}</div>` : ''; })()}
   ${secAdm('videos', `${ICONO_ADM.video}Videos y mensaje${videosNuevos(a) ? ` <span class="cuenta">${videosNuevos(a)}</span>` : ''}`, `<section class="revision" id="revision">${revisionHTML(a)}</section>`)}
   <div class="det-resto" id="detResto">${restoHTML(a)}</div>`;
 }
@@ -942,14 +934,7 @@ function enlazarAdmin() {
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
     else if (d.adm === 'copiar-reg') copiar($('#msgReg').value, b, 'Copiado');
     else if (d.adm === 'copiar-link') copiar(linkReg, b, 'Copiado');
-    else if (d.adm === 'copiar-noe') copiar(linkNoe, b, 'Copiado');
-    else if (d.adm === 'ver-noe' || d.adm === 'nuevo-noe') {
-      if (d.adm === 'nuevo-noe' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
-      b.disabled = true; b.textContent = 'Un momento…';
-      try { const r = await llamar('admin.linkLlamadas', { clave: claveAdmin, nuevo: d.adm === 'nuevo-noe' });
-        linkNoe = linkLlamadasNoe(r.link); renderAdmin(); if (d.adm === 'nuevo-noe') aviso('Listo: link nuevo. El anterior ya no funciona.'); }
-      catch (e) { aviso(/Acción desconocida/.test(e.message) ? 'Falta actualizar el servidor en Apps Script.' : e.message, true); b.disabled = false; b.textContent = 'Armar el link'; }
-    }
+    else if (d.adm === 'agrandar-prop') { propGrande = !propGrande; renderAdmin(); }
     else if (d.adm === 'ver-registro' || d.adm === 'nuevo-registro') {
       if (d.adm === 'nuevo-registro' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
       b.disabled = true; b.textContent = 'Un momento…';
@@ -1071,6 +1056,7 @@ function volverDondeEstaba() {   // después de una recarga por actualización
   if (d.y) setTimeout(() => window.scrollTo(0, d.y), 60);
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') chequearVersion(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && propGrande) { propGrande = false; renderAdmin(); } });
 window.addEventListener('pageshow', e => { if (e.persisted) chequearVersion(); });
 window.addEventListener('focus', () => chequearVersion());
 
