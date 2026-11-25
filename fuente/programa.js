@@ -987,6 +987,36 @@ const PROGRAMA = {
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
+    {
+      id: 'cv2', etapa: 'curva', video: { id: 'O88LcAgiuME' },
+      grupo: 'Ejercicio 1: motivos cortos',
+      titulo: 'Motivos cortos, con el cuerpo',
+      entrega: 'video', envia: 'un video improvisando motivos cortos con el cuerpo o en una sola nota, con el metrónomo.',
+      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**. Agarrate de las unidades rítmicas: uno con una sola unidad no suena igual que uno con dos o tres, o que uno con varias corcheas.\n- Arranquen en **lugares distintos del compás**.\nGrabate, escribí el ritmo de lo que hiciste y fijate si cumplís todo eso. Si cumplís, está bien aunque no te guste cómo suena 😉\n# Mandame un video improvisando motivos con el cuerpo',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'largos', label: 'Se me pegan los motivos o me quedan muy largos', nivel: 'casi', resp: 'Fijate los silencios: entre motivo y motivo mínimo 2 pulsos, mejor 3 o más. Y adentro del motivo no más de un pulso y medio. Las primeras veces contá el silencio en voz alta, después ya sale solo.' },
+        { id: 'iguales', label: 'Me salen todos parecidos', nivel: 'casi', resp: 'Agarrate de las unidades rítmicas: uno con una sola, el siguiente con dos o tres, otro con corcheas… y arrancá cada uno en otro lugar del compás.\nSi siempre te aparecen las mismas, volvé un rato al entrenador rítmico con las unidades que no te están saliendo y después probá de nuevo.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [
+        { t: 'Doc: Tocar con motivos', url: DOC_M4 },
+        { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
+      ],
+    },
+    {
+      id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME' },
+      titulo: 'Motivos cortos, con notas',
+      entrega: 'video', envia: 'un video improvisando motivos cortos con notas. Contá en el video sobre qué armonía lo hacés.',
+      detalle: '2) Elegí un contexto armónico amigable y realizá la misma práctica pero con notas.\nEn el video lo hago sobre Fm7 · Bb7 · Ebmaj7. Lo central sigue siendo el **ritmo**: que los motivos se distingan entre sí. Si la melodía sube o baja suma, pero va después.\nFijate que:\n- No se te vaya todo a **corcheas** ahora que tenés la viola en la mano.\n- Los silencios entre motivos **no sean siempre iguales** y no arranques siempre en el mismo lugar del compás.\n- No te dejes llevar por que las notas suenen bien: si te preocupás por eso vas a lugares comunes y te olvidás de la consigna. Puede sonar medio raro y está todo bien.\nGrabate y escribí el ritmo, igual que con el cuerpo. Compará los dos: si algo que te salía con el cuerpo se perdió en la guitarra, eso es lo que hay que practicar aparte.\nEsto es la semilla de todo lo que viene en el módulo, así que métele!\n# Mandame un video improvisando motivos con notas',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió (unidades, silencios, dónde arrancan) y practicalo aparte:\n- Tocá como ritmo fijo algunos motivos que te salían con el cuerpo, en esa escala.\n- O bajá un escalón: hacelo en una sola nota, o volvé un rato al cuerpo.' },
+        { id: 'suena', label: 'Cumplo la consigna pero suena medio mal', nivel: 'listo', resp: 'Si los motivos son cortos, distintos entre sí y los silencios son variados, está bien. Las notas van mejorando con el tiempo, primero la consigna 😉' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+    },
   ],
 
   /* Lo que se espera tener ANTES de cada clase, por nivel.
