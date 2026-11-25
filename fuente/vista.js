@@ -524,8 +524,9 @@ function materialHTML(p) {
   const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
   const sueltos = resto.filter(r => !r.col);
   const tarjeta = r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`;
-  return `${nuevos.map(r => alLado(r).length ? `<div class="doc-fila">${tarjeta(r)}${alLado(r).map(recursoHTML).join('')}</div>` : tarjeta(r)).join('')}
-  ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
+  // Todo en un mismo renglón, del mismo tamaño: primero el video, después el doc nuevo (con sus partes al lado) y el resto
+  const fila = [...sueltos.filter(r => r.principal).map(recursoHTML), ...nuevos.flatMap(r => [tarjeta(r), ...alLado(r).map(recursoHTML)]), ...sueltos.filter(r => !r.principal).map(recursoHTML)];
+  return `${fila.length ? `<div class="material">${fila.join('')}</div>` : ''}
   ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
 }
 function recursoHTML(r) {

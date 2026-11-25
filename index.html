@@ -1659,6 +1659,21 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ll-form .ll-error{margin:0;min-height:1.2em;text-align:center;color:#F29A78;font-size:15px}
 .ll-form .pl-entrenar{align-self:center;animation:none}
 
+/* Doc nuevo del mismo tamaño que el botón del video, uno al lado del otro */
+.material{align-items:stretch}
+.material .doc-nuevo{display:inline-flex;flex:0 1 auto;gap:10px;margin:0;padding:8px 14px;border-radius:10px}
+.material .doc-nuevo .dn-ico{width:30px;height:30px;border-radius:8px}
+.material .doc-nuevo .dn-ico svg{width:16px;height:16px}
+.material .doc-nuevo small{font-size:12px}
+.material .doc-nuevo strong{font-size:15px}
+.material .doc-nuevo>svg{display:none}
+@media (max-width:560px){
+  .material:has(> :nth-child(2):last-child){display:grid;grid-template-columns:1fr 1fr}
+  .material:has(> :nth-child(2):last-child)>*{min-width:0;padding:8px 10px}
+  .material:has(> :nth-child(2):last-child) .mat-mini{display:none}
+  .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
+}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -3887,8 +3902,9 @@ function materialHTML(p) {
   const cols = [...new Set(resto.filter(r => r.col).map(r => r.col))];
   const sueltos = resto.filter(r => !r.col);
   const tarjeta = r => `<a class="doc-nuevo" href="${esc(r.url)}" target="_blank" rel="noopener"><span class="dn-ico">${ICONO.doc}</span><span><small>Documento nuevo: leelo antes de practicar</small><strong>${esc(r.t.replace(/^Doc:\s*/, ''))}</strong></span>${ICONO.abajo}</a>`;
-  return `${nuevos.map(r => alLado(r).length ? `<div class="doc-fila">${tarjeta(r)}${alLado(r).map(recursoHTML).join('')}</div>` : tarjeta(r)).join('')}
-  ${sueltos.length ? `<div class="material">${sueltos.map(recursoHTML).join('')}</div>` : ''}
+  // Todo en un mismo renglón, del mismo tamaño: primero el video, después el doc nuevo (con sus partes al lado) y el resto
+  const fila = [...sueltos.filter(r => r.principal).map(recursoHTML), ...nuevos.flatMap(r => [tarjeta(r), ...alLado(r).map(recursoHTML)]), ...sueltos.filter(r => !r.principal).map(recursoHTML)];
+  return `${fila.length ? `<div class="material">${fila.join('')}</div>` : ''}
   ${cols.length ? `<div class="mat-cols">${cols.map(c => `<div class="mat-col">${resto.filter(r => r.col === c).map(recursoHTML).join('')}</div>`).join('')}</div>` : ''}`;
 }
 function recursoHTML(r) {
@@ -6185,7 +6201,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '318a92e096';
+const VERSION_AULA = '80cf587806';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

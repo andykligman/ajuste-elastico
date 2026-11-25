@@ -1580,3 +1580,18 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ll-form input:focus{outline:none;border-color:#E8834F}
 .ll-form .ll-error{margin:0;min-height:1.2em;text-align:center;color:#F29A78;font-size:15px}
 .ll-form .pl-entrenar{align-self:center;animation:none}
+
+/* Doc nuevo del mismo tamaño que el botón del video, uno al lado del otro */
+.material{align-items:stretch}
+.material .doc-nuevo{display:inline-flex;flex:0 1 auto;gap:10px;margin:0;padding:8px 14px;border-radius:10px}
+.material .doc-nuevo .dn-ico{width:30px;height:30px;border-radius:8px}
+.material .doc-nuevo .dn-ico svg{width:16px;height:16px}
+.material .doc-nuevo small{font-size:12px}
+.material .doc-nuevo strong{font-size:15px}
+.material .doc-nuevo>svg{display:none}
+@media (max-width:560px){
+  .material:has(> :nth-child(2):last-child){display:grid;grid-template-columns:1fr 1fr}
+  .material:has(> :nth-child(2):last-child)>*{min-width:0;padding:8px 10px}
+  .material:has(> :nth-child(2):last-child) .mat-mini{display:none}
+  .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
+}
