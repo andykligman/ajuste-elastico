@@ -654,7 +654,7 @@ function tarjetaHTML(st, e, p) {
     ${p.nota ? `<p class="nota-paso">${esc(p.nota)}</p>` : ''}
     ${p.tip ? `<div class="tip-paso">${ICONO.idea}<p>${esc(p.tip)}</p></div>` : ''}
     ${seguimientoHTML(st, p)}
-    ${p.verYSeguir && !p.soloVer ? (sig ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>${hecho(st, p.id) ? 'Seguir' : 'Ya lo vi, siguiente'}</span>${ICONO.abajo}</button></div>` : '') : p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${sel.embed ? '' : botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
+    ${p.verYSeguir && !p.soloVer ? (sig ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>${hecho(st, p.id) ? 'Seguir' : 'Ya lo vi, siguiente'}</span>${ICONO.abajo}</button></div>` : !hecho(st, p.id) ? `<div class="seguir"><button class="primario" data-visto-seguir="${p.id}"><span>Ya lo vi</span>${ICONO.check}</button></div>` : '') : p.soloVer ? '' : seguirAlLado ? `<div class="fila-resp"><div class="fila-fila">${respuestaHTML(sel, p)}${sel.embed ? '' : botonSeguir}</div><button class="link cambiar-op" data-cambiar="${p.id}">Cambiar respuesta</button></div>` : preguntaHTML(st, p)}
     ${recPendiente ? `<div class="seguir"><button class="primario" data-rec-ok="${p.id}">Ok</button></div>` : ''}
     ${respondido && !recPendiente && p.entrega && !sel?.saltea && sel?.nivel !== 'cuesta' && !esLlamada ? envioHTML(st, p) : ''}
     ${p.soloVer ? '' : sel?.embed && !cambiando.has(p.id) ? embedHTML(sel.embed) + (seguirAlLado ? botonSeguir : '') : ''}

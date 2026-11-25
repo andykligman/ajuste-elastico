@@ -25,6 +25,7 @@ const DOC_M2 = 'https://docs.google.com/document/d/1rSCUIcyhFixSVUZQuGXH0xXd6Y1Q
 const SEC_M2 = { transcribir: 'h.tozabldxa12', adn: 'h.azfzavn43se4', combinacion: 'h.1g37w21t4zug' };
 const DOC_M3 = 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit';
 const SEC_M3 = { integracion: 'h.2vf3aiors22l', ritmos: 'h.si3m5xlsyd92', unidades: 'h.cdhx3lo2hd5x' };
+const DOC_M4 = 'https://docs.google.com/document/d/1UZMITDRKAb_bUdIu0PHvXTFKWRYgJcdAeTylNRyuNWg/edit';
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -56,6 +57,7 @@ const VIDEOS = {
   'ersUb9-L1zA': 'Ritmo B: ejemplos en el instrumento',
   'CHKJyTSdmIg': 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
   'A4rxE6i5VwY': 'Unidades rítmicas y variabilidad en la improvisación',
+  'Aiw3VSTHFkU': '¿Qué es un motivo?',
 };
 
 /* Standards para elegir. pdf: link a la parte para trabajar (vacío = Andy la manda por WhatsApp) */
@@ -313,7 +315,7 @@ const PROGRAMA = {
     { id: 'super', titulo: 'Superposiciones', sub: 'Ejercitación N3' },
     { id: 'm2', titulo: 'ADN del Jazz', sub: 'Notas de aproximación y transcripción' },
     { id: 'ritmo', titulo: 'Entrenamiento rítmico', sub: 'Ritmos A a E, al cuerpo y en el instrumento' },
-    { id: 'curva', titulo: 'Curva del Solo', sub: 'Muy pronto' },
+    { id: 'curva', titulo: 'Curva del Solo', sub: 'Tocar con motivos y desarrollo motívico' },
   ],
   pasos: [
     /* ---------- Pre-sincrónico ---------- */
@@ -962,6 +964,14 @@ const PROGRAMA = {
         { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },
         { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
       ],
+    },
+    /* ---------- Módulo 4: Curva del Solo ---------- */
+    {
+      id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
+      titulo: '¿Qué es un motivo?',
+      detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
+      verYSeguir: true,
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
   ],
 
