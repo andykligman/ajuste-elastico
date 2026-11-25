@@ -200,6 +200,19 @@ function manejar(d) {
         escribir(a.fila, a.datos);
         return { alumno: publico(a.datos, true) };
       }
+      case 'admin.linkLlamadas': {
+        // Link sin clave para que Noe vea el movimiento del link de la llamada (solo eso). Con nuevo: true se cambia y el anterior deja de andar.
+        validarPanel(d.clave);
+        const p = PropertiesService.getScriptProperties();
+        let c = p.getProperty('LINK_LLAMADAS');
+        if (!c || d.nuevo) { c = nuevoToken().slice(0, 16); p.setProperty('LINK_LLAMADAS', c); }
+        return { link: c };
+      }
+      case 'llamadas.ver': {
+        const c = PropertiesService.getScriptProperties().getProperty('LINK_LLAMADAS');
+        if (!c || String(d.codigo || '') !== c) throw new Error('Este link ya no funciona. Pedile a Andy el nuevo.');
+        return { llamadas: leerLlamadas().map(l => { const o = Object.assign({}, l); delete o._fila; return o; }) };
+      }
       case 'admin.registro': {
         // Un link por combinación de módulos (mods: '0', '01', '01234'…). El de solo Módulo 0 es el de siempre.
         // Con nuevo: true se cambia el de esa combinación y el anterior deja de andar.

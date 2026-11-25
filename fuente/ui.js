@@ -547,22 +547,51 @@ function cuandoLl(f) {
   const n = diasDesde(d);
   return (n === 0 ? 'hoy' : n === 1 ? 'ayer' : n < 7 ? `hace ${n} días` : fechaCorta(d)) + (h && n < 2 ? ' ' + h : '');
 }
-function llamadasAdmHTML() {
-  const filas = LLAMADAS.map(l => {
+function filasLlamadasHTML(lista, conBorrar) {
+  return lista.map(l => {
     const pr = l.prog || {}, hechos = PASOS_LL_ADM.filter(([id]) => pr[id] && pr[id].hecho).length;
     const pres = +l.pres || 0, presT = +l.presTotal || 0;
     const presTxt = !pres ? 'No arrancó la presentación' : presT && pres >= presT ? 'Vio la presentación' : `Presentación: ${pres} de ${presT || '?'} frases`;
     return `<article class="ll-adm ${hechos === PASOS_LL_ADM.length ? 'completo' : ''}">
       <div class="ll-adm-cab"><strong>${esc(l.nombre)}</strong><span class="suave chico">entró ${esc(cuandoLl(l.inicio))} · último movimiento ${esc(cuandoLl(l.act))}</span>
-        <button class="link suave chico ll-borrar" data-ll-borrar="${esc(l.id)}">Borrar</button></div>
+        ${conBorrar ? `<button class="link suave chico ll-borrar" data-ll-borrar="${esc(l.id)}">Borrar</button>` : ''}</div>
       <p class="ll-adm-pres ${pres && presT && pres >= presT ? 'ok' : ''}">${presTxt}</p>
       <ol class="ll-adm-pasos">${PASOS_LL_ADM.map(([id, t]) => `<li class="${pr[id] && pr[id].hecho ? 'ok' : ''} ${l.paso === id && !(pr[id] && pr[id].hecho) ? 'aca' : ''}"><i>${pr[id] && pr[id].hecho ? ICONO.check : ''}</i><span>${t}</span></li>`).join('')}</ol>
       <p class="suave chico">${hechos} de ${PASOS_LL_ADM.length} pasos${l.paso && l.paso !== 'aula' && !(pr[l.paso] && pr[l.paso].hecho) ? ` · está en «${esc((PASOS_LL_ADM.find(x => x[0] === l.paso) || [, l.paso])[1])}»` : ''}</p>
     </article>`;
   }).join('');
+}
+let linkNoe = '';   // link sin clave para que Noe vea solo esta solapa
+function linkLlamadasNoe(c) { const u = new URL(baseLinks()); u.search = ''; u.hash = ''; u.searchParams.set('seguimiento', c); return u.toString(); }
+function llamadasAdmHTML() {
+  const filas = filasLlamadasHTML(LLAMADAS, true);
   return `<div class="lista-cab"><h1>Panel</h1></div>${tabsAdmHTML()}
+    <section class="caja-adm caja-link caja-noe"><h2>${ICONO_ADM.link}Link para Noe</h2>
+      ${linkNoe ? `<p class="suave chico">Ve solo esta lista, sin clave y sin poder borrar nada.</p>
+        <span class="fila-botones"><button class="secundario chico" data-adm="copiar-noe">Copiar link</button>
+        <a class="secundario boton chico" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent('Noe, acá podés ver quiénes entraron al link de la llamada y hasta dónde llegaron:\n\n' + linkNoe)}">WhatsApp</a></span>
+        <button class="link suave chico" data-adm="nuevo-noe">Cambiar el link</button>`
+      : `<p class="suave chico">Un link para que vea esta lista, sin clave y sin poder borrar nada.</p><button class="secundario chico" data-adm="ver-noe">Armar el link</button>`}
+    </section>
     <p class="suave">Los que entraron al link de la llamada (${esc(location.origin)}/?llamada) y hasta dónde llegaron. Lo más reciente arriba.</p>
     ${filas ? `<div class="ll-adm-lista">${filas}</div>` : '<p class="suave">Todavía no entró nadie desde que se pide el nombre.</p>'}`;
+}
+/* Página para Noe (?seguimiento=…): solo el movimiento del link de la llamada, se actualiza sola */
+let segTimer = null;
+async function renderSeguimiento(codigo) {
+  document.title = 'Llamadas · Ajuste Elástico';
+  const pintar = (cuerpo) => { app().innerHTML = `${barra('')}<main class="admin seguimiento"><div class="lista-cab"><h1>Llamadas</h1></div>${cuerpo}</main>`; };
+  if (!app().querySelector('.seguimiento')) pintar('<p class="suave">Cargando…</p>');
+  try {
+    const r = await llamar('llamadas.ver', { codigo });
+    const lista = r.llamadas || [], hoy = hoyISO(), nHoy = lista.filter(l => String(l.act).startsWith(hoy)).length;
+    const filas = filasLlamadasHTML(lista, false);
+    pintar(`<p class="suave">Quiénes entraron al link de la llamada y hasta dónde llegaron. Lo más reciente arriba. ${lista.length} en total${nHoy ? `, ${nHoy} con movimiento hoy` : ''}.</p>
+      ${filas ? `<div class="ll-adm-lista">${filas}</div>` : '<p class="suave">Todavía no entró nadie.</p>'}`);
+  } catch (e) {
+    pintar(`<p class="suave">${esc(/Acción desconocida/.test(e.message) ? 'Todavía no está listo. Probá en un rato.' : e.message)}</p>`);
+  }
+  clearTimeout(segTimer); segTimer = setTimeout(() => { if (document.visibilityState === 'visible') renderSeguimiento(codigo); }, 60000);
 }
 function inicioAdmHTML() {
   if (vistaAdm === 'llamadas') return llamadasAdmHTML();
@@ -913,6 +942,14 @@ function enlazarAdmin() {
     else if (d.adm === 'copiar-inv') copiar($('#msgInv').value, b, 'Copiado');
     else if (d.adm === 'copiar-reg') copiar($('#msgReg').value, b, 'Copiado');
     else if (d.adm === 'copiar-link') copiar(linkReg, b, 'Copiado');
+    else if (d.adm === 'copiar-noe') copiar(linkNoe, b, 'Copiado');
+    else if (d.adm === 'ver-noe' || d.adm === 'nuevo-noe') {
+      if (d.adm === 'nuevo-noe' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
+      b.disabled = true; b.textContent = 'Un momento…';
+      try { const r = await llamar('admin.linkLlamadas', { clave: claveAdmin, nuevo: d.adm === 'nuevo-noe' });
+        linkNoe = linkLlamadasNoe(r.link); renderAdmin(); if (d.adm === 'nuevo-noe') aviso('Listo: link nuevo. El anterior ya no funciona.'); }
+      catch (e) { aviso(/Acción desconocida/.test(e.message) ? 'Falta actualizar el servidor en Apps Script.' : e.message, true); b.disabled = false; b.textContent = 'Armar el link'; }
+    }
     else if (d.adm === 'ver-registro' || d.adm === 'nuevo-registro') {
       if (d.adm === 'nuevo-registro' && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = 'Tocá de nuevo: el link de ahora deja de andar'; return; }
       b.disabled = true; b.textContent = 'Un momento…';
@@ -1047,6 +1084,7 @@ window.addEventListener('focus', () => chequearVersion());
     renderLlamada(); return;
   }
   if (esDemo) { DESTINO = { prueba: true, paso: params.get('paso') }; aplicarDestino(); return; }
+  if (params.get('seguimiento')) { const c = params.get('seguimiento'); renderSeguimiento(c); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') renderSeguimiento(c); }); return; }
   if (!location.search && !TOKEN && claveAdmin) { let u = '?admin'; try { u = localStorage.getItem('mapaAE_ultimoAdmin') || u; } catch (e) {} location.replace(location.pathname + u); return; }
   if (params.has('admin')) { claveAdmin ? abrirAdmin() : pedirClave(); return; }
   if (params.get('invitacion')) { renderInvitacion(params.get('invitacion')); return; }
