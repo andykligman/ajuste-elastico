@@ -2979,17 +2979,14 @@ const PROGRAMA = {
       grupo: 'Ejercicio 1: motivos cortos',
       titulo: 'Motivos cortos, con el cuerpo',
       entrega: 'video', envia: 'un video improvisando motivos cortos con el cuerpo o en una sola nota, con el metrónomo.',
-      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**. Agarrate de las unidades rítmicas: uno con una sola unidad no suena igual que uno con dos o tres, o que uno con varias corcheas.\n- Arranquen en **lugares distintos del compás**.\nGrabate, escribí el ritmo de lo que hiciste y fijate si cumplís todo eso. Si cumplís, está bien aunque no te guste cómo suena 😉\n# Mandame un video improvisando motivos con el cuerpo',
+      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      nota2: '# Mandame un video improvisando motivos con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
-        { id: 'largos', label: 'Se me pegan los motivos o me quedan muy largos', nivel: 'casi', resp: 'Fijate los silencios: entre motivo y motivo mínimo 2 pulsos, mejor 3 o más. Y adentro del motivo no más de un pulso y medio. Las primeras veces contá el silencio en voz alta, después ya sale solo.' },
-        { id: 'iguales', label: 'Me salen todos parecidos', nivel: 'casi', resp: 'Agarrate de las unidades rítmicas: uno con una sola, el siguiente con dos o tres, otro con corcheas… y arrancá cada uno en otro lugar del compás.\nSi siempre te aparecen las mismas, volvé un rato al entrenador rítmico con las unidades que no te están saliendo y después probá de nuevo.' },
         { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
       ],
-      recursos: [
-        { t: 'Doc: Tocar con motivos', url: DOC_M4 },
-        { t: 'Abrir el entrenador rítmico', url: 'https://ritmo.ajuste-elastico.com/', web: true },
-      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
     {
       id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME' },
@@ -6231,7 +6228,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = 'a3df92523b';
+const VERSION_AULA = '784fcd4a2d';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
