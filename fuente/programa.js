@@ -972,12 +972,10 @@ const PROGRAMA = {
       hojaDeRuta: {
         objetivos: [
           'Entender **qué es un motivo**.',
-          'Aprender a **improvisar con motivos**.',
-          'Generar **motivos contrastantes** en la improvisación.',
+          'Improvisar generando **motivos contrastantes**.',
           'Las dos técnicas de **desarrollo motívico**: **variación** y **extensión**, a partir de la improvisación con motivos.',
         ],
-        puente: { pasos: ['Qué es un motivo', 'Improvisar motivos', 'Motivos contrastantes', 'Variación', 'Extensión'] },
-        meta: 'Desarrollar tus motivos con **variación** y **extensión** mientras improvisás.',
+        puente: { pasos: ['Qué es un motivo', 'Motivos contrastantes', 'Variación', 'Extensión'] },
       },
       pregunta: '¿Arrancamos?',
       progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
