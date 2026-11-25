@@ -518,7 +518,7 @@ const HORARIO = [
   { id: 'martes', titulo: 'Martes', dia: 2, alumnos: ['ignacio lessa', 'matias otero', 'fito ulrich', "beto d'alessandro", 'luis'] },
   { id: 'jueves', titulo: 'Jueves', dia: 4, alumnos: ['kelbin', 'nestor', 'juan francisco barbaro'] },
 ];
-const INACTIVOS = ['manuel toma', 'rodrigo machuca'];
+const INACTIVOS = ['manuel toma', 'rodrigo machuca', 'santiago lopez', 'fernando islas', 'ariel di lorenzo', 'rodrigo escobar'];
 function gruposDia(filas) {
   const n = a => sinTildes(a.nombre).replace(/\s+/g, ' ').trim(), es = (a, pat) => n(a) === pat || n(a).startsWith(pat + ' ') || n(a) === pat;
   const usados = new Set(), hoy = new Date().getDay();
@@ -528,7 +528,7 @@ function gruposDia(filas) {
   }).filter(g => g.filas.length);
   const inact = filas.filter(f => !usados.has(f.a.codigo) && INACTIVOS.some(pat => es(f.a, pat))); inact.forEach(f => usados.add(f.a.codigo));
   const resto = filas.filter(f => !usados.has(f.a.codigo));
-  if (resto.length) grupos.push({ id: 'otros', titulo: 'Sin día asignado', filas: resto });
+  if (resto.length) grupos.push({ id: 'otros', titulo: 'Sin día todavía', filas: resto });
   if (inact.length) grupos.push({ id: 'inactivos', titulo: 'Inactivos', filas: inact });
   return grupos;
 }
@@ -569,21 +569,29 @@ function inicioAdmHTML() {
   const filas = LISTA.map(a => ({ a, e: estado(a) })).sort((x, y) => ORDEN_TIPO[x.e.tipo] - ORDEN_TIPO[y.e.tipo] || x.a.nombre.localeCompare(y.a.nombre));
   const nuevos = LISTA.flatMap(a => todosLosVideos(a).filter(x => !x.v.visto).map(x => ({ ...x, a })))
     .sort((x, y) => String(y.v.t).localeCompare(String(x.v.t)));
+  const grupos = gruposDia(filas), dSel = diaElegido(grupos);
+  const nProp = PROPUESTAS.length + BORRADORES.length;
   return `<div class="lista-cab"><h1>Panel</h1><span class="lista-botones">
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     ${tabsAdmHTML()}
-    <div class="paneles-adm">
-      ${PROPUESTAS.length + BORRADORES.length ? secAdm('propuestas', `${ICONO_ADM.clase}De las clases <span class="cuenta">${PROPUESTAS.length + BORRADORES.length}</span>`, propuestasHTML(PROPUESTAS, BORRADORES, true), 'panel-prop') : ''}
-      ${secAdm('videos-ver', `${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : '<span class="suave chico">ninguno</span>'}`, nuevos.length ? `<div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
+    <div class="tablero-adm ${nProp ? '' : 'sin-prop'}">
+      <section class="caja-adm caja-videos">
+        <h2>${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
+        ${nuevos.length ? `<div class="caja-scroll"><div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
           <span class="tv-mini">${miniDrive(x.v.id)}${ICONO_PLAY}</span>
           <span class="tv-txt"><strong>${esc(x.a.nombre)}</strong><span>${esc(PASO[x.pid].titulo)}</span><small>${haceTanto(x.v.t)}${x.v.seg ? ' · ' + duracion(x.v.seg) : ''}</small></span>
-        </button>`).join('')}</div>` : `<p class="suave">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`, 'panel-videos')}
-      ${secAdm('registro', `${ICONO_ADM.link}Link para alumnos nuevos`, registroAdmHTML(), 'panel-link')}
+        </button>`).join('')}</div></div>` : `<p class="suave caja-vacia">No hay videos nuevos. Cuando un alumno mande uno desde el aula, aparece acá.</p>`}
+      </section>
+      <div class="tablero-der">
+        <section class="caja-adm caja-link">${registroAdmHTML()}</section>
+        ${nProp ? `<section class="caja-adm caja-prop"><h2>${ICONO_ADM.clase}De las clases <span class="cuenta">${nProp}</span></h2><div class="caja-scroll">${propuestasHTML(PROPUESTAS, BORRADORES, true)}</div></section>` : ''}
+      </div>
     </div>
     <section class="lista">
       <div class="lista-busca"><h2>${ICONO_ADM.alumnos}Alumnos <span class="suave chico">${LISTA.length}</span></h2><input type="search" id="buscaAlumno" placeholder="Buscar por nombre" autocomplete="off" value="${esc(buscaAdm)}" aria-label="Buscar alumno por nombre"></div>
-      ${gruposDia(filas).map(g => secAdm('dia-' + g.id, `${esc(g.titulo)} <span class="suave chico">${g.filas.length}</span>${g.hoy ? ' <span class="cuenta">hoy</span>' : ''}`, `<div class="alumnos-grid">${g.filas.map(({ a, e }) => {
+      ${grupos.length ? `<div class="dias-adm" role="tablist">${grupos.map(g => `<button role="tab" class="dia-adm ${g.id === 'inactivos' ? 'inactivo' : ''}" data-dia-adm="${g.id}" aria-selected="${g.id === dSel}">${esc(g.titulo)}<span class="suave chico">${g.filas.length}</span>${g.hoy ? '<span class="cuenta">hoy</span>' : ''}</button>`).join('')}</div>` : ''}
+      ${grupos.map(g => `<div class="dia-panel ${g.id === 'inactivos' ? 'inactivos' : ''}" data-dia-panel="${g.id}" ${g.id === dSel || buscaAdm ? '' : 'hidden'}>${buscaAdm ? `<h3 class="dia-tit">${esc(g.titulo)}</h3>` : ''}<div class="alumnos-grid">${g.filas.map(({ a, e }) => {
           const nprob = Object.values(a.prog || {}).filter(x => x.hecho && x.como === 'cuesta').length;
           const nvid = videosNuevos(a);
           const ps = PROGRAMA.pasos.filter(p => !p.soloLlamada && !p.opcional), h = ps.filter(p => a.prog[p.id]?.hecho).length;
@@ -592,8 +600,16 @@ function inicioAdmHTML() {
             <span class="ac-datos"><span>${a.clase || 0}/${TOTAL_ENCUENTROS} clases</span><span>Nivel ${a.nivel}</span><span class="suave">${a.act ? haceTanto(a.act) : 'sin movimiento'}</span></span>
             <span class="ac-barra"><i style="width:${ps.length ? Math.round(h / ps.length * 100) : 0}%"></i></span>
             ${a.ajustar || nvid || nprob ? `<span class="ac-marcas">${a.ajustar ? `<span class="marca-ajustar">Nuevo: ajustá nivel y fecha</span>` : ''}${nvid ? `<span class="marca-video">${nvid === 1 ? '1 video nuevo' : nvid + ' videos nuevos'}</span>` : ''}${nprob ? `<span class="marca-prob">Le cuesta${nprob > 1 ? 'n ' + nprob + ' pasos' : ' 1 paso'}</span>` : ''}</span>` : ''}
-          </button>`; }).join('')}</div>`, 'grupo-dia' + (g.id === 'inactivos' ? ' inactivos' : ''))).join('') || '<p class="suave">Todavía no hay alumnos.</p>'}
+          </button>`; }).join('')}</div></div>`).join('') || '<p class="suave">Todavía no hay alumnos.</p>'}
     </section>`;
+}
+/* Qué día de alumnos se ve: el que elegiste, si no hoy, si hoy no hay clases el próximo día que haya */
+let diaAdm = null;
+function diaElegido(grupos) {
+  if (diaAdm && grupos.some(g => g.id === diaAdm)) return diaAdm;
+  const dias = HORARIO.filter(d => grupos.some(g => g.id === d.id)), hoy = new Date().getDay();
+  for (let i = 0; i < 7; i++) { const d = dias.find(x => x.dia === (hoy + i) % 7); if (d) return d.id; }
+  return grupos[0] ? grupos[0].id : null;
 }
 function marcarModulo(prog, m) {
   const ps = pasosDelModulo(m), todo = ps.every(x => prog[x.id]?.hecho);
@@ -602,15 +618,17 @@ function marcarModulo(prog, m) {
 let linkReg = '', modsReg = '0';   // link para alumnos nuevos: primero elegís con qué módulos entra y después se arma
 function registroAdmHTML() {
   const msg = linkReg ? `Te paso el link al aula virtual de Ajuste Elástico! Ahí ponés tu nombre, tu mail y elegís una contraseña, y con eso entrás siempre\n\n${linkReg}` : '';
+  const mods = m => m.length === 1 ? 'Módulo ' + m : 'Módulos ' + m.split('').join(', ').replace(/, (\d)$/, ' y $1');
   return `<section class="registro-adm">
-    <div class="reg-cab"><div><p class="suave chico">¿Con qué módulos entra? Elegilos y armo el link. Cada alumno pone su nombre, email y contraseña. Después le ajustás el nivel y la fecha de la llamada.</p></div></div>
-    <div class="reg-mods">${MODULOS.map(m => `<label class="reg-mod" style="--c:${m.color}"><input type="checkbox" data-reg-mod="${m.n}" ${modsReg.includes(String(m.n)) ? 'checked' : ''}><span>${m.n === 0 ? 'Módulo 0' : 'Módulo ' + m.n}<small>${esc(m.nombre)}</small></span></label>`).join('')}</div>
-    ${linkReg ? `<p class="chico reg-para">Link para entrar con: <b>${modsReg.length === 1 ? 'Módulo ' + modsReg : 'Módulos ' + modsReg.split('').join(', ').replace(/, (\d)$/, ' y $1')}</b></p>
-      <textarea id="msgReg" rows="5">${esc(msg)}</textarea>
-      <span class="fila-botones"><button class="secundario" data-adm="copiar-reg">Copiar mensaje</button><button class="secundario" data-adm="copiar-link">Copiar solo el link</button>
-      <a class="secundario boton" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">Abrir en WhatsApp</a>
-      <button class="link suave" data-adm="nuevo-registro">Cambiar el link</button></span>`
-      : `<button class="primario" data-adm="ver-registro">Armar el link</button>`}
+    <h2>${ICONO_ADM.link}Link para alumnos nuevos</h2>
+    ${linkReg ? `<p class="chico reg-para">Entran con: <b>${mods(modsReg)}</b></p>
+      <textarea id="msgReg" hidden>${esc(msg)}</textarea>
+      <span class="fila-botones"><button class="secundario chico" data-adm="copiar-reg">Copiar mensaje</button><button class="secundario chico" data-adm="copiar-link">Copiar link</button>
+      <a class="secundario boton chico" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(msg)}">WhatsApp</a></span>
+      <button class="link suave chico" data-adm="nuevo-registro">Cambiar el link</button>`
+      : `<p class="suave chico">¿Con qué módulos entra?</p>
+      <div class="reg-mods">${MODULOS.map(m => `<label class="reg-mod" style="--c:${m.color}" title="${esc(m.nombre)}"><input type="checkbox" data-reg-mod="${m.n}" ${modsReg.includes(String(m.n)) ? 'checked' : ''}><span>M${m.n}</span></label>`).join('')}</div>
+      <button class="secundario chico" data-adm="ver-registro">Armar el link</button>`}
   </section>`;
 }
 const ICONO_PLAY = '<svg class="tv-play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.55)"/><path d="M10 8v8l6-4z" fill="#fff"/></svg>';
@@ -851,7 +869,10 @@ function enlazarAdmin() {
   if (!root._secs) { root._secs = 1; root.addEventListener('toggle', ev => { const d = ev.target; if (d.dataset && d.dataset.sec) d.open ? admAbiertas.add(d.dataset.sec) : admAbiertas.delete(d.dataset.sec); }, true); }
   const bus = $('#buscaAlumno');
   if (bus) bus.oninput = () => { buscaAdm = bus.value; const q = sinTildes(bus.value.trim()); root.querySelectorAll('[data-elegir]').forEach(tr => { tr.hidden = !!q && !tr.dataset.nombre.includes(q); });
-    root.querySelectorAll('.grupo-dia').forEach(g => { const hay = [...g.querySelectorAll('[data-elegir]')].some(x => !x.hidden); if (q) { g.hidden = !hay; if (hay) g.open = true; } else g.hidden = false; }); };
+    const sel = root.querySelector('[data-dia-adm][aria-selected="true"]')?.dataset.diaAdm;
+    root.querySelectorAll('.dia-panel').forEach(g => { const hay = [...g.querySelectorAll('[data-elegir]')].some(x => !x.hidden); g.hidden = q ? !hay : g.dataset.diaPanel !== sel;
+      let t = g.querySelector('.dia-tit'); if (q && !t) { t = document.createElement('h3'); t.className = 'dia-tit'; t.textContent = root.querySelector(`[data-dia-adm="${g.dataset.diaPanel}"]`)?.firstChild.textContent || ''; g.prepend(t); } if (!q && t) t.remove(); });
+    root.querySelector('.dias-adm')?.classList.toggle('buscando', !!q); };
   root.onclick = async ev => {
     const tr = ev.target.closest('[data-elegir]');
     if (tr) { elegido = tr.dataset.elegir; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
@@ -861,6 +882,10 @@ function enlazarAdmin() {
     const d = b.dataset;
     if (d.adm === 'prueba') { reiniciarPrueba(); return; }
     if (d.vistaAdm) { vistaAdm = d.vistaAdm; renderAdmin(); return; }
+    if (d.diaAdm) { diaAdm = d.diaAdm; buscaAdm = ''; if ($('#buscaAlumno')) $('#buscaAlumno').value = '';
+      root.querySelectorAll('[data-dia-adm]').forEach(x => x.setAttribute('aria-selected', x === b));
+      root.querySelector('.dias-adm')?.classList.remove('buscando');
+      root.querySelectorAll('.dia-panel').forEach(g => { g.hidden = g.dataset.diaPanel !== diaAdm; g.querySelector('.dia-tit')?.remove(); g.querySelectorAll('[data-elegir]').forEach(x => x.hidden = false); }); return; }
     if (d.llBorrar) {
       if (!b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿Seguro? Tocá de nuevo'; return; }
       b.closest('.ll-adm').classList.add('prop-yendo');

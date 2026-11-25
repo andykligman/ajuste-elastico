@@ -302,6 +302,35 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .av-mas{margin-top:14px;font-size:14px}
 .av-mas summary{cursor:pointer;opacity:.75}
 .av-mas .aj-fila{margin:10px 0}
+/* ---- Panel: tablero de inicio ---- */
+.tablero-adm{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;margin:6px 0 30px;align-items:start}
+.tablero-der{display:grid;gap:16px;align-content:start}
+.caja-adm{border:1px solid var(--linea);border-radius:var(--radio-m);background:var(--sup);padding:16px 18px}
+.caja-adm h2{font-size:17px;margin:0 0 12px}
+.caja-videos{border-color:rgba(232,131,79,.35);min-height:260px}
+.caja-videos .ico-adm{color:#E8834F}
+.caja-videos .tarjetas-video{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.caja-scroll{max-height:470px;overflow-y:auto;margin:0 -6px;padding:0 6px}
+.caja-prop .caja-scroll{max-height:400px}
+.caja-vacia{margin:30px 0;text-align:center}
+.caja-link .ico-adm{color:#7F9BD3}
+.caja-link .registro-adm{margin:0;padding:0;border:0;background:none}
+.caja-link .registro-adm h2{font-size:17px}
+.caja-link .reg-mods{gap:6px;margin:8px 0 12px}
+.caja-link .reg-mod{padding:6px 10px;gap:6px}
+.caja-link .reg-mod span{font-size:13.5px}
+.caja-link .fila-botones{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.caja-link .chico{font-size:13.5px}
+.caja-link button.chico,.caja-link a.chico{padding:7px 12px}
+.dias-adm{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.dia-adm{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1.5px solid var(--linea);background:var(--sup);color:inherit;font:600 15px var(--sans);cursor:pointer}
+.dia-adm[aria-selected="true"]{border-color:#7F9BD3;background:color-mix(in srgb,#7F9BD3 18%,var(--sup))}
+.dia-adm.inactivo{opacity:.65}
+.dias-adm.buscando .dia-adm{opacity:.45}
+.dia-tit{font-size:15px;margin:18px 0 0;opacity:.75}
+.dia-panel[hidden]{display:none}
+.dia-panel.inactivos .alumno-card{opacity:.6}
+@media (max-width:900px){.tablero-adm{grid-template-columns:1fr}.caja-scroll{max-height:none}}
 .grupo-dia{background:transparent;border:0;margin:4px 0}
 .grupo-dia>summary{padding:12px 4px;font-size:18px;border-bottom:1px solid var(--linea)}
 .grupo-dia>.sec-cuerpo{padding:4px 0 12px}
