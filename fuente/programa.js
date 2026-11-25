@@ -967,6 +967,22 @@ const PROGRAMA = {
     },
     /* ---------- Módulo 4: Curva del Solo ---------- */
     {
+      id: 'obj4', etapa: 'curva', opcional: true,
+      titulo: 'Los objetivos de este módulo',
+      hojaDeRuta: {
+        objetivos: [
+          'Entender **qué es un motivo**.',
+          'Aprender a **improvisar con motivos**.',
+          'Generar **motivos contrastantes** en la improvisación.',
+          'Las dos técnicas de **desarrollo motívico**: **variación** y **extensión**, a partir de la improvisación con motivos.',
+        ],
+        puente: { pasos: ['Qué es un motivo', 'Improvisar motivos', 'Motivos contrastantes', 'Variación', 'Extensión'] },
+        meta: 'Desarrollar tus motivos con **variación** y **extensión** mientras improvisás.',
+      },
+      pregunta: '¿Arrancamos?',
+      progreso: [{ id: 'listo', label: 'Lo leí y entiendo las prioridades del módulo, ¡avancemos nomás!', nivel: 'listo' }],
+    },
+    {
       id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
       titulo: '¿Qué es un motivo?',
       detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
