@@ -575,7 +575,7 @@ function inicioAdmHTML() {
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     ${tabsAdmHTML()}
-    <div class="tablero-adm ${nProp ? '' : 'sin-prop'}">
+    <div class="tablero-adm ${nProp ? '' : 'sin-prop'} ${nuevos.length ? '' : 'sin-videos'}">
       <section class="caja-adm caja-videos">
         <h2>${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
         ${nuevos.length ? `<div class="caja-scroll"><div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">

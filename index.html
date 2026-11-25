@@ -1910,6 +1910,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .caja-scroll{max-height:470px;overflow-y:auto;margin:0 -6px;padding:0 6px}
 .caja-prop .caja-scroll{max-height:400px}
 .caja-vacia{margin:30px 0;text-align:center}
+.tablero-adm.sin-videos{align-items:stretch;margin-bottom:22px}
+.tablero-adm.sin-videos .caja-videos{min-height:0}
+.tablero-adm.sin-videos .caja-vacia{margin:6px 0 0;text-align:left}
 .caja-link .ico-adm{color:#7F9BD3}
 .caja-link .registro-adm{margin:0;padding:0;border:0;background:none}
 .caja-link .registro-adm h2{font-size:17px}
@@ -5798,7 +5801,7 @@ function inicioAdmHTML() {
       <button class="secundario" data-adm="prueba" title="Recorré el aula como un alumno nuevo. No se guarda nada.">Ver como alumno</button>
       <button class="secundario" data-adm="nuevo">Agregar alumno</button></span></div>
     ${tabsAdmHTML()}
-    <div class="tablero-adm ${nProp ? '' : 'sin-prop'}">
+    <div class="tablero-adm ${nProp ? '' : 'sin-prop'} ${nuevos.length ? '' : 'sin-videos'}">
       <section class="caja-adm caja-videos">
         <h2>${ICONO_ADM.video}Videos para ver ${nuevos.length ? `<span class="cuenta">${nuevos.length}</span>` : ''}</h2>
         ${nuevos.length ? `<div class="caja-scroll"><div class="tarjetas-video">${nuevos.map(x => `<button class="tarjeta-video" data-abrir-video="${esc(x.a.codigo)}|${x.pid}:${x.i}">
@@ -6228,7 +6231,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '159de33deb';
+const VERSION_AULA = '22100b7f73';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
