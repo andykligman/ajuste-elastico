@@ -522,7 +522,6 @@ function revisarClases(cuantas, forzar) {
         datos: { tareas: r.tareas, pasos: r.pasos }, estado: c.estado === 'publicada' ? 'publicada' : (PUBLICAR_SOLO && al ? 'publicada' : 'borrador') });
       guardarClase(c);
       const props_ = [];
-      // las clases que tuvo cada alumno ya no se proponen acá: las suma el calendario cada noche (sumarClasesDelCalendario)
       (r.consejos || []).forEach(x => props_.push({ tipo: 'consejo', paso: x.paso || '', texto: x.consejo, detalle: x.situacion || '' }));
       if (props_.length) {
         const sh = hojaCon(HOJA_PROPUESTAS, PROP_COLS);
@@ -688,52 +687,11 @@ function guardarLlamada(d) {
   return { ok: true };
 }
 
-/* ----- Clases que ya tuvo cada alumno, desde el Google Calendar (cada noche) -----
-   Cuenta los eventos del calendario donde el mail del alumno está como invitado (no las Sesiones Informativas de Calendly
-   ni los cancelados) y suma 1 a «clase» por cada uno que ya terminó, con la fecha en «claseFecha». Cada evento se cuenta una sola vez.
-   Para activarlo: correr instalarClasesCalendario una vez (pide permiso para leer el calendario). */
-function instalarClasesCalendario() {
+/* ----- Clases que ya tuvo cada alumno: se cargan a mano desde el panel (− / +) -----
+   El conteo automático desde el Google Calendar se sacó (nov 2026). Si quedó instalado el disparador de cada noche,
+   la próxima vez que corra se borra solo; también se puede correr quitarClasesCalendario una vez. */
+function quitarClasesCalendario() {
   ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'sumarClasesDelCalendario').forEach(t => ScriptApp.deleteTrigger(t));
-  ScriptApp.newTrigger('sumarClasesDelCalendario').timeBased().everyDays(1).atHour(23).inTimezone(ZONA).create();
-  // primera vez: si el calendario muestra más clases que la planilla, se pone ese número (nunca baja); todo lo pasado queda contado
-  const r = recorrerCalendario(new Date('2026-01-01T00:00:00-03:00'), new Date(), false);
-  Logger.log('Listo: todas las noches a las 23 actualizo las clases desde el calendario. ' + r);
+  PropertiesService.getScriptProperties().deleteProperty('CAL_CONTADAS');
 }
-function sumarClasesDelCalendario() { recorrerCalendario(new Date(Date.now() - 3 * 24 * 3600 * 1000), new Date(), true); }
-function esClaseDelCalendario(ev) {
-  const t = ev.getTitle() || '';
-  if (/y Andy Kligman|cancelad|sesi[oó]n informativa|margen de tiempo/i.test(t)) return false;
-  if (/calendly\.com/i.test(ev.getDescription() || '')) return false;
-  return true;
-}
-function recorrerCalendario(ini, fin, sumar) {
-  const props = PropertiesService.getScriptProperties();
-  const contadas = JSON.parse(props.getProperty('CAL_CONTADAS') || '[]');
-  const alumnos = todos(), porEmail = {};
-  alumnos.forEach(a => { const e = normEmail(a.datos.email); if (e) porEmail[e] = a; });
-  const res = {};
-  CalendarApp.getDefaultCalendar().getEvents(ini, fin).forEach(ev => {
-    if (ev.getEndTime() > fin || !esClaseDelCalendario(ev)) return;
-    const clave = ev.getId() + '@' + ev.getStartTime().getTime();
-    if (contadas.indexOf(clave) >= 0) return;
-    const fecha = Utilities.formatDate(ev.getStartTime(), ZONA, 'yyyy-MM-dd');
-    ev.getGuestList().forEach(g => {
-      const a = porEmail[normEmail(g.getEmail())];
-      if (!a || g.getGuestStatus() === CalendarApp.GuestStatus.NO) return;
-      const r = res[a.datos.codigo] = res[a.datos.codigo] || { a, n: 0, fecha: '' };
-      r.n++; if (fecha > r.fecha) r.fecha = fecha;
-    });
-    contadas.push(clave);
-  });
-  const col = k => COLUMNAS.indexOf(k) + 1, sh = hoja(), log = [];
-  Object.keys(res).forEach(cod => {
-    const r = res[cod], antes = Number(r.a.datos.clase) || 0;
-    const nuevo = Math.min(16, sumar ? antes + r.n : Math.max(antes, r.n));
-    if (nuevo !== antes) sh.getRange(r.a.fila, col('clase')).setNumberFormat('@').setValue(String(nuevo));
-    if (r.fecha > String(r.a.datos.claseFecha || '')) sh.getRange(r.a.fila, col('claseFecha')).setNumberFormat('@').setValue(r.fecha);
-    log.push(r.a.datos.nombre + ': ' + antes + ' → ' + nuevo);
-  });
-  const limite = Date.now() - 6 * 24 * 3600 * 1000;   // solo hace falta recordar los últimos días (la revisión de cada noche mira 3)
-  props.setProperty('CAL_CONTADAS', JSON.stringify(contadas.filter(k => Number(k.split('@')[1]) > limite)));
-  return log.join(' · ');
-}
+function sumarClasesDelCalendario() { quitarClasesCalendario(); }
