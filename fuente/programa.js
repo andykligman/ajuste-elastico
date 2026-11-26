@@ -352,6 +352,7 @@ const PROGRAMA = {
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       grupo: 'Intervalos por posición, en 4 tipos de acorde',
       titulo: 'Nombrar los intervalos en voz alta',
+      adorno: 'cabecita',
       detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas',
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
@@ -370,6 +371,7 @@ const PROGRAMA = {
       id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
+      adorno: 'reloj',
       detalle: 'Poné un **tempo cómodo** y hacé **el mismo ejercicio en tiempo real**.\nAcá **acortamos los nombres**: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
       progreso: [
         { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
@@ -394,6 +396,7 @@ const PROGRAMA = {
       id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Aplicar el skipping',
+      adorno: 'skipping',
       detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad.',
       progreso: [
         { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante' },
@@ -445,6 +448,7 @@ const PROGRAMA = {
       ],
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       titulo: 'Ver el video de Enlaces de Arpegios y leer el PDF',
+      adorno: 'enlaces',
       detalle: 'Mirá **el video completo** antes de empezar y leé el documento.',
       recursos: [
         { t: 'Video completo: Enlaces de Arpegios', url: VIDEO_ENLACES },
@@ -591,6 +595,7 @@ const PROGRAMA = {
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       titulo: 'Mirar la Ejercitación N2',
+      adorno: 'anticipa',
       detalle: 'Mirá el video y leé el doc de **anticipaciones armónicas**. Sirve para destrabar el "tejido" entre un compás y otro, así no suena **compartimentado** cuando improvisás con ritmo libre.',
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_M1, sec: [SEC_M1.antic, 'Anticipaciones armónicas'] }],
     },
@@ -689,6 +694,7 @@ const PROGRAMA = {
       id: 'm2v', etapa: 'm2',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Cómo transcribir eficientemente',
+      adorno: 'transcribir',
       detalle: 'Elegí un solo para transcribir y mirá **el video**: ahí te muestro cómo transcribir **cantando**, con Audiostretch.',
       progreso: [
         { id: 'visto', label: 'Ya lo vi, ¡se entiende bien!', nivel: 'listo' },
@@ -714,6 +720,7 @@ const PROGRAMA = {
       id: 'm1', etapa: 'm2',
       video: { id: 'o-sV1KM5J-o' }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: mirar el video',
+      adorno: 'cromaticos',
       detalle: 'Mirá **el video completo** una vez y después leé el doc. Todavía no hace falta tocar: en los pasos que siguen vamos ejercitación por ejercitación.',
       progreso: [{ id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' }],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: [SEC_M2.adn, 'ADN del Jazz: notas de aproximación'] }],
@@ -913,6 +920,7 @@ const PROGRAMA = {
       id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D', progreso: PROGRESO_RITMO,
       entrega: 'video', envia: 'un video tocando el ritmo A en la viola, en el nivel en el que estés (una nota, una escala o una progresión).',
       titulo: 'Ritmo A + aplicaciones varias al instrumento',
+      adorno: 'guitarra',
       detalle: 'Ahora llevá el **ritmo A a la viola**. Mirá el video con el doc al lado.\n# El ritmo es fijo: las notas se adaptan al ritmo, no al revés\n- Arrancá con **una sola nota**: toda la atención queda en sostener el ritmo y en cómo lo articulás.\n- Después, **dentro de una escala**: primero con cosas que ya sabés, después con cosas nuevas.\n- Y por último, **sobre una progresión**: solo arpegios, o las escalas de cada acorde.\nSi te sale perfecto, subí la dificultad. Si los errores superan a los aciertos, modificá algo: tempo, longitud de la progresión, material usado (1 o 2 notas por acorde, arpegio completo, superposición, escala completa).\n# Mandame un video tocando el ritmo A en la viola, en el nivel en el que estés',
       recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3 }],
     },
@@ -948,6 +956,7 @@ const PROGRAMA = {
       video: { id: 'A4rxE6i5VwY' },
       grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
+      adorno: 'entrenador',
       detalle: 'Ahora improvisamos con **una sola unidad rítmica, o muy pocas**: la idea es hacer mucho con poco.\n- Elegí 2 o 3 unidades y trabajá **una a la vez** con el cuerpo, usando el **entrenador rítmico**: en loop, en continuo o con Desplazamientos.\n- Después improvisá **solo con esa unidad**, sin mirar la pantalla y con el metrónomo. Grabala y mandámela.\n- Lo mismo con otra unidad, y después con **2 a la vez**.\n# Mandame una impro con un elemento y otra con dos',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },

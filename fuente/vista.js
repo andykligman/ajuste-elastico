@@ -370,6 +370,29 @@ const ADORNOS = {
     + `<g class="ad-redo"><path class="ad-casco" d="M22 52 V80 a38 10 0 0 0 76 0 V52"/><path class="ad-franja" d="M22 64 a38 10 0 0 0 76 0"/>`
     + [30, 44, 60, 76, 90].map(x => `<line class="ad-tensor" x1="${x}" y1="${x === 60 ? 62 : 60}" x2="${x}" y2="${x === 60 ? 90 : 86}"/>`).join('')
     + `<ellipse class="ad-aro" cx="60" cy="80" rx="38" ry="10"/><ellipse class="ad-parche" cx="60" cy="52" rx="38" ry="10"/></g></svg>`,
+  cabecita: `<svg viewBox="0 0 130 100"><path class="ad-cara" d="M20 88 V70 C8 62 8 40 18 28 C30 12 56 10 66 26 C70 32 70 38 70 42 L78 54 L70 56 V64 C70 70 64 72 56 70 V88"/><path class="ad-boca" d="M66 58 h4"/>`
+    + [['7ª', 0], ['5ª', 1], ['3ª', 2]].map(([t, k]) => `<g class="ad-globo" style="--k:${k}"><rect x="80" y="${10 + k * 0}" width="40" height="26" rx="13"/><text x="100" y="${28 + k * 0}">${t}</text></g>`).join('')
+    + `<g class="ad-ondas"><path d="M76 50 q5 5 0 10"/><path d="M82 46 q8 9 0 18"/></g></svg>`,
+  reloj: `<svg viewBox="0 0 110 100"><circle class="ad-esfera" cx="55" cy="52" r="38"/>${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6, r1 = i % 3 ? 33 : 29; return `<line class="ad-marca${i % 3 ? '' : ' fuerte'}" x1="${(55 + Math.sin(a) * r1).toFixed(1)}" y1="${(52 - Math.cos(a) * r1).toFixed(1)}" x2="${(55 + Math.sin(a) * 36).toFixed(1)}" y2="${(52 - Math.cos(a) * 36).toFixed(1)}"/>`; }).join('')}`
+    + `<line class="ad-aguja h" x1="55" y1="52" x2="55" y2="32"/><line class="ad-aguja s" x1="55" y1="58" x2="55" y2="20"/><circle class="ad-eje" cx="55" cy="52" r="3.5"/><path class="ad-campana" d="M38 10 l-8 -4 M72 10 l8 -4"/></svg>`,
+  skipping: `<svg viewBox="0 0 120 100">${[30, 50, 70, 90].map((y, i) => `<line class="ad-cuerda" x1="8" y1="${y}" x2="112" y2="${y}" style="stroke-width:${1.4 + i * .5}"/>`).join('')}`
+    + `<path class="ad-salto" d="M22 70 Q38 20 54 30 Q70 40 86 90"/><circle class="ad-saltin" r="6"><animateMotion dur="1.6s" repeatCount="indefinite" path="M22 70 Q38 20 54 30 Q70 40 86 90" keyPoints="0;0.5;1" keyTimes="0;0.5;1" calcMode="linear"/></circle>`
+    + `<circle class="ad-pisada" cx="22" cy="70" r="4"/><circle class="ad-pisada" cx="54" cy="30" r="4"/><circle class="ad-pisada" cx="86" cy="90" r="4"/><path class="ad-salteo" d="M50 46 l8 8 M58 46 l-8 8" transform="translate(-14 4)"/></svg>`,
+  enlaces: `<svg viewBox="0 0 130 100"><path class="ad-enlace" d="M14 78 C30 78 30 46 44 46 S60 70 74 66 S92 24 104 24 S118 44 120 40"/>`
+    + [[14, 78], [44, 46], [74, 66], [104, 24]].map(([x, y], i) => `<circle class="ad-nota-e" style="--k:${i}" cx="${x}" cy="${y}" r="9"/>`).join('') + `</svg>`,
+  anticipa: `<svg viewBox="0 0 130 100"><rect class="ad-acorde a" x="6" y="30" width="52" height="40" rx="10"/><rect class="ad-acorde b" x="72" y="30" width="52" height="40" rx="10"/><text class="ad-cif a" x="32" y="56">G7</text><text class="ad-cif b" x="98" y="56">C</text>`
+    + `<line class="ad-barra-c" x1="65" y1="18" x2="65" y2="84"/><circle class="ad-llega" cx="20" cy="88" r="5"/><text class="ad-antes" x="50" y="14">antes</text></svg>`,
+  transcribir: `<svg viewBox="0 0 130 100">${[0, 1, 2, 3, 4].map(k => `<line class="ad-pauta" x1="6" y1="${40 + k * 9}" x2="124" y2="${40 + k * 9}"/>`).join('')}`
+    + [[22, 67.5], [42, 58.5], [62, 63], [82, 49.5], [102, 54]].map(([x, y], i) => `<g class="ad-nota-t" style="--k:${i}"><ellipse cx="${x}" cy="${y}" rx="5.4" ry="4" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 5}" y1="${y - 1}" x2="${x + 5}" y2="${y - 26}"/></g>`).join('')
+    + `<g class="ad-lapiz"><path class="ad-lapiz-c" d="M0 0 l26 -26 l7 7 l-26 26 z"/><path class="ad-lapiz-p" d="M0 0 l7 7 l-10 3 z"/></g></svg>`,
+  cromaticos: `<svg viewBox="0 0 130 100"><path class="ad-escalon" d="M8 90 H28 V78 H48 V66 H68 V54 H88 V42 H108 V30 H124"/>`
+    + [[18, 84], [38, 72], [58, 60], [78, 48], [98, 36], [116, 24]].map(([x, y], i) => `<g class="ad-cromo" style="--k:${i}"><circle cx="${x}" cy="${y}" r="6"/>${i % 2 ? `<text x="${x - 17}" y="${y - 2}">♯</text>` : ''}</g>`).join('')
+    + `<path class="ad-sube" d="M14 44 L44 14 m-12 0 h12 v12"/></svg>`,
+  guitarra: `<svg viewBox="0 0 140 100"><g class="ad-mini-redo"><path class="ad-casco" d="M6 46 V62 a20 6 0 0 0 40 0 V46"/><ellipse class="ad-parche" cx="26" cy="46" rx="20" ry="6"/><path class="ad-palito" d="M10 26 L24 42"/></g>`
+    + `<path class="ad-pasa" d="M54 54 H74 m-8 -7 l8 7 l-8 7"/><g transform="translate(104 62) rotate(-30) scale(.85)"><rect class="ad-g-mango" x="6" y="-3" width="34" height="6" rx="2"/><rect class="ad-g-clav" x="38" y="-5" width="9" height="10" rx="2"/><ellipse class="ad-g-cuerpo" cx="-12" cy="0" rx="15" ry="14"/><ellipse class="ad-g-cuerpo" cx="6" cy="0" rx="11" ry="10"/><circle class="ad-g-boca" cx="-3" cy="0" r="4"/><path class="ad-g-cuerdas" d="M-22 -1.5 H46 M-22 1.5 H46"/></g></svg>`,
+  entrenador: `<svg viewBox="0 0 130 100"><rect class="ad-pant" x="6" y="14" width="118" height="72" rx="12"/><rect class="ad-pant-b" x="16" y="24" width="40" height="12" rx="6"/>`
+    + 'NRNNRNRN'.split('').map((c, i) => `<rect class="ad-celda ${c === 'N' ? 'llena' : ''}" style="--k:${i}" x="${16 + i * 12.6}" y="48" width="10" height="26" rx="3"/>`).join('')
+    + `<rect class="ad-cabezal" x="14" y="44" width="14" height="34" rx="4"/></svg>`,
   caminante: (() => {
     // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
     const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
@@ -1181,7 +1204,7 @@ function vistaHTML(st, e, animar) {
       <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Resúmenes de clase</span>${hayClaseNueva(st) ? '<i class="punto-nuevo" aria-label="Nuevo"></i>' : ''}</button>` : ''}</span></p>
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
-      ${tiraClases(st, e, animar)}`}
+      ${modo === 'alumno' ? '' : tiraClases(st, e, animar)}`}
       ${esLlamada || modo === 'alumno' ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}

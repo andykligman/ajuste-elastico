@@ -1592,7 +1592,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (max-width:560px){
   .material:has(> :nth-child(2):last-child){display:grid;grid-template-columns:1fr 1fr}
   .material:has(> :nth-child(2):last-child)>*{min-width:0;padding:8px 10px}
-  .material:has(> :nth-child(2):last-child) .mat-mini{display:none}
+  .material:has(> :nth-child(2):last-child) .mat-vid{flex-wrap:wrap;align-content:center}
+  .material:has(> :nth-child(2):last-child) .mat-vid .mat-mini{width:100%;margin:-2px -2px 6px}
+  .material:has(> :nth-child(2):last-child) .mat:not(.mat-vid) .mat-mini{display:none}
   .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
 }
 
@@ -1758,3 +1760,60 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (prefers-reduced-motion:reduce){.adorno *{animation:none!important}}
 .ev-fuera{display:none}.ev-bloque .ev-dentro{margin-right:6px}.ev-sep{display:none}
 @media (max-width:700px){.ev-fuera{display:block}.ev-bloque .ev-dentro{display:none}}
+
+/* Más adornos (minimalistas, azul y naranja) */
+.ad-cara{fill:none;stroke:#EDEEF0;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.ad-boca{stroke:#E8834F;stroke-width:3.5;stroke-linecap:round;transform-box:fill-box;transform-origin:left center;animation:adBoca .5s ease-in-out infinite alternate}
+@keyframes adBoca{to{transform:scaleY(2.4)}}
+.ad-ondas path{fill:none;stroke:#7F9FDB;stroke-width:2.5;stroke-linecap:round;animation:aeFade 1s ease-in-out infinite alternate}
+.ad-globo{opacity:0;animation:adGlobo 3.6s ease infinite;animation-delay:calc(var(--k) * 1.2s)}
+.ad-globo rect{fill:color-mix(in srgb,#E8834F 18%,transparent);stroke:#E8834F;stroke-width:2}
+.ad-globo text{font:700 15px var(--display);fill:#F3B48F;text-anchor:middle}
+@keyframes adGlobo{0%{opacity:0;transform:translate(-6px,22px) scale(.7)}10%,28%{opacity:1;transform:translate(0,14px) scale(1)}36%,100%{opacity:0;transform:translate(4px,0) scale(.95)}}
+.ad-esfera{fill:color-mix(in srgb,#5D7BB6 14%,transparent);stroke:#7F9FDB;stroke-width:3}
+.ad-marca{stroke:#7F9FDB;stroke-width:2;stroke-linecap:round}.ad-marca.fuerte{stroke:#EDEEF0;stroke-width:3}
+.ad-aguja{stroke-linecap:round;transform-box:view-box;transform-origin:55px 52px}
+.ad-aguja.h{stroke:#EDEEF0;stroke-width:4;transform:rotate(60deg)}
+.ad-aguja.s{stroke:#E8834F;stroke-width:2.2;animation:adTic 6s steps(12) infinite}
+@keyframes adTic{to{transform:rotate(360deg)}}
+.ad-eje{fill:#E8834F}.ad-campana{stroke:#7F9FDB;stroke-width:3;stroke-linecap:round}
+.ad-cuerda{stroke:#C9CCD3;opacity:.7}
+.ad-salto{fill:none;stroke:#E8834F;stroke-width:2;stroke-dasharray:4 5;opacity:.6}
+.ad-saltin{fill:#E8834F}
+.ad-pisada{fill:#7F9FDB}
+.ad-salteo{stroke:#E8834F;stroke-width:2.4;stroke-linecap:round;opacity:.8}
+.ad-enlace{fill:none;stroke:#E8834F;stroke-width:4;stroke-linecap:round;stroke-dasharray:200;stroke-dashoffset:200;animation:adEnlace 3.2s ease-in-out infinite}
+@keyframes adEnlace{0%{stroke-dashoffset:200}55%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-200}}
+.ad-nota-e{fill:#5D7BB6;stroke:#A9BEE8;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:adLatido 3.2s ease infinite;animation-delay:calc(var(--k) * .42s)}
+@keyframes adLatido{0%,100%{transform:scale(1)}12%{transform:scale(1.25);fill:#E8834F}24%{transform:scale(1)}}
+.ad-acorde{stroke-width:2}.ad-acorde.a{fill:color-mix(in srgb,#5D7BB6 18%,transparent);stroke:#7F9FDB}.ad-acorde.b{fill:color-mix(in srgb,#E8834F 16%,transparent);stroke:#E8834F}
+.ad-cif{font:700 17px var(--display);text-anchor:middle}.ad-cif.a{fill:#A9BEE8}.ad-cif.b{fill:#F3B48F}
+.ad-barra-c{stroke:#8a8b90;stroke-width:2;stroke-dasharray:4 4}
+.ad-llega{fill:#7F9FDB;animation:adLlega 2.4s ease-in-out infinite}
+@keyframes adLlega{0%{transform:translate(0,0);fill:#7F9FDB}45%{transform:translate(32px,0);fill:#7F9FDB}55%{transform:translate(38px,0);fill:#E8834F}100%{transform:translate(92px,0);fill:#E8834F}}
+.ad-antes{font:italic 600 11px var(--sans);fill:#F3B48F;text-anchor:middle;animation:adAntes 2.4s ease infinite}
+@keyframes adAntes{0%,40%{opacity:0}55%,85%{opacity:1}100%{opacity:0}}
+.ad-pauta{stroke:#5a5c63;stroke-width:1.4}
+.ad-nota-t{fill:#EDEEF0;stroke:#EDEEF0;stroke-width:2;opacity:0;animation:adEscribe 5s ease infinite;animation-delay:calc(var(--k) * .7s)}
+@keyframes adEscribe{0%{opacity:0}6%,70%{opacity:1}80%,100%{opacity:0}}
+.ad-lapiz{animation:adLapiz 5s ease-in-out infinite}
+.ad-lapiz-c{fill:#E8834F}.ad-lapiz-p{fill:#E0C29E}
+@keyframes adLapiz{0%{transform:translate(24px,72px)}14%{transform:translate(44px,63px)}28%{transform:translate(64px,67px)}42%{transform:translate(84px,54px)}56%{transform:translate(104px,58px)}75%{transform:translate(112px,40px)}100%{transform:translate(24px,72px)}}
+.ad-escalon{fill:none;stroke:#5a5c63;stroke-width:2.4;stroke-linejoin:round}
+.ad-cromo circle{fill:#7F9FDB}.ad-cromo text{font:700 13px var(--sans);fill:#F3B48F}
+.ad-cromo{opacity:0;animation:adCromo 4s ease infinite;animation-delay:calc(var(--k) * .4s)}
+@keyframes adCromo{0%{opacity:0;transform:translateY(5px)}8%,72%{opacity:1;transform:none}85%,100%{opacity:0}}
+.ad-sube{fill:none;stroke:#E8834F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ad-mini-redo .ad-casco{stroke-width:1.6}.ad-mini-redo .ad-parche{stroke-width:2}
+.ad-palito{stroke:#C9A27A;stroke-width:3.5;stroke-linecap:round;transform-box:view-box;transform-origin:8px 24px;animation:adPalo .7s ease-in-out infinite}
+.ad-pasa{fill:none;stroke:#8a8b90;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ad-g-cuerpo{fill:#3A4F7A;stroke:#5D7BB6;stroke-width:2}.ad-g-boca{fill:#16213A}
+.ad-g-mango{fill:#C9A27A}.ad-g-clav{fill:#C9A27A}
+.ad-g-cuerdas{stroke:#EDEEF0;stroke-width:.9;animation:vgVibra .3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ad-pant{fill:#16213A;stroke:#5D7BB6;stroke-width:2.5}
+.ad-pant-b{fill:#E8834F}
+.ad-celda{fill:#24262B;stroke:#3a3d45;stroke-width:1}
+.ad-celda.llena{fill:#5D7BB6}
+.ad-cabezal{fill:none;stroke:#E8834F;stroke-width:2.5;animation:adCabezal 2.4s steps(8) infinite}
+@keyframes adCabezal{to{transform:translateX(100.8px)}}
+.atras .ad-hombro path,.ad-hombro.atras path{stroke:#9DA2AC}

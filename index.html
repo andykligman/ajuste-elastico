@@ -1670,7 +1670,9 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (max-width:560px){
   .material:has(> :nth-child(2):last-child){display:grid;grid-template-columns:1fr 1fr}
   .material:has(> :nth-child(2):last-child)>*{min-width:0;padding:8px 10px}
-  .material:has(> :nth-child(2):last-child) .mat-mini{display:none}
+  .material:has(> :nth-child(2):last-child) .mat-vid{flex-wrap:wrap;align-content:center}
+  .material:has(> :nth-child(2):last-child) .mat-vid .mat-mini{width:100%;margin:-2px -2px 6px}
+  .material:has(> :nth-child(2):last-child) .mat:not(.mat-vid) .mat-mini{display:none}
   .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
 }
 
@@ -1836,6 +1838,63 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (prefers-reduced-motion:reduce){.adorno *{animation:none!important}}
 .ev-fuera{display:none}.ev-bloque .ev-dentro{margin-right:6px}.ev-sep{display:none}
 @media (max-width:700px){.ev-fuera{display:block}.ev-bloque .ev-dentro{display:none}}
+
+/* Más adornos (minimalistas, azul y naranja) */
+.ad-cara{fill:none;stroke:#EDEEF0;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.ad-boca{stroke:#E8834F;stroke-width:3.5;stroke-linecap:round;transform-box:fill-box;transform-origin:left center;animation:adBoca .5s ease-in-out infinite alternate}
+@keyframes adBoca{to{transform:scaleY(2.4)}}
+.ad-ondas path{fill:none;stroke:#7F9FDB;stroke-width:2.5;stroke-linecap:round;animation:aeFade 1s ease-in-out infinite alternate}
+.ad-globo{opacity:0;animation:adGlobo 3.6s ease infinite;animation-delay:calc(var(--k) * 1.2s)}
+.ad-globo rect{fill:color-mix(in srgb,#E8834F 18%,transparent);stroke:#E8834F;stroke-width:2}
+.ad-globo text{font:700 15px var(--display);fill:#F3B48F;text-anchor:middle}
+@keyframes adGlobo{0%{opacity:0;transform:translate(-6px,22px) scale(.7)}10%,28%{opacity:1;transform:translate(0,14px) scale(1)}36%,100%{opacity:0;transform:translate(4px,0) scale(.95)}}
+.ad-esfera{fill:color-mix(in srgb,#5D7BB6 14%,transparent);stroke:#7F9FDB;stroke-width:3}
+.ad-marca{stroke:#7F9FDB;stroke-width:2;stroke-linecap:round}.ad-marca.fuerte{stroke:#EDEEF0;stroke-width:3}
+.ad-aguja{stroke-linecap:round;transform-box:view-box;transform-origin:55px 52px}
+.ad-aguja.h{stroke:#EDEEF0;stroke-width:4;transform:rotate(60deg)}
+.ad-aguja.s{stroke:#E8834F;stroke-width:2.2;animation:adTic 6s steps(12) infinite}
+@keyframes adTic{to{transform:rotate(360deg)}}
+.ad-eje{fill:#E8834F}.ad-campana{stroke:#7F9FDB;stroke-width:3;stroke-linecap:round}
+.ad-cuerda{stroke:#C9CCD3;opacity:.7}
+.ad-salto{fill:none;stroke:#E8834F;stroke-width:2;stroke-dasharray:4 5;opacity:.6}
+.ad-saltin{fill:#E8834F}
+.ad-pisada{fill:#7F9FDB}
+.ad-salteo{stroke:#E8834F;stroke-width:2.4;stroke-linecap:round;opacity:.8}
+.ad-enlace{fill:none;stroke:#E8834F;stroke-width:4;stroke-linecap:round;stroke-dasharray:200;stroke-dashoffset:200;animation:adEnlace 3.2s ease-in-out infinite}
+@keyframes adEnlace{0%{stroke-dashoffset:200}55%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-200}}
+.ad-nota-e{fill:#5D7BB6;stroke:#A9BEE8;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:adLatido 3.2s ease infinite;animation-delay:calc(var(--k) * .42s)}
+@keyframes adLatido{0%,100%{transform:scale(1)}12%{transform:scale(1.25);fill:#E8834F}24%{transform:scale(1)}}
+.ad-acorde{stroke-width:2}.ad-acorde.a{fill:color-mix(in srgb,#5D7BB6 18%,transparent);stroke:#7F9FDB}.ad-acorde.b{fill:color-mix(in srgb,#E8834F 16%,transparent);stroke:#E8834F}
+.ad-cif{font:700 17px var(--display);text-anchor:middle}.ad-cif.a{fill:#A9BEE8}.ad-cif.b{fill:#F3B48F}
+.ad-barra-c{stroke:#8a8b90;stroke-width:2;stroke-dasharray:4 4}
+.ad-llega{fill:#7F9FDB;animation:adLlega 2.4s ease-in-out infinite}
+@keyframes adLlega{0%{transform:translate(0,0);fill:#7F9FDB}45%{transform:translate(32px,0);fill:#7F9FDB}55%{transform:translate(38px,0);fill:#E8834F}100%{transform:translate(92px,0);fill:#E8834F}}
+.ad-antes{font:italic 600 11px var(--sans);fill:#F3B48F;text-anchor:middle;animation:adAntes 2.4s ease infinite}
+@keyframes adAntes{0%,40%{opacity:0}55%,85%{opacity:1}100%{opacity:0}}
+.ad-pauta{stroke:#5a5c63;stroke-width:1.4}
+.ad-nota-t{fill:#EDEEF0;stroke:#EDEEF0;stroke-width:2;opacity:0;animation:adEscribe 5s ease infinite;animation-delay:calc(var(--k) * .7s)}
+@keyframes adEscribe{0%{opacity:0}6%,70%{opacity:1}80%,100%{opacity:0}}
+.ad-lapiz{animation:adLapiz 5s ease-in-out infinite}
+.ad-lapiz-c{fill:#E8834F}.ad-lapiz-p{fill:#E0C29E}
+@keyframes adLapiz{0%{transform:translate(24px,72px)}14%{transform:translate(44px,63px)}28%{transform:translate(64px,67px)}42%{transform:translate(84px,54px)}56%{transform:translate(104px,58px)}75%{transform:translate(112px,40px)}100%{transform:translate(24px,72px)}}
+.ad-escalon{fill:none;stroke:#5a5c63;stroke-width:2.4;stroke-linejoin:round}
+.ad-cromo circle{fill:#7F9FDB}.ad-cromo text{font:700 13px var(--sans);fill:#F3B48F}
+.ad-cromo{opacity:0;animation:adCromo 4s ease infinite;animation-delay:calc(var(--k) * .4s)}
+@keyframes adCromo{0%{opacity:0;transform:translateY(5px)}8%,72%{opacity:1;transform:none}85%,100%{opacity:0}}
+.ad-sube{fill:none;stroke:#E8834F;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ad-mini-redo .ad-casco{stroke-width:1.6}.ad-mini-redo .ad-parche{stroke-width:2}
+.ad-palito{stroke:#C9A27A;stroke-width:3.5;stroke-linecap:round;transform-box:view-box;transform-origin:8px 24px;animation:adPalo .7s ease-in-out infinite}
+.ad-pasa{fill:none;stroke:#8a8b90;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.ad-g-cuerpo{fill:#3A4F7A;stroke:#5D7BB6;stroke-width:2}.ad-g-boca{fill:#16213A}
+.ad-g-mango{fill:#C9A27A}.ad-g-clav{fill:#C9A27A}
+.ad-g-cuerdas{stroke:#EDEEF0;stroke-width:.9;animation:vgVibra .3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ad-pant{fill:#16213A;stroke:#5D7BB6;stroke-width:2.5}
+.ad-pant-b{fill:#E8834F}
+.ad-celda{fill:#24262B;stroke:#3a3d45;stroke-width:1}
+.ad-celda.llena{fill:#5D7BB6}
+.ad-cabezal{fill:none;stroke:#E8834F;stroke-width:2.5;animation:adCabezal 2.4s steps(8) infinite}
+@keyframes adCabezal{to{transform:translateX(100.8px)}}
+.atras .ad-hombro path,.ad-hombro.atras path{stroke:#9DA2AC}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -2510,6 +2569,7 @@ const PROGRAMA = {
       video: { id: '2DfcA6_JdW4' }, hotmart: 'k458JjqROl',
       grupo: 'Intervalos por posición, en 4 tipos de acorde',
       titulo: 'Nombrar los intervalos en voz alta',
+      adorno: 'cabecita',
       detalle: 'Nombrá los **intervalos enteros** en voz alta (7ma mayor, 5ta disminuida, etc.), en las **4 posiciones** para los **4 tipos de acorde**.\n# Por ahora, solo en las primeras 3 cuerdas',
       recursos: [{ t: 'Doc: Previa técnica - Arpegios base', url: DOC_PREVIA }],
       progreso: [
@@ -2528,6 +2588,7 @@ const PROGRAMA = {
       id: 'p3', etapa: 'pre', entrega: 'video', envia: 'un video del mismo ejercicio a tempo, con el metrónomo y los nombres cortos ("siete, uno, tres").',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Lo mismo, a tempo',
+      adorno: 'reloj',
       detalle: 'Poné un **tempo cómodo** y hacé **el mismo ejercicio en tiempo real**.\nAcá **acortamos los nombres**: **"siete, uno, tres"** en vez de "séptima mayor, tónica, tercera mayor", así fluye mejor.',
       progreso: [
         { id: 'limpio', label: 'Me sale casi sin errores', nivel: 'listo', resp: 'Bien ahí! A seguir' },
@@ -2552,6 +2613,7 @@ const PROGRAMA = {
       id: 'p4', etapa: 'pre', entrega: 'video', envia: 'un video aplicando el skipping: primero sin tempo y después a tempo.',
       video: { id: 'GLSfAS-RnhQ' }, hotmart: 'RONqgwvP7P',
       titulo: 'Aplicar el skipping',
+      adorno: 'skipping',
       detalle: 'Repetí los dos pasos anteriores con **skipping**: primero sin tempo y después a tempo.\nSirve para **desordenar la información** y asegurarte de que la asimilaste de verdad.',
       progreso: [
         { id: 'tempo', label: 'Me sale sin tempo y a tempo', nivel: 'listo', resp: 'Excelente!! Seguí adelante' },
@@ -2603,6 +2665,7 @@ const PROGRAMA = {
       ],
       video: { id: 'TylWJrfPxu0' }, hotmart: 'PeAgJn18OW',
       titulo: 'Ver el video de Enlaces de Arpegios y leer el PDF',
+      adorno: 'enlaces',
       detalle: 'Mirá **el video completo** antes de empezar y leé el documento.',
       recursos: [
         { t: 'Video completo: Enlaces de Arpegios', url: VIDEO_ENLACES },
@@ -2749,6 +2812,7 @@ const PROGRAMA = {
         { id: 'duda', label: 'Tengo dudas', nivel: 'cuesta', resp: 'Escribime tus preguntas por WhatsApp!' },
       ],
       titulo: 'Mirar la Ejercitación N2',
+      adorno: 'anticipa',
       detalle: 'Mirá el video y leé el doc de **anticipaciones armónicas**. Sirve para destrabar el "tejido" entre un compás y otro, así no suena **compartimentado** cuando improvisás con ritmo libre.',
       recursos: [{ t: 'Doc: Anticipaciones armónicas', url: DOC_M1, sec: [SEC_M1.antic, 'Anticipaciones armónicas'] }],
     },
@@ -2847,6 +2911,7 @@ const PROGRAMA = {
       id: 'm2v', etapa: 'm2',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Cómo transcribir eficientemente',
+      adorno: 'transcribir',
       detalle: 'Elegí un solo para transcribir y mirá **el video**: ahí te muestro cómo transcribir **cantando**, con Audiostretch.',
       progreso: [
         { id: 'visto', label: 'Ya lo vi, ¡se entiende bien!', nivel: 'listo' },
@@ -2872,6 +2937,7 @@ const PROGRAMA = {
       id: 'm1', etapa: 'm2',
       video: { id: 'o-sV1KM5J-o' }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: mirar el video',
+      adorno: 'cromaticos',
       detalle: 'Mirá **el video completo** una vez y después leé el doc. Todavía no hace falta tocar: en los pasos que siguen vamos ejercitación por ejercitación.',
       progreso: [{ id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' }],
       recursos: [{ t: 'Doc: ADN del Jazz, notas de aproximación', url: DOC_M2, sec: [SEC_M2.adn, 'ADN del Jazz: notas de aproximación'] }],
@@ -3071,6 +3137,7 @@ const PROGRAMA = {
       id: 'r4', etapa: 'ritmo', video: { id: 'Zi8GzfFqmOI' }, hotmart: 'ROxwydYK7D', progreso: PROGRESO_RITMO,
       entrega: 'video', envia: 'un video tocando el ritmo A en la viola, en el nivel en el que estés (una nota, una escala o una progresión).',
       titulo: 'Ritmo A + aplicaciones varias al instrumento',
+      adorno: 'guitarra',
       detalle: 'Ahora llevá el **ritmo A a la viola**. Mirá el video con el doc al lado.\n# El ritmo es fijo: las notas se adaptan al ritmo, no al revés\n- Arrancá con **una sola nota**: toda la atención queda en sostener el ritmo y en cómo lo articulás.\n- Después, **dentro de una escala**: primero con cosas que ya sabés, después con cosas nuevas.\n- Y por último, **sobre una progresión**: solo arpegios, o las escalas de cada acorde.\nSi te sale perfecto, subí la dificultad. Si los errores superan a los aciertos, modificá algo: tempo, longitud de la progresión, material usado (1 o 2 notas por acorde, arpegio completo, superposición, escala completa).\n# Mandame un video tocando el ritmo A en la viola, en el nivel en el que estés',
       recursos: [{ t: 'Doc: Integración de un ritmo al instrumento', url: DOC_M3 }],
     },
@@ -3106,6 +3173,7 @@ const PROGRAMA = {
       video: { id: 'A4rxE6i5VwY' },
       grupo: 'Improvisación con unidades rítmicas',
       titulo: 'Unidades rítmicas y variabilidad en la improvisación',
+      adorno: 'entrenador',
       detalle: 'Ahora improvisamos con **una sola unidad rítmica, o muy pocas**: la idea es hacer mucho con poco.\n- Elegí 2 o 3 unidades y trabajá **una a la vez** con el cuerpo, usando el **entrenador rítmico**: en loop, en continuo o con Desplazamientos.\n- Después improvisá **solo con esa unidad**, sin mirar la pantalla y con el metrónomo. Grabala y mandámela.\n- Lo mismo con otra unidad, y después con **2 a la vez**.\n# Mandame una impro con un elemento y otra con dos',
       recursos: [
         { t: 'Doc: Improvisación con unidades rítmicas', url: DOC_M3, sec: [SEC_M3.unidades, 'Improvisación con unidades rítmicas'] },
@@ -4008,6 +4076,29 @@ const ADORNOS = {
     + `<g class="ad-redo"><path class="ad-casco" d="M22 52 V80 a38 10 0 0 0 76 0 V52"/><path class="ad-franja" d="M22 64 a38 10 0 0 0 76 0"/>`
     + [30, 44, 60, 76, 90].map(x => `<line class="ad-tensor" x1="${x}" y1="${x === 60 ? 62 : 60}" x2="${x}" y2="${x === 60 ? 90 : 86}"/>`).join('')
     + `<ellipse class="ad-aro" cx="60" cy="80" rx="38" ry="10"/><ellipse class="ad-parche" cx="60" cy="52" rx="38" ry="10"/></g></svg>`,
+  cabecita: `<svg viewBox="0 0 130 100"><path class="ad-cara" d="M20 88 V70 C8 62 8 40 18 28 C30 12 56 10 66 26 C70 32 70 38 70 42 L78 54 L70 56 V64 C70 70 64 72 56 70 V88"/><path class="ad-boca" d="M66 58 h4"/>`
+    + [['7ª', 0], ['5ª', 1], ['3ª', 2]].map(([t, k]) => `<g class="ad-globo" style="--k:${k}"><rect x="80" y="${10 + k * 0}" width="40" height="26" rx="13"/><text x="100" y="${28 + k * 0}">${t}</text></g>`).join('')
+    + `<g class="ad-ondas"><path d="M76 50 q5 5 0 10"/><path d="M82 46 q8 9 0 18"/></g></svg>`,
+  reloj: `<svg viewBox="0 0 110 100"><circle class="ad-esfera" cx="55" cy="52" r="38"/>${Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6, r1 = i % 3 ? 33 : 29; return `<line class="ad-marca${i % 3 ? '' : ' fuerte'}" x1="${(55 + Math.sin(a) * r1).toFixed(1)}" y1="${(52 - Math.cos(a) * r1).toFixed(1)}" x2="${(55 + Math.sin(a) * 36).toFixed(1)}" y2="${(52 - Math.cos(a) * 36).toFixed(1)}"/>`; }).join('')}`
+    + `<line class="ad-aguja h" x1="55" y1="52" x2="55" y2="32"/><line class="ad-aguja s" x1="55" y1="58" x2="55" y2="20"/><circle class="ad-eje" cx="55" cy="52" r="3.5"/><path class="ad-campana" d="M38 10 l-8 -4 M72 10 l8 -4"/></svg>`,
+  skipping: `<svg viewBox="0 0 120 100">${[30, 50, 70, 90].map((y, i) => `<line class="ad-cuerda" x1="8" y1="${y}" x2="112" y2="${y}" style="stroke-width:${1.4 + i * .5}"/>`).join('')}`
+    + `<path class="ad-salto" d="M22 70 Q38 20 54 30 Q70 40 86 90"/><circle class="ad-saltin" r="6"><animateMotion dur="1.6s" repeatCount="indefinite" path="M22 70 Q38 20 54 30 Q70 40 86 90" keyPoints="0;0.5;1" keyTimes="0;0.5;1" calcMode="linear"/></circle>`
+    + `<circle class="ad-pisada" cx="22" cy="70" r="4"/><circle class="ad-pisada" cx="54" cy="30" r="4"/><circle class="ad-pisada" cx="86" cy="90" r="4"/><path class="ad-salteo" d="M50 46 l8 8 M58 46 l-8 8" transform="translate(-14 4)"/></svg>`,
+  enlaces: `<svg viewBox="0 0 130 100"><path class="ad-enlace" d="M14 78 C30 78 30 46 44 46 S60 70 74 66 S92 24 104 24 S118 44 120 40"/>`
+    + [[14, 78], [44, 46], [74, 66], [104, 24]].map(([x, y], i) => `<circle class="ad-nota-e" style="--k:${i}" cx="${x}" cy="${y}" r="9"/>`).join('') + `</svg>`,
+  anticipa: `<svg viewBox="0 0 130 100"><rect class="ad-acorde a" x="6" y="30" width="52" height="40" rx="10"/><rect class="ad-acorde b" x="72" y="30" width="52" height="40" rx="10"/><text class="ad-cif a" x="32" y="56">G7</text><text class="ad-cif b" x="98" y="56">C</text>`
+    + `<line class="ad-barra-c" x1="65" y1="18" x2="65" y2="84"/><circle class="ad-llega" cx="20" cy="88" r="5"/><text class="ad-antes" x="50" y="14">antes</text></svg>`,
+  transcribir: `<svg viewBox="0 0 130 100">${[0, 1, 2, 3, 4].map(k => `<line class="ad-pauta" x1="6" y1="${40 + k * 9}" x2="124" y2="${40 + k * 9}"/>`).join('')}`
+    + [[22, 67.5], [42, 58.5], [62, 63], [82, 49.5], [102, 54]].map(([x, y], i) => `<g class="ad-nota-t" style="--k:${i}"><ellipse cx="${x}" cy="${y}" rx="5.4" ry="4" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 5}" y1="${y - 1}" x2="${x + 5}" y2="${y - 26}"/></g>`).join('')
+    + `<g class="ad-lapiz"><path class="ad-lapiz-c" d="M0 0 l26 -26 l7 7 l-26 26 z"/><path class="ad-lapiz-p" d="M0 0 l7 7 l-10 3 z"/></g></svg>`,
+  cromaticos: `<svg viewBox="0 0 130 100"><path class="ad-escalon" d="M8 90 H28 V78 H48 V66 H68 V54 H88 V42 H108 V30 H124"/>`
+    + [[18, 84], [38, 72], [58, 60], [78, 48], [98, 36], [116, 24]].map(([x, y], i) => `<g class="ad-cromo" style="--k:${i}"><circle cx="${x}" cy="${y}" r="6"/>${i % 2 ? `<text x="${x - 17}" y="${y - 2}">♯</text>` : ''}</g>`).join('')
+    + `<path class="ad-sube" d="M14 44 L44 14 m-12 0 h12 v12"/></svg>`,
+  guitarra: `<svg viewBox="0 0 140 100"><g class="ad-mini-redo"><path class="ad-casco" d="M6 46 V62 a20 6 0 0 0 40 0 V46"/><ellipse class="ad-parche" cx="26" cy="46" rx="20" ry="6"/><path class="ad-palito" d="M10 26 L24 42"/></g>`
+    + `<path class="ad-pasa" d="M54 54 H74 m-8 -7 l8 7 l-8 7"/><g transform="translate(104 62) rotate(-30) scale(.85)"><rect class="ad-g-mango" x="6" y="-3" width="34" height="6" rx="2"/><rect class="ad-g-clav" x="38" y="-5" width="9" height="10" rx="2"/><ellipse class="ad-g-cuerpo" cx="-12" cy="0" rx="15" ry="14"/><ellipse class="ad-g-cuerpo" cx="6" cy="0" rx="11" ry="10"/><circle class="ad-g-boca" cx="-3" cy="0" r="4"/><path class="ad-g-cuerdas" d="M-22 -1.5 H46 M-22 1.5 H46"/></g></svg>`,
+  entrenador: `<svg viewBox="0 0 130 100"><rect class="ad-pant" x="6" y="14" width="118" height="72" rx="12"/><rect class="ad-pant-b" x="16" y="24" width="40" height="12" rx="6"/>`
+    + 'NRNNRNRN'.split('').map((c, i) => `<rect class="ad-celda ${c === 'N' ? 'llena' : ''}" style="--k:${i}" x="${16 + i * 12.6}" y="48" width="10" height="26" rx="3"/>`).join('')
+    + `<rect class="ad-cabezal" x="14" y="44" width="14" height="34" rx="4"/></svg>`,
   caminante: (() => {
     // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
     const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
@@ -4819,7 +4910,7 @@ function vistaHTML(st, e, animar) {
       <p class="hero-prog">${esc(PROGRAMA.programa)}${st.standard ? `<span>Tu standard: ${esc(st.standard)}</span>` : ''}<span class="hero-botones">${esLlamada ? '' : `<button class="boton-mapa" data-accion="intro">${ICONO.idea}Cómo funciona</button>`}<button class="boton-mapa" data-accion="mapa">${ICONO_MAPA}<span>Ver el mapa</span></button>${(st.clases || []).length && !esLlamada ? `<button class="boton-mapa" data-accion="clases">${ICONO_CLASES}<span>Resúmenes de clase</span>${hayClaseNueva(st) ? '<i class="punto-nuevo" aria-label="Nuevo"></i>' : ''}</button>` : ''}</span></p>
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
-      ${tiraClases(st, e, animar)}`}
+      ${modo === 'alumno' ? '' : tiraClases(st, e, animar)}`}
       ${esLlamada || modo === 'alumno' ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
@@ -6652,7 +6743,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '47bcf9a092';
+const VERSION_AULA = 'b333199781';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
