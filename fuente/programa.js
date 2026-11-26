@@ -26,7 +26,7 @@ const SEC_M2 = { transcribir: 'h.tozabldxa12', adn: 'h.azfzavn43se4', combinacio
 const DOC_M3 = 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit';
 const SEC_M3 = { integracion: 'h.2vf3aiors22l', ritmos: 'h.si3m5xlsyd92', unidades: 'h.cdhx3lo2hd5x' };
 const DOC_M4 = 'https://docs.google.com/document/d/1UZMITDRKAb_bUdIu0PHvXTFKWRYgJcdAeTylNRyuNWg/edit';
-const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146' };
+const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146', ejemplo: 'h.8obqbdr86z3t', analisis: 'h.8r80u48q82uc' };
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -1052,6 +1052,26 @@ const PROGRAMA = {
         { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la variación y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
       ],
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.instrumento, 'Variación con el instrumento'] }],
+    },
+    {
+      id: 'cv6', etapa: 'curva',
+      titulo: 'Variación: análisis del ejemplo y otra idea para practicar',
+      entrega: 'video', envia: 'un video improvisando cada motivo con dos variaciones, cada una con otra curva.',
+      detalle: 'Abrí el doc y leé el análisis del ejemplo con el instrumento del video anterior, así sacás algunas ideas. Si querés, volvé a escucharlo.\n# Una idea más para practicar\nPor cada motivo **A**, tocá **dos variaciones**: A′ y A″. Y lo mismo con B, con C…\nEn cada variación buscá una **curva melódica distinta**:',
+      ritmoVis: 'dosVariaciones',
+      detalleFin: 'Lo difícil es que no se te arme cualquier cosa: variar el mismo motivo un montón de veces, o variar salteado. Mantené el esquema lo más que puedas, **un motivo y dos variaciones como máximo**, y poné la atención en la curva 😉',
+      nota2: '# Mandame un video con las dos variaciones',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Llevá las variaciones a otros lugares del compás, o probalo sobre una progresión más difícil.' },
+        { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Bajá un cambio: motivos más cortos y simples, y esperá un poco más entre cada uno. Contá en tu cabeza: original, una, dos… y a otro motivo.' },
+        { id: 'curvas', label: 'Las curvas me salen todas iguales', nivel: 'casi', resp: 'Antes de tocar cada variación, decidí para dónde va: si A sube, que A′ baje y A″ haga un arco. Primero la pensás, después la tocás.' },
+      ],
+      recursos: [
+        { t: 'Video: Volver a escuchar el ejemplo', url: 'https://www.youtube.com/watch?v=c4X5f8rOc44' },
+        { t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.ejemplo, 'Ejemplo de variación con notas'] },
+        { t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.analisis, 'Análisis del ejemplo'] },
+      ],
     },
   ],
 

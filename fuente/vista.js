@@ -385,6 +385,40 @@ const RITMO_PASO = {
       + entra(146, y2 + 24, 'entra en el y del 3', 'ter')
       + `</svg>`;
   },
+  dosVariaciones: () => {
+    // mismo ritmo en las tres, otra curva en cada una: A sube, A′ baja, A″ hace un arco
+    const cel = 'NNNCNCRR', x0 = 74, w = 164, sx = w / 8, filas = [
+      { l: 'A', s: 'el motivo', cls: 'mot', alt: [1, 3, 5, 7], curva: 'sube' },
+      { l: 'A′', s: '1ª variación', cls: 'var', alt: [7, 5, 3, 1], curva: 'baja' },
+      { l: 'A″', s: '2ª variación', cls: 'var', alt: [2, 6, 7, 3], curva: 'arco' },
+    ];
+    const pos = [0, 1, 2, 4];
+    let o = '';
+    filas.forEach((f, r) => {
+      const y = 86 + r * 104;
+      o += `<g>`;
+      o += [0, 1, 2, 3, 4].map(k => `<line class="rp-pauta" x1="${x0 - 6}" y1="${y - k * 10}" x2="${x0 + w + 4}" y2="${y - k * 10}"/>`).join('')
+        + `<line class="vr-div" x1="${x0 + w + 4}" y1="${y - 40}" x2="${x0 + w + 4}" y2="${y}"/>`;
+      // la curva, por detrás de las notas
+      const pts = pos.map((i, n) => [x0 + 8 + i * sx, y - f.alt[n] * 5]);
+      let d = `M${pts[0][0]} ${pts[0][1]}`; for (let n = 1; n < pts.length; n++) { const [a, b] = [pts[n - 1], pts[n]], m = (b[0] - a[0]) / 2; d += ` C${a[0] + m} ${a[1]} ${b[0] - m} ${b[1]} ${b[0]} ${b[1]}`; }
+      o += `<path class="rp-curva ${f.cls}" style="--k:${r}" d="${d}"/>`;
+      o += compasNotasSVG(cel, f.alt, x0, y, w, () => f.cls, r * 4);
+      o += `<text class="rp-letra ${f.cls}" x="8" y="${y - 14}">${f.l}</text><text class="rp-sub" x="8" y="${y + 4}">${f.s}</text>`;
+      o += `<g class="rp-tag ${f.cls}"><rect x="${x0 + w + 14}" y="${y - 32}" width="48" height="22" rx="11"/><text x="${x0 + w + 38}" y="${y - 17}">${f.curva}</text></g>`;
+      o += `</g>`;
+      if (r < 2) o += `<path class="rp-baja" d="M30 ${y + 14} v${104 - 48}"/><text class="rp-desc" x="38" y="${y + 50}">descansá</text>`;
+    });
+    // el esquema que se repite
+    const yE = 384, grupos = ['A', 'B', 'C'];
+    o += `<text class="rp-fila" x="152" y="${yE - 18}" text-anchor="middle">y así con cada motivo</text>`;
+    grupos.forEach((g, gi) => {
+      const gx = 4 + gi * 102;
+      [g, g + '′', g + '″'].forEach((t, k) => { const x = gx + k * 30; o += `<g class="rp-chip ${k ? 'var' : 'mot'}"><circle cx="${x + 13}" cy="${yE + 4}" r="13"/><text x="${x + 13}" y="${yE + 9}">${t}</text></g>`; });
+      if (gi < 2) o += `<text class="rp-punto" x="${gx + 96}" y="${yE + 9}">→</text>`;
+    });
+    return `<svg class="ritmo-paso" viewBox="0 0 304 408" role="img" aria-label="Un motivo A y dos variaciones con el mismo ritmo: A′ con la curva hacia abajo y A″ en arco. Después lo mismo con B y con C">${o}</svg>`;
+  },
   variacion: () => {
     const y = 80, w = 100, xs = [10, 115, 220];
     const seg = (x1, x2, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} 36 v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="22">${t}</text></g>`;
@@ -570,7 +604,7 @@ function materialHTML(p) {
   const igual = r => v && !p.sinVerVideo && ytId(r.url) === v.id && ytT(r.url) === (v.t || 0);
   const dup = (p.recursos || []).find(r => r.url && igual(r) && /ejemplo/i.test(r.t));   // «Ver ejemplo…» conserva su nombre
   const rs = (p.recursos || []).filter(r => r.url && !igual(r));
-  const verVideo = v && !p.sinVerVideo ? { principal: true, t: dup ? dup.t : p.videoTit || 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
+  const verVideo = v && !p.sinVerVideo ? { principal: true, mini: v.mini, t: dup ? dup.t : p.videoTit || 'Video: Ver video', url: `https://www.youtube.com/watch?v=${v.id}${v.t ? '&t=' + v.t + 's' : ''}` } : null;
   if (verVideo) rs.unshift(verVideo);
   if (!rs.length) return '';
   const nuevos = rs.filter(r => esDoc(r) && docNuevo(p, r));
@@ -591,7 +625,7 @@ function materialHTML(p) {
 function recursoHTML(r) {
   if (r.sec) return `<a class="mat mat-sec" href="${esc(linkSeccion(r.url, r.sec[0]))}"${attrSec(r.url, r.sec[0])} target="_blank" rel="noopener">${ICONO.doc}<span>Ir a <b>${esc(r.sec[1])}</b></span></a>`;
   const id = ytId(r.url);
-  if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}"><img class="mat-mini" src="https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg" alt="" loading="lazy">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
+  if (id) { const t = ytT(r.url); return `<button class="mat${r.principal ? ' mat-vid' : ''}${r.destacado ? ' mat-dest' : ''}" data-seek="${id}:${t}"><img class="mat-mini" src="${r.mini ? esc(r.mini) : `https://i.ytimg.com/vi/${esc(id)}/mqdefault.jpg`}" alt="" loading="lazy">${ICONO.video}<span>${esc(r.t.replace(/^Video:\s*/, '').replace(/^./, c => c.toUpperCase()))}${t ? `<small>desde ${mmss(t)}</small>` : ''}</span></button>`; }
   return `<a class="mat${r.web ? ' mat-web' : ''}" href="${esc(r.url)}" target="_blank" rel="noopener">${r.web ? ICONO.web : ICONO.doc}<span>${esc(r.t)}</span></a>`;
 }
 function apoyoHTML(p, sel) {
