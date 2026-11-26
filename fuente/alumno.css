@@ -1595,3 +1595,16 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .material:has(> :nth-child(2):last-child) .mat-mini{display:none}
   .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
 }
+
+/* Dibujo de ritmo dentro de un paso (ritmoVis) */
+.ritmo-paso-caja{max-width:520px;margin:2px 0 14px;padding:14px 10px 10px;border-radius:14px;background:var(--sup2);border:1px solid rgba(255,255,255,.06)}
+.ritmo-paso{display:block;width:100%;max-width:460px;margin:0 auto}
+.ritmo-paso .vr-nota.mot .vr-cab,.ritmo-paso .vr-nota.mot .vr-plica,.ritmo-paso .vr-nota.mot .vr-barra,.ritmo-paso .vr-nota.mot .vr-gancho,.ritmo-paso .vr-nota.mot ~ .vr-barra{stroke:var(--naranja)}
+.ritmo-paso .vr-nota.var .vr-cab,.ritmo-paso .vr-nota.var .vr-plica,.ritmo-paso .vr-nota.var .vr-barra,.ritmo-paso .vr-nota.var .vr-gancho{stroke:#7F9FDB}
+.rp-seg path{fill:none;stroke-width:1.6;stroke-linecap:round}
+.rp-seg text{font:700 13px var(--sans);text-anchor:middle}
+.rp-seg.mot path{stroke:var(--naranja)}.rp-seg.mot text{fill:var(--naranja)}
+.rp-seg.var path{stroke:#7F9FDB}.rp-seg.var text{fill:#A9BEE8}
+.rp-seg.des path{stroke:#55575e;stroke-dasharray:3 3}.rp-seg.des text{fill:#8a8d95;font-weight:500;font-style:italic}
+.rp-entra{font:600 11.5px var(--sans)}.rp-entra.mot{fill:var(--naranja)}.rp-entra.var{fill:#A9BEE8}
+.rp-otro{font:600 12px var(--sans);fill:var(--gris);text-anchor:end}

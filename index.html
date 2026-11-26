@@ -1674,6 +1674,19 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .material:has(> :nth-child(2):last-child) .doc-nuevo .dn-ico{display:none}
 }
 
+/* Dibujo de ritmo dentro de un paso (ritmoVis) */
+.ritmo-paso-caja{max-width:520px;margin:2px 0 14px;padding:14px 10px 10px;border-radius:14px;background:var(--sup2);border:1px solid rgba(255,255,255,.06)}
+.ritmo-paso{display:block;width:100%;max-width:460px;margin:0 auto}
+.ritmo-paso .vr-nota.mot .vr-cab,.ritmo-paso .vr-nota.mot .vr-plica,.ritmo-paso .vr-nota.mot .vr-barra,.ritmo-paso .vr-nota.mot .vr-gancho,.ritmo-paso .vr-nota.mot ~ .vr-barra{stroke:var(--naranja)}
+.ritmo-paso .vr-nota.var .vr-cab,.ritmo-paso .vr-nota.var .vr-plica,.ritmo-paso .vr-nota.var .vr-barra,.ritmo-paso .vr-nota.var .vr-gancho{stroke:#7F9FDB}
+.rp-seg path{fill:none;stroke-width:1.6;stroke-linecap:round}
+.rp-seg text{font:700 13px var(--sans);text-anchor:middle}
+.rp-seg.mot path{stroke:var(--naranja)}.rp-seg.mot text{fill:var(--naranja)}
+.rp-seg.var path{stroke:#7F9FDB}.rp-seg.var text{fill:#A9BEE8}
+.rp-seg.des path{stroke:#55575e;stroke-dasharray:3 3}.rp-seg.des text{fill:#8a8d95;font-weight:500;font-style:italic}
+.rp-entra{font:600 11.5px var(--sans)}.rp-entra.mot{fill:var(--naranja)}.rp-entra.var{fill:#A9BEE8}
+.rp-otro{font:600 12px var(--sans);fill:var(--gris);text-anchor:end}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -3015,7 +3028,9 @@ const PROGRAMA = {
       grupo: 'Desarrollo motívico: variación',
       titulo: 'Variación, con el cuerpo',
       entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con el cuerpo o en una sola nota, con el metrónomo.',
-      detalle: '1) Con el cuerpo o en una sola nota, con el metrónomo:\na) Tocá un motivo corto.\nb) Descansá.\nc) Repetí su **ritmo**.\nd) Descansá.\nY así todo el solo, con un motivo nuevo cada vez.\n**Todavía sin el instrumento!**\nLa variación puede entrar en **otro lugar del compás**, pero el ritmo por dentro queda igual.',
+      detalle: '1) Con el cuerpo o en una sola nota, con el metrónomo, tocá un **motivo** corto, descansá, repetí su **ritmo** y descansá:',
+      ritmoVis: 'variacion',
+      detalleFin: 'Y así todo el solo, con un motivo nuevo cada vez. La variación puede entrar en **otro lugar del compás**, pero el ritmo por dentro queda igual.\n**Todavía sin el instrumento!**',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
       nota2: '# Mandame un video con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
@@ -3768,6 +3783,19 @@ function compasSVG(cel, x0, y, w, cls = '', k0 = 0) {
 }
 const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="translate(${x} ${y}) rotate(-28)"><rect class="vr-mango" x="20" y="-4" width="58" height="8" rx="2"/><rect class="vr-clavijero" x="76" y="-6" width="14" height="12" rx="3"/><ellipse class="vr-cuerpo" cx="-16" cy="0" rx="22" ry="20"/><ellipse class="vr-cuerpo" cx="10" cy="0" rx="16" ry="14"/><circle class="vr-boca" cx="0" cy="0" r="6"/><path class="vr-cuerdas" d="M-30 -2 H82 M-30 2 H82"/></g>`;
 const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
+/* Dibujos de ritmo dentro de un paso (campo ritmoVis): motivo en naranja, variación en azul */
+const RITMO_PASO = {
+  variacion: () => {
+    const y = 80, w = 100, xs = [10, 115, 220];
+    const seg = (x1, x2, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} 36 v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="22">${t}</text></g>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 128" role="img" aria-label="Motivo, descanso, variación con el mismo ritmo entrando en otro pulso, descanso">`
+      + compasSVG('NCNNNCRR', xs[0], y, w, 'mot') + compasSVG('RRRRNCNN', xs[1], y, w, 'var', 4) + compasSVG('NCRRRRRR', xs[2], y, w, 'var', 8)
+      + [112, 217, 322].map(x => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`).join('')
+      + seg(12, 80, 'Motivo', 'mot') + seg(88, 162, 'descansá', 'des') + seg(168, 252, 'Variación', 'var') + seg(260, 322, 'descansá', 'des')
+      + `<text class="rp-entra mot" x="20" y="104">entra en el 1</text><text class="rp-entra var" x="175" y="104">entra en el 3</text>`
+      + `<text class="rp-otro" x="322" y="124">↺ y otro motivo nuevo</text></svg>`;
+  },
+};
 const VIS_RITMO = {
   'rf-ritmos': () => compasSVG('RNCNNCRR', 18, 70, 138) + compasSVG('NNRNRRNC', 164, 70, 138, '', 5) + `<line class="vr-div" x1="160" y1="56" x2="160" y2="84"/>`,
   'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30"/><path d="M58 48 l-14 16 M58 48 l14 16"/><path class="vr-pierna i" d="M58 70 v26"/><path class="vr-pierna d" d="M58 70 v26"/></g>`
@@ -4074,6 +4102,8 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
+    ${p.detalleFin ? `<div class="consigna">${textoHTML(p.detalleFin)}</div>` : ''}
     ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
     ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
@@ -6276,7 +6306,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = 'cf2e6d0b5e';
+const VERSION_AULA = '1819965e3e';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

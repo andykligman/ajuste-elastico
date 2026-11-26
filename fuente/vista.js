@@ -337,6 +337,19 @@ function compasSVG(cel, x0, y, w, cls = '', k0 = 0) {
 }
 const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="translate(${x} ${y}) rotate(-28)"><rect class="vr-mango" x="20" y="-4" width="58" height="8" rx="2"/><rect class="vr-clavijero" x="76" y="-6" width="14" height="12" rx="3"/><ellipse class="vr-cuerpo" cx="-16" cy="0" rx="22" ry="20"/><ellipse class="vr-cuerpo" cx="10" cy="0" rx="16" ry="14"/><circle class="vr-boca" cx="0" cy="0" r="6"/><path class="vr-cuerdas" d="M-30 -2 H82 M-30 2 H82"/></g>`;
 const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
+/* Dibujos de ritmo dentro de un paso (campo ritmoVis): motivo en naranja, variación en azul */
+const RITMO_PASO = {
+  variacion: () => {
+    const y = 80, w = 100, xs = [10, 115, 220];
+    const seg = (x1, x2, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} 36 v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="22">${t}</text></g>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 128" role="img" aria-label="Motivo, descanso, variación con el mismo ritmo entrando en otro pulso, descanso">`
+      + compasSVG('NCNNNCRR', xs[0], y, w, 'mot') + compasSVG('RRRRNCNN', xs[1], y, w, 'var', 4) + compasSVG('NCRRRRRR', xs[2], y, w, 'var', 8)
+      + [112, 217, 322].map(x => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`).join('')
+      + seg(12, 80, 'Motivo', 'mot') + seg(88, 162, 'descansá', 'des') + seg(168, 252, 'Variación', 'var') + seg(260, 322, 'descansá', 'des')
+      + `<text class="rp-entra mot" x="20" y="104">entra en el 1</text><text class="rp-entra var" x="175" y="104">entra en el 3</text>`
+      + `<text class="rp-otro" x="322" y="124">↺ y otro motivo nuevo</text></svg>`;
+  },
+};
 const VIS_RITMO = {
   'rf-ritmos': () => compasSVG('RNCNNCRR', 18, 70, 138) + compasSVG('NNRNRRNC', 164, 70, 138, '', 5) + `<line class="vr-div" x1="160" y1="56" x2="160" y2="84"/>`,
   'rf-cuerpo': () => `<g class="vr-persona"><circle cx="58" cy="30" r="10"/><path d="M58 40 v30"/><path d="M58 48 l-14 16 M58 48 l14 16"/><path class="vr-pierna i" d="M58 70 v26"/><path class="vr-pierna d" d="M58 70 v26"/></g>`
@@ -643,6 +656,8 @@ function tarjetaHTML(st, e, p) {
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
+    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
+    ${p.detalleFin ? `<div class="consigna">${textoHTML(p.detalleFin)}</div>` : ''}
     ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
     ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}

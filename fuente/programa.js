@@ -1020,7 +1020,9 @@ const PROGRAMA = {
       grupo: 'Desarrollo motívico: variación',
       titulo: 'Variación, con el cuerpo',
       entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con el cuerpo o en una sola nota, con el metrónomo.',
-      detalle: '1) Con el cuerpo o en una sola nota, con el metrónomo:\na) Tocá un motivo corto.\nb) Descansá.\nc) Repetí su **ritmo**.\nd) Descansá.\nY así todo el solo, con un motivo nuevo cada vez.\n**Todavía sin el instrumento!**\nLa variación puede entrar en **otro lugar del compás**, pero el ritmo por dentro queda igual.',
+      detalle: '1) Con el cuerpo o en una sola nota, con el metrónomo, tocá un **motivo** corto, descansá, repetí su **ritmo** y descansá:',
+      ritmoVis: 'variacion',
+      detalleFin: 'Y así todo el solo, con un motivo nuevo cada vez. La variación puede entrar en **otro lugar del compás**, pero el ritmo por dentro queda igual.\n**Todavía sin el instrumento!**',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
       nota2: '# Mandame un video con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
