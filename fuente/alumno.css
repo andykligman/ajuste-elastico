@@ -1620,3 +1620,57 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ritmo-paso .vr-nota.fijo{opacity:1;animation:none}.ritmo-paso .vr-nota.fijo .vr-cab,.ritmo-paso .vr-nota.fijo .vr-plica,.ritmo-paso .vr-nota.fijo .vr-barra,.ritmo-paso .vr-nota.fijo .vr-gancho{stroke:#8d9099}
 .rp-llave{fill:none;stroke:var(--naranja);stroke-width:1.8;stroke-linecap:round}
 .rp-total{font:700 13px var(--sans);fill:var(--tinta)}
+
+/* ===== Mapa: ruta con curvas que une los módulos, redondeles con el avance y caminito de pasos ===== */
+.mapa-zoom{background:var(--fondo)}
+.mz-camino{max-width:980px;padding:40px 16px 90px}
+.mz-camino::before{content:none}
+.mz-ruta{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:0}
+.mz-ruta path{fill:none;stroke-linecap:round}
+.mz-tramo-fondo{stroke:#2C2F36;stroke-width:6}
+.mz-tramo{stroke-width:4;opacity:.38;stroke-dasharray:2 10}
+.mz-tramo.hecho{opacity:1;stroke-dasharray:none}
+.mz-brazo{stroke-width:3;opacity:.35}
+.mz-brazo.hecho{opacity:.8}
+.mz-mod{grid-template-columns:1fr 200px 1fr;margin:0 0 56px;z-index:1}
+.mz-mod:last-child{margin-bottom:0}
+.mz-parada{width:64px;height:64px;border:0;background:var(--fondo);color:var(--mc);font:700 22px var(--display);margin-top:6px}
+.mz-parada b{position:relative;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:color-mix(in srgb,var(--mc) 14%,var(--fondo));font:inherit}
+.mz-parada b svg{width:21px;height:21px}
+.mz-anillo{position:absolute;inset:0;width:64px!important;height:64px!important;transform:rotate(-90deg)}
+.mz-anillo circle{fill:none;stroke:#2C2F36;stroke-width:5}
+.mz-anillo .mz-prog{stroke:var(--mc);stroke-linecap:round;stroke-dasharray:calc(var(--p) * 100) 100;transition:stroke-dasharray .5s}
+.mz-mod.completo .mz-parada b{background:var(--mc);color:#0d0e10}
+.mz-mod.bloq .mz-parada{color:#6B707B}
+.mz-mod.bloq .mz-parada b{background:#1E2025}
+.mz-mod.aca .mz-parada{animation:none;box-shadow:none}
+.mz-mod.aca .mz-parada::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid var(--mc);opacity:.5;animation:mzOnda 2.4s ease-out infinite}
+@keyframes mzOnda{from{transform:scale(.92);opacity:.6}to{transform:scale(1.22);opacity:0}}
+.mz-mod.izq .mz-parada{justify-self:end;margin-right:18px}
+.mz-mod.der .mz-parada{justify-self:start;margin-left:18px}
+.mz-tarjeta{--cf:color-mix(in srgb,var(--mc) 7%,var(--sup));background:var(--cf);border:1.5px solid color-mix(in srgb,var(--mc) 30%,var(--linea));border-radius:20px;padding:18px 18px 14px}
+.mz-mod.aca .mz-tarjeta{border-color:var(--mc)}
+.mz-tarjeta h3{font-size:23px}
+.mz-pasitos{gap:5px;margin:2px 0 12px}
+.mz-pasitos span{border:1.5px solid color-mix(in srgb,var(--mc) 45%,transparent);background:none;padding:3px 10px}
+.mz-det{position:relative;border-top:1px dashed color-mix(in srgb,var(--mc) 30%,var(--linea))}
+.mz-mini{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.mz-mini path{fill:none;stroke:#3A3D45;stroke-width:2.5;stroke-linecap:round}
+.mz-mini path.hecho{stroke:var(--mc)}
+.mz-lista li.mz-p{position:relative;z-index:1;margin-left:calc(var(--o) * 12px)}
+.mz-lista li.mz-p i{background:var(--cf);width:20px;height:20px}
+.mz-lista li.mz-p.ok i{background:var(--mc)}
+.mz-lista li.mz-p.cur i{border-color:var(--mc);box-shadow:0 0 0 4px color-mix(in srgb,var(--mc) 22%,transparent)}
+.mz-lista li.cur button{background:none}
+.mz-lista li.cur button[data-mapa-paso]{background:color-mix(in srgb,var(--mc) 12%,transparent)}
+.mz-lista li.mz-etapa{border-top:0;margin:14px 0 2px;padding:4px 6px 2px}
+.mz-lista li.mz-etapa:first-child{margin-top:4px}
+@media (max-width:700px){
+  .mz-camino{padding:28px 12px 80px 16px}
+  .mz-mod{grid-template-columns:60px 1fr;gap:10px;margin-bottom:40px}
+  .mz-mod.izq .mz-parada,.mz-mod.der .mz-parada{justify-self:center;margin:4px 0 0;width:52px;height:52px}
+  .mz-anillo{width:52px!important;height:52px!important}
+  .mz-parada b{width:38px;height:38px;font-size:18px}
+  .mz-tarjeta{padding:16px 14px 12px}
+  .mz-lista li.mz-p{margin-left:calc(var(--o) * 9px)}
+}

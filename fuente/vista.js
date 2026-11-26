@@ -1157,7 +1157,7 @@ function mapaHTML(st, e) {
         <button class="mz-tilde" data-mapa-extra="${esc(x.id)}" aria-pressed="${!!x.hecho}" aria-label="${x.hecho ? 'Desmarcar' : 'Marcar como hecha'}: ${esc(x.titulo)}"><i>${x.hecho ? ICONO.check : ''}</i></button>
         <span>${esc(x.titulo)}${x.detalle ? `<small>${esc(x.detalle)}</small>` : ''}</span></li>`).join('')}</ul></section>` : ''}
     <p class="mz-ayuda">Tocá el circulito de cada paso para marcarlo como hecho, así sabés qué te falta</p>
-    <ol class="mz-camino">${MODULOS.map((M, i) => {
+    <ol class="mz-camino"><svg class="mz-ruta" aria-hidden="true"></svg>${MODULOS.map((M, i) => {
       const pasos = pasosDelModulo(M.n).filter(p => !p.hojaDeRuta);
       const obj = PROGRAMA.pasos.find(p => p.hojaDeRuta && MODULO_DE[p.etapa] === M.n);
       const abiertoMod = moduloHabilitado(st, M.n) && !moduloCerradoPorClase(st, e, M.n);
@@ -1167,7 +1167,7 @@ function mapaHTML(st, e) {
       const est = !pasos.length ? 'Muy pronto' : completo ? 'Completo' : !abiertoMod ? 'Todavía no' : `${listos} de ${pasos.length} pasos`;
       const h = obj && obj.hojaDeRuta;
       return `<li class="mz-mod ${completo ? 'completo' : ''} ${aca ? 'aca' : ''} ${abiertoMod && pasos.length ? '' : 'bloq'} ${i % 2 ? 'der' : 'izq'}" style="--mc:${M.color}">
-        <span class="mz-parada">${completo ? ICONO.check : !abiertoMod || !pasos.length ? ICONO.candado : M.n}</span>
+        <span class="mz-parada" style="--p:${pasos.length ? (listos / pasos.length).toFixed(3) : 0}"><svg class="mz-anillo" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><circle class="mz-prog" cx="32" cy="32" r="28" pathLength="100"/></svg><b>${completo ? ICONO.check : !abiertoMod || !pasos.length ? ICONO.candado : M.n}</b></span>
         <div class="mz-tarjeta">
           ${aca ? '<span class="mz-aca">Estás acá</span>' : ''}
           <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
@@ -1175,17 +1175,64 @@ function mapaHTML(st, e) {
           ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
           ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
           ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
-          ${pasos.length ? `<div class="mz-det"><ul class="mz-lista">${(seps => pasos.map((p, j) => {
+          ${pasos.length ? `<div class="mz-det"><svg class="mz-mini" aria-hidden="true"></svg><ul class="mz-lista">${(seps => pasos.map((p, j) => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
             // separados como en el aula: por ejercitación (1, 2, 3…) o por video
             const sp = seps[j];
-            return `${sp ? `<li class="mz-etapa ${sp.solo ? 'mz-sep' : ''}">${sp.tit ? `<strong>${esc(sp.tit)}</strong>` : ''}${sp.sub ? `<small>${esc(sp.sub)}</small>` : ''}</li>` : ''}<li class="${ok ? 'ok' : ''} ${cur ? 'cur' : ''}">${abiertoMod
+            return `${sp ? `<li class="mz-etapa ${sp.solo ? 'mz-sep' : ''}">${sp.tit ? `<strong>${esc(sp.tit)}</strong>` : ''}${sp.sub ? `<small>${esc(sp.sub)}</small>` : ''}</li>` : ''}<li class="mz-p ${ok ? 'ok' : ''} ${cur ? 'cur' : ''}" style="--o:${[0, 1, 2, 1][j % 4]}">${abiertoMod
               ? `<button class="mz-tilde" data-mapa-tilde="${p.id}" aria-pressed="${ok}" aria-label="${ok ? 'Desmarcar' : 'Marcar como hecho'}: ${esc(p.titulo)}"><i>${ok ? ICONO.check : ''}</i></button><button data-mapa-paso="${p.id}">${esc(p.titulo)}${cur ? '<em>sigue</em>' : ''}</button>`
               : `<span><i></i>${esc(p.titulo)}</span>`}</li>`;
           }).join(''))(separadoresPasos(pasos, M.n))}</ul></div>` : ''}
         </div></li>`;
     }).join('')}</ol>
   </div>`;
+}
+/* El recorrido del mapa: una ruta con curvas que une los módulos (con el color de uno pasando al otro)
+   y, adentro de cada módulo, el caminito que une los pasos, como en el aula */
+function dibujarMapa(el) {
+  const cam = el && el.querySelector('.mz-camino'); if (!cam) return;
+  const NS = 'http://www.w3.org/2000/svg', cr = cam.getBoundingClientRect();
+  const mods = [...cam.querySelectorAll('.mz-mod')];
+  const celu = cr.width < 700, amp = celu ? 16 : 70, r = celu ? 26 : 32;
+  const pts = mods.map(m => { const b = m.querySelector('.mz-parada').getBoundingClientRect(); return { x: b.left + b.width / 2 - cr.left, y: b.top + b.height / 2 - cr.top, c: getComputedStyle(m).getPropertyValue('--mc').trim(), m }; });
+  let defs = '', camino = '';
+  const hasta = (() => { const i = mods.findIndex(m => m.classList.contains('aca')); return i < 0 ? mods.filter(m => m.classList.contains('completo')).length - 1 : i; })();
+  for (let i = 0; i < pts.length - 1; i++) {
+    const a = pts[i], b = pts[i + 1], dy = b.y - a.y, s = i % 2 ? 1 : -1;
+    const y1 = a.y + r + 4, y2 = b.y - r - 4;
+    defs += `<linearGradient id="mzg${i}" gradientUnits="userSpaceOnUse" x1="0" y1="${y1}" x2="0" y2="${y2}"><stop offset="0" stop-color="${a.c}"/><stop offset="1" stop-color="${b.c}"/></linearGradient>`;
+    const d = `M${a.x} ${y1} C${a.x + s * amp} ${y1 + dy * .38} ${b.x - s * amp} ${y2 - dy * .38} ${b.x} ${y2}`;
+    camino += `<path class="mz-tramo-fondo" d="${d}"/><path class="mz-tramo ${i < hasta ? 'hecho' : ''}" d="${d}" stroke="url(#mzg${i})"/>`;
+  }
+  if (!celu) pts.forEach(p => {
+    const t = p.m.querySelector('.mz-tarjeta').getBoundingClientRect(), izq = t.right - cr.left < p.x;
+    const x1 = p.x + (izq ? -r - 4 : r + 4), x2 = izq ? t.right - cr.left : t.left - cr.left, y2 = Math.max(t.top - cr.top + 34, p.y);
+    camino += `<path class="mz-brazo ${p.m.classList.contains('bloq') ? '' : 'hecho'}" stroke="${p.c}" d="M${x1} ${p.y} C${(x1 + x2) / 2} ${p.y} ${(x1 + x2) / 2} ${y2} ${x2} ${y2}"/>`;
+  });
+  const ruta = cam.querySelector('.mz-ruta');
+  ruta.setAttribute('width', cr.width); ruta.setAttribute('height', cam.scrollHeight);
+  ruta.innerHTML = `<defs>${defs}</defs>${camino}`;
+  // caminito de pasos dentro de cada tarjeta
+  cam.querySelectorAll('.mz-det').forEach(det => {
+    const svg = det.querySelector('.mz-mini'), dr = det.getBoundingClientRect();
+    // un tramo por grupo: la línea no cruza los títulos de cada ejercitación
+    const nodos = [...det.querySelectorAll('.mz-lista > li')].map(li => { if (!li.classList.contains('mz-p')) return null; const c = li.querySelector('i').getBoundingClientRect(); return { x: c.left + c.width / 2 - dr.left, y: c.top + c.height / 2 - dr.top, ok: li.classList.contains('ok') }; });
+    let d = '';
+    for (let i = 0; i < nodos.length - 1; i++) {
+      const a = nodos[i], b = nodos[i + 1]; if (!a || !b) continue; const m = (b.y - a.y) / 2;
+      d += `<path class="${a.ok && b.ok ? 'hecho' : ''}" d="M${a.x} ${a.y} C${a.x} ${a.y + m} ${b.x} ${b.y - m} ${b.x} ${b.y}"/>`;
+    }
+    svg.setAttribute('width', dr.width); svg.setAttribute('height', dr.height); svg.innerHTML = d;
+  });
+}
+function vigilarMapa(el) {
+  if (!el || !el.querySelector('.mz-camino')) return;
+  dibujarMapa(el);
+  el.addEventListener('animationend', ev => { if (ev.target === el) dibujarMapa(el); }, { once: true });
+  setTimeout(() => dibujarMapa(el), 400);
+  if (el._ro) el._ro.disconnect();
+  if (window.ResizeObserver) { el._ro = new ResizeObserver(() => dibujarMapa(el)); el._ro.observe(el.querySelector('.mz-camino')); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => dibujarMapa(el));
 }
 /* ----- Las clases: el resumen que te dejé, con las tareas conectadas a los pasos del aula ----- */
 const ICONO_CLASES = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z M8 10h8M8 13.5h8M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
@@ -1316,6 +1363,7 @@ function abrirMapaZoom() {
       x.hecho = !x.hecho; guardarAlumno(); renderAlumno(); refrescarMapaZoom();
     }
   };
+  vigilarMapa(el);
   const aca = el.querySelector('.mz-mod.aca'); if (aca) setTimeout(() => aca.scrollIntoView({ block: 'center' }), 30);
   el.querySelector('.mz-cerrar').focus();
 }
@@ -1328,6 +1376,7 @@ function refrescarMapaZoom() {
   el.innerHTML = tmp.firstElementChild.innerHTML;
   el.querySelectorAll('.mz-det').forEach((d, i) => { if (i < abiertos.length) d.open = abiertos[i]; });
   el.scrollTop = top;
+  vigilarMapa(el);
 }
 function cerrarMapaZoom() { document.querySelector('.mapa-zoom')?.remove(); document.body.classList.remove('con-mapa'); }
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && document.querySelector('.mapa-zoom')) cerrarMapaZoom(); });
