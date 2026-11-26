@@ -356,18 +356,33 @@ function compasNotasSVG(cel, alt, x0, y, w, clsDe, k0 = 0) {
   return o;
 }
 const RITMO_PASO = {
-  notas: () => {
-    const w = 150, xs = [16, 168], y1 = 64, y2 = 184;
-    const c1 = n => n < 3 ? 'mot' : 'var';
-    const lineas = [0, 1, 2, 3, 4].map(i => `<line class="rp-pent" x1="12" y1="${y2 - i * 10}" x2="320" y2="${y2 - i * 10}"/>`).join('');
-    return `<svg class="ritmo-paso" viewBox="0 0 332 200" role="img" aria-label="Dos motivos distintos con el cuerpo y los mismos ritmos tocados con notas">`
-      + `<text class="rp-fila" x="12" y="16">Con el cuerpo</text>`
-      + compasSVG('NCNNRRRR', xs[0], y1, w, 'mot') + compasSVG('RRRNNCNC', xs[1], y1, w, 'var', 3)
-      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y1 - 16}" x2="${x}" y2="${y1 + 12}"/>`).join('')
-      + `<text class="rp-entra mot" x="52" y="88" text-anchor="middle">motivo 1</text><text class="rp-entra var" x="260" y="88" text-anchor="middle">motivo 2</text>`
-      + `<path class="rp-baja" d="M166 96 v14 m-6 -6 l6 6 l6 -6"/><text class="rp-fila" x="12" y="112">Con la guitarra</text><text class="rp-mismo" x="178" y="108">mismo ritmo</text>`
-      + lineas + compasNotasSVG('NCNNRRRR', [3, 6, 5], xs[0], y2, w, c1, 6) + compasNotasSVG('RRRNNCNC', [5, 2, 6], xs[1], y2, w, () => 'var', 9)
-      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y2 - 40}" x2="${x}" y2="${y2}"/>`).join('')
+  queEs: () => {
+    const w = 150, y1 = 58, y2 = 160;
+    const seg = (x1, x2, yy, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} ${yy + 14} v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="${yy}">${t}</text></g>`;
+    const div = (x, y) => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 222" role="img" aria-label="Un ritmo fijo se repite sin aire; un motivo es la idea más el silencio que viene después">`
+      + `<text class="rp-fila" x="12" y="16">Ritmo fijo</text>`
+      + compasSVG('NCNNRNNC', 16, y1, w, 'fijo') + compasSVG('NCNNRNNC', 168, y1, w, 'fijo', 5) + div(164, y1) + div(320, y1)
+      + `<text class="rp-mismo" x="320" y="16" text-anchor="end">sin aire, se repite</text>`
+      + `<text class="rp-fila" x="12" y="96">Motivo</text>`
+      + compasSVG('NCNNRNNC', 16, y2, w, 'mot', 10) + compasSVG('RRRRRRRR', 168, y2, w, 'mot') + div(164, y2) + div(320, y2)
+      + seg(18, 160, y2 - 48, 'la idea', 'mot') + seg(172, 318, y2 - 48, 'silencio', 'des')
+      + `<path class="rp-llave" d="M18 ${y2 + 22} v6 H318 v-6 M168 ${y2 + 28} v6"/>`
+      + `<text class="rp-total" x="168" y="${y2 + 52}" text-anchor="middle">el motivo = la idea + su silencio</text>`
+      + `</svg>`;
+  },
+  motivos: () => {
+    const w = 150, y1 = 64, y2 = 158;
+    const seg = (x1, x2, yy, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} ${yy + 14} v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="${yy}">${t}</text></g>`;
+    const entra = (x, y, t, cls) => `<text class="rp-entra ${cls}" x="${x}" y="${y}" text-anchor="middle">${t}</text>`;
+    const div = (x, y) => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 186" role="img" aria-label="Tres motivos distintos entre sí, separados por silencios, que entran en lugares distintos del compás">`
+      + compasSVG('NCNNRRRR', 16, y1, w, 'mot') + compasSVG('RRRNNCNC', 168, y1, w, 'var', 3) + div(164, y1) + div(320, y1)
+      + seg(18, 84, y1 - 42, 'motivo 1', 'mot') + seg(92, 206, y1 - 42, 'silencio', 'des') + seg(222, 318, y1 - 42, 'motivo 2', 'var')
+      + entra(50, y1 + 24, 'entra en el 1', 'mot') + entra(270, y1 + 24, 'entra en el y del 2', 'var')
+      + compasSVG('RRRRRNNN', 16, y2, w, 'ter', 7) + compasSVG('NCRRRRRR', 168, y2, w, 'ter', 10) + div(164, y2) + div(320, y2)
+      + seg(18, 106, y2 - 42, 'silencio', 'des') + seg(112, 186, y2 - 42, 'motivo 3', 'ter') + seg(194, 318, y2 - 42, 'silencio', 'des')
+      + entra(146, y2 + 24, 'entra en el y del 3', 'ter')
       + `</svg>`;
   },
   variacion: () => {

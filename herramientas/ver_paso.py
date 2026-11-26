@@ -38,7 +38,7 @@ with sync_playwright() as p:
             errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
             pg.add_init_script(PRE)
             pg.goto(f'http://localhost:{PUERTO}/?demo&paso={paso}')
-            pg.wait_for_timeout(2500)
+            pg.wait_for_timeout(5000)  # deja terminar las animaciones de entrada
             # Saca lo flotante (WhatsApp, «Para la clase») para que no tape la captura
             pg.add_style_tag(content='#consulta,.barra-clase{display:none!important}')
             el = pg.query_selector('.consigna')

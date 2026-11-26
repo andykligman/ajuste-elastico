@@ -1693,6 +1693,11 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .rp-fila{font:700 11.5px var(--sans);fill:var(--gris);letter-spacing:.06em;text-transform:uppercase}
 .rp-mismo{font:600 11.5px var(--sans);fill:var(--gris);font-style:italic}
 .rp-baja{fill:none;stroke:#8a8b90;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ritmo-paso .vr-nota.ter .vr-cab,.ritmo-paso .vr-nota.ter .vr-plica,.ritmo-paso .vr-nota.ter .vr-barra,.ritmo-paso .vr-nota.ter .vr-gancho{stroke:#B99AE6}
+.rp-seg.ter path{stroke:#B99AE6}.rp-seg.ter text{fill:#C9B2EE}.rp-entra.ter{fill:#C9B2EE}
+.ritmo-paso .vr-nota.fijo{opacity:1;animation:none}.ritmo-paso .vr-nota.fijo .vr-cab,.ritmo-paso .vr-nota.fijo .vr-plica,.ritmo-paso .vr-nota.fijo .vr-barra,.ritmo-paso .vr-nota.fijo .vr-gancho{stroke:#8d9099}
+.rp-llave{fill:none;stroke:var(--naranja);stroke-width:1.8;stroke-linecap:round}
+.rp-total{font:700 13px var(--sans);fill:var(--tinta)}
 
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
@@ -3000,6 +3005,7 @@ const PROGRAMA = {
       id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
       titulo: '¿Qué es un motivo?',
       detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
+      ritmoVis: 'queEs',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
@@ -3008,7 +3014,9 @@ const PROGRAMA = {
       grupo: 'Ejercicio 1: motivos cortos',
       titulo: 'Motivos cortos, con el cuerpo',
       entrega: 'video', envia: 'un video improvisando motivos cortos con el cuerpo o en una sola nota, con el metrónomo.',
-      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
+      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.',
+      ritmoVis: 'motivos',
+      detalleFin: 'Durante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
       nota2: '# Mandame un video improvisando motivos con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
@@ -3021,8 +3029,7 @@ const PROGRAMA = {
       id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME' },
       titulo: 'Motivos cortos, con notas',
       entrega: 'video', envia: 'un video improvisando motivos cortos con notas. Contá en el video sobre qué armonía lo hacés.',
-      detalle: '2) Elegí una armonía amigable y hacé lo mismo que con el cuerpo, pero con notas:',
-      ritmoVis: 'notas',
+      detalle: '2) Elegí una armonía amigable y hacé lo mismo que con el cuerpo, pero con notas.',
       detalleFin: 'Lo central sigue siendo el **ritmo**: que los motivos se distingan entre sí. Si suena medio raro, está todo bien.\nSi algo que te salía con el cuerpo se pierde en la guitarra, practicalo aparte. Y si hace falta, dejá la viola un rato y repasalo con el cuerpo.',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Comparar con lo del cuerpo'],
       nota2: '# Mandame un video improvisando motivos con notas',
@@ -3813,18 +3820,33 @@ function compasNotasSVG(cel, alt, x0, y, w, clsDe, k0 = 0) {
   return o;
 }
 const RITMO_PASO = {
-  notas: () => {
-    const w = 150, xs = [16, 168], y1 = 64, y2 = 184;
-    const c1 = n => n < 3 ? 'mot' : 'var';
-    const lineas = [0, 1, 2, 3, 4].map(i => `<line class="rp-pent" x1="12" y1="${y2 - i * 10}" x2="320" y2="${y2 - i * 10}"/>`).join('');
-    return `<svg class="ritmo-paso" viewBox="0 0 332 200" role="img" aria-label="Dos motivos distintos con el cuerpo y los mismos ritmos tocados con notas">`
-      + `<text class="rp-fila" x="12" y="16">Con el cuerpo</text>`
-      + compasSVG('NCNNRRRR', xs[0], y1, w, 'mot') + compasSVG('RRRNNCNC', xs[1], y1, w, 'var', 3)
-      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y1 - 16}" x2="${x}" y2="${y1 + 12}"/>`).join('')
-      + `<text class="rp-entra mot" x="52" y="88" text-anchor="middle">motivo 1</text><text class="rp-entra var" x="260" y="88" text-anchor="middle">motivo 2</text>`
-      + `<path class="rp-baja" d="M166 96 v14 m-6 -6 l6 6 l6 -6"/><text class="rp-fila" x="12" y="112">Con la guitarra</text><text class="rp-mismo" x="178" y="108">mismo ritmo</text>`
-      + lineas + compasNotasSVG('NCNNRRRR', [3, 6, 5], xs[0], y2, w, c1, 6) + compasNotasSVG('RRRNNCNC', [5, 2, 6], xs[1], y2, w, () => 'var', 9)
-      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y2 - 40}" x2="${x}" y2="${y2}"/>`).join('')
+  queEs: () => {
+    const w = 150, y1 = 58, y2 = 160;
+    const seg = (x1, x2, yy, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} ${yy + 14} v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="${yy}">${t}</text></g>`;
+    const div = (x, y) => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 222" role="img" aria-label="Un ritmo fijo se repite sin aire; un motivo es la idea más el silencio que viene después">`
+      + `<text class="rp-fila" x="12" y="16">Ritmo fijo</text>`
+      + compasSVG('NCNNRNNC', 16, y1, w, 'fijo') + compasSVG('NCNNRNNC', 168, y1, w, 'fijo', 5) + div(164, y1) + div(320, y1)
+      + `<text class="rp-mismo" x="320" y="16" text-anchor="end">sin aire, se repite</text>`
+      + `<text class="rp-fila" x="12" y="96">Motivo</text>`
+      + compasSVG('NCNNRNNC', 16, y2, w, 'mot', 10) + compasSVG('RRRRRRRR', 168, y2, w, 'mot') + div(164, y2) + div(320, y2)
+      + seg(18, 160, y2 - 48, 'la idea', 'mot') + seg(172, 318, y2 - 48, 'silencio', 'des')
+      + `<path class="rp-llave" d="M18 ${y2 + 22} v6 H318 v-6 M168 ${y2 + 28} v6"/>`
+      + `<text class="rp-total" x="168" y="${y2 + 52}" text-anchor="middle">el motivo = la idea + su silencio</text>`
+      + `</svg>`;
+  },
+  motivos: () => {
+    const w = 150, y1 = 64, y2 = 158;
+    const seg = (x1, x2, yy, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} ${yy + 14} v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="${yy}">${t}</text></g>`;
+    const entra = (x, y, t, cls) => `<text class="rp-entra ${cls}" x="${x}" y="${y}" text-anchor="middle">${t}</text>`;
+    const div = (x, y) => `<line class="vr-div" x1="${x}" y1="${y - 16}" x2="${x}" y2="${y + 12}"/>`;
+    return `<svg class="ritmo-paso" viewBox="0 0 332 186" role="img" aria-label="Tres motivos distintos entre sí, separados por silencios, que entran en lugares distintos del compás">`
+      + compasSVG('NCNNRRRR', 16, y1, w, 'mot') + compasSVG('RRRNNCNC', 168, y1, w, 'var', 3) + div(164, y1) + div(320, y1)
+      + seg(18, 84, y1 - 42, 'motivo 1', 'mot') + seg(92, 206, y1 - 42, 'silencio', 'des') + seg(222, 318, y1 - 42, 'motivo 2', 'var')
+      + entra(50, y1 + 24, 'entra en el 1', 'mot') + entra(270, y1 + 24, 'entra en el y del 2', 'var')
+      + compasSVG('RRRRRNNN', 16, y2, w, 'ter', 7) + compasSVG('NCRRRRRR', 168, y2, w, 'ter', 10) + div(164, y2) + div(320, y2)
+      + seg(18, 106, y2 - 42, 'silencio', 'des') + seg(112, 186, y2 - 42, 'motivo 3', 'ter') + seg(194, 318, y2 - 42, 'silencio', 'des')
+      + entra(146, y2 + 24, 'entra en el y del 3', 'ter')
       + `</svg>`;
   },
   variacion: () => {
@@ -6348,7 +6370,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '2e73aa3134';
+const VERSION_AULA = '2c0e24882c';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
