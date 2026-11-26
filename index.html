@@ -2053,6 +2053,7 @@ const VIDEOS = {
   'CHKJyTSdmIg': 'Ritmos C, D y E + improvisación con tiempos y contratiempos',
   'A4rxE6i5VwY': 'Unidades rítmicas y variabilidad en la improvisación',
   'Aiw3VSTHFkU': '¿Qué es un motivo?',
+  'WmXm2aoluwI': 'Variación: primer paso con el cuerpo',
 };
 
 /* Standards para elegir. pdf: link a la parte para trabajar (vacío = Andy la manda por WhatsApp) */
@@ -3005,6 +3006,23 @@ const PROGRAMA = {
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió (unidades, silencios, dónde arrancan) y practicalo aparte:\n- Tocá como ritmo fijo algunos motivos que te salían con el cuerpo, en esa escala.\n- O bajá un escalón: hacelo en una sola nota, o volvé un rato al cuerpo.' },
         { id: 'suena', label: 'Cumplo la consigna pero suena medio mal', nivel: 'listo', resp: 'Si los motivos son cortos, distintos entre sí y los silencios son variados, está bien. Las notas van mejorando con el tiempo, primero la consigna 😉' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+    },
+    {
+      id: 'cv4', etapa: 'curva', video: { id: 'WmXm2aoluwI' },
+      grupo: 'Desarrollo motívico: variación',
+      titulo: 'Variación, con el cuerpo',
+      entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con el cuerpo o en una sola nota, con el metrónomo.',
+      detalle: '1) Con el cuerpo o en una sola nota, con el metrónomo, improvisá así:\na) Tocá un motivo corto con características desarrollables.\nb) Descansá.\nc) Tocá la variación: repetí el **ritmo** del motivo.\nd) Descansá.\nRepetí de a) a d) durante todo el solo, con un motivo distinto cada vez.\n**Todavía sin el instrumento!**\nFijate que:\n- Por dentro, el ritmo de la variación sea **exactamente igual** al del motivo. Lo que sí podés cambiar es **dónde entra en el compás**.\n- Si el motivo arrancó a tierra, llevá la variación a tierra en otro pulso. Si arrancó en contratiempo, a contratiempo en otro pulso.\n- En el silencio te acuerdes del ritmo que acabás de tocar. Si no te acordás, no toques a ciegas: esperá un poco más y, si no aparece, seguí con un motivo nuevo.\nCopiar el motivo siempre en el mismo lugar del compás cumple la consigna y está bien para arrancar, pero la idea es que después no sea siempre así 😉\nLo mínimo es poder fabricar un motivo, esperar, repetir su ritmo… esperar y fabricar otro distinto. Si eso sale, vamos bien.',
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      nota2: 'Si escribir el ritmo te cuesta mucho, no hay drama, pero al menos grabate: necesitamos tener un registro para saber qué mejorar.\n# Mandame un video improvisando motivos y sus variaciones con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Cuando ya te sientas en confianza podés:\n- Sumar figuras rítmicas más nuevas.\n- Llevar las variaciones a otros lugares del compás.\n- Y si tenés ganas de algo más jugado, probá el **espejo**: el mismo ritmo, respetando las distancias, pero con las tierras convertidas en contratiempos y los contratiempos en tierras.' },
+        { id: 'olvido', label: 'No me acuerdo del ritmo y termino tocando puros motivos nuevos', nivel: 'casi', resp: 'Ahí se arma una bola de nieve que no sirve de mucho. Pará el metrónomo, descansá un poquito y arrancá de nuevo. Y bajá la dificultad:\n- Esperá unos tiempos más antes de la variación, asegurándote de que te acordás del motivo.\n- Armá motivos más simples o con figuras que ya manejes bien.\n- No te compliques cambiando dónde entra la variación: hacé lo que te sea más fácil.' },
+        { id: 'parecidos', label: 'Los motivos me salen todos parecidos', nivel: 'casi', resp: 'Para que esto funcione, el ejercicio anterior tiene que estar firme: si los motivos no son bien distintos entre sí, nunca aparece la secuencia una idea y su variación, otra idea y su variación… Volvé un rato a los motivos cortos y después retomá acá.' },
         { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
       ],
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
@@ -6258,7 +6276,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '17e6cf5ed0';
+const VERSION_AULA = 'a5a9d22bf7';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
