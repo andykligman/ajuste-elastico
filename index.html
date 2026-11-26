@@ -1770,6 +1770,73 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .rp-chip.var circle{fill:color-mix(in srgb,#7F9FDB 18%,transparent);stroke:#7F9FDB}.rp-chip.var text{fill:#C4D3F2}
 .rp-punto{font:600 14px var(--sans);fill:#6a6d75;text-anchor:middle}
 
+/* Flechitas que salen de «Evaluar próximos pasos» */
+.ev-bloque{display:flex;align-items:center}
+.ev-rama{position:relative;list-style:none;margin:0;padding:0 0 0 34px;display:grid;gap:8px}
+.ev-rama::before{content:"";position:absolute;left:0;top:50%;width:14px;height:2px;background:#5D7BB6}
+.ev-rama li{position:relative;display:flex;align-items:center;gap:8px;padding:7px 12px;border-radius:12px;background:color-mix(in srgb,#5D7BB6 12%,transparent);border:1px dashed rgba(127,159,219,.55);font-size:14.5px;font-weight:600;line-height:1.35;opacity:0;animation:aeFade .5s ease forwards;animation-delay:calc(.3s + var(--k) * .18s)}
+.ev-rama li b{flex:none;display:grid;place-items:center;width:21px;height:21px;border-radius:50%;border:1.5px solid #7F9FDB;color:#A9BEE8;font-size:11.5px}
+.ev-rama li::before{content:"";position:absolute;left:-21px;top:50%;width:15px;height:2px;background:#5D7BB6}
+.ev-rama li::after{content:"";position:absolute;left:-8px;top:calc(50% - 4px);border:5px solid transparent;border-left-color:#5D7BB6;border-right:0}
+.ev-rama li:first-child::before,.ev-rama li:last-child::before{width:15px}
+.ev-rama>li:not(:only-child)::before{box-shadow:none}
+.ev-rama{--spine:#5D7BB6}
+.ev-rama::after{content:"";position:absolute;left:13px;top:18px;bottom:18px;width:2px;background:var(--spine)}
+@media (max-width:700px){
+  .ev-bloque{flex-direction:column;align-items:flex-start;width:100%}
+  .ev-rama{padding:10px 0 0 40px;width:100%;box-sizing:border-box}
+  .ev-rama::before{left:24px;top:0;width:2px;height:12px}
+  .ev-rama::after{left:24px;top:10px;bottom:18px}
+  .ev-rama li::before{left:-16px;width:12px}
+}
+.ritmo-paso-caja.chica{max-width:280px}
+/* Adornos */
+.adorno{float:right;width:92px;margin:-6px 0 6px 12px;opacity:.95}
+.adorno svg{display:block;width:100%}
+@media (max-width:700px){.adorno{width:72px}}
+.ad-casco{fill:#3A4F7A;stroke:#5D7BB6;stroke-width:2}
+.ad-franja{fill:none;stroke:#E8834F;stroke-width:3}
+.ad-tensor{stroke:#C9CCD3;stroke-width:2;stroke-linecap:round}
+.ad-aro{fill:none;stroke:#C9CCD3;stroke-width:3}
+.ad-parche{fill:#EDEEF0;stroke:#C9CCD3;stroke-width:3}
+.ad-palo line{stroke:#C9A27A;stroke-width:4;stroke-linecap:round}.ad-palo circle{fill:#E0C29E}
+.ad-palo{transform-box:view-box;animation:adPalo .9s ease-in-out infinite}
+.ad-palo.izq{transform-origin:10px 2px}.ad-palo.der{transform-origin:110px 2px;animation-delay:-.45s}
+@keyframes adPalo{0%,100%{transform:rotate(-14deg)}45%,55%{transform:rotate(0)}}
+.ad-palo.der{animation-name:adPaloD}
+@keyframes adPaloD{0%,100%{transform:rotate(14deg)}45%,55%{transform:rotate(0)}}
+.ad-golpe path{fill:none;stroke:#E8834F;stroke-width:2.4;stroke-linecap:round}
+.ad-golpe{opacity:0;animation:adGolpe .9s linear infinite}.ad-golpe.der{animation-delay:-.45s}
+@keyframes adGolpe{0%,44%{opacity:0}50%{opacity:1}62%,100%{opacity:0}}
+.ad-redo{transform-box:view-box;transform-origin:60px 90px;animation:adRebote .45s ease-out infinite}
+@keyframes adRebote{0%,100%{transform:scaleY(1)}12%{transform:scaleY(.97)}}
+.ad-piso path{stroke:#4a4c53;stroke-width:2;stroke-dasharray:6 6;animation:adPiso .5s linear infinite}
+@keyframes adPiso{to{stroke-dashoffset:12}}
+.ad-cuerpo{fill:none;stroke:#EDEEF0;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;transform-box:view-box;animation:adBob .5s ease-in-out infinite}
+.ad-cabeza{fill:#EDEEF0;stroke:none}
+.ad-torso{stroke-width:6}
+@keyframes adBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+.ad-muslo,.ad-canilla,.ad-hombro,.ad-codo{transform-box:view-box;animation-duration:1s;animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.ad-muslo{transform-origin:46px 62px;animation-name:adMuslo}
+.ad-canilla{transform-origin:46px 81px;animation-name:adCanilla}
+.ad-hombro{transform-origin:47px 33px;animation-name:adHombro}
+.ad-codo{transform-origin:47px 47px;animation-name:adCodo}
+.ad-hombro path{stroke:#E8834F}
+.atras{opacity:.45}
+.atras,.atras .ad-canilla,.atras .ad-codo{animation-delay:-.5s}
+@keyframes adMuslo{0%,100%{transform:rotate(-26deg)}50%{transform:rotate(24deg)}}
+@keyframes adCanilla{0%,100%{transform:rotate(4deg)}25%{transform:rotate(38deg)}50%,75%{transform:rotate(2deg)}}
+@keyframes adHombro{0%,100%{transform:rotate(26deg)}50%{transform:rotate(-24deg)}}
+@keyframes adCodo{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(-55deg)}}
+.ad-notita{fill:#7F9FDB;stroke:#7F9FDB;stroke-width:2;animation:adNota 2s ease-in-out infinite}
+.ad-notita path{fill:none}
+@keyframes adNota{0%{opacity:0;transform:translate(0,6px)}30%,70%{opacity:1}100%{opacity:0;transform:translate(6px,-8px)}}
+.adorno{width:100px;margin:0 0 6px 14px}
+@media (max-width:700px){.adorno{width:74px}}
+@media (prefers-reduced-motion:reduce){.adorno *{animation:none!important}}
+.ev-fuera{display:none}.ev-bloque .ev-dentro{margin-right:6px}.ev-sep{display:none}
+@media (max-width:700px){.ev-fuera{display:block}.ev-bloque .ev-dentro{display:none}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2984,12 +3051,14 @@ const PROGRAMA = {
       titulo: 'Introducción: entrenamiento rítmico',
       detalle: 'Mirá el video de introducción. En este módulo sacamos el foco de las notas por un rato y nos concentramos en el ritmo: primero con **ritmos fijos**, después **improvisando con tierras y contratiempos** y con **unidades rítmicas**.',
       verYSeguir: true,
+      adorno: 'redoblante',
     },
     {
       id: 'r2', etapa: 'ritmo', video: { id: 'CY11GrypJpo' }, hotmart: '37dp00Kk7L', progreso: PROGRESO_RITMO,
       entrega: 'video', envia: 'un video marcando el ritmo A con el cuerpo y cantándolo.',
       grupo: 'Práctica con ritmos fijos',
       titulo: 'Ritmo A + ritmo al cuerpo',
+      adorno: 'caminante',
       detalle: 'Ritmo A: **contratiempos con swing**. El desafío es tocarlo sin que se mueva el pulso ni el swing.\nMirá el video y practicalo **con el cuerpo**, como muestro ahí.\n- **Cantá el ritmo** mientras lo marcás: la voz te confirma que es el correcto y te hace darte cuenta de lo que estás tocando.\n- No frenes nunca. Si te confundís, frená, repasá el ritmo y volvé a empezar.\n# Mandame un video marcando el ritmo A con el cuerpo y cantándolo',
     },
     {
@@ -3077,7 +3146,7 @@ const PROGRAMA = {
       id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
       titulo: '¿Qué es un motivo?',
       detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
-      ritmoVis: 'queEs',
+      ritmoVis: 'queEs', ritmoVisChica: true,
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
@@ -3088,6 +3157,7 @@ const PROGRAMA = {
       entrega: 'video', envia: 'un video improvisando motivos cortos con el cuerpo o en una sola nota, con el metrónomo.',
       detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      etapasRama: ['1) Asegurar el cumplimiento de las consignas básicas', '2) Incorporar nuevos ritmos', '3) Hilar más fino en la variabilidad de comienzo de frase'],
       nota2: '# Mandame un video improvisando motivos con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
@@ -3101,7 +3171,8 @@ const PROGRAMA = {
       entrega: 'video', envia: 'un video improvisando motivos cortos con notas. Contá en el video sobre qué armonía lo hacés.',
       detalle: '2) Elegí una armonía amigable y hacé lo mismo que con el cuerpo, pero con notas.',
       detalleFin: 'Lo central sigue siendo el **ritmo**: que los motivos se distingan entre sí. Si suena medio raro, está todo bien.\nSi algo que te salía con el cuerpo se pierde en la guitarra, practicalo aparte. Y si hace falta, dejá la viola un rato y repasalo con el cuerpo.',
-      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Comparar con lo del cuerpo'],
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      etapasRama: ['Comparar con la versión del cuerpo', 'Buscar trasladarlo en la próxima versión con el instrumento'],
       nota2: '# Mandame un video improvisando motivos con notas',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
@@ -3120,6 +3191,7 @@ const PROGRAMA = {
       ritmoVis: 'variacion',
       detalleFin: 'Y así todo el solo, con un motivo nuevo cada vez. La variación puede entrar en **otro lugar del compás**, pero el ritmo por dentro queda igual.\n**Todavía sin el instrumento!**',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      etapasRama: ['1) Asegurar el cumplimiento básico de consignas', '2) Incorporar nuevos ritmos', '3) Entrenar el desplazamiento'],
       nota2: '# Mandame un video con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
         { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Llevá las variaciones a otros lugares del compás o sumá figuras rítmicas nuevas.' },
@@ -3134,7 +3206,8 @@ const PROGRAMA = {
       entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con notas. Contá en el video sobre qué armonía lo hacés.',
       detalle: '2) Elegí una armonía fácil, como un II-V-I o un track modal, y hacé lo mismo que con el cuerpo: tocá un **motivo**, descansá, repetí su **ritmo** y descansá.',
       detalleFin: 'En la variación cambiá algunas o todas las notas. La curva puede ser la misma, parecida o nueva, pero el ritmo por dentro queda igual.\nSi algo que te salía con el cuerpo se pierde en la guitarra, practicalo aparte.',
-      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Comparar con lo del cuerpo'],
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
+      etapasRama: ['Comparar con la versión del cuerpo', 'Buscar trasladarlo en la próxima versión con el instrumento'],
       nota2: '# Mandame un video con el instrumento',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
@@ -3150,18 +3223,15 @@ const PROGRAMA = {
       entrega: 'video', envia: 'un video improvisando cada motivo con dos variaciones, cada una con otra curva.',
       detalle: 'Abrí el doc y leé el análisis del ejemplo con el instrumento del video anterior, así sacás algunas ideas. Si querés, volvé a escucharlo.\n# Una idea más para practicar\nPor cada motivo **A**, tocá **dos variaciones**: A′ y A″. Y lo mismo con B, con C…\nEn cada variación buscá una **curva melódica distinta**:',
       ritmoVis: 'dosVariaciones',
-      detalleFin: 'Lo difícil es que no se te arme cualquier cosa: variar el mismo motivo un montón de veces, o variar salteado. Mantené el esquema lo más que puedas, **un motivo y dos variaciones como máximo**, y poné la atención en la curva 😉',
+      detalleFin: 'Lo difícil de esto es que no se arme algo de variar el mismo motivo muchas veces y variar de manera irregular. La idea es mantener este esquema: **un motivo original y dos variaciones como máximo**, lo más que se pueda. Y prestarle más atención a la curva ahí 😉',
       nota2: '# Mandame un video con las dos variaciones',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
-        { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Llevá las variaciones a otros lugares del compás, o probalo sobre una progresión más difícil.' },
-        { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Bajá un cambio: motivos más cortos y simples, y esperá un poco más entre cada uno. Contá en tu cabeza: original, una, dos… y a otro motivo.' },
-        { id: 'curvas', label: 'Las curvas me salen todas iguales', nivel: 'casi', resp: 'Antes de tocar cada variación, decidí para dónde va: si A sube, que A′ baje y A″ haga un arco. Primero la pensás, después la tocás.' },
+        { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Contá en tu cabeza: original, una, dos… y a otro motivo.' },
       ],
       recursos: [
         { t: 'Video: Volver a escuchar el ejemplo', url: 'https://www.youtube.com/watch?v=c4X5f8rOc44' },
         { t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.ejemplo, 'Ejemplo de variación con notas'] },
-        { t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.analisis, 'Análisis del ejemplo'] },
       ],
     },
   ],
@@ -3923,6 +3993,30 @@ function compasNotasSVG(cel, alt, x0, y, w, clsDe, k0 = 0) {
   }
   return o;
 }
+/* Grabarse → Transcribir → Evaluar, y del último salen flechitas a lo que sigue (etapasRama) */
+function etapasVisHTML(p) {
+  const et = (x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`, n = p.etapasVis.length;
+  const fl = '<i class="ev-fl" aria-hidden="true"></i>';
+  if (!p.etapasRama) return `<div class="etapas-vis">${p.etapasVis.map(et).join(fl)}</div>`;
+  const rama = p.etapasRama.map((x, k) => { const m = /^(\d+)\)\s*(.*)$/.exec(x); return `<li style="--k:${k}">${m ? `<b>${m[1]}</b>` : ''}<span>${enLinea(m ? m[2] : x)}</span></li>`; }).join('');
+  return `<div class="etapas-vis">${p.etapasVis.slice(0, -1).map(et).join(fl)}<i class="ev-fl ev-fuera" aria-hidden="true"></i><div class="ev-bloque"><i class="ev-fl ev-dentro" aria-hidden="true"></i><span class="ev-sep"></span>${et(p.etapasVis[n - 1], n - 1)}<ul class="ev-rama">${rama}</ul></div></div>`;
+}
+/* Adornos chiquitos en la tarjeta de un paso */
+const ADORNOS = {
+  redoblante: `<svg viewBox="0 0 120 104"><g class="ad-palo izq"><line x1="14" y1="6" x2="52" y2="44"/><circle cx="52" cy="44" r="3"/></g><g class="ad-palo der"><line x1="106" y1="6" x2="70" y2="42"/><circle cx="70" cy="42" r="3"/></g>`
+    + `<g class="ad-golpe izq"><path d="M44 36 l-6 -6 M50 32 l-1 -8 M56 34 l4 -7"/></g><g class="ad-golpe der"><path d="M62 32 l-4 -7 M70 30 l1 -8 M76 34 l6 -6"/></g>`
+    + `<g class="ad-redo"><path class="ad-casco" d="M22 52 V80 a38 10 0 0 0 76 0 V52"/><path class="ad-franja" d="M22 64 a38 10 0 0 0 76 0"/>`
+    + [30, 44, 60, 76, 90].map(x => `<line class="ad-tensor" x1="${x}" y1="${x === 60 ? 62 : 60}" x2="${x}" y2="${x === 60 ? 90 : 86}"/>`).join('')
+    + `<ellipse class="ad-aro" cx="60" cy="80" rx="38" ry="10"/><ellipse class="ad-parche" cx="60" cy="52" rx="38" ry="10"/></g></svg>`,
+  caminante: (() => {
+    // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
+    const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
+    const brazo = (cls) => `<g class="ad-hombro ${cls}"><path d="M47 33 L47 47"/><g class="ad-codo"><path d="M47 47 L47 59"/></g></g>`;
+    return `<svg viewBox="0 0 90 112"><g class="ad-piso"><path d="M2 104 H88"/></g><g class="ad-cuerpo">${brazo('atras')}${pierna('atras')}`
+      + `<path class="ad-torso" d="M46 62 L48 32"/><circle class="ad-cabeza" cx="50" cy="19" r="9"/>${pierna('frente')}${brazo('frente')}</g>`
+      + `<g class="ad-notita"><path d="M74 34 v-15 l9 -3"/><ellipse cx="71" cy="35" rx="4.2" ry="3.2"/></g></svg>`;
+  })(),
+};
 const RITMO_PASO = {
   queEs: () => {
     const w = 150, y1 = 58, y2 = 160;
@@ -4303,10 +4397,11 @@ function tarjetaHTML(st, e, p) {
   const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
+    ${p.adorno && ADORNOS[p.adorno] ? `<div class="adorno adorno-${p.adorno}" aria-hidden="true">${ADORNOS[p.adorno]}</div>` : ''}
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
-    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
+    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja${p.ritmoVisChica ? ' chica' : ''}">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
     ${p.detalleFin ? `<div class="consigna">${textoHTML(p.detalleFin)}</div>` : ''}
-    ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
+    ${p.etapasVis ? etapasVisHTML(p) : ''}
     ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
@@ -4725,7 +4820,7 @@ function vistaHTML(st, e, animar) {
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
-      ${esLlamada ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
+      ${esLlamada || modo === 'alumno' ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
@@ -6557,7 +6652,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = 'e933b13a58';
+const VERSION_AULA = '47bcf9a092';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

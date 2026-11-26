@@ -355,6 +355,30 @@ function compasNotasSVG(cel, alt, x0, y, w, clsDe, k0 = 0) {
   }
   return o;
 }
+/* Grabarse → Transcribir → Evaluar, y del último salen flechitas a lo que sigue (etapasRama) */
+function etapasVisHTML(p) {
+  const et = (x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`, n = p.etapasVis.length;
+  const fl = '<i class="ev-fl" aria-hidden="true"></i>';
+  if (!p.etapasRama) return `<div class="etapas-vis">${p.etapasVis.map(et).join(fl)}</div>`;
+  const rama = p.etapasRama.map((x, k) => { const m = /^(\d+)\)\s*(.*)$/.exec(x); return `<li style="--k:${k}">${m ? `<b>${m[1]}</b>` : ''}<span>${enLinea(m ? m[2] : x)}</span></li>`; }).join('');
+  return `<div class="etapas-vis">${p.etapasVis.slice(0, -1).map(et).join(fl)}<i class="ev-fl ev-fuera" aria-hidden="true"></i><div class="ev-bloque"><i class="ev-fl ev-dentro" aria-hidden="true"></i><span class="ev-sep"></span>${et(p.etapasVis[n - 1], n - 1)}<ul class="ev-rama">${rama}</ul></div></div>`;
+}
+/* Adornos chiquitos en la tarjeta de un paso */
+const ADORNOS = {
+  redoblante: `<svg viewBox="0 0 120 104"><g class="ad-palo izq"><line x1="14" y1="6" x2="52" y2="44"/><circle cx="52" cy="44" r="3"/></g><g class="ad-palo der"><line x1="106" y1="6" x2="70" y2="42"/><circle cx="70" cy="42" r="3"/></g>`
+    + `<g class="ad-golpe izq"><path d="M44 36 l-6 -6 M50 32 l-1 -8 M56 34 l4 -7"/></g><g class="ad-golpe der"><path d="M62 32 l-4 -7 M70 30 l1 -8 M76 34 l6 -6"/></g>`
+    + `<g class="ad-redo"><path class="ad-casco" d="M22 52 V80 a38 10 0 0 0 76 0 V52"/><path class="ad-franja" d="M22 64 a38 10 0 0 0 76 0"/>`
+    + [30, 44, 60, 76, 90].map(x => `<line class="ad-tensor" x1="${x}" y1="${x === 60 ? 62 : 60}" x2="${x}" y2="${x === 60 ? 90 : 86}"/>`).join('')
+    + `<ellipse class="ad-aro" cx="60" cy="80" rx="38" ry="10"/><ellipse class="ad-parche" cx="60" cy="52" rx="38" ry="10"/></g></svg>`,
+  caminante: (() => {
+    // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
+    const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
+    const brazo = (cls) => `<g class="ad-hombro ${cls}"><path d="M47 33 L47 47"/><g class="ad-codo"><path d="M47 47 L47 59"/></g></g>`;
+    return `<svg viewBox="0 0 90 112"><g class="ad-piso"><path d="M2 104 H88"/></g><g class="ad-cuerpo">${brazo('atras')}${pierna('atras')}`
+      + `<path class="ad-torso" d="M46 62 L48 32"/><circle class="ad-cabeza" cx="50" cy="19" r="9"/>${pierna('frente')}${brazo('frente')}</g>`
+      + `<g class="ad-notita"><path d="M74 34 v-15 l9 -3"/><ellipse cx="71" cy="35" rx="4.2" ry="3.2"/></g></svg>`;
+  })(),
+};
 const RITMO_PASO = {
   queEs: () => {
     const w = 150, y1 = 58, y2 = 160;
@@ -735,10 +759,11 @@ function tarjetaHTML(st, e, p) {
   const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
+    ${p.adorno && ADORNOS[p.adorno] ? `<div class="adorno adorno-${p.adorno}" aria-hidden="true">${ADORNOS[p.adorno]}</div>` : ''}
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
-    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
+    ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja${p.ritmoVisChica ? ' chica' : ''}">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
     ${p.detalleFin ? `<div class="consigna">${textoHTML(p.detalleFin)}</div>` : ''}
-    ${p.etapasVis ? `<div class="etapas-vis">${p.etapasVis.map((x, i) => `<span class="ev-et" style="--i:${i}"><b>${i + 1}</b>${esc(x)}</span>`).join('<i class="ev-fl" aria-hidden="true"></i>')}</div>` : ''}
+    ${p.etapasVis ? etapasVisHTML(p) : ''}
     ${p.nota2 ? `<div class="consigna">${textoHTML(p.nota2)}</div>` : ''}
     ${p.wa && typeof WHATSAPP_ANDY !== 'undefined' && WHATSAPP_ANDY ? `<a class="resp-wa paso-wa" href="https://wa.me/${WHATSAPP_ANDY}?text=${encodeURIComponent(p.wa.txt)}" target="_blank" rel="noopener">${ICONO_WA}<span>${esc(p.wa.label)}</span></a>` : ''}
     ${hojaDeRutaHTML(p)}
@@ -1157,7 +1182,7 @@ function vistaHTML(st, e, animar) {
       <h1>${esLlamada ? (typeof QUIEN !== 'undefined' && QUIEN ? `Hola, ${esc(QUIEN.nombre.split(' ')[0])}!` : 'Hola!') : `Hola, ${esc(st.nombre.split(' ')[0])}`}</h1>
       ${esLlamada ? '' : `<div class="estado estado-${e.tipo}"><strong>${titularEstado(e)}</strong><span>${esc(bajadaEstado(st, e))}</span></div>
       ${tiraClases(st, e, animar)}`}
-      ${esLlamada ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
+      ${esLlamada || modo === 'alumno' ? '' : e.k <= 4 && !e.faltan.length ? `<div class="pregunta-clase" id="claseHecha"><p><strong>¿Ya tuvimos la clase ${e.k}?</strong>Ya tenés todo lo que se esperaba para esa clase. Si ya la tuviste, marcala así se te abre lo que sigue.</p>
           <div class="fila-botones"><button class="primario" data-accion="clase-ok">Sí, ya la tuve</button><button class="secundario" data-accion="clase-no">Todavía no</button></div></div>`
         : e.k <= 4 && !esLlamada ? `<div class="clase-hecha" id="claseHecha"><button class="link suave" data-accion="clase">Ya tuve la clase ${e.k}</button>${st.clase > 0 ? `<button class="link suave" data-accion="deshacer-clase">Todavía no tuve la clase ${st.clase}</button>` : ''}</div>` : ''}
     </header>
