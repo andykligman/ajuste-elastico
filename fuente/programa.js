@@ -1006,7 +1006,11 @@ const PROGRAMA = {
       id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME' },
       titulo: 'Motivos cortos, con notas',
       entrega: 'video', envia: 'un video improvisando motivos cortos con notas. Contá en el video sobre qué armonía lo hacés.',
-      detalle: '2) Elegí un contexto armónico amigable y realizá la misma práctica pero con notas.\nLa idea es que lo que pudimos hacer con el cuerpo se pueda traducir a la guitarra. Poné tu foco ahí. Y si necesitás por momentos dejar la guitarra a un costado y repasar un poco con el cuerpo para hacer ese traspaso, está perfecto.\nLo central sigue siendo el **ritmo**: que los motivos se distingan entre sí. Si la melodía sube o baja suma, pero va después.\nNo te dejes llevar por que las notas suenen bien: si te preocupás por eso vas a lugares comunes y te olvidás de la consigna. Puede sonar medio raro y está todo bien.\nGrabate y escribí el ritmo, igual que con el cuerpo. Compará los dos: si algo que te salía con el cuerpo se perdió en la guitarra, eso es lo que hay que practicar aparte.\n# Mandame un video improvisando motivos con notas',
+      detalle: '2) Elegí una armonía amigable y hacé lo mismo que con el cuerpo, pero con notas:',
+      ritmoVis: 'notas',
+      detalleFin: 'Lo central sigue siendo el **ritmo**: que los motivos se distingan entre sí. Si suena medio raro, está todo bien.\nSi algo que te salía con el cuerpo se pierde en la guitarra, practicalo aparte. Y si hace falta, dejá la viola un rato y repasalo con el cuerpo.',
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Comparar con lo del cuerpo'],
+      nota2: '# Mandame un video improvisando motivos con notas',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió (unidades, silencios, dónde arrancan) y practicalo aparte:\n- Tocá como ritmo fijo algunos motivos que te salían con el cuerpo, en esa escala.\n- O bajá un escalón: hacelo en una sola nota, o volvé un rato al cuerpo.' },

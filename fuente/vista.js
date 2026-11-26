@@ -338,7 +338,38 @@ function compasSVG(cel, x0, y, w, cls = '', k0 = 0) {
 const guitarraSVG = (x, y, cls = '') => `<g class="vr-guit ${cls}" transform="translate(${x} ${y}) rotate(-28)"><rect class="vr-mango" x="20" y="-4" width="58" height="8" rx="2"/><rect class="vr-clavijero" x="76" y="-6" width="14" height="12" rx="3"/><ellipse class="vr-cuerpo" cx="-16" cy="0" rx="22" ry="20"/><ellipse class="vr-cuerpo" cx="10" cy="0" rx="16" ry="14"/><circle class="vr-boca" cx="0" cy="0" r="6"/><path class="vr-cuerdas" d="M-30 -2 H82 M-30 2 H82"/></g>`;
 const escalonesSVG = (labels, cls = '') => labels.map((t, i) => { const x = 14 + i * 76, yy = 96 - i * 22; return `<g class="vr-esc ${cls}" style="--k:${i}"><path class="vr-pelda" d="M${x} ${yy} h70"/><text class="vr-etq" x="${x + 35}" y="${yy - 7}">${t}</text></g>`; }).join('');
 /* Dibujos de ritmo dentro de un paso (campo ritmoVis): motivo en naranja, variación en azul */
+/* Compás de 8 corcheas con alturas (pentagrama de 5 líneas, y = línea de abajo). alt: pasos de 5 px por nota N */
+function compasNotasSVG(cel, alt, x0, y, w, clsDe, k0 = 0) {
+  const c = cel.split(''); for (let i = 0; i < 8; i++) { if (c[i] !== 'N') continue; let j = i + 1; if (i % 2 === 0 && c[j] === 'C') j++; while (c[j] === 'C') { c[j] = 'R'; j++; } }
+  const sx = w / 8, X = i => x0 + 8 + i * sx; let o = '', n = 0, k = k0;
+  const yr = y - 20;
+  const nota = (i) => { const a = alt[n], cls = clsDe(n); n++; const yh = y - a * 5, x = X(i); return { x, yh, cls, g: `<g class="vr-nota ${cls}" style="--k:${k++}"><ellipse class="rp-cab" cx="${x}" cy="${yh}" rx="5.4" ry="3.9" transform="rotate(-22 ${x} ${yh})"/><line class="vr-plica" x1="${x + 4.8}" y1="${yh - 1}" x2="${x + 4.8}" y2="${yh - 30}"/>` }; };
+  const silC = x => `<path class="vr-sil" d="M${x - 3} ${yr - 6} q3 3 7 -1 l-5 13"/>`;
+  for (let p = 0; p < 4; p++) {
+    const a = c[2 * p], b = c[2 * p + 1], xa = X(2 * p), xb = X(2 * p + 1);
+    if (a === 'N' && b === 'N') { const A = nota(2 * p), B = nota(2 * p + 1); o += A.g + `</g>` + B.g + `</g><line class="vr-barra rp-${A.cls}" x1="${A.x + 4.8}" y1="${A.yh - 30}" x2="${B.x + 4.8}" y2="${B.yh - 30}"/>`; continue; }
+    if (a === 'N' && b === 'C') { o += nota(2 * p).g + '</g>'; continue; }
+    if (a === 'N') { const A = nota(2 * p); o += A.g + `<path class="vr-gancho" d="M${A.x + 4.8} ${A.yh - 30} q9 6 6 16"/></g>` + silC(xb); continue; }
+    if (b === 'N') { const B = nota(2 * p + 1); o += silC(xa) + B.g + `<path class="vr-gancho" d="M${B.x + 4.8} ${B.yh - 30} q9 6 6 16"/></g>`; continue; }
+    o += `<path class="vr-sil" d="M${xa + 2} ${yr - 12} l5 6 l-5 5 l5 7 q-6 -2 -3 4"/>`;
+  }
+  return o;
+}
 const RITMO_PASO = {
+  notas: () => {
+    const w = 150, xs = [16, 168], y1 = 64, y2 = 184;
+    const c1 = n => n < 3 ? 'mot' : 'var';
+    const lineas = [0, 1, 2, 3, 4].map(i => `<line class="rp-pent" x1="12" y1="${y2 - i * 10}" x2="320" y2="${y2 - i * 10}"/>`).join('');
+    return `<svg class="ritmo-paso" viewBox="0 0 332 200" role="img" aria-label="Dos motivos distintos con el cuerpo y los mismos ritmos tocados con notas">`
+      + `<text class="rp-fila" x="12" y="16">Con el cuerpo</text>`
+      + compasSVG('NCNNRRRR', xs[0], y1, w, 'mot') + compasSVG('RRRNNCNC', xs[1], y1, w, 'var', 3)
+      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y1 - 16}" x2="${x}" y2="${y1 + 12}"/>`).join('')
+      + `<text class="rp-entra mot" x="52" y="88" text-anchor="middle">motivo 1</text><text class="rp-entra var" x="260" y="88" text-anchor="middle">motivo 2</text>`
+      + `<path class="rp-baja" d="M166 96 v14 m-6 -6 l6 6 l6 -6"/><text class="rp-fila" x="12" y="112">Con la guitarra</text><text class="rp-mismo" x="178" y="108">mismo ritmo</text>`
+      + lineas + compasNotasSVG('NCNNRRRR', [3, 6, 5], xs[0], y2, w, c1, 6) + compasNotasSVG('RRRNNCNC', [5, 2, 6], xs[1], y2, w, () => 'var', 9)
+      + [164, 320].map(x => `<line class="vr-div" x1="${x}" y1="${y2 - 40}" x2="${x}" y2="${y2}"/>`).join('')
+      + `</svg>`;
+  },
   variacion: () => {
     const y = 80, w = 100, xs = [10, 115, 220];
     const seg = (x1, x2, t, cls) => `<g class="rp-seg ${cls}"><path d="M${x1} 36 v-6 H${x2} v6"/><text x="${(x1 + x2) / 2}" y="22">${t}</text></g>`;

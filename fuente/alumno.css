@@ -1608,3 +1608,10 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .rp-seg.des path{stroke:#55575e;stroke-dasharray:3 3}.rp-seg.des text{fill:#8a8d95;font-weight:500;font-style:italic}
 .rp-entra{font:600 11.5px var(--sans)}.rp-entra.mot{fill:var(--naranja)}.rp-entra.var{fill:#A9BEE8}
 .rp-otro{font:600 12px var(--sans);fill:var(--gris);text-anchor:end}
+.rp-cab{fill:var(--tinta)}
+.ritmo-paso .vr-nota.mot .rp-cab{fill:var(--naranja)}.ritmo-paso .vr-nota.var .rp-cab{fill:#7F9FDB}
+.ritmo-paso .vr-barra.rp-mot{stroke:var(--naranja)}.ritmo-paso .vr-barra.rp-var{stroke:#7F9FDB}
+.rp-pent{stroke:#4a4c52;stroke-width:1.1}
+.rp-fila{font:700 11.5px var(--sans);fill:var(--gris);letter-spacing:.06em;text-transform:uppercase}
+.rp-mismo{font:600 11.5px var(--sans);fill:var(--gris);font-style:italic}
+.rp-baja{fill:none;stroke:#8a8b90;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
