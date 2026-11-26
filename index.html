@@ -3058,6 +3058,23 @@ const PROGRAMA = {
       ],
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
+    {
+      id: 'cv5', etapa: 'curva', video: { id: 'c4X5f8rOc44', mini: 'img/minis/c4X5f8rOc44.jpg' },
+      titulo: 'Variación, con el instrumento',
+      entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con notas. Contá en el video sobre qué armonía lo hacés.',
+      detalle: '2) Elegí una armonía fácil, como un II-V-I o un track modal, y hacé lo mismo que con el cuerpo: tocá un **motivo**, descansá, repetí su **ritmo** y descansá.',
+      detalleFin: 'En la variación cambiá algunas o todas las notas. La curva puede ser la misma, parecida o nueva, pero el ritmo por dentro queda igual.\nSi algo que te salía con el cuerpo se pierde en la guitarra, practicalo aparte.',
+      etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Comparar con lo del cuerpo'],
+      nota2: '# Mandame un video con el instrumento',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Probalo sobre progresiones más difíciles, o tocá 2 o más variaciones de cada motivo antes de pasar a una idea nueva.' },
+        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió y practicalo aparte, o volvé un rato al cuerpo.' },
+        { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la variación y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+    },
   ],
 
   /* Lo que se espera tener ANTES de cada clase, por nivel.
@@ -4365,7 +4382,7 @@ function nodoHTML(st, e, p, n, total) {
     <div class="nodo-fila">
       <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
       <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${p.id === pasoNuevo && !pr.hecho ? '<em class="nuevo">Nuevo</em>' : ''}${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
-      ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg" alt="" loading="lazy"></button>` : ''}
+      ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="${p.video.mini ? esc(p.video.mini) : `https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg`}" alt="" loading="lazy"></button>` : ''}
     </div>
     ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
   </section>`;
@@ -6368,7 +6385,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = 'b40a13fbf1';
+const VERSION_AULA = '9cf836c029';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
