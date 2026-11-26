@@ -994,9 +994,7 @@ const PROGRAMA = {
       grupo: 'Ejercicio 1: motivos cortos',
       titulo: 'Motivos cortos, con el cuerpo',
       entrega: 'video', envia: 'un video improvisando motivos cortos con el cuerpo o en una sola nota, con el metrónomo.',
-      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.',
-      ritmoVis: 'motivos',
-      detalleFin: 'Durante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
+      detalle: '1) Usando una sola nota o el cuerpo, con el metrónomo, improvisá motivos rítmicos cortos.\nDurante el silencio que viene después de cada idea, practicá escuchar o recordar su ritmo, pero no intentes imitarlo en el motivo siguiente.\n**Todavía sin el instrumento!**\nFijate que:\n- Cada motivo dure **más o menos un compás**. Un poquito menos o un poquito más está bien.\n- Adentro del motivo no haya más de **un pulso y medio de silencio**. Si dejás más, te quedan dos motivos chiquitos en vez de uno.\n- Entre motivo y motivo haya **mínimo 2 pulsos** de silencio, idealmente 3 o más. Pueden ser 5, 6, 7 tranqui.\n- Cada motivo sea **distinto del anterior**.\n- Arranquen en **lugares distintos del compás**.',
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
       nota2: '# Mandame un video improvisando motivos con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
