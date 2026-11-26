@@ -1082,18 +1082,15 @@ const PROGRAMA = {
       id: 'cv6', etapa: 'curva',
       titulo: 'Variación: análisis del ejemplo y otra idea para practicar',
       entrega: 'video', envia: 'un video improvisando cada motivo con dos variaciones, cada una con otra curva.',
-      detalle: 'Abrí el doc y leé el análisis del ejemplo con el instrumento del video anterior, así sacás algunas ideas. Si querés, volvé a escucharlo.\n# Una idea más para practicar\nPor cada motivo **A**, tocá **dos variaciones**: A′ y A″. Y lo mismo con B, con C…\nEn cada variación buscá una **curva melódica distinta**:',
+      detalle: 'Abrí el doc y leé el análisis del ejemplo con el instrumento del video anterior, así sacás algunas ideas.\n# Una idea más para practicar\nPor cada motivo **A**, tocá **dos variaciones**: A′ y A″. Y lo mismo con B, con C…\nEn cada variación buscá una **curva melódica distinta**:',
       ritmoVis: 'dosVariaciones',
-      detalleFin: 'Lo difícil de esto es que no se arme algo de variar el mismo motivo muchas veces y variar de manera irregular. La idea es mantener este esquema: **un motivo original y dos variaciones como máximo**, lo más que se pueda. Y prestarle más atención a la curva ahí 😉',
-      nota2: '# Mandame un video con las dos variaciones',
+      detalleFin: 'Lo difícil acá es mantener el esquema: **un motivo original y dos variaciones como máximo**, lo más que se pueda. A veces, al agregar un nuevo patrón, se empieza a quebrar un poco: hay que tratar de sostener A - A′ - A″, etc.\nAl tener 2 variaciones, encontramos más lugar para prestarle atención a la curva.',
+      nota2: '# Mandame un video con 2 variaciones por cada motivo original nuevo',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Contá en tu cabeza: original, una, dos… y a otro motivo.' },
       ],
-      recursos: [
-        { t: 'Video: Volver a escuchar el ejemplo', url: 'https://www.youtube.com/watch?v=c4X5f8rOc44' },
-        { t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.ejemplo, 'Ejemplo de variación con notas'] },
-      ],
+      recursos: [],
     },
   ],
 

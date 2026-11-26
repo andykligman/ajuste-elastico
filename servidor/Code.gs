@@ -562,45 +562,63 @@ function mandarResumenPorMail(c) {
   const al = a.datos;
   if (al.sinMail) return 'no quiere';
   if (!al.email) return 'sin email';
-  // su carpeta de Drive (donde quedan los videos que manda desde el aula), compartida con él para ver
+  // su carpeta de resúmenes en Drive, compartida con él para ver
   let carpeta = '';
-  try {
-    const f = carpetaAlumno(al);
-    if (!f.getViewers().concat(f.getEditors()).some(u => normEmail(u.getEmail()) === al.email)) f.addViewer(al.email);
-    carpeta = f.getUrl();
-  } catch (e) { Logger.log('No pude compartir la carpeta con ' + al.email + ': ' + e); }
+  try { carpeta = carpetaResumenesAlumno(al).getUrl(); } catch (e) { Logger.log('No pude armar la carpeta de resúmenes de ' + al.email + ': ' + e); }
   const nombre = String(al.nombre || '').split(' ')[0];
   const fecha = Utilities.formatDate(new Date(c.fecha + 'T12:00:00'), ZONA, 'dd/MM');
   const aula = ORIGENES[0];
-  const AZ = '#3A4F7A', NA = '#E8834F', GR = '#5b6470';
+  // colores de Ajuste Elástico (los del logo y los del aula)
+  const AZ = '#3A4F7A', AZC = '#5D7BB6', NA = '#E8834F', GR = '#6b7280', FONDO = '#1B1C20', TINTA = '#EDEEF0';
   const tareas = (c.datos.tareas || []).map(t => '<li style="margin:0 0 8px">' + mdLinea(t.texto) + '</li>').join('');
   const resumen = mdBloque(String(c.resumen || '').split(/^#{1,2} *Para la semana que viene.*$/m)[0].replace(/^#{1,2} *(Problemas y devoluciones|Resumen de la clase) *$/gm, ''));
-  const boton = (href, txt, col) => '<a href="' + href + '" style="display:inline-block;margin:0 8px 8px 0;padding:10px 16px;border-radius:999px;background:' + col + ';color:#fff;text-decoration:none;font-weight:600">' + txt + '</a>';
+  const boton = (href, txt, col) => '<a href="' + href + '" style="display:inline-block;margin:0 8px 8px 0;padding:10px 18px;border-radius:999px;background:' + col + ';color:#fff;text-decoration:none;font-weight:600">' + txt + '</a>';
+  const titulo = t => '<h3 style="color:' + AZ + ';margin:24px 0 8px;padding-left:10px;border-left:3px solid ' + NA + '">' + t + '</h3>';
   const html = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1d232b;max-width:600px">'
+    + '<div style="background:' + AZ + ';color:#fff;padding:16px 18px;border-radius:12px 12px 0 0;border-bottom:4px solid ' + NA + '">'
+    +   '<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#cdd7ee">Ajuste Elástico</div>'
+    +   '<div style="font-size:19px;font-weight:700">Resumen de la clase del ' + fecha + '</div>'
+    + '</div>'
+    + '<div style="padding:4px 2px 0">'
     + '<p>¡Hola ' + esc_(nombre) + '! Te dejo el resumen de la clase del ' + fecha + '.</p>'
-    + '<p>También lo tenés en el aula: aparece arriba de todo, en la tarjeta naranja que dice <b>«Nuevo resumen de clase»</b>. Y en el botón <b>«Resúmenes de clase»</b> están todos los de las clases anteriores.</p>'
-    // así se ve en el aula
-    + '<div style="margin:14px 0 18px;padding:12px 14px;border:1px solid #e3e6ea;border-radius:12px;background:#f6f7f9">'
-    +   '<div style="font-size:12px;color:' + GR + ';margin-bottom:8px">Así lo vas a ver en el aula:</div>'
-    +   '<div style="background:#fff;border:2px solid ' + NA + ';border-radius:10px;padding:10px 12px">'
+    + '<p>También lo tenés en el aula: aparece arriba de todo, en la tarjeta que dice <b>«Nuevo resumen de clase»</b>. Y en el botón <b>«Resúmenes de clase»</b> están todos los de las clases anteriores.</p>'
+    // así se ve en el aula (con los colores del aula)
+    + '<div style="margin:14px 0 18px">'
+    +   '<div style="font-size:12px;color:' + GR + ';margin-bottom:6px">Así lo vas a ver en el aula:</div>'
+    +   '<div style="background:' + FONDO + ';border:1px solid ' + NA + ';border-left:3px solid ' + NA + ';border-radius:12px;padding:12px 14px;color:' + TINTA + '">'
     +     '<span style="display:inline-block;padding:2px 9px;border-radius:999px;background:' + NA + ';color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em">NUEVO RESUMEN DE CLASE</span>'
     +     '<div style="font-weight:700;font-size:17px;margin:6px 0 2px">Para esta semana</div>'
-    +     '<div style="font-size:13px;color:' + GR + '">Las tareas, para tildar cuando las hacés, y abajo el resumen de la clase</div>'
+    +     '<div style="font-size:13px;color:#A9BEE8">Las tareas, para tildar cuando las hacés, y abajo el resumen de la clase</div>'
     +   '</div>'
     + '</div>'
-    + boton(aula, 'Entrar al aula', AZ) + (carpeta ? boton(carpeta, 'Tu carpeta de Drive', NA) : '')
-    + (carpeta ? '<p style="font-size:13px;color:' + GR + ';margin-top:2px">En tu carpeta de Drive quedan los videos que me mandás desde el aula.</p>' : '')
-    + (tareas ? '<h3 style="color:' + AZ + ';margin:22px 0 8px">Para la semana que viene</h3><ol style="padding-left:20px;margin:0">' + tareas + '</ol>' : '')
-    + (resumen ? '<h3 style="color:' + AZ + ';margin:22px 0 8px">Resumen de la clase</h3>' + resumen : '')
+    + boton(aula, 'Entrar al aula', AZ) + (carpeta ? boton(carpeta, 'Tus resúmenes en Drive', NA) : '')
+    + (carpeta ? '<p style="font-size:13px;color:' + GR + ';margin-top:2px">En esa carpeta de Drive van quedando los resúmenes de todas tus clases.</p>' : '')
+    + (tareas ? titulo('Para la semana que viene') + '<ol style="padding-left:20px;margin:0">' + tareas + '</ol>' : '')
+    + (resumen ? titulo('Resumen de la clase') + resumen : '')
     + '<p style="margin-top:26px;font-size:13px;color:' + GR + '">Si preferís no recibir este mail, avisame y te llega solo al aula.</p>'
-    + '<p>Andy</p></div>';
+    + '<p style="color:' + AZC + ';font-weight:600">Andy</p></div></div>';
   const texto = 'Hola ' + nombre + '! Te dejo el resumen de la clase del ' + fecha + '.\n\nTambién lo tenés en el aula, arriba de todo: ' + aula
-    + (carpeta ? '\nTu carpeta de Drive: ' + carpeta : '') + '\n\n' + String(c.resumen || '').replace(/\*\*/g, '')
+    + (carpeta ? '\nTus resúmenes en Drive: ' + carpeta : '') + '\n\n' + String(c.resumen || '').replace(/\*\*/g, '')
     + '\n\nSi preferís no recibir este mail, avisame y te llega solo al aula.\n\nAndy';
   MailApp.sendEmail({ to: al.email, subject: 'Resumen de la clase del ' + fecha, body: texto, htmlBody: html, name: 'Andy Kligman' });
   c.datos = Object.assign({}, c.datos, { mail: hoy() });
   guardarClase(c);
   return 'enviado';
+}
+/* Carpeta de resúmenes de cada alumno: una subcarpeta dentro de «Clases - Resúmenes», compartida con él para ver.
+   Los Docs de sus clases publicadas se mueven ahí (siguen siendo los mismos Docs: si los corregís, él ve lo corregido). */
+function carpetaResumenesAlumno(al) {
+  const raiz = DriveApp.getFolderById(CARPETA_RESUMENES), nombre = `${al.nombre} (${al.codigo})`;
+  const it = raiz.getFoldersByName(nombre);
+  const f = it.hasNext() ? it.next() : raiz.createFolder(nombre);
+  if (!f.getViewers().concat(f.getEditors()).some(u => normEmail(u.getEmail()) === al.email)) f.addViewer(al.email);
+  leerClases().filter(x => x.codigo === al.codigo && x.estado === 'publicada' && x.doc).forEach(x => {
+    try {
+      const d = DriveApp.getFileById(x.doc);
+      if (!d.getParents().hasNext() || d.getParents().next().getId() !== f.getId()) d.moveTo(f);
+    } catch (e) { Logger.log('No pude mover el resumen ' + x.doc + ': ' + e); }
+  });
+  return f;
 }
 function esc_(t) { return String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
 function mdLinea(t) { return esc_(t).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
