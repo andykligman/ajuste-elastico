@@ -26,6 +26,7 @@ const SEC_M2 = { transcribir: 'h.tozabldxa12', adn: 'h.azfzavn43se4', combinacio
 const DOC_M3 = 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit';
 const SEC_M3 = { integracion: 'h.2vf3aiors22l', ritmos: 'h.si3m5xlsyd92', unidades: 'h.cdhx3lo2hd5x' };
 const DOC_M4 = 'https://docs.google.com/document/d/1UZMITDRKAb_bUdIu0PHvXTFKWRYgJcdAeTylNRyuNWg/edit';
+const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146' };
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -1001,10 +1002,10 @@ const PROGRAMA = {
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
       ],
-      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.ej1, 'Ejercicio 1: motivos cortos'] }],
     },
     {
-      id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME' },
+      id: 'cv3', etapa: 'curva', video: { id: 'O88LcAgiuME', mini: 'img/minis/O88LcAgiuME-6.jpg' },
       titulo: 'Motivos cortos, con notas',
       entrega: 'video', envia: 'un video improvisando motivos cortos con notas. Contá en el video sobre qué armonía lo hacés.',
       detalle: '2) Elegí una armonía amigable y hacé lo mismo que con el cuerpo, pero con notas.',
@@ -1013,11 +1014,11 @@ const PROGRAMA = {
       nota2: '# Mandame un video improvisando motivos con notas',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
-        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió (unidades, silencios, dónde arrancan) y practicalo aparte:\n- Tocá como ritmo fijo algunos motivos que te salían con el cuerpo, en esa escala.\n- O bajá un escalón: hacelo en una sola nota, o volvé un rato al cuerpo.' },
-        { id: 'suena', label: 'Cumplo la consigna pero suena medio mal', nivel: 'listo', resp: 'Si los motivos son cortos, distintos entre sí y los silencios son variados, está bien. Las notas van mejorando con el tiempo, primero la consigna 😉' },
+        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Fijate en lo que habías grabado qué se perdió: unidades rítmicas específicas, distribución de silencios, comienzos de las frases… y practicá enfocándote en una cosa a la vez. Volvé a grabarte y evaluá por objetivos.' },
+        { id: 'suena', label: 'Cumplo la consigna pero suena medio mal', nivel: 'listo', resp: 'Si los motivos son cortos, distintos entre sí y los silencios son variados, está bien. Las notas van mejorando con el tiempo, primero el ritmo!' },
         { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
       ],
-      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.conNotas, 'Ejercicio 1 · con notas'] }],
     },
     {
       id: 'cv4', etapa: 'curva', video: { id: 'WmXm2aoluwI' },
@@ -1030,16 +1031,14 @@ const PROGRAMA = {
       etapasVis: ['Grabarse', 'Transcribir el ritmo', 'Evaluar próximos pasos'],
       nota2: '# Mandame un video con el cuerpo\nEn el próximo paso lo hacemos con el instrumento 🎸',
       progreso: [
-        { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Llevá las variaciones a otros lugares del compás o sumá figuras rítmicas nuevas.' },
         { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la variación y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
-        { id: 'parecidos', label: 'Los motivos me salen todos parecidos', nivel: 'casi', resp: 'Volvé un rato a los motivos cortos y después retomá acá.' },
-        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+        { id: 'parecidos', label: 'Los motivos me salen todos parecidos', nivel: 'casi', resp: 'Volvé un rato al ejercicio de motivos cortos con el cuerpo y después retomá acá.' },
       ],
-      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.desarrollo, 'Ejercicios de desarrollo motívico'] }],
     },
     {
-      id: 'cv5', etapa: 'curva', video: { id: 'c4X5f8rOc44', mini: 'img/minis/c4X5f8rOc44.jpg' },
+      id: 'cv5', etapa: 'curva', video: { id: 'c4X5f8rOc44' },
       titulo: 'Variación, con el instrumento',
       entrega: 'video', envia: 'un video improvisando motivos y sus variaciones con notas. Contá en el video sobre qué armonía lo hacés.',
       detalle: '2) Elegí una armonía fácil, como un II-V-I o un track modal, y hacé lo mismo que con el cuerpo: tocá un **motivo**, descansá, repetí su **ritmo** y descansá.',
@@ -1049,11 +1048,10 @@ const PROGRAMA = {
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
         { id: 'mas', label: 'Me sale bien, ¿cómo lo complico?', nivel: 'listo', resp: 'Joya! Probalo sobre progresiones más difíciles, o tocá 2 o más variaciones de cada motivo antes de pasar a una idea nueva.' },
-        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Es súper normal, estás pensando en un montón de cosas a la vez. Fijate en lo que grabaste qué se perdió y practicalo aparte, o volvé un rato al cuerpo.' },
+        { id: 'perdi', label: 'Con la guitarra se me pierde lo que hacía con el cuerpo', nivel: 'casi', resp: 'Fijate en lo que habías grabado qué se perdió: unidades rítmicas específicas, distribución de silencios, comienzos de las frases… y practicá enfocándote en una cosa a la vez. Volvé a grabarte y evaluá por objetivos.' },
         { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la variación y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
-        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
       ],
-      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.instrumento, 'Variación con el instrumento'] }],
     },
   ],
 

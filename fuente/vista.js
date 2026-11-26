@@ -903,7 +903,7 @@ function nodoHTML(st, e, p, n, total) {
     <div class="nodo-fila">
       <button class="punto" data-abrir="${p.id}" aria-label="${esc(p.titulo)}">${pr.hecho && pr.como !== 'cuesta' ? ICONO.check : n}</button>
       <button class="nodo-tit" data-abrir="${p.id}" aria-expanded="${abiertoEste}"><span>${esc(p.titulo)}</span>${p.id === pasoNuevo && !pr.hecho ? '<em class="nuevo">Nuevo</em>' : ''}${sub ? `<small class="${!pr.hecho && e.tipo === 'meterle' || pr.como === 'cuesta' ? 'oxido' : ''}">${esc(sub)}</small>` : ''}</button>
-      ${!abiertoEste && p.video && p.video.id !== videoAnterior(p.id) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="${p.video.mini ? esc(p.video.mini) : `https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg`}" alt="" loading="lazy"></button>` : ''}
+      ${!abiertoEste && p.video && (p.video.mini || p.video.id !== videoAnterior(p.id)) ? `<button class="mini" data-abrir="${p.id}" tabindex="-1" aria-hidden="true"><img src="${p.video.mini ? esc(p.video.mini) : `https://i.ytimg.com/vi/${esc(p.video.id)}/mqdefault.jpg`}" alt="" loading="lazy"></button>` : ''}
     </div>
     ${abiertoEste ? tarjetaHTML(st, e, p) : ''}
   </section>`;
