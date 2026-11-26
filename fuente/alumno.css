@@ -1817,3 +1817,66 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .ad-cabezal{fill:none;stroke:#E8834F;stroke-width:2.5;animation:adCabezal 2.4s steps(8) infinite}
 @keyframes adCabezal{to{transform:translateX(100.8px)}}
 .atras .ad-hombro path,.ad-hombro.atras path{stroke:#9DA2AC}
+
+/* ===== Pasada de diseño: adornos en una baldosa fija y botones de material parejos ===== */
+.adorno{float:right;box-sizing:border-box;width:104px;height:104px;margin:0 0 10px 16px;padding:12px;border-radius:24px;display:grid;place-items:center;background:color-mix(in srgb,var(--ac,#5D7BB6) 9%,var(--sup2));border:1px solid color-mix(in srgb,var(--ac,#5D7BB6) 28%,transparent);opacity:1}
+.adorno svg{width:100%;height:100%;overflow:visible}
+.adorno.adorno-combinacion{width:214px;padding:10px 12px}
+@media (max-width:700px){
+  .adorno{width:80px;height:80px;padding:9px;border-radius:18px;margin:0 0 8px 12px}
+  .adorno.adorno-combinacion{float:none;width:100%;max-width:300px;height:96px;margin:0 0 12px}
+}
+.ad-paloma{fill:none;stroke:#FFFFFF;stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round;animation:adVuelo 2.4s ease-in-out infinite}
+.ad-pal-cuerpo{fill:color-mix(in srgb,#fff 8%,transparent)}
+.ad-pal-ojo{fill:#fff;stroke:none}
+.ad-pal-ala{transform-box:view-box;transform-origin:64px 52px;animation:adAleteo .7s ease-in-out infinite alternate}
+.ad-pal-ala.atras{opacity:.45;animation-delay:-.1s}
+@keyframes adAleteo{from{transform:scaleY(1)}to{transform:scaleY(-.55)}}
+@keyframes adVuelo{0%,100%{transform:translate(0,4px)}50%{transform:translate(4px,-4px)}}
+.ad-viento{fill:none;stroke:#7F9FDB;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:10 30;animation:adViento 1.2s linear infinite}
+@keyframes adViento{to{stroke-dashoffset:40}}
+.ad-sup-base circle{fill:color-mix(in srgb,#5D7BB6 70%,transparent);stroke:#A9BEE8;stroke-width:2}
+.ad-sup-base text,.ad-sup-arriba text{font:700 13px var(--display);text-anchor:middle}
+.ad-sup-base text{fill:#A9BEE8}
+.ad-sup-arriba circle{fill:color-mix(in srgb,#E8834F 55%,transparent);stroke:#F3B48F;stroke-width:2}
+.ad-sup-arriba text{fill:#F3B48F}
+.ad-sup-arriba{animation:adSup 3.2s ease-in-out infinite}
+@keyframes adSup{0%,100%{transform:translate(22px,-6px);opacity:.25}40%,75%{transform:none;opacity:1}}
+.ad-eng{fill:color-mix(in srgb,#5D7BB6 35%,transparent);stroke:#A9BEE8;stroke-width:2.2;stroke-linejoin:round;transform-box:view-box}
+.ad-eng.a{transform-origin:48px 54px;animation:adGira 6s linear infinite}
+.ad-eng.b{fill:color-mix(in srgb,#E8834F 40%,transparent);stroke:#F3B48F;transform-origin:92px 30px;animation:adGira 3.6s linear infinite reverse}
+.ad-eng-c{fill:var(--sup2);stroke:#EDEEF0;stroke-width:2}
+@keyframes adGira{to{transform:rotate(360deg)}}
+.ad-ola-fondo{fill:none;stroke:color-mix(in srgb,#5D7BB6 30%,transparent);stroke-width:12;stroke-linecap:round}
+.ad-ola{fill:none;stroke:#A9BEE8;stroke-width:3;stroke-linecap:round;stroke-dasharray:14 10;animation:adFluye 2s linear infinite}
+@keyframes adFluye{to{stroke-dashoffset:-48}}
+.ad-gota{fill:#E8834F}
+.ad-blando{fill:color-mix(in srgb,#E8834F 22%,transparent);animation:adRespira 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.ad-blando.b{fill:color-mix(in srgb,#5D7BB6 35%,transparent);animation-delay:-1.5s}
+@keyframes adRespira{50%{transform:scale(1.25)}}
+.ad-comb rect{fill:color-mix(in srgb,#5D7BB6 16%,transparent);stroke:#7F9FDB;stroke-width:1.4}
+.ad-comb text{font:700 11px var(--sans);fill:#C4D3F2;text-anchor:middle}
+.ad-comb-l{fill:none;stroke:#7F9FDB;stroke-width:2;stroke-dasharray:80;stroke-dashoffset:80;animation:adComb 3.2s ease-in-out infinite;animation-delay:calc(var(--k) * .25s)}
+@keyframes adComb{0%{stroke-dashoffset:80}40%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:-80}}
+.ad-nudo circle{fill:none;stroke:#E8834F;stroke-width:3.5}
+.ad-nudo{transform-box:view-box;transform-origin:171px 50px;animation:adNudo 3.2s ease-in-out infinite}
+@keyframes adNudo{0%,35%{transform:scale(.85)}55%,85%{transform:scale(1.05)}100%{transform:scale(.85)}}
+.ad-comb-sale{fill:none;stroke:#E8834F;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.ad-dec-notas{fill:#6a6d75;stroke:#6a6d75;stroke-width:2}
+.ad-dec-notas.viva{fill:#E8834F;stroke:#E8834F}
+.ad-lupa circle{fill:color-mix(in srgb,#fff 6%,transparent);stroke:#EDEEF0;stroke-width:3}
+.ad-lupa path{stroke:#C9A27A;stroke-width:6;stroke-linecap:round}
+/* Botones de material: misma altura, miniaturas del mismo tamaño */
+.material{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;align-items:stretch}
+.material>*{min-width:0;min-height:68px;box-sizing:border-box;margin:0!important}
+.material .mat{display:flex;padding:8px 14px}
+.material .mat .mat-mini{width:84px;margin:0 4px 0 -6px}
+.material .doc-nuevo{display:flex;padding:8px 14px}
+@media (max-width:560px){.material{grid-template-columns:1fr}}
+.adorno{display:flex;align-items:center;justify-content:center}
+.adorno svg{display:block;max-width:100%;max-height:100%}
+@media (max-width:560px){
+  .material:has(> :nth-child(2):last-child) .mat-vid>svg{display:none}
+  .material:has(> :nth-child(2):last-child) .mat-vid{align-content:flex-start}
+}
+@media (max-width:700px){.adorno.adorno-combinacion{height:124px;max-width:340px}}

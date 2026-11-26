@@ -364,6 +364,8 @@ function etapasVisHTML(p) {
   return `<div class="etapas-vis">${p.etapasVis.slice(0, -1).map(et).join(fl)}<i class="ev-fl ev-fuera" aria-hidden="true"></i><div class="ev-bloque"><i class="ev-fl ev-dentro" aria-hidden="true"></i><span class="ev-sep"></span>${et(p.etapasVis[n - 1], n - 1)}<ul class="ev-rama">${rama}</ul></div></div>`;
 }
 /* Adornos chiquitos en la tarjeta de un paso */
+// recorte de cada dibujo a su contenido, así todos llenan la baldosa parejo
+const ADORNO_VB = {"redoblante": "10 2 100 92", "cabecita": "7 6 117 86", "reloj": "13 2 84 92", "skipping": "2 18 116 82", "enlaces": "1 11 123 80", "anticipa": "2 -1 126 98", "transcribir": "0 8 130 72", "cromaticos": "4 5 124 89", "guitarra": "2 22 147 66", "entrenador": "2 10 126 80", "paloma": "0 2 108 80", "superposicion": "26 -2 80 106", "engranaje": "14 9 99 79", "integracion": "2 12 116 88", "combinacion": "-2 0 212 100", "decodificar": "0 14 120 64", "caminante": "-2 6 94 102"};
 const ADORNOS = {
   redoblante: `<svg viewBox="0 0 120 104"><g class="ad-palo izq"><line x1="14" y1="6" x2="52" y2="44"/><circle cx="52" cy="44" r="3"/></g><g class="ad-palo der"><line x1="106" y1="6" x2="70" y2="42"/><circle cx="70" cy="42" r="3"/></g>`
     + `<g class="ad-golpe izq"><path d="M44 36 l-6 -6 M50 32 l-1 -8 M56 34 l4 -7"/></g><g class="ad-golpe der"><path d="M62 32 l-4 -7 M70 30 l1 -8 M76 34 l6 -6"/></g>`
@@ -393,6 +395,18 @@ const ADORNOS = {
   entrenador: `<svg viewBox="0 0 130 100"><rect class="ad-pant" x="6" y="14" width="118" height="72" rx="12"/><rect class="ad-pant-b" x="16" y="24" width="40" height="12" rx="6"/>`
     + 'NRNNRNRN'.split('').map((c, i) => `<rect class="ad-celda ${c === 'N' ? 'llena' : ''}" style="--k:${i}" x="${16 + i * 12.6}" y="48" width="10" height="26" rx="3"/>`).join('')
     + `<rect class="ad-cabezal" x="14" y="44" width="14" height="34" rx="4"/></svg>`,
+  paloma: `<svg viewBox="0 0 120 100"><g class="ad-paloma"><path class="ad-pal-ala atras" d="M62 50 C60 34 66 20 80 12 C78 28 76 40 70 50"/><path class="ad-pal-cuerpo" d="M24 70 L36 62 C44 52 62 48 78 50 C84 44 92 44 96 50 L104 52 L96 55 C92 64 78 70 60 68 C50 70 40 72 30 78 Z"/><circle class="ad-pal-ojo" cx="93" cy="49" r="1.6"/><path class="ad-pal-ala" d="M60 52 C52 36 54 18 66 6 C70 24 72 38 70 52"/></g><path class="ad-viento" d="M8 40 h16 M4 52 h12 M10 30 h10"/></svg>`,
+  superposicion: `<svg viewBox="0 0 120 100"><g class="ad-sup-base">${[78, 62, 46].map((y, i) => `<circle cx="44" cy="${y}" r="9"/>`).join('')}<text x="44" y="96">C</text></g>`
+    + `<g class="ad-sup-arriba">${[70, 54, 38, 22].map(y => `<circle cx="68" cy="${y}" r="9"/>`).join('')}<text x="86" y="14">Em7</text></g></svg>`,
+  engranaje: `<svg viewBox="0 0 120 100"><path class="ad-eng a" d="M71.0 54.0 L77.8 57.4 L76.5 63.3 L68.9 63.5 L66.6 67.5 L70.1 74.3 L65.6 78.3 L59.3 74.0 L55.1 75.9 L54.0 83.4 L48.0 84.0 L45.4 76.9 L40.9 75.9 L35.6 81.3 L30.4 78.3 L32.5 71.0 L29.4 67.5 L21.9 68.8 L19.5 63.3 L25.5 58.6 L25.0 54.0 L18.2 50.6 L19.5 44.7 L27.1 44.5 L29.4 40.5 L25.9 33.7 L30.4 29.7 L36.7 34.0 L40.9 32.1 L42.0 24.6 L48.0 24.0 L50.6 31.1 L55.1 32.1 L60.4 26.7 L65.6 29.7 L63.5 37.0 L66.6 40.5 L74.1 39.2 L76.5 44.7 L70.5 49.4 Z"/><circle class="ad-eng-c" cx="48" cy="54" r="8"/><path class="ad-eng b" d="M104.5 30.0 L108.8 32.4 L107.7 36.5 L102.8 36.4 L100.8 38.8 L102.2 43.6 L98.5 45.7 L95.1 42.1 L92.0 42.5 L89.6 46.8 L85.5 45.7 L85.6 40.8 L83.2 38.8 L78.4 40.2 L76.3 36.5 L79.9 33.1 L79.5 30.0 L75.2 27.6 L76.3 23.5 L81.2 23.6 L83.2 21.2 L81.8 16.4 L85.5 14.3 L88.9 17.9 L92.0 17.5 L94.4 13.2 L98.5 14.3 L98.4 19.2 L100.8 21.2 L105.6 19.8 L107.7 23.5 L104.1 26.9 Z"/><circle class="ad-eng-c" cx="92" cy="30" r="4.5"/></svg>`,
+  integracion: `<svg viewBox="0 0 120 100"><path class="ad-ola-fondo" d="M8 60 C24 40 40 40 56 60 S88 80 112 52"/><path class="ad-ola" d="M8 60 C24 40 40 40 56 60 S88 80 112 52"/><circle class="ad-gota" r="7"><animateMotion dur="3.4s" repeatCount="indefinite" path="M8 60 C24 40 40 40 56 60 S88 80 112 52"/></circle><circle class="ad-blando" cx="22" cy="28" r="10"/><circle class="ad-blando b" cx="98" cy="84" r="7"/></svg>`,
+  combinacion: `<svg viewBox="0 0 210 100">${['cromatismos', 'auxiliares', 'tríadas', 'intervalos'].map((t, i) => { const y = 14 + i * 24; return `<g class="ad-comb" style="--k:${i}"><rect x="2" y="${y - 10}" width="86" height="20" rx="10"/><text x="45" y="${y + 4}">${t}</text><path class="ad-comb-l" d="M90 ${y} C126 ${y} 126 50 150 50"/></g>`; }).join('')}`
+    + `<g class="ad-nudo"><circle cx="164" cy="50" r="14"/><circle cx="178" cy="50" r="14"/></g><path class="ad-comb-sale" d="M194 50 h12 m-6 -6 l6 6 l-6 6"/></svg>`,
+  decodificar: `<svg viewBox="0 0 120 100"><defs><clipPath id="adLente"><circle cx="0" cy="48" r="17"><animate attributeName="cx" values="30;90;30" dur="4s" repeatCount="indefinite"/></circle></clipPath></defs>`
+    + `${[0, 1, 2, 3, 4].map(k => `<line class="ad-pauta" x1="4" y1="${32 + k * 8}" x2="116" y2="${32 + k * 8}"/>`).join('')}`
+    + `<g class="ad-dec-notas">${[[20, 60], [38, 48], [56, 52], [74, 40], [92, 44]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3.8" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 4.6}" y1="${y - 1}" x2="${x + 4.6}" y2="${y - 22}"/>`).join('')}</g>`
+    + `<g class="ad-dec-notas viva" clip-path="url(#adLente)">${[[20, 60], [38, 48], [56, 52], [74, 40], [92, 44]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3.8" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 4.6}" y1="${y - 1}" x2="${x + 4.6}" y2="${y - 22}"/>`).join('')}</g>`
+    + `<g class="ad-lupa"><circle cx="30" cy="48" r="17"/><path d="M42 61 L54 74"/><animateTransform attributeName="transform" type="translate" values="0 0;60 0;0 0" dur="4s" repeatCount="indefinite"/></g></svg>`,
   caminante: (() => {
     // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
     const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
@@ -782,7 +796,7 @@ function tarjetaHTML(st, e, p) {
   const recPendiente = !!(sel && sel.nivel !== 'listo' && sel.resp && !soloEscribime(sel) && !recCerradas.has(p.id) && !cambiando.has(p.id));
   const botonSeguir = sig ? `<div class="seguir"><button class="primario" data-abrir="${sig.id}"><span>Seguir</span>${ICONO.abajo}</button></div>` : '';
   return `<div class="tarjeta">
-    ${p.adorno && ADORNOS[p.adorno] ? `<div class="adorno adorno-${p.adorno}" aria-hidden="true">${ADORNOS[p.adorno]}</div>` : ''}
+    ${p.adorno && ADORNOS[p.adorno] ? `<div class="adorno adorno-${p.adorno}" style="--ac:${MODULOS[MODULO_DE[p.etapa]].color}" aria-hidden="true">${ADORNO_VB[p.adorno] ? ADORNOS[p.adorno].replace(/viewBox="[^"]*"/, `viewBox="${ADORNO_VB[p.adorno]}"`) : ADORNOS[p.adorno]}</div>` : ''}
     ${p.detalle ? `<div class="consigna">${textoHTML(p.detalle)}</div>` : ''}
     ${p.ritmoVis && RITMO_PASO[p.ritmoVis] ? `<div class="ritmo-paso-caja${p.ritmoVisChica ? ' chica' : ''}">${RITMO_PASO[p.ritmoVis]()}</div>` : ''}
     ${p.detalleFin ? `<div class="consigna">${textoHTML(p.detalleFin)}</div>` : ''}

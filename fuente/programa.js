@@ -559,6 +559,7 @@ const PROGRAMA = {
       video: { id: 'TylWJrfPxu0', t: 1691 }, hotmart: 'PeAgJn18OW',
       progreso: [ { id: 'musica', label: 'Logro tocar con las notas correspondientes y hacer música', nivel: 'listo' }, { id: 'oido', label: 'Me guío por el oído y pierdo las notas que entrené en las ejercitaciones pasadas', nivel: 'casi', muestra: ['muchas', 'porque'] } ],
       titulo: 'Ritmo libre',
+      adorno: 'paloma',
       detalle: 'Mismas notas, mismos lugares, pero **sin ritmo ni dirección fijos**.\nUsá el oído: dejá espacios, repetí notas, buscá formas de tejer los cambios.\n# Cantá lo que tocás, aunque no afines\nEl impulso de cantar te conecta con el oído y no con el automatismo de los dedos.',
       recursos: [{ t: 'Video: ver ejemplo con ritmo libre', url: VIDEO_ENLACES + '&t=1691s' }, { t: 'Doc: Enlaces de Arpegios', url: DOC_M1, sec: ['h.1u2xjx9x7ij7', 'Paso 4 · Soltar el ritmo'] }],
       problemas: [
@@ -645,6 +646,7 @@ const PROGRAMA = {
       video: { id: '_GkCOK9r3Wg' }, hotmart: 'k45bBv9Qel',
       sinProgreso: true,
       titulo: 'Mirar la Ejercitación N3 y anotar preguntas',
+      adorno: 'superposicion',
       tip: 'Aprovechá para mirar el video y anotar preguntas para la próxima clase. Seguro aparecen varias dudas teóricas, así que ¡a sacarle punta al lápiz!',
       detalle: 'Mirá el video de **superposiciones**.\n# Todavía no hace falta tocarlo: traé las dudas a la clase.',
       recursos: [
@@ -729,6 +731,7 @@ const PROGRAMA = {
       id: 'c1', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº1 a tempo, para arriba y para abajo.',
       video: { id: 'o-sV1KM5J-o', t: 178 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación 1 · Mecanización',
+      adorno: 'engranaje',
       detalle: 'Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo. En cada una buscá la nota **un semitono abajo**: esa es su aproximación. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n# El cromático en el aire, la nota de la escala en la tierra\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te **desafíe un poco**, aunque sea lenta, pero constante.',
       progreso: [
         { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
@@ -740,6 +743,7 @@ const PROGRAMA = {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación 2 · Mecanización',
+      adorno: 'engranaje',
       detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a tónica, 2da y 3ra; desde la 2da, a 2da, 3ra y 4ta; desde la 3ra, a 3ra, 4ta y 5ta; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
@@ -752,6 +756,7 @@ const PROGRAMA = {
       id: 'c3', etapa: 'm2', entrega: 'video', envia: 'un video improvisando sobre la progresión, primero solo con cromáticos ascendentes y después mezclándolos con la escala.',
       video: { id: 'o-sV1KM5J-o', t: 604 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación 3 · Integración',
+      adorno: 'integracion',
       detalle: 'Poné una progresión simple (II–V–I o II–V–I–VI) y usá **solo este recurso**, de todas las formas que puedas:\n- Líneas para arriba, para abajo y con cambios de dirección.\n- Distintas longitudes: cromáticos sueltos (2 notas), líneas cortas (4 a 6), medianas (8 a 12) y largas (14 a 20).\n- Distintos puntos de comienzo en el compás.\nRecién después **mezclalo con la escala mayor**, tocando libre y cantando si querés: lo nuevo con lo viejo.\n# Hay dos videos, mirate ambos',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
@@ -812,6 +817,7 @@ const PROGRAMA = {
     {
       id: 'k1', etapa: 'm2', video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
       titulo: 'Combinación de elementos: mirar el video',
+      adorno: 'combinacion',
       detalle: 'Mirá **el video** con **el doc al lado**. Todavía no hace falta tocar: en los pasos que siguen lo hacemos con **el solo que transcribiste**.',
       progreso: [
         { id: 'visto', label: 'Vi el video y leí el doc', nivel: 'listo' },
@@ -837,6 +843,7 @@ const PROGRAMA = {
       id: 'k3', etapa: 'm2', entrega: 'video', envia: 'un video explicando de qué está hecho tu fragmento: nota x nota o por estructuras interválicas.',
       video: { id: 'GrXVCxwRs6g', t: 605 }, hotmart: '0Ovo3xZN4j',
       titulo: 'Decodificar el fragmento',
+      adorno: 'decodificar',
       detalle: 'Poné en palabras exactas **de qué está hecha** la frase, así la podés reconstruir en cualquier grado de la escala sin dudar. Es más trabajo de escritorio que de instrumento.\nHay dos maneras, las dos valen:\n- **Nota x nota**: cada nota por su relación con la tónica de la escala madre.\n- **Estructuras interválicas**: las distancias entre las notas (tríadas, arpegios, seguidillas por la escala, etc.), más alguna nota de aproximación.\n# Escribilo, y mandame un video explicándolo\nSé lo más preciso posible: si hay un error acá, se repite en todas las transposiciones.',
       progreso: [
         { id: 'listo', label: 'Ya lo tengo escrito', nivel: 'listo' },
@@ -852,6 +859,7 @@ const PROGRAMA = {
       id: 'k4', etapa: 'm2', entrega: 'video', envia: 'un video de la mecanización del fragmento por los grados de la escala, en una posición.',
       video: { id: 'GrXVCxwRs6g', t: 949 }, sinVerVideo: true, hotmart: '0Ovo3xZN4j',
       titulo: 'Mecanizar el fragmento',
+      adorno: 'engranaje',
       detalle: '1) **Reconocelo** sin metrónomo: movelo por **todos los grados** de la escala, dentro de **una posición**. Si lo anotaste nota x nota, bajale un número a todos los grados y así sucesivamente.\n2) **Mecanizalo** a tiempo real, todavía sin acordes: **una sola manera** de tocarlo y con el ritmo de la frase original.\n3) Los errores los corregís sin metrónomo, justo donde aparecen, y volvés a tempo.\n4) Cuando sale, **subí el tempo** para tener resto.\n# Con la oreja o adivinando, no: usá lo que escribiste',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
@@ -868,6 +876,7 @@ const PROGRAMA = {
       id: 'n6', etapa: 'm2', entrega: 'video', envia: 'un video integrando el fragmento sobre una progresión de esa escala madre.',
       video: { id: 'GrXVCxwRs6g' }, hotmart: '0Ovo3xZN4j',
       titulo: 'Integrar el fragmento',
+      adorno: 'integracion',
       detalle: 'Poné una progresión que refleje **la escala madre** de la frase y tocá el fragmento **desde distintos grados**, en desorden y empezando en **distintos lugares del compás**.\nPrimero la meta es tocarlo a tiempo real sin equivocarte, con el ritmo y las notas que corresponden.\nDespués **flexibilizalo**: pedacitos, mezclado con notas sueltas de la escala, variando el ritmo.',
       progreso: [
         { id: 'listo', label: 'Ya estoy para mandarlo', nivel: 'listo' },
