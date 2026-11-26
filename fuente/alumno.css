@@ -1900,3 +1900,4 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .adorno.adorno-soloGuitarra{width:150px}
 @media (max-width:700px){.adorno.adorno-soloGuitarra{width:112px}}
 @media (max-width:700px){.adorno.adorno-soloGuitarra{width:130px}}
+.ad-eng-n{font:700 15px var(--display);fill:#EDEEF0;text-anchor:middle}

@@ -365,7 +365,7 @@ function etapasVisHTML(p) {
 }
 /* Adornos chiquitos en la tarjeta de un paso */
 // recorte de cada dibujo a su contenido, así todos llenan la baldosa parejo
-const ADORNO_VB = {"redoblante": "10 2 100 92", "cabecita": "7 6 117 86", "reloj": "13 2 84 92", "skipping": "2 18 116 82", "enlaces": "1 11 123 80", "anticipa": "2 -1 126 98", "transcribir": "0 8 130 72", "cromaticos": "4 5 124 89", "guitarra": "2 22 147 66", "entrenador": "2 10 126 80", "paloma": "0 2 108 80", "superposicion": "26 -2 80 106", "engranaje": "14 9 99 79", "integracion": "10 4 100 92", "combinacion": "-2 0 212 100", "decodificar": "0 14 120 64", "caminante": "-2 6 94 102", "soloGuitarra": "0 8 162 72"};
+const ADORNO_VB = {"redoblante": "10 2 100 92", "cabecita": "7 6 117 86", "reloj": "13 2 84 92", "skipping": "2 18 116 82", "enlaces": "1 11 123 80", "anticipa": "2 -1 126 98", "transcribir": "0 8 130 72", "cromaticos": "4 5 124 89", "guitarra": "2 22 147 66", "entrenador": "2 10 126 80", "paloma": "0 2 108 80", "superposicion": "26 -2 80 106", "engranaje": "14 9 99 79", "integracion": "10 4 100 92", "combinacion": "-2 0 212 100", "decodificar": "0 14 120 64", "caminante": "-2 6 94 102", "soloGuitarra": "0 8 162 72", "engranaje1": "14 9 99 79", "engranaje2": "14 9 99 79"};
 const ADORNOS = {
   redoblante: `<svg viewBox="0 0 120 104"><g class="ad-palo izq"><line x1="14" y1="6" x2="52" y2="44"/><circle cx="52" cy="44" r="3"/></g><g class="ad-palo der"><line x1="106" y1="6" x2="70" y2="42"/><circle cx="70" cy="42" r="3"/></g>`
     + `<g class="ad-golpe izq"><path d="M44 36 l-6 -6 M50 32 l-1 -8 M56 34 l4 -7"/></g><g class="ad-golpe der"><path d="M62 32 l-4 -7 M70 30 l1 -8 M76 34 l6 -6"/></g>`
@@ -420,6 +420,8 @@ const ADORNOS = {
       + `<g class="ad-notita"><path d="M74 34 v-15 l9 -3"/><ellipse cx="71" cy="35" rx="4.2" ry="3.2"/></g></svg>`;
   })(),
 };
+/* Rueditas numeradas para las ejercitaciones de mecanización */
+['1', '2'].forEach(n => { ADORNOS['engranaje' + n] = ADORNOS.engranaje.replace('<circle class="ad-eng-c" cx="48" cy="54" r="8"/>', `<circle class="ad-eng-c" cx="48" cy="54" r="12"/><text class="ad-eng-n" x="48" y="60">${n}</text>`); });
 const RITMO_PASO = {
   queEs: () => {
     const w = 150, y1 = 58, y2 = 160;

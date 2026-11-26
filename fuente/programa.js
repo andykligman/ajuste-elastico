@@ -731,7 +731,7 @@ const PROGRAMA = {
       id: 'c1', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº1 a tempo, para arriba y para abajo.',
       video: { id: 'o-sV1KM5J-o', t: 178 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación 1 · Mecanización',
-      adorno: 'engranaje',
+      adorno: 'engranaje1',
       detalle: 'Antes de empezar, tené **bien clara la escala y la posición** en la que estás trabajando: todo el ejercicio se apoya en eso.\n- A) Elegí una posición de la escala mayor y ubicá las notas objetivo. En cada una buscá la nota **un semitono abajo**: esa es su aproximación. Probalo lento, sin tempo.\n- B) Pasalo a tempo, empezando en el contratiempo. [Ejemplo a 55 BPM](https://youtu.be/o-sV1KM5J-o?t=178) · [a 85 BPM](https://youtu.be/o-sV1KM5J-o?t=208)\n# El cromático en el aire, la nota de la escala en la tierra\n- C) Lo mismo con la escala descendente. [Ejemplo](https://youtu.be/o-sV1KM5J-o?t=266)\nBuscá una velocidad que te **desafíe un poco**, aunque sea lenta, pero constante.',
       progreso: [
         { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
@@ -743,7 +743,7 @@ const PROGRAMA = {
       id: 'c2', etapa: 'm2', entrega: 'video', envia: 'un video de la Ejercitación Nº2.',
       video: { id: 'o-sV1KM5J-o', t: 388 }, hotmart: 'RO9qy9mjOP',
       titulo: 'Cromáticos ascendentes: Ejercitación 2 · Mecanización',
-      adorno: 'engranaje',
+      adorno: 'engranaje2',
       detalle: 'Líneas cromáticas de **6 y de 10 notas** que empiezan en cada grado de la escala.\n- Grupos de 3 parejas (6 notas): desde la tónica, cromáticos a tónica, 2da y 3ra; desde la 2da, a 2da, 3ra y 4ta; desde la 3ra, a 3ra, 4ta y 5ta; y así por toda la escala. Después, lo mismo con 5 parejas (10 notas).\n- Antes de cada grupo, **decí en voz alta en qué grado arrancás**.\n- Cuando la nota objetivo es la 4ta o la tónica, el cromático es la 3ra o la 7ma: **esa nota se repite**.\n- **Copiá exactamente el patrón del ejemplo**, en ritmo y en cantidad de notas.\n- Revisalo bien parte por parte antes de hacerlo a tempo. Podés trabajarlo por grupos de cuerdas, no hace falta hacer todo de un tirón: cuando tenés las partes, las juntás.\n- Finalmente, si podés, subí el tempo.\n[Ejemplo a 95 BPM, 3 parejas](https://youtu.be/o-sV1KM5J-o?t=388) · [Ejemplo con 5 parejas](https://youtu.be/o-sV1KM5J-o?t=462)',
       progreso: [
         { id: 'listo', label: 'Copié el ejemplo tal cual y estoy para mandarlo', nivel: 'listo' },
