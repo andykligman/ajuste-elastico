@@ -1959,6 +1959,26 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 }
 @media (max-width:700px){.adorno.adorno-combinacion{height:124px;max-width:340px}}
 
+/* Sin baldosa: mismo lugar y tamaño, sin fondo ni borde */
+.adorno{background:none;border:0}
+/* Integración: una gota que cae y se funde en el charco */
+.ad-charco{fill:color-mix(in srgb,#5D7BB6 45%,transparent);animation:adCharco 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes adCharco{0%,40%{transform:scale(1)}55%{transform:scale(1.06,1.15);fill:color-mix(in srgb,#E8834F 30%,#5D7BB6 50%)}100%{transform:scale(1)}}
+.ad-gotita{fill:#E8834F;animation:adGota 2.8s cubic-bezier(.5,0,.8,.6) infinite;transform-box:fill-box;transform-origin:center bottom}
+@keyframes adGota{0%{transform:translateY(-6px) scale(.9);opacity:0}12%{opacity:1}42%{transform:translateY(34px) scale(1,1.05);opacity:1}50%{transform:translateY(40px) scale(1.4,.3);opacity:0}100%{opacity:0;transform:translateY(40px) scale(1.4,.3)}}
+.ad-onda{fill:none;stroke:#A9BEE8;stroke-width:2;opacity:0;animation:adOnda 2.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.ad-onda.b{animation-delay:.35s}
+@keyframes adOnda{0%,45%{opacity:0;transform:scale(1)}50%{opacity:.9}100%{opacity:0;transform:scale(4.2)}}
+/* El solo, al instrumento */
+.ad-nota-s{fill:#EDEEF0;stroke:#EDEEF0;stroke-width:2}
+.ad-viaja{fill:#E8834F;animation:adViaja 2.2s ease-in-out infinite}
+@keyframes adViaja{0%{transform:translate(0,0);opacity:0}15%{opacity:1}70%{transform:translate(52px,18px);opacity:1}85%,100%{transform:translate(56px,20px);opacity:0}}
+/* Dibujos de ritmo dentro del paso: centrados */
+.ritmo-paso-caja{margin-left:auto;margin-right:auto}
+.adorno.adorno-soloGuitarra{width:150px}
+@media (max-width:700px){.adorno.adorno-soloGuitarra{width:112px}}
+@media (max-width:700px){.adorno.adorno-soloGuitarra{width:130px}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -3053,6 +3073,7 @@ const PROGRAMA = {
       id: 'solo', etapa: 'm2', entrega: 'video', envia: 'un video tocando en la viola los 30 segundos del solo.',
       video: { id: 'BK6LGMZTU9M' }, hotmart: 'r48bWKZw7R',
       titulo: 'Tu solo en la guitarra',
+      adorno: 'soloGuitarra',
       detalle: '**Ahora la prioridad es el solo!** Pasá esos 30 segundos a la viola y mandame un video tocándolos.\n- Hacelo por partes, de a una frase, y después las vas juntando.\n- Si una frase no sale, volvé a cantarla con el audio hasta tenerla clarísima, y recién ahí buscala en la viola.\nCuando me lo mandes seguimos con los otros elementos del lenguaje y con el último proceso del módulo, que lo hacemos sobre este solo',
       seguimiento: {
         segun: 'm2', pregunta: '¿Cómo venís con la transcripción del solo cantado?',
@@ -4143,7 +4164,7 @@ function etapasVisHTML(p) {
 }
 /* Adornos chiquitos en la tarjeta de un paso */
 // recorte de cada dibujo a su contenido, así todos llenan la baldosa parejo
-const ADORNO_VB = {"redoblante": "10 2 100 92", "cabecita": "7 6 117 86", "reloj": "13 2 84 92", "skipping": "2 18 116 82", "enlaces": "1 11 123 80", "anticipa": "2 -1 126 98", "transcribir": "0 8 130 72", "cromaticos": "4 5 124 89", "guitarra": "2 22 147 66", "entrenador": "2 10 126 80", "paloma": "0 2 108 80", "superposicion": "26 -2 80 106", "engranaje": "14 9 99 79", "integracion": "2 12 116 88", "combinacion": "-2 0 212 100", "decodificar": "0 14 120 64", "caminante": "-2 6 94 102"};
+const ADORNO_VB = {"redoblante": "10 2 100 92", "cabecita": "7 6 117 86", "reloj": "13 2 84 92", "skipping": "2 18 116 82", "enlaces": "1 11 123 80", "anticipa": "2 -1 126 98", "transcribir": "0 8 130 72", "cromaticos": "4 5 124 89", "guitarra": "2 22 147 66", "entrenador": "2 10 126 80", "paloma": "0 2 108 80", "superposicion": "26 -2 80 106", "engranaje": "14 9 99 79", "integracion": "10 4 100 92", "combinacion": "-2 0 212 100", "decodificar": "0 14 120 64", "caminante": "-2 6 94 102", "soloGuitarra": "0 8 162 72"};
 const ADORNOS = {
   redoblante: `<svg viewBox="0 0 120 104"><g class="ad-palo izq"><line x1="14" y1="6" x2="52" y2="44"/><circle cx="52" cy="44" r="3"/></g><g class="ad-palo der"><line x1="106" y1="6" x2="70" y2="42"/><circle cx="70" cy="42" r="3"/></g>`
     + `<g class="ad-golpe izq"><path d="M44 36 l-6 -6 M50 32 l-1 -8 M56 34 l4 -7"/></g><g class="ad-golpe der"><path d="M62 32 l-4 -7 M70 30 l1 -8 M76 34 l6 -6"/></g>`
@@ -4177,7 +4198,7 @@ const ADORNOS = {
   superposicion: `<svg viewBox="0 0 120 100"><g class="ad-sup-base">${[78, 62, 46].map((y, i) => `<circle cx="44" cy="${y}" r="9"/>`).join('')}<text x="44" y="96">C</text></g>`
     + `<g class="ad-sup-arriba">${[70, 54, 38, 22].map(y => `<circle cx="68" cy="${y}" r="9"/>`).join('')}<text x="86" y="14">Em7</text></g></svg>`,
   engranaje: `<svg viewBox="0 0 120 100"><path class="ad-eng a" d="M71.0 54.0 L77.8 57.4 L76.5 63.3 L68.9 63.5 L66.6 67.5 L70.1 74.3 L65.6 78.3 L59.3 74.0 L55.1 75.9 L54.0 83.4 L48.0 84.0 L45.4 76.9 L40.9 75.9 L35.6 81.3 L30.4 78.3 L32.5 71.0 L29.4 67.5 L21.9 68.8 L19.5 63.3 L25.5 58.6 L25.0 54.0 L18.2 50.6 L19.5 44.7 L27.1 44.5 L29.4 40.5 L25.9 33.7 L30.4 29.7 L36.7 34.0 L40.9 32.1 L42.0 24.6 L48.0 24.0 L50.6 31.1 L55.1 32.1 L60.4 26.7 L65.6 29.7 L63.5 37.0 L66.6 40.5 L74.1 39.2 L76.5 44.7 L70.5 49.4 Z"/><circle class="ad-eng-c" cx="48" cy="54" r="8"/><path class="ad-eng b" d="M104.5 30.0 L108.8 32.4 L107.7 36.5 L102.8 36.4 L100.8 38.8 L102.2 43.6 L98.5 45.7 L95.1 42.1 L92.0 42.5 L89.6 46.8 L85.5 45.7 L85.6 40.8 L83.2 38.8 L78.4 40.2 L76.3 36.5 L79.9 33.1 L79.5 30.0 L75.2 27.6 L76.3 23.5 L81.2 23.6 L83.2 21.2 L81.8 16.4 L85.5 14.3 L88.9 17.9 L92.0 17.5 L94.4 13.2 L98.5 14.3 L98.4 19.2 L100.8 21.2 L105.6 19.8 L107.7 23.5 L104.1 26.9 Z"/><circle class="ad-eng-c" cx="92" cy="30" r="4.5"/></svg>`,
-  integracion: `<svg viewBox="0 0 120 100"><path class="ad-ola-fondo" d="M8 60 C24 40 40 40 56 60 S88 80 112 52"/><path class="ad-ola" d="M8 60 C24 40 40 40 56 60 S88 80 112 52"/><circle class="ad-gota" r="7"><animateMotion dur="3.4s" repeatCount="indefinite" path="M8 60 C24 40 40 40 56 60 S88 80 112 52"/></circle><circle class="ad-blando" cx="22" cy="28" r="10"/><circle class="ad-blando b" cx="98" cy="84" r="7"/></svg>`,
+  integracion: `<svg viewBox="0 0 120 100"><ellipse class="ad-charco" cx="60" cy="76" rx="44" ry="13"/><ellipse class="ad-onda" cx="60" cy="76" rx="10" ry="3"/><ellipse class="ad-onda b" cx="60" cy="76" rx="10" ry="3"/><path class="ad-gotita" d="M60 10 C66 22 70 28 70 34 a10 10 0 0 1 -20 0 C50 28 54 22 60 10 Z"/></svg>`,
   combinacion: `<svg viewBox="0 0 210 100">${['cromatismos', 'auxiliares', 'tríadas', 'intervalos'].map((t, i) => { const y = 14 + i * 24; return `<g class="ad-comb" style="--k:${i}"><rect x="2" y="${y - 10}" width="86" height="20" rx="10"/><text x="45" y="${y + 4}">${t}</text><path class="ad-comb-l" d="M90 ${y} C126 ${y} 126 50 150 50"/></g>`; }).join('')}`
     + `<g class="ad-nudo"><circle cx="164" cy="50" r="14"/><circle cx="178" cy="50" r="14"/></g><path class="ad-comb-sale" d="M194 50 h12 m-6 -6 l6 6 l-6 6"/></svg>`,
   decodificar: `<svg viewBox="0 0 120 100"><defs><clipPath id="adLente"><circle cx="0" cy="48" r="17"><animate attributeName="cx" values="30;90;30" dur="4s" repeatCount="indefinite"/></circle></clipPath></defs>`
@@ -4185,6 +4206,10 @@ const ADORNOS = {
     + `<g class="ad-dec-notas">${[[20, 60], [38, 48], [56, 52], [74, 40], [92, 44]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3.8" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 4.6}" y1="${y - 1}" x2="${x + 4.6}" y2="${y - 22}"/>`).join('')}</g>`
     + `<g class="ad-dec-notas viva" clip-path="url(#adLente)">${[[20, 60], [38, 48], [56, 52], [74, 40], [92, 44]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3.8" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 4.6}" y1="${y - 1}" x2="${x + 4.6}" y2="${y - 22}"/>`).join('')}</g>`
     + `<g class="ad-lupa"><circle cx="30" cy="48" r="17"/><path d="M42 61 L54 74"/><animateTransform attributeName="transform" type="translate" values="0 0;60 0;0 0" dur="4s" repeatCount="indefinite"/></g></svg>`,
+  soloGuitarra: `<svg viewBox="0 0 150 100">${[0, 1, 2, 3, 4].map(k => `<line class="ad-pauta" x1="4" y1="${26 + k * 7}" x2="64" y2="${26 + k * 7}"/>`).join('')}`
+    + [[12, 48], [26, 40], [40, 44], [54, 30]].map(([x, y], i) => `<g class="ad-nota-s" style="--k:${i}"><ellipse cx="${x}" cy="${y}" rx="4.6" ry="3.4" transform="rotate(-20 ${x} ${y})"/><line x1="${x + 4.2}" y1="${y - 1}" x2="${x + 4.2}" y2="${y - 18}"/></g>`).join('')
+    + `<path class="ad-pasa" d="M70 46 H88 m-7 -7 l7 7 l-7 7"/><circle class="ad-viaja" cx="58" cy="30" r="4"/>`
+    + `<g transform="translate(118 54) rotate(-30) scale(.85)"><rect class="ad-g-mango" x="6" y="-3" width="34" height="6" rx="2"/><rect class="ad-g-clav" x="38" y="-5" width="9" height="10" rx="2"/><ellipse class="ad-g-cuerpo" cx="-12" cy="0" rx="15" ry="14"/><ellipse class="ad-g-cuerpo" cx="6" cy="0" rx="11" ry="10"/><circle class="ad-g-boca" cx="-3" cy="0" r="4"/><path class="ad-g-cuerdas" d="M-22 -1.5 H46 M-22 1.5 H46"/></g></svg>`,
   caminante: (() => {
     // de perfil: muslo y pierna con rodilla, brazo con codo; la pierna y el brazo de atrás, más apagados
     const pierna = (cls) => `<g class="ad-muslo ${cls}"><path d="M46 62 L46 81"/><g class="ad-canilla"><path d="M46 81 L46 99 L53 99"/></g></g>`;
@@ -6829,7 +6854,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '8da3ec4926';
+const VERSION_AULA = 'f22e354e01';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

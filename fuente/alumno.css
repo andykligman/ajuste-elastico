@@ -1880,3 +1880,23 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .material:has(> :nth-child(2):last-child) .mat-vid{align-content:flex-start}
 }
 @media (max-width:700px){.adorno.adorno-combinacion{height:124px;max-width:340px}}
+
+/* Sin baldosa: mismo lugar y tamaño, sin fondo ni borde */
+.adorno{background:none;border:0}
+/* Integración: una gota que cae y se funde en el charco */
+.ad-charco{fill:color-mix(in srgb,#5D7BB6 45%,transparent);animation:adCharco 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes adCharco{0%,40%{transform:scale(1)}55%{transform:scale(1.06,1.15);fill:color-mix(in srgb,#E8834F 30%,#5D7BB6 50%)}100%{transform:scale(1)}}
+.ad-gotita{fill:#E8834F;animation:adGota 2.8s cubic-bezier(.5,0,.8,.6) infinite;transform-box:fill-box;transform-origin:center bottom}
+@keyframes adGota{0%{transform:translateY(-6px) scale(.9);opacity:0}12%{opacity:1}42%{transform:translateY(34px) scale(1,1.05);opacity:1}50%{transform:translateY(40px) scale(1.4,.3);opacity:0}100%{opacity:0;transform:translateY(40px) scale(1.4,.3)}}
+.ad-onda{fill:none;stroke:#A9BEE8;stroke-width:2;opacity:0;animation:adOnda 2.8s ease-out infinite;transform-box:fill-box;transform-origin:center}
+.ad-onda.b{animation-delay:.35s}
+@keyframes adOnda{0%,45%{opacity:0;transform:scale(1)}50%{opacity:.9}100%{opacity:0;transform:scale(4.2)}}
+/* El solo, al instrumento */
+.ad-nota-s{fill:#EDEEF0;stroke:#EDEEF0;stroke-width:2}
+.ad-viaja{fill:#E8834F;animation:adViaja 2.2s ease-in-out infinite}
+@keyframes adViaja{0%{transform:translate(0,0);opacity:0}15%{opacity:1}70%{transform:translate(52px,18px);opacity:1}85%,100%{transform:translate(56px,20px);opacity:0}}
+/* Dibujos de ritmo dentro del paso: centrados */
+.ritmo-paso-caja{margin-left:auto;margin-right:auto}
+.adorno.adorno-soloGuitarra{width:150px}
+@media (max-width:700px){.adorno.adorno-soloGuitarra{width:112px}}
+@media (max-width:700px){.adorno.adorno-soloGuitarra{width:130px}}
