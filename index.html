@@ -6611,12 +6611,13 @@ function editarResumen(id, texto, alGuardar) {
     const b = ev.target.closest('[data-ed]'); if (!b) return;
     if (b.dataset.ed === 'cerrar') { if (ta.value !== (texto || '') && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿Salir sin guardar?'; return; } cerrar(); return; }
     if (ta.value === (texto || '')) { cerrar(); return; }
-    b.disabled = true; b.textContent = 'Guardando…';
-    try { const r = await llamar('admin.claseEditar', { clave: claveAdmin, id, resumen: ta.value }); cerrar(); alGuardar(r.clase); aviso('Guardado'); }
+    // se cierra enseguida y se guarda de fondo; si falla, se vuelve a abrir con lo que escribiste
+    const txt = ta.value; cerrar(); aviso('Guardando…');
+    try { const r = await llamar('admin.claseEditar', { clave: claveAdmin, id, resumen: txt }); alGuardar(r.clase); aviso('Resumen guardado'); }
     catch (e) {
-      b.disabled = false; b.textContent = 'Guardar';
-      const msg = /desconocida/i.test(e.message) ? 'No se guardó: falta pegar el código nuevo del servidor en Apps Script (Nueva versión).' : 'No se guardó: ' + e.message;
-      let er = el.querySelector('.ed-error'); if (!er) { er = document.createElement('p'); er.className = 'ed-error'; b.parentNode.before(er); } er.textContent = msg;
+      aviso('No se guardó: ' + e.message, true);
+      editarResumen(id, texto, alGuardar);
+      const ta2 = document.querySelector('#edResumen'); if (ta2) ta2.value = txt;
     }
   };
   ta.focus();
@@ -6897,7 +6898,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '3b2fcf6580';
+const VERSION_AULA = 'daff614ccf';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

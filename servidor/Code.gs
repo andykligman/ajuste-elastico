@@ -438,7 +438,7 @@ function leerHoja(nombre, cols) {
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nombre);
   if (!sh) return [];
   return sh.getDataRange().getValues().slice(1).map((r, i) => {
-    const o = { _fila: i + 2 }; cols.forEach((k, j) => { o[k] = r[j] instanceof Date ? Utilities.formatDate(r[j], ZONA, 'yyyy-MM-dd') : String(r[j]); });
+    const o = { _fila: i + 2 }; cols.forEach((k, j) => { o[k] = r[j] instanceof Date ? Utilities.formatDate(r[j], ZONA, 'yyyy-MM-dd') : r[j] == null ? '' : String(r[j]); });
     return o;
   }).filter(o => o.id);
 }
@@ -489,11 +489,14 @@ function editarClase(id, md) {
   if (md.length < 20) throw new Error('El resumen quedó vacío');
   const c = leerClases().find(x => x.id === String(id));
   if (!c) throw new Error('Esa clase ya no está');
-  if (!c.original) c.original = c.resumen;
+  if (!c.original || c.original === 'undefined') c.original = c.resumen;
   if (c.doc) { try { escribirDoc(c.doc, md); md = textoDoc(c.doc) || md; } catch (e) { Logger.log('No pude escribir el Doc ' + c.doc + ': ' + e); } }
+  // las tareas se vuelven a armar (con la API) solo si cambió la parte de «Para la semana que viene»: así guarda rápido
+  const tareasDe = t => (String(t || '').split(/^#{1,3} *Para la semana que viene.*$/m)[1] || '').replace(/\s+/g, ' ').trim();
+  const cambioTareas = tareasDe(md) !== tareasDe(c.resumen) || !(c.datos.tareas || []).length;
   c.resumen = md;
   const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
-  if (key) {
+  if (key && cambioTareas) {
     try { const r = relacionar(key, md, c.nombre, JSON.parse(UrlFetchApp.fetch(URL_PASOS).getContentText()), todos().map(x => x.datos), c.codigo || null);
       c.datos = Object.assign({}, c.datos, { tareas: r.tareas, pasos: c.estado === 'publicada' ? (c.datos.pasos || []) : r.pasos }); } catch (e) { Logger.log(e); }
   }
