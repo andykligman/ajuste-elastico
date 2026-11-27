@@ -732,11 +732,11 @@ function borradorHTML(c, conNombre) {
   const quien = c.codigo ? (conNombre ? `<button class="enlace" data-elegir="${esc(c.codigo)}" data-nombre="${esc(sinTildes(c.nombre))}">${esc(c.nombre)}</button>` : '')
     : `<select data-clase-de="${esc(c.id)}" aria-label="¿De quién es esta clase?"><option value="">¿De quién es? (${esc(c.nombre)})</option>${LISTA.map(a => `<option value="${esc(a.codigo)}">${esc(a.nombre)}</option>`).join('')}</select>`;
   return `<div class="prop-grupo">
-    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))} · <a href="https://docs.google.com/document/d/${esc(c.doc)}/edit" target="_blank" rel="noopener">editar el resumen</a></span></div>
+    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))}${c.original && c.original !== c.resumen ? ' · editado' : ''}</span></div>
     <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : ''}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
       ${(t.pasos || []).length ? `<li class="prop"><div class="prop-txt"><span class="prop-tipo">Le ofrece marcar como hechos</span><span>${t.pasos.filter(id => PASO[id]).map(id => esc(PASO[id].titulo)).join(' · ')}</span></div></li>` : ''}</ul>
     <details class="prop-resumen"><summary>Ver el resumen</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>
-    <div class="fila-botones"><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
+    <div class="fila-botones"><button class="secundario" data-editar-borrador="${esc(c.id)}">Editar</button><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
   </div>`;
 }
 function propuestasHTML(lista, borradores, conNombre) {
@@ -750,7 +750,30 @@ function propuestasHTML(lista, borradores, conNombre) {
         <span>${esc(p.tipo === 'clase' ? 'Sumar esta clase al contador' : p.texto)}</span>${p.detalle ? `<small class="suave">${p.tipo === 'consejo' ? 'Cuándo: ' : ''}${esc(p.detalle)}</small>` : ''}</div>
         <span class="prop-bot">${p.codigo || p.tipo === 'consejo' ? `<button class="secundario prop-si" data-prop="${esc(p.id)}" data-decision="${p.tipo === 'consejo' ? 'consejo' : 'aplicar'}">${t[1]}</button>` : ''}<button class="secundario" data-prop="${esc(p.id)}" data-decision="descartar" title="Descartar" aria-label="Descartar">✕</button></span></li>`; }).join('')}</ul>
   </div>`).join('')}</div>
-  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, editá el resumen en el Doc y después publicalo: se publica lo editado. Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
+  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, tocá «Editar» y después publicalo: se publica lo editado (también queda en el Doc). Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
+}
+/* Editor del resumen de una clase (borrador o ya publicado). Se puede dictar con el micrófono del teclado. */
+function editarResumen(id, texto, alGuardar) {
+  document.querySelector('.ed-res')?.remove();
+  document.body.insertAdjacentHTML('beforeend', `<div class="ed-res" role="dialog" aria-modal="true" aria-label="Editar resumen">
+    <div class="ed-caja">
+      <div class="ed-cab"><h3>Editar resumen</h3><button class="secundario" data-ed="cerrar" aria-label="Cerrar">✕</button></div>
+      <textarea id="edResumen" spellcheck="true">${esc(texto || '')}</textarea>
+      <p class="suave chico"><b># </b>al principio del renglón = título · <b>**así**</b> = negrita · tareas con 1) 2) 3). Al guardar se actualiza el Doc y se vuelven a armar las tareas del aula.</p>
+      <div class="fila-botones"><button class="primario" data-ed="guardar">Guardar</button><button class="secundario" data-ed="cerrar">Cancelar</button></div>
+    </div></div>`);
+  const el = document.querySelector('.ed-res'), ta = el.querySelector('textarea');
+  document.body.classList.add('con-mapa');
+  const cerrar = () => { el.remove(); if (!document.querySelector('.mapa-zoom')) document.body.classList.remove('con-mapa'); };
+  el.onclick = async ev => {
+    const b = ev.target.closest('[data-ed]'); if (!b) return;
+    if (b.dataset.ed === 'cerrar') { if (ta.value !== (texto || '') && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿Salir sin guardar?'; return; } cerrar(); return; }
+    if (ta.value === (texto || '')) { cerrar(); return; }
+    b.disabled = true; b.textContent = 'Guardando…';
+    try { const r = await llamar('admin.claseEditar', { clave: claveAdmin, id, resumen: ta.value }); cerrar(); alGuardar(r.clase); aviso('Guardado'); }
+    catch (e) { b.disabled = false; b.textContent = 'Guardar'; aviso(e.message, true); }
+  };
+  ta.focus();
 }
 async function resolverBorrador(id, decision, b) {
   const c = BORRADORES.find(x => x.id === id); if (!c) return;
@@ -917,6 +940,7 @@ function enlazarAdmin() {
     if (d.prop) { b.disabled = true; if (await resolverProp(d.prop, d.decision, b)) renderAdmin(); else b.disabled = false; return; }
     if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
     if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
+    if (d.editarBorrador) { const c = BORRADORES.find(x => x.id === d.editarBorrador); if (c) editarResumen(c.id, c.resumen, r => { Object.assign(c, { resumen: r.resumen, datos: r.datos, original: c.original || 'x' }); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES, l: LLAMADAS }); renderAdmin(); }); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }

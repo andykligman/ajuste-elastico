@@ -153,6 +153,11 @@ function manejar(d) {
         validarPanel(d.clave);
         return resolverClase(d.id, d.decision, d.codigo);
       }
+      case 'admin.claseEditar': {
+        // Guardar el resumen editado desde el panel
+        validarPanel(d.clave);
+        return editarClase(d.id, d.resumen);
+      }
       case 'admin.propuesta': {
         // Aplicar o descartar una propuesta que salió de la transcripción de una clase
         validarPanel(d.clave);
@@ -416,7 +421,9 @@ const AVISAR_POR_MAIL = true;  // te avisa por mail cuando hay clases para revis
 const MODELO_CLASES = 'claude-sonnet-5-5';
 const URL_PASOS = 'https://aula.ajuste-elastico.com/pasos.json';
 const HOJA_CLASES = 'Clases';
-const CLASE_COLS = ['id', 'codigo', 'nombre', 'fecha', 'doc', 'resumen', 'datos', 'estado', 'creada'];
+// original: el resumen tal como lo armó el script, antes de que lo edites (para que Claude compare y aprenda)
+// aprendido: fecha en que Claude ya lo usó para mejorar las instrucciones
+const CLASE_COLS = ['id', 'codigo', 'nombre', 'fecha', 'doc', 'resumen', 'datos', 'estado', 'creada', 'original', 'aprendido'];
 const HOJA_PROPUESTAS = 'Propuestas';
 const PROP_COLS = ['id', 'fecha', 'codigo', 'nombre', 'tipo', 'paso', 'texto', 'detalle', 'estado', 'archivo'];
 
@@ -442,6 +449,9 @@ function leerClases() {
 function guardarClase(c) {
   const sh = hojaCon(HOJA_CLASES, CLASE_COLS);
   const fila = c._fila || sh.getLastRow() + 1;
+  // si la hoja es de antes, le agrego los títulos de las columnas nuevas
+  const cab = sh.getRange(1, 1, 1, CLASE_COLS.length).getValues()[0];
+  if (cab.some((x, i) => x !== CLASE_COLS[i])) sh.getRange(1, 1, 1, CLASE_COLS.length).setValues([CLASE_COLS]).setFontWeight('bold');
   const o = Object.assign({}, c, { datos: JSON.stringify(c.datos || {}) });
   sh.getRange(fila, 1, 1, CLASE_COLS.length).setNumberFormat('@').setValues([CLASE_COLS.map(k => o[k] == null ? '' : String(o[k]))]);
   c._fila = fila;
@@ -460,6 +470,7 @@ function resolverClase(id, decision, codigo) {
     // si editaste el Doc, se publica lo editado (y se vuelve a relacionar con los pasos)
     const txt = textoDoc(c.doc);
     if (txt && txt !== c.resumen) {
+      if (!c.original) c.original = c.resumen;
       c.resumen = txt;
       const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
       if (key) { try { const r = relacionar(key, txt, c.nombre, JSON.parse(UrlFetchApp.fetch(URL_PASOS).getContentText()), todos().map(x => x.datos), c.codigo); c.datos = { tareas: r.tareas, pasos: r.pasos }; } catch (e) { Logger.log(e); } }
@@ -470,6 +481,43 @@ function resolverClase(id, decision, codigo) {
   let mail = '';
   if (c.estado === 'publicada') { try { mail = mandarResumenPorMail(c); } catch (e) { mail = 'error'; Logger.log('Mail del resumen: ' + e); } }
   return { ok: true, mail, clase: c.estado === 'publicada' ? Object.assign(paraAlumno(c), { codigo: c.codigo }) : null };
+}
+/* Editar el resumen desde el panel: se guarda en la planilla y en su Doc, y se vuelven a armar las tareas.
+   La primera vez queda guardado el original del script (columna «original») para comparar. */
+function editarClase(id, md) {
+  md = String(md || '').replace(/\r/g, '').trim();
+  if (md.length < 20) throw new Error('El resumen quedó vacío');
+  const c = leerClases().find(x => x.id === String(id));
+  if (!c) throw new Error('Esa clase ya no está');
+  if (!c.original) c.original = c.resumen;
+  if (c.doc) { try { escribirDoc(c.doc, md); md = textoDoc(c.doc) || md; } catch (e) { Logger.log('No pude escribir el Doc ' + c.doc + ': ' + e); } }
+  c.resumen = md;
+  const key = PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY');
+  if (key) {
+    try { const r = relacionar(key, md, c.nombre, JSON.parse(UrlFetchApp.fetch(URL_PASOS).getContentText()), todos().map(x => x.datos), c.codigo || null);
+      c.datos = Object.assign({}, c.datos, { tareas: r.tareas, pasos: c.estado === 'publicada' ? (c.datos.pasos || []) : r.pasos }); } catch (e) { Logger.log(e); }
+  }
+  guardarClase(c);
+  return { ok: true, clase: Object.assign(paraAlumno(c), { codigo: c.codigo, estado: c.estado, datos: c.datos }) };
+}
+/* Escribe el resumen (markdown: # títulos, **negritas**) en el Doc, reemplazando lo que tenía */
+function escribirDoc(id, md) {
+  const doc = DocumentApp.openById(id), body = doc.getBody();
+  body.clear();
+  const primero = body.getChild(0);
+  md.split('\n').forEach(linea => {
+    const h = linea.match(/^#{1,3} +(.*)$/);
+    const txt = (h ? h[1] : linea), plano = txt.replace(/\*\*/g, '');
+    const p = body.appendParagraph(plano);
+    p.setHeading(h ? DocumentApp.ParagraphHeading.HEADING2 : DocumentApp.ParagraphHeading.NORMAL);
+    if (!plano) return;
+    const t = p.editAsText(); t.setBold(false);
+    if (h) return;
+    let pos = 0, neg = false;
+    txt.split('**').forEach(trozo => { if (neg && trozo) t.setBold(pos, pos + trozo.length - 1, true); pos += trozo.length; neg = !neg; });
+  });
+  if (body.getNumChildren() > 1 && primero.getType() === DocumentApp.ElementType.PARAGRAPH && !primero.asText().getText()) primero.removeFromParent();
+  doc.saveAndClose();
 }
 function resolverPropuesta(id, decision) {
   const o = leerHoja(HOJA_PROPUESTAS, PROP_COLS).find(x => x.id === String(id));
@@ -531,6 +579,7 @@ function revisarClases(cuantas, forzar) {
       const r = relacionar(key, resumen, nombreArch, pasos, alumnos, null);
       const al = alumnos.find(a => a.codigo === r.codigo) || null;
       const c = existentes.find(x => x.doc === f.getId()) || { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), creada: hoy() };
+      if (!c.original) c.original = resumen;
       Object.assign(c, { codigo: al ? al.codigo : '', nombre: al ? al.nombre : nombreArch.replace(/\s*-\s*\d{4}-\d{2}-\d{2}.*/, ''), fecha, doc: f.getId(), resumen,
         datos: { tareas: r.tareas, pasos: r.pasos }, estado: c.estado === 'publicada' ? 'publicada' : (PUBLICAR_SOLO && al ? 'publicada' : 'borrador') });
       guardarClase(c);

@@ -1385,7 +1385,7 @@ function claseHTML(st, c, enInicio) {
   return `<section class="clase-card${enInicio ? ' en-inicio' : ''}${nueva ? ' es-nueva' : ''}">${nueva ? '<span class="cl-nuevo">Nuevo resumen de clase</span>' : ''}
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
-    ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
+    ${modo === 'admin-vista' ? `<span class="cl-adm"><button class="link suave" data-clase-editar="${esc(c.id)}">Editar resumen</button> · <button class="link suave" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button></span>` : ''}
     ${resumenSinTareas(c.resumen) ? `<div class="cl-resumen"><p class="cl-sub">Resumen de la clase</p><div class="cl-texto">${conLinksPasos(textoHTML(resumenSinTareas(c.resumen)), st)}</div></div>` : ''}
     ${enInicio ? `<button class="link suave cl-todas" data-accion="clases">Ver todos los resúmenes de clase (${st.clases.length})</button>` : ''}
   </section>`;
@@ -1422,6 +1422,16 @@ function accionClase(d) {
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
   }
   if (d.claseSacar) { sacarClase(d.claseSacar); return true; }
+  if (d.claseEditar && modo === 'admin-vista') {
+    const c = (ST.clases || []).find(x => x.id === d.claseEditar); if (!c) return true;
+    editarResumen(c.id, c.resumen, r => {
+      const nueva = { id: r.id, fecha: r.fecha, resumen: r.resumen, tareas: r.tareas, pasos: r.pasos };
+      ST.clases = (ST.clases || []).map(x => x.id === r.id ? nueva : x);
+      const a = LISTA.find(x => x.codigo === ST.codigo); if (a) a.clases = (a.clases || []).map(x => x.id === r.id ? nueva : x);
+      sinSaltar(() => renderAlumno()); refrescarClases();
+    });
+    return true;
+  }
   if (d.claseHecho) {
     const id = d.claseHecho; ST.prog[id] = Object.assign({}, ST.prog[id], { hecho: true, como: 'listo', t: hoyISO(), origen: 'clase' });
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;

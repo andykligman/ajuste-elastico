@@ -1642,7 +1642,7 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 .cl-texto{font-size:16px}
 .cl-texto p{margin:8px 0}
 .cl-texto .destacado{margin-top:16px;font:600 17px var(--display);color:var(--azul-txt)}
-.cl-todas,.cl-sacar{display:block;margin-top:8px}
+.cl-todas,.cl-sacar,.cl-adm{display:block;margin-top:8px}
 .cl-todas-lista{max-width:760px;margin:0 auto;padding:4px clamp(16px,4vw,40px) 60px}
 @media (max-width:560px){.clase-card{padding:14px 14px 12px}.cl-cab h2{font-size:19px}}
 
@@ -2272,6 +2272,12 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
   .prop-resumen summary { cursor: pointer; color: var(--azul-txt); }
   .prop-resumen .cl-texto { padding: 6px 0 0; }
   .prop-grupo .fila-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ed-res { position: fixed; inset: 0; z-index: 3000; background: rgba(10,16,30,.55); display: flex; align-items: center; justify-content: center; padding: 12px; }
+  .ed-caja { background: var(--sup, #fff); border-radius: 14px; width: min(860px, 100%); max-height: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+  .ed-cab { display: flex; align-items: center; justify-content: space-between; }
+  .ed-cab h3 { margin: 0; }
+  .ed-caja textarea { width: 100%; min-height: 55vh; flex: 1; font: inherit; font-size: 16px; line-height: 1.5; padding: 10px; border: 1px solid var(--linea); border-radius: 10px; resize: vertical; box-sizing: border-box; background: var(--sup2); color: inherit; }
+  .ed-caja .fila-botones { display: flex; gap: 8px; }
   /* Solapas del panel: Alumnos / Llamadas */
   .tabs-adm { display: flex; gap: 6px; margin: 0 0 18px; border-bottom: 1px solid var(--linea); }
   .tabs-adm button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0; border-bottom: 3px solid transparent; background: none; color: var(--gris); font: 600 16px var(--sans); cursor: pointer; margin-bottom: -1px; }
@@ -5182,7 +5188,7 @@ function claseHTML(st, c, enInicio) {
   return `<section class="clase-card${enInicio ? ' en-inicio' : ''}${nueva ? ' es-nueva' : ''}">${nueva ? '<span class="cl-nuevo">Nuevo resumen de clase</span>' : ''}
     <div class="cl-cab"><h2>${enInicio ? 'Lo de nuestra última clase' : 'Clase del ' + esc(fechaCorta(c.fecha))}</h2>${enInicio ? `<span class="suave">${esc(fechaCorta(c.fecha))}</span>` : ''}</div>
     ${tareas ? `<p class="cl-sub">${c === clasesOrdenadas(st)[0] ? 'Para esta semana' : 'Lo que quedó para trabajar'}</p><ul class="cl-lista">${tareas}</ul>` : ''}
-    ${modo === 'admin-vista' ? `<button class="link suave cl-sacar" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button>` : ''}
+    ${modo === 'admin-vista' ? `<span class="cl-adm"><button class="link suave" data-clase-editar="${esc(c.id)}">Editar resumen</button> · <button class="link suave" data-clase-sacar="${esc(c.id)}">Sacar este resumen de su aula</button></span>` : ''}
     ${resumenSinTareas(c.resumen) ? `<div class="cl-resumen"><p class="cl-sub">Resumen de la clase</p><div class="cl-texto">${conLinksPasos(textoHTML(resumenSinTareas(c.resumen)), st)}</div></div>` : ''}
     ${enInicio ? `<button class="link suave cl-todas" data-accion="clases">Ver todos los resúmenes de clase (${st.clases.length})</button>` : ''}
   </section>`;
@@ -5219,6 +5225,16 @@ function accionClase(d) {
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
   }
   if (d.claseSacar) { sacarClase(d.claseSacar); return true; }
+  if (d.claseEditar && modo === 'admin-vista') {
+    const c = (ST.clases || []).find(x => x.id === d.claseEditar); if (!c) return true;
+    editarResumen(c.id, c.resumen, r => {
+      const nueva = { id: r.id, fecha: r.fecha, resumen: r.resumen, tareas: r.tareas, pasos: r.pasos };
+      ST.clases = (ST.clases || []).map(x => x.id === r.id ? nueva : x);
+      const a = LISTA.find(x => x.codigo === ST.codigo); if (a) a.clases = (a.clases || []).map(x => x.id === r.id ? nueva : x);
+      sinSaltar(() => renderAlumno()); refrescarClases();
+    });
+    return true;
+  }
   if (d.claseHecho) {
     const id = d.claseHecho; ST.prog[id] = Object.assign({}, ST.prog[id], { hecho: true, como: 'listo', t: hoyISO(), origen: 'clase' });
     guardarAlumno(); sinSaltar(() => renderAlumno()); refrescarClases(); return true;
@@ -6559,11 +6575,11 @@ function borradorHTML(c, conNombre) {
   const quien = c.codigo ? (conNombre ? `<button class="enlace" data-elegir="${esc(c.codigo)}" data-nombre="${esc(sinTildes(c.nombre))}">${esc(c.nombre)}</button>` : '')
     : `<select data-clase-de="${esc(c.id)}" aria-label="¿De quién es esta clase?"><option value="">¿De quién es? (${esc(c.nombre)})</option>${LISTA.map(a => `<option value="${esc(a.codigo)}">${esc(a.nombre)}</option>`).join('')}</select>`;
   return `<div class="prop-grupo">
-    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))} · <a href="https://docs.google.com/document/d/${esc(c.doc)}/edit" target="_blank" rel="noopener">editar el resumen</a></span></div>
+    <div class="prop-cab">${quien}<span class="suave chico">clase del ${esc(fechaCorta(c.fecha))}${c.original && c.original !== c.resumen ? ' · editado' : ''}</span></div>
     <ul class="prop-lista">${(t.tareas || []).map(x => `<li class="prop"><div class="prop-txt"><span class="prop-tipo">${x.paso && PASO[x.paso] ? 'Botón al paso · ' + esc(PASO[x.paso].titulo) : ''}</span><span>${esc(x.texto.replace(/\*\*/g, ''))}</span></div></li>`).join('')}
       ${(t.pasos || []).length ? `<li class="prop"><div class="prop-txt"><span class="prop-tipo">Le ofrece marcar como hechos</span><span>${t.pasos.filter(id => PASO[id]).map(id => esc(PASO[id].titulo)).join(' · ')}</span></div></li>` : ''}</ul>
     <details class="prop-resumen"><summary>Ver el resumen</summary><div class="cl-texto">${textoHTML(c.resumen)}</div></details>
-    <div class="fila-botones"><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
+    <div class="fila-botones"><button class="secundario" data-editar-borrador="${esc(c.id)}">Editar</button><button class="secundario prop-si" data-publicar="${esc(c.id)}">Publicar en su aula</button><button class="secundario" data-no-publicar="${esc(c.id)}">No publicar</button></div>
   </div>`;
 }
 function propuestasHTML(lista, borradores, conNombre) {
@@ -6577,7 +6593,30 @@ function propuestasHTML(lista, borradores, conNombre) {
         <span>${esc(p.tipo === 'clase' ? 'Sumar esta clase al contador' : p.texto)}</span>${p.detalle ? `<small class="suave">${p.tipo === 'consejo' ? 'Cuándo: ' : ''}${esc(p.detalle)}</small>` : ''}</div>
         <span class="prop-bot">${p.codigo || p.tipo === 'consejo' ? `<button class="secundario prop-si" data-prop="${esc(p.id)}" data-decision="${p.tipo === 'consejo' ? 'consejo' : 'aplicar'}">${t[1]}</button>` : ''}<button class="secundario" data-prop="${esc(p.id)}" data-decision="descartar" title="Descartar" aria-label="Descartar">✕</button></span></li>`; }).join('')}</ul>
   </div>`).join('')}</div>
-  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, editá el resumen en el Doc y después publicalo: se publica lo editado. Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
+  <p class="suave chico">Sale de los resúmenes de las clases. Si querés cambiar algo, tocá «Editar» y después publicalo: se publica lo editado (también queda en el Doc). Los consejos no van solos al aula: los que marcás con «Lo vemos» me los pasás y vemos dónde sumarlos.</p>`;
+}
+/* Editor del resumen de una clase (borrador o ya publicado). Se puede dictar con el micrófono del teclado. */
+function editarResumen(id, texto, alGuardar) {
+  document.querySelector('.ed-res')?.remove();
+  document.body.insertAdjacentHTML('beforeend', `<div class="ed-res" role="dialog" aria-modal="true" aria-label="Editar resumen">
+    <div class="ed-caja">
+      <div class="ed-cab"><h3>Editar resumen</h3><button class="secundario" data-ed="cerrar" aria-label="Cerrar">✕</button></div>
+      <textarea id="edResumen" spellcheck="true">${esc(texto || '')}</textarea>
+      <p class="suave chico"><b># </b>al principio del renglón = título · <b>**así**</b> = negrita · tareas con 1) 2) 3). Al guardar se actualiza el Doc y se vuelven a armar las tareas del aula.</p>
+      <div class="fila-botones"><button class="primario" data-ed="guardar">Guardar</button><button class="secundario" data-ed="cerrar">Cancelar</button></div>
+    </div></div>`);
+  const el = document.querySelector('.ed-res'), ta = el.querySelector('textarea');
+  document.body.classList.add('con-mapa');
+  const cerrar = () => { el.remove(); if (!document.querySelector('.mapa-zoom')) document.body.classList.remove('con-mapa'); };
+  el.onclick = async ev => {
+    const b = ev.target.closest('[data-ed]'); if (!b) return;
+    if (b.dataset.ed === 'cerrar') { if (ta.value !== (texto || '') && !b.dataset.seguro) { b.dataset.seguro = '1'; b.textContent = '¿Salir sin guardar?'; return; } cerrar(); return; }
+    if (ta.value === (texto || '')) { cerrar(); return; }
+    b.disabled = true; b.textContent = 'Guardando…';
+    try { const r = await llamar('admin.claseEditar', { clave: claveAdmin, id, resumen: ta.value }); cerrar(); alGuardar(r.clase); aviso('Guardado'); }
+    catch (e) { b.disabled = false; b.textContent = 'Guardar'; aviso(e.message, true); }
+  };
+  ta.focus();
 }
 async function resolverBorrador(id, decision, b) {
   const c = BORRADORES.find(x => x.id === id); if (!c) return;
@@ -6744,6 +6783,7 @@ function enlazarAdmin() {
     if (d.prop) { b.disabled = true; if (await resolverProp(d.prop, d.decision, b)) renderAdmin(); else b.disabled = false; return; }
     if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
     if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
+    if (d.editarBorrador) { const c = BORRADORES.find(x => x.id === d.editarBorrador); if (c) editarResumen(c.id, c.resumen, r => { Object.assign(c, { resumen: r.resumen, datos: r.datos, original: c.original || 'x' }); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES, l: LLAMADAS }); renderAdmin(); }); return; }
     if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
@@ -6854,7 +6894,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = 'f82eed6f09';
+const VERSION_AULA = '34f8a47e7c';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto
