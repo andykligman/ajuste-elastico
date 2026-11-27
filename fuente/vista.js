@@ -1267,7 +1267,6 @@ function mapaHTML(st, e) {
       const completo = pasos.length && listos === pasos.length;
       const aca = M.n === modAhora && !completo;
       const est = !pasos.length ? 'Muy pronto' : completo ? 'Completo' : !abiertoMod ? 'Todavía no' : `${listos} de ${pasos.length} pasos`;
-      const h = obj && obj.hojaDeRuta;
       return `<li class="mz-mod ${completo ? 'completo' : ''} ${aca ? 'aca' : ''} ${abiertoMod && pasos.length ? '' : 'bloq'} ${i % 2 ? 'der' : 'izq'}" style="--mc:${M.color}">
         <span class="mz-parada" style="--p:${pasos.length ? (listos / pasos.length).toFixed(3) : 0}"><svg class="mz-anillo" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28"/><circle class="mz-prog" cx="32" cy="32" r="28" pathLength="100"/></svg><b>${completo ? ICONO.check : !abiertoMod || !pasos.length ? ICONO.candado : M.n}</b></span>
         <div class="mz-tarjeta">
@@ -1275,8 +1274,6 @@ function mapaHTML(st, e) {
           <small>${esc(M.titulo)}</small><h3>${esc(M.nombre)}</h3>
           <p class="mz-estado">${esc(est)}</p>
           ${abiertoMod && pasos.length && !aca ? `<button class="mz-ir" data-mapa-modulo="${M.n}">${completo ? 'Repasar este módulo' : 'Ir a este módulo'} ›</button>` : ''}
-          ${h && h.meta ? `<p class="mz-meta">${enLinea(h.meta)}</p>` : ''}
-          ${h && h.puente ? `<div class="mz-pasitos">${h.puente.pasos.map(x => `<span>${esc(x)}</span>`).join('<i>→</i>')}${h.puente.ciclo ? '<i>↺</i>' : ''}</div>` : ''}
           ${pasos.length ? `<div class="mz-det"><svg class="mz-mini" aria-hidden="true"></svg><ul class="mz-lista">${(seps => pasos.map((p, j) => {
             const ok = hecho(st, p.id), cur = p.id === ahora;
             // separados como en el aula: por ejercitación (1, 2, 3…) o por video

@@ -771,7 +771,11 @@ function editarResumen(id, texto, alGuardar) {
     if (ta.value === (texto || '')) { cerrar(); return; }
     b.disabled = true; b.textContent = 'Guardando…';
     try { const r = await llamar('admin.claseEditar', { clave: claveAdmin, id, resumen: ta.value }); cerrar(); alGuardar(r.clase); aviso('Guardado'); }
-    catch (e) { b.disabled = false; b.textContent = 'Guardar'; aviso(e.message, true); }
+    catch (e) {
+      b.disabled = false; b.textContent = 'Guardar';
+      const msg = /desconocida/i.test(e.message) ? 'No se guardó: falta pegar el código nuevo del servidor en Apps Script (Nueva versión).' : 'No se guardó: ' + e.message;
+      let er = el.querySelector('.ed-error'); if (!er) { er = document.createElement('p'); er.className = 'ed-error'; b.parentNode.before(er); } er.textContent = msg;
+    }
   };
   ta.focus();
 }
