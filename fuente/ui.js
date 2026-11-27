@@ -698,8 +698,8 @@ function revisionHTML(a) {
   return `<div class="rev-video">
       <div class="rev-cab"><p class="rev-paso"><strong>${esc(p.titulo)}</strong><span class="suave">${fechaCorta(cur.v.t)}${cur.v.seg ? ' · ' + duracion(cur.v.seg) : ''}</span></p>
         ${cur.v.visto ? `<span class="visto">${ICONO.check}Ya lo viste</span>` : `<button class="primario" data-adm="visto">Listo, ya lo vi</button>`}</div>
-      <div class="rev-player">${String(cur.v.id).startsWith('demo-') ? '<p class="suave">Video de prueba (modo demo)</p>' : `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(cur.v.id)}/preview" allow="autoplay; fullscreen" allowfullscreen title="Video de ${esc(a.nombre)}"></iframe>`}</div>
-      <p class="suave chico">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>
+      <div class="rev-player">${reproductorDrive(cur.v.id, 'Video de ' + a.nombre)}</div>
+      ${DRIVE_SIN_IFRAME ? '' : '<p class="suave chico">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>'}
       <div class="rev-info">
         ${p.envia ? `<p><span class="suave">Le pediste:</span> ${esc(p.envia)}</p>` : ''}
         ${op && !p.sinProgreso ? `<p><span class="suave">Cómo le fue:</span> ${esc(op.label)}</p>` : ''}

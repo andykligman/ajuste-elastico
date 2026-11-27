@@ -2159,6 +2159,17 @@ function subirPorPartes(url, blob, progreso) {
   return mandar(0, 0);
 }
 
+/* Video de un alumno guardado en el Drive de Andy. Safari (iPhone/iPad/Mac) bloquea las
+   cookies de Google dentro del iframe y Drive muestra "No se puede acceder a tu Cuenta de
+   Google": ahí va un botón grande que abre el video en Drive (app o pestaña con su cuenta). */
+const DRIVE_SIN_IFRAME = /iP(hone|ad|od)/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1) || /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+function reproductorDrive(id, titulo) {
+  if (String(id).startsWith('demo-')) return '<p class="suave gr-msg">Video de prueba (modo demo)</p>';
+  const url = `https://drive.google.com/file/d/${encodeURIComponent(id)}/view`;
+  if (DRIVE_SIN_IFRAME) return `<a class="drive-abrir" href="${url}" target="_blank" rel="noopener"><span class="drive-play"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span><strong>Ver el video</strong><small>Se abre en Drive</small></a>`;
+  return `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(id)}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(titulo || 'Video')}"></iframe>`;
+}
+
 /* Andy mira el video desde el panel (se reproduce desde su Drive) */
 function verVideoAdmin(al, pasoId, i, alMarcar) {
   const v = al.prog?.[pasoId]?.videos?.[i]; if (!v) return;
@@ -2167,8 +2178,8 @@ function verVideoAdmin(al, pasoId, i, alMarcar) {
   el.innerHTML = `<div class="gr-cab"><button class="gr-x" aria-label="Cerrar">×</button>
     <div><small>${esc(al.nombre)} · ${fechaCorta(v.t)}</small><strong>${esc(PASO[pasoId].titulo)}</strong></div>
     <a class="link gr-drive" href="https://drive.google.com/file/d/${encodeURIComponent(v.id)}/view" target="_blank" rel="noopener">Abrir en Drive</a></div>
-    <div class="gr-pantalla">${String(v.id).startsWith('demo-') ? '<p class="gr-msg">Video de prueba (modo demo)</p>' : `<iframe src="https://drive.google.com/file/d/${encodeURIComponent(v.id)}/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>`}</div>
-    <p class="gr-nota">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>`;
+    <div class="gr-pantalla">${reproductorDrive(v.id, al.nombre)}</div>
+    ${DRIVE_SIN_IFRAME ? '' : '<p class="gr-nota">Si dice que se está procesando, esperá un par de minutos: Drive tarda un poco con los videos recién subidos.</p>'}`;
   document.body.appendChild(el); document.body.classList.add('con-grabador');
   el.querySelector('.gr-x').onclick = () => { el.remove(); document.body.classList.remove('con-grabador'); };
   if (!v.visto) { v.visto = true; alMarcar && alMarcar(); }

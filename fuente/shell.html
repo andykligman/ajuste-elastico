@@ -116,6 +116,12 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;margin:0;let
 .rev-video>.chico{margin:-4px 0 0}
 .rev-player{height:min(64vh,640px);background:#000;border-radius:var(--radio-m);overflow:hidden;display:grid;place-items:center}
 .rev-player iframe{width:100%;height:100%;border:0}
+.drive-abrir{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:220px;color:#fff;text-decoration:none;background:#16213A}
+.drive-abrir .drive-play{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:#3A4F7A;padding-left:4px}
+.drive-abrir strong{font-size:1.15rem}
+.drive-abrir small{opacity:.7}
+.drive-abrir:active .drive-play{background:#E8834F}
+.rev-player:has(.drive-abrir),.gr-pantalla:has(.drive-abrir){height:240px}
 .rev-info{display:grid;gap:6px}
 .rev-cab{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .rev-info p{margin:0}
