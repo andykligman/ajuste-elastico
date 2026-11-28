@@ -500,9 +500,22 @@ let videoSel = null;   // 'paso:índice' del video que se está mirando en el pa
 function todosLosVideos(a) {
   return Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid]);
 }
+/* Al entrar a un alumno se abre la primera sección que tenga algo: resúmenes de clase, videos, y si no, «Clases y avance».
+   Si entró tocando un video, se abre directo «Videos y mensaje». */
+let secsDe = null, entroPorVideo = false;
+function abrirSecsAlumno(a) {
+  if (secsDe === a.codigo) return;
+  secsDe = a.codigo;
+  const hayProp = [...PROPUESTAS, ...BORRADORES].some(p => p.codigo === a.codigo), hayVid = todosLosVideos(a).length > 0;
+  const prim = entroPorVideo ? 'videos' : hayProp ? 'prop-alumno' : hayVid ? 'videos' : 'clases';
+  entroPorVideo = false;
+  ['prop-alumno', 'videos', 'clases'].forEach(id => admAbiertas.delete(id));
+  admAbiertas.add(prim);
+}
 function renderAdmin() {
   document.title = 'Admin · Panel de Ajuste Elástico';   // para encontrarlo en Chrome escribiendo «admin» o «panel»
   const sel = elegido && elegido !== '__nuevo' && LISTA.find(a => a.codigo === elegido);
+  if (sel) abrirSecsAlumno(sel); else secsDe = null;
   app().innerHTML = `${barra('Andy')}
   <main class="admin ${sel || elegido === '__nuevo' ? 'admin-una' : ''}">
     ${sel ? alumnoAdmHTML(sel) : elegido === '__nuevo' ? `<button class="link volver-adm" data-adm="volver">← Todos los alumnos</button>${nuevoHTML()}` : inicioAdmHTML()}
@@ -946,7 +959,7 @@ function enlazarAdmin() {
     if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
     if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
     if (d.editarBorrador) { const c = BORRADORES.find(x => x.id === d.editarBorrador); if (c) editarResumen(c.id, c.resumen, r => { Object.assign(c, { resumen: r.resumen, datos: r.datos, original: c.original || 'x' }); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES, l: LLAMADAS }); renderAdmin(); }); return; }
-    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; entroPorVideo = true; secsDe = null; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.adm === 'actualizar') { b.textContent = 'Actualizando…'; abrirAdmin(); return; }

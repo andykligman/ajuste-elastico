@@ -420,6 +420,21 @@ const ADORNOS = {
       + `<g class="ad-notita"><path d="M74 34 v-15 l9 -3"/><ellipse cx="71" cy="35" rx="4.2" ry="3.2"/></g></svg>`;
   })(),
 };
+/* Extensión: arriba el motivo (naranja); abajo su repetición (azul) con notas nuevas pegadas después o antes */
+const extGrupo = (x, y, n, cls, k0 = 0, sep = 14) => {
+  let o = ''; for (let i = 0; i < n; i++) { const xi = x + i * sep, yi = y - [0, 6, 2, 8][i % 4]; o += `<g class="ad-ext ${cls}" style="--k:${k0 + i}"><ellipse cx="${xi}" cy="${yi}" rx="6" ry="4.5" transform="rotate(-20 ${xi} ${yi})"/><line x1="${xi + 5.4}" y1="${yi - 1}" x2="${xi + 5.4}" y2="${y - 30}"/></g>`; }
+  return o + `<line class="ad-ext-barra ${cls}" style="--k:${k0 + n - 1}" x1="${x + 5.4}" y1="${y - 30}" x2="${x + (n - 1) * sep + 5.4}" y2="${y - 30}"/>`;
+};
+const extAdorno = (despues) => {
+  const yA = 40, yB = 112, nN = 3;
+  const xRep = despues ? 8 : 64, xNue = despues ? 58 : 8;
+  const rep = extGrupo(xRep, yB, 3, 'var', despues ? 3 : 3 + nN), nue = extGrupo(xNue, yB, nN, 'nue', despues ? 6 : 3);
+  return `<svg viewBox="0 0 108 118"><text class="ad-ext-l mot" x="0" y="${yA - 2}">A</text>${extGrupo(18, yA, 3, 'mot', 0)}<path class="ad-ext-sil" d="M64 ${yA - 6} h40"/>`
+    + `<path class="ad-ext-llave" d="M${xNue - 6} ${yB - 40} v-5 H${xNue + 2 * 14 + 12} v5"/><text class="ad-ext-mas" x="${xNue + 17}" y="${yB - 50}">nuevo</text>`
+    + rep + nue + `</svg>`;
+};
+ADORNOS.extDespues = extAdorno(true);
+ADORNOS.extAntes = extAdorno(false);
 /* Rueditas numeradas para las ejercitaciones de mecanización */
 ['1', '2'].forEach(n => { ADORNOS['engranaje' + n] = ADORNOS.engranaje.replace('<circle class="ad-eng-c" cx="48" cy="54" r="8"/>', `<circle class="ad-eng-c" cx="48" cy="54" r="12"/><text class="ad-eng-n" x="48" y="60">${n}</text>`); });
 const RITMO_PASO = {

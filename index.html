@@ -1980,6 +1980,18 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (max-width:700px){.adorno.adorno-soloGuitarra{width:130px}}
 .ad-eng-n{font:700 15px var(--display);fill:#EDEEF0;text-anchor:middle}
 
+/* Extensión: motivo, su repetición y las notas nuevas (después o antes) */
+.ad-ext{stroke-width:2.2;opacity:0;animation:adExt 5s ease infinite;animation-delay:calc(var(--k) * .28s)}
+.ad-ext.mot{fill:#E8834F;stroke:#E8834F}.ad-ext.var{fill:#7F9FDB;stroke:#7F9FDB}.ad-ext.nue{fill:#EDEEF0;stroke:#EDEEF0}
+.ad-ext-barra{stroke-width:4;stroke-linecap:round;opacity:0;animation:adExt 5s ease infinite;animation-delay:calc(var(--k) * .28s)}
+.ad-ext-barra.mot{stroke:#E8834F}.ad-ext-barra.var{stroke:#7F9FDB}.ad-ext-barra.nue{stroke:#EDEEF0}
+@keyframes adExt{0%{opacity:0}6%,82%{opacity:1}92%,100%{opacity:0}}
+.ad-ext-sil{fill:none;stroke:#6a6c72;stroke-width:1.6;stroke-dasharray:3 4;stroke-linecap:round}
+.ad-ext-llave{fill:none;stroke:#EDEEF0;stroke-width:1.6;stroke-linecap:round;opacity:.8}
+.ad-ext-mas{font:700 12px var(--sans);fill:#EDEEF0;text-anchor:middle}
+.ad-ext-l{font:700 15px var(--sans)}.ad-ext-l.mot{fill:#E8834F}.ad-ext-l.var{fill:#A9BEE8}
+@media (prefers-reduced-motion:reduce){.ad-ext,.ad-ext-barra{animation:none;opacity:1}}
+
 .como{font-size:13px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
 .como-listo,.como-casi{background:var(--azul-claro);color:var(--azul-txt)}
 .como-cuesta{background:var(--oxido-claro);color:var(--oxido-txt)}
@@ -2341,7 +2353,7 @@ const SEC_M2 = { transcribir: 'h.tozabldxa12', adn: 'h.azfzavn43se4', combinacio
 const DOC_M3 = 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit';
 const SEC_M3 = { integracion: 'h.2vf3aiors22l', ritmos: 'h.si3m5xlsyd92', unidades: 'h.cdhx3lo2hd5x' };
 const DOC_M4 = 'https://docs.google.com/document/d/1UZMITDRKAb_bUdIu0PHvXTFKWRYgJcdAeTylNRyuNWg/edit';
-const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146', ejemplo: 'h.8obqbdr86z3t', analisis: 'h.8r80u48q82uc' };
+const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146', ejemplo: 'h.8obqbdr86z3t', analisis: 'h.8r80u48q82uc', extension: 'h.3jdf19ek5ja1', extDespues: 'h.noipoudw9ujw', extAntes: 'h.xg0twkvtpt2p' };
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -3322,7 +3334,7 @@ const PROGRAMA = {
       id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
       titulo: '¿Qué es un motivo?',
       detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
-      ritmoVis: 'queEs', ritmoVisChica: true,
+      ritmoVis: 'queEs',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
@@ -3406,6 +3418,43 @@ const PROGRAMA = {
         { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Contá en tu cabeza: original, una, dos… y a otro motivo.' },
       ],
       recursos: [],
+    },
+    {
+      id: 'cv7', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      grupo: 'Desarrollo motívico: extensión',
+      titulo: 'Extensión: el video',
+      detalle: 'Mirate el video de extensión. Es como la variación, pero a la repetición del motivo le sumás unas notas nuevas 😉',
+      verYSeguir: true,
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extension, 'Ejercitación 3: Extensión'] }],
+    },
+    {
+      id: 'cv8', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      titulo: 'Extensión después del motivo',
+      adorno: 'extDespues',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones después de la repetición.',
+      detalle: '1) Tocá un **motivo**, descansá, repetí su **ritmo** y **seguí con unas notas nuevas**, pegadas. Descansá y otro motivo.\nLas notas de la repetición las podés cambiar como en la variación. El ritmo no se toca.\nProbá extensiones **cortas** (1 a 3 notas), **medianas** (unas 5) y **largas** (8 o más).\n[Ver el ejemplo (3:50)](https://youtu.be/BQdFkpRmA0w?t=230)\nEn el doc está analizado este ejemplo: ahí todas las extensiones quedaron medianas, así que buscá a propósito las cortas y las largas.',
+      nota2: '# Mandame un video con extensiones después del motivo',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'largo', label: 'Me salen todas del mismo largo', nivel: 'casi', resp: 'Practicá un rato cada largo por separado: primero solo cortas, después medianas, después largas.' },
+        { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la repetición y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extDespues, 'Ejemplo del video, analizado'] }],
+    },
+    {
+      id: 'cv9', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      titulo: 'Extensión antes del motivo',
+      adorno: 'extAntes',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones antes de la repetición.',
+      detalle: '2) Lo mismo, pero las notas nuevas van **antes**: motivo, descansá, unas notas nuevas y **pegado** el ritmo del motivo.\nAcá la repetición cae donde la deja la extensión, no te preocupes por el pulso.\n[Ver la explicación (5:02)](https://youtu.be/BQdFkpRmA0w?t=302)\n[Ver el ejemplo (5:26)](https://youtu.be/BQdFkpRmA0w?t=326)\nEn el doc tenés otro ejemplo analizado, con extensiones cortas y medianas antes de cada repetición.',
+      nota2: '# Mandame un video con extensiones antes del motivo',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'pierdo', label: 'Después de la extensión se me pierde el ritmo del motivo', nivel: 'casi', resp: 'Arrancá con extensiones cortas, de 1 o 2 notas, y antes de tocarla cantá el ritmo del motivo en la cabeza.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extAntes, 'Ejemplo de extensión antes, analizado'] }],
     },
   ],
 
@@ -4231,6 +4280,21 @@ const ADORNOS = {
       + `<g class="ad-notita"><path d="M74 34 v-15 l9 -3"/><ellipse cx="71" cy="35" rx="4.2" ry="3.2"/></g></svg>`;
   })(),
 };
+/* Extensión: arriba el motivo (naranja); abajo su repetición (azul) con notas nuevas pegadas después o antes */
+const extGrupo = (x, y, n, cls, k0 = 0, sep = 14) => {
+  let o = ''; for (let i = 0; i < n; i++) { const xi = x + i * sep, yi = y - [0, 6, 2, 8][i % 4]; o += `<g class="ad-ext ${cls}" style="--k:${k0 + i}"><ellipse cx="${xi}" cy="${yi}" rx="6" ry="4.5" transform="rotate(-20 ${xi} ${yi})"/><line x1="${xi + 5.4}" y1="${yi - 1}" x2="${xi + 5.4}" y2="${y - 30}"/></g>`; }
+  return o + `<line class="ad-ext-barra ${cls}" style="--k:${k0 + n - 1}" x1="${x + 5.4}" y1="${y - 30}" x2="${x + (n - 1) * sep + 5.4}" y2="${y - 30}"/>`;
+};
+const extAdorno = (despues) => {
+  const yA = 40, yB = 112, nN = 3;
+  const xRep = despues ? 8 : 64, xNue = despues ? 58 : 8;
+  const rep = extGrupo(xRep, yB, 3, 'var', despues ? 3 : 3 + nN), nue = extGrupo(xNue, yB, nN, 'nue', despues ? 6 : 3);
+  return `<svg viewBox="0 0 108 118"><text class="ad-ext-l mot" x="0" y="${yA - 2}">A</text>${extGrupo(18, yA, 3, 'mot', 0)}<path class="ad-ext-sil" d="M64 ${yA - 6} h40"/>`
+    + `<path class="ad-ext-llave" d="M${xNue - 6} ${yB - 40} v-5 H${xNue + 2 * 14 + 12} v5"/><text class="ad-ext-mas" x="${xNue + 17}" y="${yB - 50}">nuevo</text>`
+    + rep + nue + `</svg>`;
+};
+ADORNOS.extDespues = extAdorno(true);
+ADORNOS.extAntes = extAdorno(false);
 /* Rueditas numeradas para las ejercitaciones de mecanización */
 ['1', '2'].forEach(n => { ADORNOS['engranaje' + n] = ADORNOS.engranaje.replace('<circle class="ad-eng-c" cx="48" cy="54" r="8"/>', `<circle class="ad-eng-c" cx="48" cy="54" r="12"/><text class="ad-eng-n" x="48" y="60">${n}</text>`); });
 const RITMO_PASO = {
@@ -6359,9 +6423,22 @@ let videoSel = null;   // 'paso:índice' del video que se está mirando en el pa
 function todosLosVideos(a) {
   return Object.entries(a.prog || {}).flatMap(([pid, x]) => (x.videos || []).map((v, i) => ({ pid, v, i }))).filter(x => PASO[x.pid]);
 }
+/* Al entrar a un alumno se abre la primera sección que tenga algo: resúmenes de clase, videos, y si no, «Clases y avance».
+   Si entró tocando un video, se abre directo «Videos y mensaje». */
+let secsDe = null, entroPorVideo = false;
+function abrirSecsAlumno(a) {
+  if (secsDe === a.codigo) return;
+  secsDe = a.codigo;
+  const hayProp = [...PROPUESTAS, ...BORRADORES].some(p => p.codigo === a.codigo), hayVid = todosLosVideos(a).length > 0;
+  const prim = entroPorVideo ? 'videos' : hayProp ? 'prop-alumno' : hayVid ? 'videos' : 'clases';
+  entroPorVideo = false;
+  ['prop-alumno', 'videos', 'clases'].forEach(id => admAbiertas.delete(id));
+  admAbiertas.add(prim);
+}
 function renderAdmin() {
   document.title = 'Admin · Panel de Ajuste Elástico';   // para encontrarlo en Chrome escribiendo «admin» o «panel»
   const sel = elegido && elegido !== '__nuevo' && LISTA.find(a => a.codigo === elegido);
+  if (sel) abrirSecsAlumno(sel); else secsDe = null;
   app().innerHTML = `${barra('Andy')}
   <main class="admin ${sel || elegido === '__nuevo' ? 'admin-una' : ''}">
     ${sel ? alumnoAdmHTML(sel) : elegido === '__nuevo' ? `<button class="link volver-adm" data-adm="volver">← Todos los alumnos</button>${nuevoHTML()}` : inicioAdmHTML()}
@@ -6805,7 +6882,7 @@ function enlazarAdmin() {
     if (d.publicar) { resolverBorrador(d.publicar, 'publicar', b); return; }
     if (d.noPublicar) { resolverBorrador(d.noPublicar, 'descartar', b); return; }
     if (d.editarBorrador) { const c = BORRADORES.find(x => x.id === d.editarBorrador); if (c) editarResumen(c.id, c.resumen, r => { Object.assign(c, { resumen: r.resumen, datos: r.datos, original: c.original || 'x' }); guardarLocal('mapaAE_prop', { p: PROPUESTAS, b: BORRADORES, l: LLAMADAS }); renderAdmin(); }); return; }
-    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; renderAdmin(); window.scrollTo(0, 0); return; }
+    if (d.abrirVideo) { const [cod, v] = d.abrirVideo.split('|'); elegido = cod; videoSel = v; entroPorVideo = true; secsDe = null; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.videoSel && a) { videoSel = d.videoSel; $('#revision').innerHTML = revisionHTML(a); return; }
     if (d.adm === 'volver') { elegido = null; videoSel = null; renderAdmin(); window.scrollTo(0, 0); return; }
     if (d.adm === 'actualizar') { b.textContent = 'Actualizando…'; abrirAdmin(); return; }
@@ -6915,7 +6992,7 @@ window.addEventListener('resize', () => {
 /* ---------- Actualización sola (app del celu) ----------
    Al volver a la app (o a la pestaña), mira si publicamos algo nuevo. Si hay versión nueva y no está pasando nada
    (grabando, subiendo un video o guardando), recarga sola y vuelve al mismo paso. La sesión y los avances quedan en el aparato. */
-const VERSION_AULA = '863f94d1a5';
+const VERSION_AULA = 'c9ef21a0f0';
 let ultimoChequeo = 0;
 function sePuedeRecargar() {
   if (gr) return false;                                  // grabador abierto

@@ -26,7 +26,7 @@ const SEC_M2 = { transcribir: 'h.tozabldxa12', adn: 'h.azfzavn43se4', combinacio
 const DOC_M3 = 'https://docs.google.com/document/d/1The81Adyg6GEMgMbDe7ayNz9pw0iBe6BBUteAwG-jIo/edit';
 const SEC_M3 = { integracion: 'h.2vf3aiors22l', ritmos: 'h.si3m5xlsyd92', unidades: 'h.cdhx3lo2hd5x' };
 const DOC_M4 = 'https://docs.google.com/document/d/1UZMITDRKAb_bUdIu0PHvXTFKWRYgJcdAeTylNRyuNWg/edit';
-const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146', ejemplo: 'h.8obqbdr86z3t', analisis: 'h.8r80u48q82uc' };
+const SEC_M4 = { ej1: 'h.ls13bp8o8x36', conNotas: 'h.iw6ghxotcnia', desarrollo: 'h.2le65sl2hlcm', variacion: 'h.tkiawej3k66r', instrumento: 'h.h1kqmbw5z146', ejemplo: 'h.8obqbdr86z3t', analisis: 'h.8r80u48q82uc', extension: 'h.3jdf19ek5ja1', extDespues: 'h.noipoudw9ujw', extAntes: 'h.xg0twkvtpt2p' };
 const DOC_CUELLO_2 = 'https://docs.google.com/document/d/1MR6C2vRlCcHo77cJIdyyvjnuxBjdiqJ21zWZfCvulxU/edit';
 
 /* Títulos de los videos (para el reproductor) */
@@ -1007,7 +1007,7 @@ const PROGRAMA = {
       id: 'cv1', etapa: 'curva', video: { id: 'Aiw3VSTHFkU' },
       titulo: '¿Qué es un motivo?',
       detalle: 'Arrancamos la Curva del Solo 🎸 Mirate el video con el doc de motivos al lado.',
-      ritmoVis: 'queEs', ritmoVisChica: true,
+      ritmoVis: 'queEs',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4 }],
     },
@@ -1091,6 +1091,43 @@ const PROGRAMA = {
         { id: 'esquema', label: 'Se me desarma el esquema: varío de más o salteado', nivel: 'casi', resp: 'Contá en tu cabeza: original, una, dos… y a otro motivo.' },
       ],
       recursos: [],
+    },
+    {
+      id: 'cv7', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      grupo: 'Desarrollo motívico: extensión',
+      titulo: 'Extensión: el video',
+      detalle: 'Mirate el video de extensión. Es como la variación, pero a la repetición del motivo le sumás unas notas nuevas 😉',
+      verYSeguir: true,
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extension, 'Ejercitación 3: Extensión'] }],
+    },
+    {
+      id: 'cv8', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      titulo: 'Extensión después del motivo',
+      adorno: 'extDespues',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones después de la repetición.',
+      detalle: '1) Tocá un **motivo**, descansá, repetí su **ritmo** y **seguí con unas notas nuevas**, pegadas. Descansá y otro motivo.\nLas notas de la repetición las podés cambiar como en la variación. El ritmo no se toca.\nProbá extensiones **cortas** (1 a 3 notas), **medianas** (unas 5) y **largas** (8 o más).\n[Ver el ejemplo (3:50)](https://youtu.be/BQdFkpRmA0w?t=230)\nEn el doc está analizado este ejemplo: ahí todas las extensiones quedaron medianas, así que buscá a propósito las cortas y las largas.',
+      nota2: '# Mandame un video con extensiones después del motivo',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'largo', label: 'Me salen todas del mismo largo', nivel: 'casi', resp: 'Practicá un rato cada largo por separado: primero solo cortas, después medianas, después largas.' },
+        { id: 'olvido', label: 'No me acuerdo del ritmo', nivel: 'casi', resp: 'Esperá unos tiempos más antes de la repetición y armá motivos más simples. Si se te van todos, pará, descansá un poco y arrancá de nuevo.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extDespues, 'Ejemplo del video, analizado'] }],
+    },
+    {
+      id: 'cv9', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      titulo: 'Extensión antes del motivo',
+      adorno: 'extAntes',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones antes de la repetición.',
+      detalle: '2) Lo mismo, pero las notas nuevas van **antes**: motivo, descansá, unas notas nuevas y **pegado** el ritmo del motivo.\nAcá la repetición cae donde la deja la extensión, no te preocupes por el pulso.\n[Ver la explicación (5:02)](https://youtu.be/BQdFkpRmA0w?t=302)\n[Ver el ejemplo (5:26)](https://youtu.be/BQdFkpRmA0w?t=326)\nEn el doc tenés otro ejemplo analizado, con extensiones cortas y medianas antes de cada repetición.',
+      nota2: '# Mandame un video con extensiones antes del motivo',
+      progreso: [
+        { id: 'listo', label: 'Me sale', nivel: 'listo' },
+        { id: 'pierdo', label: 'Después de la extensión se me pierde el ritmo del motivo', nivel: 'casi', resp: 'Arrancá con extensiones cortas, de 1 o 2 notas, y antes de tocarla cantá el ritmo del motivo en la cabeza.' },
+        { id: 'cuesta', label: 'No me sale', nivel: 'cuesta', resp: 'Escribime por WhatsApp y lo vemos!', wa: true },
+      ],
+      recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extAntes, 'Ejemplo de extensión antes, analizado'] }],
     },
   ],
 

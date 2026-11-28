@@ -1901,3 +1901,15 @@ body.hay-grande #consulta,body.hay-grande .barra,body.hay-grande #panel-video{vi
 @media (max-width:700px){.adorno.adorno-soloGuitarra{width:112px}}
 @media (max-width:700px){.adorno.adorno-soloGuitarra{width:130px}}
 .ad-eng-n{font:700 15px var(--display);fill:#EDEEF0;text-anchor:middle}
+
+/* Extensión: motivo, su repetición y las notas nuevas (después o antes) */
+.ad-ext{stroke-width:2.2;opacity:0;animation:adExt 5s ease infinite;animation-delay:calc(var(--k) * .28s)}
+.ad-ext.mot{fill:#E8834F;stroke:#E8834F}.ad-ext.var{fill:#7F9FDB;stroke:#7F9FDB}.ad-ext.nue{fill:#EDEEF0;stroke:#EDEEF0}
+.ad-ext-barra{stroke-width:4;stroke-linecap:round;opacity:0;animation:adExt 5s ease infinite;animation-delay:calc(var(--k) * .28s)}
+.ad-ext-barra.mot{stroke:#E8834F}.ad-ext-barra.var{stroke:#7F9FDB}.ad-ext-barra.nue{stroke:#EDEEF0}
+@keyframes adExt{0%{opacity:0}6%,82%{opacity:1}92%,100%{opacity:0}}
+.ad-ext-sil{fill:none;stroke:#6a6c72;stroke-width:1.6;stroke-dasharray:3 4;stroke-linecap:round}
+.ad-ext-llave{fill:none;stroke:#EDEEF0;stroke-width:1.6;stroke-linecap:round;opacity:.8}
+.ad-ext-mas{font:700 12px var(--sans);fill:#EDEEF0;text-anchor:middle}
+.ad-ext-l{font:700 15px var(--sans)}.ad-ext-l.mot{fill:#E8834F}.ad-ext-l.var{fill:#A9BEE8}
+@media (prefers-reduced-motion:reduce){.ad-ext,.ad-ext-barra{animation:none;opacity:1}}
