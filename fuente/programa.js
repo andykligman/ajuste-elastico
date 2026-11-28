@@ -1095,17 +1095,18 @@ const PROGRAMA = {
     {
       id: 'cv7', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
       grupo: 'Desarrollo motívico: extensión',
-      titulo: 'Extensión: el video',
-      detalle: 'Mirate el video de extensión. Es como la variación, pero a la repetición del motivo le sumás unas notas nuevas 😉',
+      titulo: 'Extensión',
+      adorno: 'extDespues',
+      detalle: 'Podés empezar haciéndolo con el cuerpo. En el video los ejemplos son solo con el instrumento, pero te aconsejo que primero lo pruebes solo con el cuerpo, y que vayas y vuelvas de eso cuando lo necesites.',
       verYSeguir: true,
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extension, 'Ejercitación 3: Extensión'] }],
     },
     {
-      id: 'cv8', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      id: 'cv8', etapa: 'curva', video: { id: 'BQdFkpRmA0w', t: 230 }, videoTit: 'Ver ejemplo',
       titulo: 'Extensión después del motivo',
       adorno: 'extDespues',
-      entrega: 'video', envia: 'un video improvisando motivos con extensiones después de la repetición.',
-      detalle: '1) Tocá un **motivo**, descansá, repetí su **ritmo** y **seguí con unas notas nuevas**, pegadas. Descansá y otro motivo.\nLas notas de la repetición las podés cambiar como en la variación. El ritmo no se toca.\nProbá extensiones **cortas** (1 a 3 notas), **medianas** (unas 5) y **largas** (8 o más).\n[Ver el ejemplo (3:50)](https://youtu.be/BQdFkpRmA0w?t=230)\nEn el doc está analizado este ejemplo: ahí todas las extensiones quedaron medianas, así que buscá a propósito las cortas y las largas.',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones después del desarrollo.',
+      detalle: '- a) Tocá un **motivo** corto con características desarrollables.\n- b) Descansá.\n- c) Tocá un desarrollo: repetí el **ritmo** de la idea anterior, repitiendo o cambiando las notas de la melodía (la curva melódica puede ser la misma, parecida o nueva), e inmediatamente agregá **material nuevo** durante X tiempos.\n- d) Descansá.\n- e) Repetí de a) a d) durante todo el solo, con un motivo original distinto cada vez.\nO sea: una **variación** + un **pedazo nuevo** de material de duración indefinida.\nPracticá extensiones **cortas, medianas y largas**.',
       nota2: '# Mandame un video con extensiones después del motivo',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },
@@ -1116,11 +1117,11 @@ const PROGRAMA = {
       recursos: [{ t: 'Doc: Tocar con motivos', url: DOC_M4, sec: [SEC_M4.extDespues, 'Ejemplo del video, analizado'] }],
     },
     {
-      id: 'cv9', etapa: 'curva', video: { id: 'BQdFkpRmA0w' },
+      id: 'cv9', etapa: 'curva', video: { id: 'BQdFkpRmA0w', t: 326 }, videoTit: 'Ver ejemplo',
       titulo: 'Extensión antes del motivo',
       adorno: 'extAntes',
-      entrega: 'video', envia: 'un video improvisando motivos con extensiones antes de la repetición.',
-      detalle: '2) Lo mismo, pero las notas nuevas van **antes**: motivo, descansá, unas notas nuevas y **pegado** el ritmo del motivo.\nAcá la repetición cae donde la deja la extensión, no te preocupes por el pulso.\n[Ver la explicación (5:02)](https://youtu.be/BQdFkpRmA0w?t=302)\n[Ver el ejemplo (5:26)](https://youtu.be/BQdFkpRmA0w?t=326)\nEn el doc tenés otro ejemplo analizado, con extensiones cortas y medianas antes de cada repetición.',
+      entrega: 'video', envia: 'un video improvisando motivos con extensiones antes del desarrollo.',
+      detalle: 'Repetí la primera forma de ejercicio, pero poné la extensión **antes** del desarrollo, o sea, el material nuevo va inmediatamente antes del desarrollo y no después (puede ser corto, mediano o largo).',
       nota2: '# Mandame un video con extensiones antes del motivo',
       progreso: [
         { id: 'listo', label: 'Me sale', nivel: 'listo' },

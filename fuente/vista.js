@@ -430,7 +430,7 @@ const extAdorno = (despues) => {
   const xRep = despues ? 8 : 64, xNue = despues ? 58 : 8;
   const rep = extGrupo(xRep, yB, 3, 'var', despues ? 3 : 3 + nN), nue = extGrupo(xNue, yB, nN, 'nue', despues ? 6 : 3);
   return `<svg viewBox="0 0 108 118"><text class="ad-ext-l mot" x="0" y="${yA - 2}">A</text>${extGrupo(18, yA, 3, 'mot', 0)}<path class="ad-ext-sil" d="M64 ${yA - 6} h40"/>`
-    + `<path class="ad-ext-llave" d="M${xNue - 6} ${yB - 40} v-5 H${xNue + 2 * 14 + 12} v5"/><text class="ad-ext-mas" x="${xNue + 17}" y="${yB - 50}">nuevo</text>`
+    + `<path class="ad-ext-llave" d="M${xNue - 6} ${yB - 40} v-5 H${xNue + 2 * 14 + 12} v5"/><text class="ad-ext-mas" x="${xNue + 17}" y="${yB - 50}">Ext.</text>`
     + rep + nue + `</svg>`;
 };
 ADORNOS.extDespues = extAdorno(true);
